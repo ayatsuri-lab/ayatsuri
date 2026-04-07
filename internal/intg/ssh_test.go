@@ -4,6 +4,7 @@
 package intg_test
 
 import (
+	"context"
 	"crypto/ed25519"
 	"crypto/rand"
 	"encoding/pem"
@@ -651,6 +652,28 @@ func generateSSHKey(t *testing.T, keyPath, pubKeyPath string) {
 	pubKeyData := ssh.MarshalAuthorizedKey(sshPubKey)
 	err = os.WriteFile(pubKeyPath, pubKeyData, 0644)
 	require.NoError(t, err, "failed to write public key")
+}
+
+// currentDockerPlatform returns the platform of the Docker daemon.
+func currentDockerPlatform(ctx context.Context, dockerClient *client.Client) (specs.Platform, error) {
+	info, err := dockerClient.Info(ctx, client.InfoOptions{})
+	if err != nil {
+		return specs.Platform{}, err
+	}
+
+	return specs.Platform{
+		Architecture: info.Info.Architecture,
+		OS:           info.Info.OSType,
+	}, nil
+}
+
+// inspectContainer returns the container inspection result.
+func inspectContainer(ctx context.Context, dockerClient *client.Client, containerID string) (container.InspectResponse, error) {
+	result, err := dockerClient.ContainerInspect(ctx, containerID, client.ContainerInspectOptions{})
+	if err != nil {
+		return container.InspectResponse{}, err
+	}
+	return result.Container, nil
 }
 
 // stopSSHServer stops and removes the SSH server container

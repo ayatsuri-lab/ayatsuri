@@ -381,28 +381,6 @@ steps:
 		require.Contains(t, string(stderrContent), "oops")
 	})
 
-	t.Run("JQ", func(t *testing.T) {
-		t.Parallel()
-
-		dag := th.DAG(t, `steps:
-  - type: jq
-    command: .user.name # Get user name from JSON
-    output: NAME
-    script: |
-      {
-        "user": {
-          "name": "John",
-          "age": 30
-        }
-      }
-`)
-		agent := dag.Agent()
-		agent.RunSuccess(t)
-		dag.AssertOutputs(t, map[string]any{
-			"NAME": `"John"`,
-		})
-	})
-
 	t.Run("JSONVar", func(t *testing.T) {
 		t.Parallel()
 

@@ -27,35 +27,20 @@ func TestMain(m *testing.M) {
 			Command: true, MultipleCommands: true, Script: true, Shell: true,
 		})
 	}
-	// Docker: supports command, multiple commands, and container
-	for _, t := range []string{"docker", "container"} {
-		core.RegisterExecutorCapabilities(t, core.ExecutorCapabilities{
-			Command: true, MultipleCommands: true, Container: true,
-		})
-	}
+	// Container: supports command, multiple commands, and container
+	core.RegisterExecutorCapabilities("container", core.ExecutorCapabilities{
+		Command: true, MultipleCommands: true, Container: true,
+	})
 	// SSH: supports command, multiple commands, and shell
 	core.RegisterExecutorCapabilities("ssh", core.ExecutorCapabilities{
 		Command: true, MultipleCommands: true, Shell: true,
 	})
-	// jq and http: support command and script
-	core.RegisterExecutorCapabilities("jq", core.ExecutorCapabilities{Command: true, Script: true})
-	core.RegisterExecutorCapabilities("http", core.ExecutorCapabilities{Command: true, Script: true})
-	// kubernetes: supports a single command only
-	for _, t := range []string{"kubernetes", "k8s"} {
-		core.RegisterExecutorCapabilities(t, core.ExecutorCapabilities{Command: true})
-	}
-	// archive and gha: support command only
-	for _, t := range []string{"archive", "github_action", "github-action", "gha"} {
-		core.RegisterExecutorCapabilities(t, core.ExecutorCapabilities{Command: true})
-	}
 	// dag/subworkflow/parallel: support SubDAG and WorkerSelector
 	for _, t := range []string{"dag", "subworkflow", "parallel"} {
 		core.RegisterExecutorCapabilities(t, core.ExecutorCapabilities{
 			SubDAG: true, WorkerSelector: true,
 		})
 	}
-	// mail: no command support
-	core.RegisterExecutorCapabilities("mail", core.ExecutorCapabilities{})
 	// chat: LLM executor
 	core.RegisterExecutorCapabilities("chat", core.ExecutorCapabilities{LLM: true})
 
@@ -1890,12 +1875,6 @@ func TestValidateMultipleCommands(t *testing.T) {
 			commands:     []core.CommandEntry{{Command: "echo", Args: []string{"hello"}}},
 			wantErr:      false,
 		},
-		{
-			name:         "SingleCommand_JQExecutor",
-			executorType: "jq",
-			commands:     []core.CommandEntry{{Command: ".foo"}},
-			wantErr:      false,
-		},
 		// Multiple commands - should pass for multi-command executors
 		{
 			name:         "MultipleCommands_NoExecutorType",
@@ -1925,24 +1904,6 @@ func TestValidateMultipleCommands(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:         "MultipleCommands_DockerExecutor",
-			executorType: "docker",
-			commands: []core.CommandEntry{
-				{Command: "apt-get", Args: []string{"update"}},
-				{Command: "apt-get", Args: []string{"install", "curl"}},
-			},
-			wantErr: false,
-		},
-		{
-			name:         "MultipleCommands_ContainerExecutor",
-			executorType: "container",
-			commands: []core.CommandEntry{
-				{Command: "echo", Args: []string{"hello"}},
-				{Command: "echo", Args: []string{"world"}},
-			},
-			wantErr: false,
-		},
-		{
 			name:         "MultipleCommands_SSHExecutor",
 			executorType: "ssh",
 			commands: []core.CommandEntry{
@@ -1952,78 +1913,6 @@ func TestValidateMultipleCommands(t *testing.T) {
 			wantErr: false,
 		},
 		// Multiple commands - should fail for single-command executors
-		{
-			name:         "MultipleCommands_JQExecutor",
-			executorType: "jq",
-			commands: []core.CommandEntry{
-				{Command: ".foo"},
-				{Command: ".bar"},
-			},
-			wantErr: true,
-		},
-		{
-			name:         "MultipleCommands_HTTPExecutor",
-			executorType: "http",
-			commands: []core.CommandEntry{
-				{Command: "GET", Args: []string{"https://example.com"}},
-				{Command: "POST", Args: []string{"https://example.com"}},
-			},
-			wantErr: true,
-		},
-		{
-			name:         "MultipleCommands_KubernetesExecutor",
-			executorType: "kubernetes",
-			commands: []core.CommandEntry{
-				{Command: "echo", Args: []string{"hello"}},
-				{Command: "echo", Args: []string{"world"}},
-			},
-			wantErr: true,
-		},
-		{
-			name:         "MultipleCommands_K8sExecutor",
-			executorType: "k8s",
-			commands: []core.CommandEntry{
-				{Command: "echo", Args: []string{"hello"}},
-				{Command: "echo", Args: []string{"world"}},
-			},
-			wantErr: true,
-		},
-		{
-			name:         "MultipleCommands_ArchiveExecutor",
-			executorType: "archive",
-			commands: []core.CommandEntry{
-				{Command: "extract"},
-				{Command: "list"},
-			},
-			wantErr: true,
-		},
-		{
-			name:         "MultipleCommands_GithubActionExecutor_Underscore",
-			executorType: "github_action",
-			commands: []core.CommandEntry{
-				{Command: "actions/checkout@v3"},
-				{Command: "actions/setup-go@v4"},
-			},
-			wantErr: true,
-		},
-		{
-			name:         "MultipleCommands_GithubActionExecutor_Hyphen",
-			executorType: "github-action",
-			commands: []core.CommandEntry{
-				{Command: "actions/checkout@v3"},
-				{Command: "actions/setup-go@v4"},
-			},
-			wantErr: true,
-		},
-		{
-			name:         "MultipleCommands_MailExecutor",
-			executorType: "mail",
-			commands: []core.CommandEntry{
-				{Command: "send"},
-				{Command: "another"},
-			},
-			wantErr: true,
-		},
 		{
 			name:         "MultipleCommands_DAGExecutor",
 			executorType: "dag",
@@ -2041,19 +1930,6 @@ func TestValidateMultipleCommands(t *testing.T) {
 				{Command: "task2"},
 			},
 			wantErr: true,
-		},
-		// Empty commands - should always pass
-		{
-			name:         "NoCommands_JQExecutor",
-			executorType: "jq",
-			commands:     nil,
-			wantErr:      false,
-		},
-		{
-			name:         "EmptyCommands_HTTPExecutor",
-			executorType: "http",
-			commands:     []core.CommandEntry{},
-			wantErr:      false,
 		},
 	}
 
@@ -2101,46 +1977,10 @@ func TestValidateScript(t *testing.T) {
 			script:       "echo hello",
 			wantErr:      false,
 		},
-		{
-			name:         "ScriptWithDockerExecutor",
-			executorType: "docker",
-			script:       "echo hello",
-			wantErr:      true, // Docker doesn't use step.Script field
-		},
-		{
-			name:         "ScriptWithJQExecutor",
-			executorType: "jq",
-			script:       `{"key": "value"}`,
-			wantErr:      false,
-		},
-		{
-			name:         "ScriptWithHTTPExecutor",
-			executorType: "http",
-			script:       `{"body": "data"}`,
-			wantErr:      false,
-		},
 		// Executors that do not support script
 		{
 			name:         "ScriptWithSSHExecutor",
 			executorType: "ssh",
-			script:       "echo hello",
-			wantErr:      true,
-		},
-		{
-			name:         "ScriptWithMailExecutor",
-			executorType: "mail",
-			script:       "echo hello",
-			wantErr:      true,
-		},
-		{
-			name:         "ScriptWithArchiveExecutor",
-			executorType: "archive",
-			script:       "echo hello",
-			wantErr:      true,
-		},
-		{
-			name:         "ScriptWithGHAExecutor",
-			executorType: "gha",
 			script:       "echo hello",
 			wantErr:      true,
 		},
@@ -2192,52 +2032,15 @@ func TestValidateShell(t *testing.T) {
 			wantErr:      false,
 		},
 		{
-			name:         "ShellWithDockerExecutor",
-			executorType: "docker",
-			shell:        "/bin/sh",
-			wantErr:      true, // Docker doesn't use step.Shell field
-		},
-		{
 			name:         "ShellWithSSHExecutor",
 			executorType: "ssh",
 			shell:        "/bin/bash",
 			wantErr:      false, // SSH now supports step.Shell field
 		},
-		// Executors that do not support shell
-		{
-			name:         "ShellWithJQExecutor",
-			executorType: "jq",
-			shell:        "/bin/bash",
-			wantErr:      true,
-		},
-		{
-			name:         "ShellWithHTTPExecutor",
-			executorType: "http",
-			shell:        "/bin/bash",
-			wantErr:      true,
-		},
-		{
-			name:         "ShellWithKubernetesExecutor",
-			executorType: "kubernetes",
-			shell:        "/bin/bash",
-			wantErr:      true,
-		},
-		{
-			name:         "ShellWithK8sExecutor",
-			executorType: "k8s",
-			shell:        "/bin/bash",
-			wantErr:      true,
-		},
-		{
-			name:         "ShellWithMailExecutor",
-			executorType: "mail",
-			shell:        "/bin/bash",
-			wantErr:      true,
-		},
 		// Empty shell - should always pass
 		{
-			name:         "EmptyShellWithJQExecutor",
-			executorType: "jq",
+			name:         "EmptyShellWithSSHExecutor",
+			executorType: "ssh",
 			shell:        "",
 			wantErr:      false,
 		},
@@ -2274,13 +2077,6 @@ func TestValidateContainer(t *testing.T) {
 		container    *core.Container
 		wantErr      bool
 	}{
-		// Executors that support container
-		{
-			name:         "ContainerWithDockerExecutor",
-			executorType: "docker",
-			container:    &core.Container{Image: "alpine"},
-			wantErr:      false,
-		},
 		// Executors that do not support container
 		{
 			name:         "ContainerWithSSHExecutor",
@@ -2291,12 +2087,6 @@ func TestValidateContainer(t *testing.T) {
 		{
 			name:         "ContainerWithCommandExecutor",
 			executorType: "command",
-			container:    &core.Container{Image: "alpine"},
-			wantErr:      true,
-		},
-		{
-			name:         "ContainerWithJQExecutor",
-			executorType: "jq",
 			container:    &core.Container{Image: "alpine"},
 			wantErr:      true,
 		},
@@ -2366,12 +2156,6 @@ func TestValidateSubDAG(t *testing.T) {
 			subDAG:       &core.SubDAG{Name: "child-dag"},
 			wantErr:      true,
 		},
-		{
-			name:         "SubDAGWithDockerExecutor",
-			executorType: "docker",
-			subDAG:       &core.SubDAG{Name: "child-dag"},
-			wantErr:      true,
-		},
 		// Nil SubDAG - should always pass
 		{
 			name:         "NilSubDAGWithCommandExecutor",
@@ -2432,33 +2216,9 @@ func TestValidateCommand(t *testing.T) {
 			wantErr:      false,
 		},
 		{
-			name:         "CommandWithDockerExecutor",
-			executorType: "docker",
-			commands:     []core.CommandEntry{{Command: "echo", Args: []string{"hello"}}},
-			wantErr:      false,
-		},
-		{
 			name:         "CommandWithSSHExecutor",
 			executorType: "ssh",
 			commands:     []core.CommandEntry{{Command: "echo", Args: []string{"hello"}}},
-			wantErr:      false,
-		},
-		{
-			name:         "CommandWithJQExecutor",
-			executorType: "jq",
-			commands:     []core.CommandEntry{{Command: ".foo"}},
-			wantErr:      false,
-		},
-		{
-			name:         "CommandWithHTTPExecutor",
-			executorType: "http",
-			commands:     []core.CommandEntry{{Command: "GET", Args: []string{"https://example.com"}}},
-			wantErr:      false,
-		},
-		{
-			name:         "CommandWithArchiveExecutor",
-			executorType: "archive",
-			commands:     []core.CommandEntry{{Command: "extract"}},
 			wantErr:      false,
 		},
 		// Executors that do not support command
@@ -2480,23 +2240,11 @@ func TestValidateCommand(t *testing.T) {
 			commands:     []core.CommandEntry{{Command: "echo", Args: []string{"hello"}}},
 			wantErr:      true,
 		},
-		{
-			name:         "CommandWithMailExecutor",
-			executorType: "mail",
-			commands:     []core.CommandEntry{{Command: "send"}},
-			wantErr:      true,
-		},
 		// Empty commands - should always pass
 		{
 			name:         "NoCommandsWithDAGExecutor",
 			executorType: "dag",
 			commands:     nil,
-			wantErr:      false,
-		},
-		{
-			name:         "EmptyCommandsWithMailExecutor",
-			executorType: "mail",
-			commands:     []core.CommandEntry{},
 			wantErr:      false,
 		},
 	}
@@ -2561,18 +2309,6 @@ func TestValidateWorkerSelector(t *testing.T) {
 		{
 			name:           "WorkerSelectorWithCommandExecutor",
 			executorType:   "command",
-			workerSelector: map[string]string{"env": "prod"},
-			wantErr:        true,
-		},
-		{
-			name:           "WorkerSelectorWithDockerExecutor",
-			executorType:   "docker",
-			workerSelector: map[string]string{"env": "prod"},
-			wantErr:        true,
-		},
-		{
-			name:           "WorkerSelectorWithMailExecutor",
-			executorType:   "mail",
 			workerSelector: map[string]string{"env": "prod"},
 			wantErr:        true,
 		},
@@ -3164,39 +2900,6 @@ func TestStepExecutorNewFormat_Integration(t *testing.T) {
 				"host": "prod.example.com",
 				"user": "deploy",
 				"port": uint64(22),
-			},
-		},
-		{
-			name: "NewFormat_HTTP",
-			yaml: `steps:
-  - name: webhook
-    type: http
-    config:
-      timeout: 30
-      headers:
-        Authorization: Bearer token123
-    command: POST https://api.example.com
-`,
-			wantType: "http",
-			wantConfig: map[string]any{
-				"timeout": uint64(30),
-				"headers": map[string]any{
-					"Authorization": "Bearer token123",
-				},
-			},
-		},
-		{
-			name: "NewFormat_JQ",
-			yaml: `steps:
-  - name: parse
-    type: jq
-    config:
-      raw: true
-    command: .name
-`,
-			wantType: "jq",
-			wantConfig: map[string]any{
-				"raw": true,
 			},
 		},
 		{

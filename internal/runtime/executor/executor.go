@@ -110,14 +110,14 @@ type PushBackAware interface {
 }
 
 // SubRunProvider is an interface for executors that spawn sub-DAG runs.
-// This is used by executors like chat (with tools) to report sub-runs
+// This is used by executors like agent (with tools) to report sub-runs
 // for UI drill-down functionality.
 type SubRunProvider interface {
 	GetSubRuns() []exec.SubDAGRun
 }
 
 // ToolDefinitionProvider is an interface for executors that provide tool definitions.
-// This is used by chat executors to report what tools were available to the LLM
+// This is used by agent executors to report what tools were available to the LLM
 // for debugging and visibility purposes.
 type ToolDefinitionProvider interface {
 	GetToolDefinitions() []exec.ToolDefinition

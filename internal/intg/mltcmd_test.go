@@ -5,16 +5,11 @@ package intg_test
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 	"runtime"
 	"testing"
 
 	"github.com/ayatsuri-lab/ayatsuri/internal/core"
-	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec"
 	"github.com/ayatsuri-lab/ayatsuri/internal/test"
-	"github.com/google/uuid"
-	"github.com/stretchr/testify/require"
 )
 
 func TestMultipleCommands_Shell(t *testing.T) {
@@ -401,53 +396,6 @@ func TestMultipleCommands_Validation(t *testing.T) {
 	t.Parallel()
 
 	th := test.Setup(t)
-
-	t.Run("JQExecutorRejectsMultipleCommands", func(t *testing.T) {
-		t.Parallel()
-
-		// Create a temp file with the DAG content
-		tempDir := t.TempDir()
-		filename := fmt.Sprintf("%s.yaml", uuid.New().String())
-		testFile := filepath.Join(tempDir, filename)
-		yamlContent := `
-steps:
-  - name: jq-multi
-    type: jq
-    command:
-      - ".foo"
-      - ".bar"
-    script: '{"foo": "bar"}'
-`
-		err := os.WriteFile(testFile, []byte(yamlContent), 0600)
-		require.NoError(t, err)
-
-		_, err = spec.Load(th.Context, testFile)
-		require.Error(t, err, "expected error for multiple commands with jq executor")
-		require.Contains(t, err.Error(), "executor does not support multiple commands")
-	})
-
-	t.Run("HTTPExecutorRejectsMultipleCommands", func(t *testing.T) {
-		t.Parallel()
-
-		// Create a temp file with the DAG content
-		tempDir := t.TempDir()
-		filename := fmt.Sprintf("%s.yaml", uuid.New().String())
-		testFile := filepath.Join(tempDir, filename)
-		yamlContent := `
-steps:
-  - name: http-multi
-    type: http
-    command:
-      - "GET https://example.com"
-      - "POST https://example.com"
-`
-		err := os.WriteFile(testFile, []byte(yamlContent), 0600)
-		require.NoError(t, err)
-
-		_, err = spec.Load(th.Context, testFile)
-		require.Error(t, err, "expected error for multiple commands with http executor")
-		require.Contains(t, err.Error(), "executor does not support multiple commands")
-	})
 
 	t.Run("ShellExecutorAllowsMultipleCommands", func(t *testing.T) {
 		t.Parallel()

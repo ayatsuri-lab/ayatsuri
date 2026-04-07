@@ -102,11 +102,11 @@ type Step struct {
 	// If set, the step runs in its own container instead of the DAG-level container.
 	// This uses the same configuration format as the DAG-level container field.
 	Container *Container `json:"container,omitempty"`
-	// LLM contains the configuration for LLM-based executors (chat, agent, etc.).
-	// Used with explicit type: chat (or future type: agent).
+	// LLM contains the configuration for LLM-based executors (agent, etc.).
+	// Used with explicit type: agent.
 	LLM *LLMConfig `json:"llm,omitempty"`
-	// Messages contains the session messages for chat executor.
-	// Only used when type is "chat".
+	// Messages contains the session messages for LLM-based executors.
+	// Used with type: agent.
 	Messages []LLMMessage `json:"messages,omitempty"`
 	// Router contains the routing configuration for router-type steps.
 	// Only used when type is "router".

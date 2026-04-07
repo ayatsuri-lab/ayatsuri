@@ -54,14 +54,18 @@
                 "properties": {
                   "kind": {
                     "type": "string",
-                    "enum": ["cron"]
+                    "enum": [
+                      "cron"
+                    ]
                   },
                   "expression": {
                     "type": "string",
                     "description": "Cron expression for a recurring schedule entry"
                   }
                 },
-                "required": ["expression"],
+                "required": [
+                  "expression"
+                ],
                 "additionalProperties": false,
                 "description": "Typed cron schedule entry"
               },
@@ -70,7 +74,9 @@
                 "properties": {
                   "kind": {
                     "type": "string",
-                    "enum": ["at"]
+                    "enum": [
+                      "at"
+                    ]
                   },
                   "at": {
                     "type": "string",
@@ -78,7 +84,9 @@
                     "description": "RFC 3339 timestamp with explicit offset and minute precision for a one-off schedule entry"
                   }
                 },
-                "required": ["at"],
+                "required": [
+                  "at"
+                ],
                 "additionalProperties": false,
                 "description": "Typed one-off schedule entry"
               }
@@ -100,13 +108,17 @@
                   "properties": {
                     "kind": {
                       "type": "string",
-                      "enum": ["cron"]
+                      "enum": [
+                        "cron"
+                      ]
                     },
                     "expression": {
                       "type": "string"
                     }
                   },
-                  "required": ["expression"],
+                  "required": [
+                    "expression"
+                  ],
                   "additionalProperties": false,
                   "description": "Single typed cron schedule entry for starting the DAG"
                 },
@@ -115,14 +127,18 @@
                   "properties": {
                     "kind": {
                       "type": "string",
-                      "enum": ["at"]
+                      "enum": [
+                        "at"
+                      ]
                     },
                     "at": {
                       "type": "string",
                       "format": "date-time"
                     }
                   },
-                  "required": ["at"],
+                  "required": [
+                    "at"
+                  ],
                   "additionalProperties": false,
                   "description": "Single typed one-off schedule entry for starting the DAG"
                 },
@@ -138,13 +154,17 @@
                         "properties": {
                           "kind": {
                             "type": "string",
-                            "enum": ["cron"]
+                            "enum": [
+                              "cron"
+                            ]
                           },
                           "expression": {
                             "type": "string"
                           }
                         },
-                        "required": ["expression"],
+                        "required": [
+                          "expression"
+                        ],
                         "additionalProperties": false
                       },
                       {
@@ -152,14 +172,18 @@
                         "properties": {
                           "kind": {
                             "type": "string",
-                            "enum": ["at"]
+                            "enum": [
+                              "at"
+                            ]
                           },
                           "at": {
                             "type": "string",
                             "format": "date-time"
                           }
                         },
-                        "required": ["at"],
+                        "required": [
+                          "at"
+                        ],
                         "additionalProperties": false
                       }
                     ]
@@ -179,13 +203,17 @@
                   "properties": {
                     "kind": {
                       "type": "string",
-                      "enum": ["cron"]
+                      "enum": [
+                        "cron"
+                      ]
                     },
                     "expression": {
                       "type": "string"
                     }
                   },
-                  "required": ["expression"],
+                  "required": [
+                    "expression"
+                  ],
                   "additionalProperties": false,
                   "description": "Single typed cron schedule entry for stopping the DAG"
                 },
@@ -201,13 +229,17 @@
                         "properties": {
                           "kind": {
                             "type": "string",
-                            "enum": ["cron"]
+                            "enum": [
+                              "cron"
+                            ]
                           },
                           "expression": {
                             "type": "string"
                           }
                         },
-                        "required": ["expression"],
+                        "required": [
+                          "expression"
+                        ],
                         "additionalProperties": false
                       }
                     ]
@@ -227,13 +259,17 @@
                   "properties": {
                     "kind": {
                       "type": "string",
-                      "enum": ["cron"]
+                      "enum": [
+                        "cron"
+                      ]
                     },
                     "expression": {
                       "type": "string"
                     }
                   },
-                  "required": ["expression"],
+                  "required": [
+                    "expression"
+                  ],
                   "additionalProperties": false,
                   "description": "Single typed cron schedule entry for restarting the DAG"
                 },
@@ -249,13 +285,17 @@
                         "properties": {
                           "kind": {
                             "type": "string",
-                            "enum": ["cron"]
+                            "enum": [
+                              "cron"
+                            ]
                           },
                           "expression": {
                             "type": "string"
                           }
                         },
-                        "required": ["expression"],
+                        "required": [
+                          "expression"
+                        ],
                         "additionalProperties": false
                       }
                     ]
@@ -281,7 +321,11 @@
     },
     "overlap_policy": {
       "type": "string",
-      "enum": ["skip", "all", "latest"],
+      "enum": [
+        "skip",
+        "all",
+        "latest"
+      ],
       "default": "skip",
       "description": "Controls what happens when a catchup run is ready but the DAG is still running from a previous run. \"skip\" (default) drops the catchup run and moves to the next. \"all\" keeps it in the buffer and retries on the next scheduler tick. \"latest\" discards all but the most recent missed interval."
     },
@@ -295,9 +339,15 @@
           "type": "object",
           "additionalProperties": {
             "oneOf": [
-              { "type": "string" },
-              { "type": "number" },
-              { "type": "boolean" }
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
             ]
           },
           "description": "Tags as key-value pairs in map notation"
@@ -314,9 +364,15 @@
                 "type": "object",
                 "additionalProperties": {
                   "oneOf": [
-                    { "type": "string" },
-                    { "type": "number" },
-                    { "type": "boolean" }
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "boolean"
+                    }
                   ]
                 },
                 "maxProperties": 1,
@@ -331,7 +387,11 @@
     },
     "type": {
       "type": "string",
-      "enum": ["graph", "chain", "agent"],
+      "enum": [
+        "graph",
+        "chain",
+        "agent"
+      ],
       "default": "chain",
       "description": "Execution type for steps. 'chain' (default) executes steps sequentially in the order they are defined, with each step automatically depending on the previous one. 'graph' uses dependency-based execution where steps run based on their 'depends' field. 'agent' is reserved for future agent-based execution."
     },
@@ -381,27 +441,52 @@
           "oneOf": [
             {
               "type": "string",
-              "enum": ["skipped", "failed"]
+              "enum": [
+                "skipped",
+                "failed"
+              ]
             },
             {
               "type": "object",
               "properties": {
-                "failure": { "type": "boolean" },
-                "skipped": { "type": "boolean" },
+                "failure": {
+                  "type": "boolean"
+                },
+                "skipped": {
+                  "type": "boolean"
+                },
                 "exit_code": {
                   "oneOf": [
-                    { "type": "integer" },
-                    { "type": "string" },
-                    { "type": "array", "items": { "type": "integer" } }
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      }
+                    }
                   ]
                 },
                 "output": {
                   "oneOf": [
-                    { "type": "string" },
-                    { "type": "array", "items": { "type": "string" } }
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
                   ]
                 },
-                "mark_success": { "type": "boolean" }
+                "mark_success": {
+                  "type": "boolean"
+                }
               }
             }
           ],
@@ -412,25 +497,55 @@
           "properties": {
             "repeat": {
               "oneOf": [
-                { "type": "boolean" },
-                { "type": "string", "enum": ["while", "until"] }
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "while",
+                    "until"
+                  ]
+                }
               ]
             },
-            "interval_sec": { "type": "integer" },
-            "limit": { "type": "integer", "minimum": 1 },
+            "interval_sec": {
+              "type": "integer"
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1
+            },
             "backoff": {
               "oneOf": [
-                { "type": "boolean" },
-                { "type": "number" }
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "number"
+                }
               ]
             },
-            "max_interval_sec": { "type": "integer" },
-            "condition": { "type": "string" },
-            "expected": { "type": "string" },
+            "max_interval_sec": {
+              "type": "integer"
+            },
+            "condition": {
+              "type": "string"
+            },
+            "expected": {
+              "type": "string"
+            },
             "exit_code": {
               "oneOf": [
-                { "type": "integer" },
-                { "type": "array", "items": { "type": "integer" } }
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
               ]
             }
           },
@@ -455,8 +570,14 @@
               "type": "array",
               "items": {
                 "oneOf": [
-                  { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*=.*$" },
-                  { "type": "object", "additionalProperties": true }
+                  {
+                    "type": "string",
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]*=.*$"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
                 ]
               }
             },
@@ -469,10 +590,14 @@
         },
         "preconditions": {
           "oneOf": [
-            { "type": "string" },
+            {
+              "type": "string"
+            },
             {
               "type": "array",
-              "items": { "$ref": "#/definitions/condition" }
+              "items": {
+                "$ref": "#/definitions/condition"
+              }
             }
           ],
           "description": "Default preconditions for all steps (additive with step-level preconditions)"
@@ -493,7 +618,10 @@
     },
     "log_output": {
       "type": "string",
-      "enum": ["separate", "merged"],
+      "enum": [
+        "separate",
+        "merged"
+      ],
       "default": "separate",
       "description": "Controls how stdout and stderr are logged. 'separate' writes stdout to .out and stderr to .err files. 'merged' writes both to a single .log file with interleaved output."
     },
@@ -709,14 +837,6 @@
       "$ref": "#/definitions/sshConfig",
       "description": "Default SSH configuration for all steps in the DAG. Steps can override this configuration with their own SSH settings. Note: SSH and container configurations are mutually exclusive at the DAG level."
     },
-    "s3": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/s3ConnectionConfig"
-        }
-      ],
-      "description": "Default S3 configuration for all S3 steps in the DAG. Steps can override this configuration with their own S3 settings. Supports AWS S3 and S3-compatible services like MinIO."
-    },
     "llm": {
       "$ref": "#/definitions/llmConfig",
       "description": "Default LLM configuration for all chat steps in the DAG. Steps with type: chat inherit this configuration if they don't specify their own llm field. If a step specifies llm, it completely overrides the DAG-level configuration."
@@ -766,16 +886,24 @@
           "type": "object",
           "additionalProperties": {
             "oneOf": [
-              { "type": "string" },
-              { "type": "number" },
-              { "type": "boolean" }
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
             ]
           },
           "description": "Key-value pairs specifying worker label requirements. Values can be strings, numbers, or booleans (non-string values are coerced to strings). For example: {\"gpu\": true, \"memory\": \"64G\"} requires a worker with gpu=true and memory=64G labels."
         },
         {
           "type": "string",
-          "enum": ["local"],
+          "enum": [
+            "local"
+          ],
           "description": "Set to \"local\" to force this DAG to run locally even when the server default execution mode is distributed."
         }
       ],
@@ -796,18 +924,6 @@
         }
       ],
       "description": "Default shell to use for all steps in this DAG. Can be specified as a string with arguments (e.g., '/bin/bash -e') which will be automatically tokenized, or as an array for explicit argument separation. If not specified, the system default shell ($SHELL or /bin/sh) is used. Can be overridden at the step level."
-    },
-    "redis": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/redisConnectionConfig"
-        }
-      ],
-      "description": "Default Redis configuration for all steps in the DAG. Steps with type: redis inherit this configuration if they don't specify their own connection settings."
-    },
-    "kubernetes": {
-      "$ref": "#/definitions/kubernetesDefaultsConfig",
-      "description": "Default Kubernetes configuration for explicit k8s / kubernetes steps in the DAG. The same fields as step-level Kubernetes config are supported, but image is optional at the DAG level."
     }
   },
   "definitions": {
@@ -817,15 +933,23 @@
       "properties": {
         "limit": {
           "oneOf": [
-            { "type": "integer" },
-            { "type": "string" }
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
           ],
           "description": "Maximum number of retry attempts"
         },
         "interval_sec": {
           "oneOf": [
-            { "type": "integer" },
-            { "type": "string" }
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
           ],
           "description": "Seconds to wait between retry attempts"
         },
@@ -861,19 +985,33 @@
     "dagRetryPolicy": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["limit"],
+      "required": [
+        "limit"
+      ],
       "properties": {
         "limit": {
           "oneOf": [
-            { "type": "integer", "minimum": 1 },
-            { "type": "string", "pattern": "^0*[1-9][0-9]*$" }
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "string",
+              "pattern": "^0*[1-9][0-9]*$"
+            }
           ],
           "description": "Maximum number of retry attempts"
         },
         "interval_sec": {
           "oneOf": [
-            { "type": "integer", "minimum": 1 },
-            { "type": "string", "pattern": "^0*[1-9][0-9]*$" }
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "string",
+              "pattern": "^0*[1-9][0-9]*$"
+            }
           ],
           "description": "Seconds to wait between retry attempts"
         },
@@ -893,8 +1031,14 @@
         },
         "max_interval_sec": {
           "oneOf": [
-            { "type": "integer", "minimum": 1 },
-            { "type": "string", "pattern": "^0*[1-9][0-9]*$" }
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "string",
+              "pattern": "^0*[1-9][0-9]*$"
+            }
           ],
           "description": "Maximum interval in seconds (caps exponential growth)"
         }
@@ -942,7 +1086,9 @@
       "minProperties": 1,
       "maxProperties": 1,
       "not": {
-        "required": ["name"]
+        "required": [
+          "name"
+        ]
       },
       "additionalProperties": {
         "$ref": "#/definitions/paramScalar"
@@ -951,7 +1097,9 @@
     },
     "dagParamRichEntry": {
       "type": "object",
-      "required": ["name"],
+      "required": [
+        "name"
+      ],
       "minProperties": 2,
       "additionalProperties": false,
       "properties": {
@@ -969,7 +1117,12 @@
         },
         "type": {
           "type": "string",
-          "enum": ["string", "integer", "number", "boolean"]
+          "enum": [
+            "string",
+            "integer",
+            "number",
+            "boolean"
+          ]
         },
         "required": {
           "type": "boolean"
@@ -1013,11 +1166,16 @@
           "description": "Default parameter values to be validated against the schema."
         }
       },
-      "required": ["schema"],
+      "required": [
+        "schema"
+      ],
       "additionalProperties": false,
       "anyOf": [
         {
-          "required": ["schema", "values"]
+          "required": [
+            "schema",
+            "values"
+          ]
         },
         {
           "properties": {
@@ -1054,7 +1212,10 @@
     },
     "dagParamInlineSchema": {
       "type": "object",
-      "required": ["type", "properties"],
+      "required": [
+        "type",
+        "properties"
+      ],
       "properties": {
         "type": {
           "type": "string",
@@ -1070,7 +1231,11 @@
     },
     "secretRef": {
       "type": "object",
-      "required": ["name", "provider", "key"],
+      "required": [
+        "name",
+        "provider",
+        "key"
+      ],
       "additionalProperties": false,
       "properties": {
         "name": {
@@ -1150,7 +1315,11 @@
             {
               "type": "array",
               "items": {
-                "type": ["string", "number", "boolean"]
+                "type": [
+                  "string",
+                  "number",
+                  "boolean"
+                ]
               },
               "description": "Multiple commands to execute sequentially. Each string is a separate command."
             }
@@ -1194,7 +1363,10 @@
         },
         "log_output": {
           "type": "string",
-          "enum": ["separate", "merged"],
+          "enum": [
+            "separate",
+            "merged"
+          ],
           "description": "Override DAG-level log output mode. 'separate' writes stdout to .out and stderr to .err files. 'merged' writes both to a single .log file."
         },
         "output": {
@@ -1224,7 +1396,9 @@
                   "description": "JSON Schema declaration used to validate captured output. Output must be valid JSON matching this schema or the step fails."
                 }
               },
-              "required": ["name"],
+              "required": [
+                "name"
+              ],
               "additionalProperties": false
             }
           ],
@@ -1249,7 +1423,10 @@
           "oneOf": [
             {
               "type": "string",
-              "enum": ["skipped", "failed"],
+              "enum": [
+                "skipped",
+                "failed"
+              ],
               "description": "Shorthand: 'skipped' to continue if step is skipped, 'failed' to continue if step fails"
             },
             {
@@ -1319,7 +1496,10 @@
                 },
                 {
                   "type": "string",
-                  "enum": ["while", "until"]
+                  "enum": [
+                    "while",
+                    "until"
+                  ]
                 }
               ],
               "description": "Determines if and how the step should be repeated. Can be a boolean or a string ('while' or 'until')."
@@ -1360,8 +1540,15 @@
             },
             "exit_code": {
               "oneOf": [
-                { "type": "integer" },
-                { "type": "array", "items": { "type": "integer" } }
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
               ],
               "description": "Exit code or list of exit codes that will stop repetition. If not specified, all non-zero exit codes will trigger repetition."
             }
@@ -1426,7 +1613,7 @@
               "description": "Named parameters as key-value pairs"
             }
           ],
-          "description": "Parameters for the step. Supports three formats: 1) String format: space-separated positional parameters (e.g., 'arg1 arg2') accessible as $1, $2. 2) Array format: named parameters as key-value objects preserving rich types (numbers, booleans, nested objects). 3) Object format: named parameters as simple key-value pairs. For sub-DAG execution (when 'call' or 'run' is specified), these are passed to the sub DAG and accessible as ${KEY}. For 'gha' executor, these are passed as action inputs (the 'with:' section in GitHub Actions syntax). Rich types are preserved when passing to executors that support them."
+          "description": "Parameters for the step. Supports three formats: 1) String format: space-separated positional parameters (e.g., 'arg1 arg2') accessible as $1, $2. 2) Array format: named parameters as key-value objects preserving rich types (numbers, booleans, nested objects). 3) Object format: named parameters as simple key-value pairs. For sub-DAG execution (when 'call' or 'run' is specified), these are passed to the sub DAG and accessible as ${KEY}. Rich types are preserved when passing to executors that support them."
         },
         "parallel": {
           "oneOf": [
@@ -1489,7 +1676,9 @@
                   "description": "Maximum number of concurrent executions (default: 10, maximum: 1000)"
                 }
               },
-              "required": ["items"],
+              "required": [
+                "items"
+              ],
               "additionalProperties": false,
               "description": "Parallel execution configuration with concurrency control"
             }
@@ -1502,16 +1691,24 @@
               "type": "object",
               "additionalProperties": {
                 "oneOf": [
-                  { "type": "string" },
-                  { "type": "number" },
-                  { "type": "boolean" }
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
                 ]
               },
               "description": "Key-value pairs specifying worker label requirements. Values can be strings, numbers, or booleans (non-string values are coerced to strings). For example: {\"gpu\": true, \"memory\": \"64G\"} requires a worker with gpu=true and memory=64G labels."
             },
             {
               "type": "string",
-              "enum": ["local"],
+              "enum": [
+                "local"
+              ],
               "description": "Set to \"local\" to force this step to run locally even when the server default execution mode is distributed."
             }
           ],
@@ -1624,116 +1821,37 @@
       },
       "allOf": [
         {
-          "if": { "properties": { "type": { "const": "http" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/httpExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "ssh" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/sshExecutorConfig" }
-            }
-          }
-        },
-        {
           "if": {
-            "properties": { "type": { "enum": ["docker", "container"] } }
+            "properties": {
+              "type": {
+                "const": "ssh"
+              }
+            }
           },
           "then": {
             "properties": {
-              "config": { "$ref": "#/definitions/dockerExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "mail" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/mailExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "jq" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/jqExecutorConfig" }
+              "config": {
+                "$ref": "#/definitions/sshExecutorConfig"
+              }
             }
           }
         },
         {
           "if": {
             "properties": {
-              "type": { "enum": ["gha", "github_action", "github-action"] }
-            }
+              "type": {
+                "const": "router"
+              }
+            },
+            "required": [
+              "type"
+            ]
           },
           "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/ghaExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "archive" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/archiveExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "postgres" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/postgresExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "sqlite" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/sqliteExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "redis" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/redisExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": {
-            "properties": { "type": { "enum": ["kubernetes", "k8s"] } }
-          },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/kubernetesExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "s3" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/s3ExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": {
-            "properties": { "type": { "const": "router" } },
-            "required": ["type"]
-          },
-          "then": {
-            "required": ["value", "routes"]
+            "required": [
+              "value",
+              "routes"
+            ]
           }
         }
       ]
@@ -1860,25 +1978,47 @@
       "allOf": [
         {
           "if": {
-            "properties": { "startup": { "const": "command" } },
-            "required": ["startup"]
+            "properties": {
+              "startup": {
+                "const": "command"
+              }
+            },
+            "required": [
+              "startup"
+            ]
           },
           "then": {
-            "required": ["command"],
+            "required": [
+              "command"
+            ],
             "properties": {
-              "command": { "minItems": 1 }
+              "command": {
+                "minItems": 1
+              }
             }
           }
         }
       ],
       "oneOf": [
         {
-          "required": ["exec"],
-          "not": { "required": ["image"] }
+          "required": [
+            "exec"
+          ],
+          "not": {
+            "required": [
+              "image"
+            ]
+          }
         },
         {
-          "required": ["image"],
-          "not": { "required": ["exec"] }
+          "required": [
+            "image"
+          ],
+          "not": {
+            "required": [
+              "exec"
+            ]
+          }
         }
       ],
       "properties": {
@@ -1902,7 +2042,11 @@
             },
             {
               "type": "string",
-              "enum": ["always", "never", "missing"],
+              "enum": [
+                "always",
+                "never",
+                "missing"
+              ],
               "description": "String policy: 'always' pulls the image every time, 'never' uses only local images, 'missing' pulls only if not present locally"
             }
           ],
@@ -1965,18 +2109,27 @@
         },
         "startup": {
           "type": "string",
-          "enum": ["keepalive", "entrypoint", "command"],
+          "enum": [
+            "keepalive",
+            "entrypoint",
+            "command"
+          ],
           "default": "keepalive",
           "description": "Startup mode for the DAG-level container: 'keepalive' uses an internal keepalive/sleep, 'entrypoint' honors the image's ENTRYPOINT/CMD, 'command' runs the provided command array. Not applicable in exec mode."
         },
         "command": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "Command to execute when startup is 'command'. Must be a non-empty array. Not applicable in exec mode."
         },
         "wait_for": {
           "type": "string",
-          "enum": ["running", "healthy"],
+          "enum": [
+            "running",
+            "healthy"
+          ],
           "default": "running",
           "description": "Readiness condition before steps execute: 'running' waits for container to run; 'healthy' waits for Docker healthcheck to report healthy. Not applicable in exec mode."
         },
@@ -1999,7 +2152,9 @@
           "properties": {
             "test": {
               "type": "array",
-              "items": { "type": "string" },
+              "items": {
+                "type": "string"
+              },
               "minItems": 1,
               "description": "Command to run to check health. Must start with 'NONE' (disable healthcheck), 'CMD' (run command directly), or 'CMD-SHELL' (run command in shell). Examples: ['CMD', 'pg_isready', '-U', 'postgres'] or ['CMD-SHELL', 'curl -f http://localhost/ || exit 1']."
             },
@@ -2024,12 +2179,16 @@
               "description": "Number of consecutive failures needed to mark the container as unhealthy. Default is 3."
             }
           },
-          "required": ["test"],
+          "required": [
+            "test"
+          ],
           "description": "Custom healthcheck configuration for the container. Allows 'wait_for: healthy' to work with images that don't have built-in healthchecks (e.g., postgres, mysql). Not applicable in exec mode."
         },
         "shell": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "minItems": 1,
           "description": "Shell wrapper for executing step commands. Format: first element is the shell executable, remaining elements are flags, and the step command is appended as the final argument. Example: [\"/bin/bash\", \"-o\", \"errexit\", \"-c\"]. The '-c' flag (or equivalent) should be the last flag. Works in both exec and image modes."
         }
@@ -2095,217 +2254,11 @@
           "description": "Shell for remote command execution. Commands are wrapped as: shell -c 'command'. Providing arguments (via string or array form) enables shell features like variable expansion, pipes, and command chaining on the remote server."
         }
       },
-      "required": ["user", "host"],
-      "description": "SSH configuration for remote command execution. Can be specified at DAG level for reuse across steps, or at step level for specific overrides. Password authentication is supported but key-based auth is recommended."
-    },
-    "s3ConnectionConfig": {
-      "type": "object",
-      "properties": {
-        "region": {
-          "type": "string",
-          "description": "AWS region (e.g., 'us-east-1', 'eu-west-1'). If not specified, uses AWS SDK default resolution."
-        },
-        "endpoint": {
-          "type": "string",
-          "description": "Custom S3-compatible endpoint URL. Use for MinIO, LocalStack, or other S3-compatible services (e.g., 'http://localhost:9000')."
-        },
-        "access_key_id": {
-          "type": "string",
-          "description": "AWS access key ID. Supports environment variable expansion (e.g., '${AWS_ACCESS_KEY_ID}')."
-        },
-        "secret_access_key": {
-          "type": "string",
-          "description": "AWS secret access key. Supports environment variable expansion (e.g., '${AWS_SECRET_ACCESS_KEY}')."
-        },
-        "session_token": {
-          "type": "string",
-          "description": "AWS session token for temporary credentials. Supports environment variable expansion."
-        },
-        "profile": {
-          "type": "string",
-          "description": "AWS credentials profile name from ~/.aws/credentials."
-        },
-        "bucket": {
-          "type": "string",
-          "description": "Default S3 bucket name. Can be overridden at step level."
-        },
-        "force_path_style": {
-          "type": "boolean",
-          "default": false,
-          "description": "Use path-style addressing (bucket in path instead of subdomain). Required for most S3-compatible services like MinIO."
-        },
-        "disable_ssl": {
-          "type": "boolean",
-          "default": false,
-          "description": "Disable SSL/TLS for connections. Only use for local development with non-TLS endpoints."
-        }
-      },
-      "description": "Common S3 connection configuration shared between DAG-level and step-level S3 settings."
-    },
-    "s3ExecutorConfig": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/s3ConnectionConfig"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "key": {
-              "type": "string",
-              "description": "S3 object key (path). Required for upload, download, and single-object delete operations."
-            },
-            "source": {
-              "type": "string",
-              "description": "Local file path for upload operations. Required for 'upload' command."
-            },
-            "destination": {
-              "type": "string",
-              "description": "Local file path for download operations. Required for 'download' command."
-            },
-            "prefix": {
-              "type": "string",
-              "description": "S3 key prefix for list and batch delete operations."
-            },
-            "content_type": {
-              "type": "string",
-              "description": "Content-Type header for uploaded objects. Auto-detected from file extension if not specified."
-            },
-            "storage_class": {
-              "type": "string",
-              "enum": [
-                "STANDARD",
-                "REDUCED_REDUNDANCY",
-                "STANDARD_IA",
-                "ONEZONE_IA",
-                "INTELLIGENT_TIERING",
-                "GLACIER",
-                "DEEP_ARCHIVE",
-                "GLACIER_IR"
-              ],
-              "description": "S3 storage class for uploaded objects."
-            },
-            "metadata": {
-              "type": "object",
-              "additionalProperties": { "type": "string" },
-              "description": "Custom metadata key-value pairs for uploaded objects."
-            },
-            "tags": {
-              "type": "object",
-              "additionalProperties": { "type": "string" },
-              "description": "S3 object tags as key-value pairs."
-            },
-            "sse": {
-              "type": "string",
-              "enum": ["AES256", "aws:kms"],
-              "description": "Server-side encryption algorithm."
-            },
-            "sse_kms_key_id": {
-              "type": "string",
-              "description": "KMS key ID for SSE-KMS encryption."
-            },
-            "acl": {
-              "type": "string",
-              "enum": [
-                "private",
-                "public-read",
-                "public-read-write",
-                "authenticated-read",
-                "aws-exec-read",
-                "bucket-owner-read",
-                "bucket-owner-full-control"
-              ],
-              "description": "Canned ACL for uploaded objects."
-            },
-            "part_size": {
-              "type": "integer",
-              "minimum": 5,
-              "default": 10,
-              "description": "Part size in MB for multipart uploads. Minimum 5MB. Default: 10MB."
-            },
-            "concurrency": {
-              "type": "integer",
-              "minimum": 1,
-              "default": 5,
-              "description": "Number of concurrent upload/download parts. Default: 5."
-            },
-            "max_keys": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 1000,
-              "default": 1000,
-              "description": "Maximum keys to return per list request. Default: 1000."
-            },
-            "delimiter": {
-              "type": "string",
-              "description": "Delimiter for grouping keys in list operations (e.g., '/')."
-            },
-            "recursive": {
-              "type": "boolean",
-              "default": false,
-              "description": "Recursively list all objects under prefix. Default: false."
-            },
-            "output_format": {
-              "type": "string",
-              "enum": ["json", "jsonl"],
-              "default": "json",
-              "description": "Output format for list results. Default: json."
-            },
-            "quiet": {
-              "type": "boolean",
-              "default": false,
-              "description": "Suppress output for delete operations. Default: false."
-            }
-          }
-        }
+      "required": [
+        "user",
+        "host"
       ],
-      "description": "S3 executor configuration. Command specifies the operation: upload, download, list, or delete."
-    },
-    "httpExecutorConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "timeout": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Request timeout in seconds. If exceeded, the request is cancelled."
-        },
-        "headers": {
-          "type": "object",
-          "additionalProperties": { "type": "string" },
-          "description": "HTTP headers to include in the request. Key-value pairs where values are strings."
-        },
-        "query": {
-          "type": "object",
-          "additionalProperties": { "type": "string" },
-          "description": "Query parameters to append to the URL. Key-value pairs where values are strings."
-        },
-        "body": {
-          "type": "string",
-          "description": "Request body content. Can be JSON, XML, or plain text depending on Content-Type header."
-        },
-        "silent": {
-          "type": "boolean",
-          "description": "When true, suppresses response headers and status in output on success."
-        },
-        "debug": {
-          "type": "boolean",
-          "description": "Enable debug mode to log detailed request/response information."
-        },
-        "json": {
-          "type": "boolean",
-          "description": "When true, formats output as JSON including status_code, headers, and parsed body."
-        },
-        "format": {
-          "type": "string",
-          "enum": ["json"],
-          "description": "Response output format. Use \"json\" for structured output."
-        },
-        "skip_tls_verify": {
-          "type": "boolean",
-          "description": "Skip TLS certificate verification. WARNING: Only use for testing with self-signed certificates."
-        }
-      },
-      "description": "Configuration options for HTTP executor requests."
+      "description": "SSH configuration for remote command execution. Can be specified at DAG level for reuse across steps, or at step level for specific overrides. Password authentication is supported but key-based auth is recommended."
     },
     "sshExecutorConfig": {
       "type": "object",
@@ -2324,7 +2277,14 @@
           "description": "Alias for 'host'. IP address of the SSH server."
         },
         "port": {
-          "oneOf": [{ "type": "string" }, { "type": "integer" }],
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            }
+          ],
           "default": "22",
           "description": "SSH port number. Defaults to 22."
         },
@@ -2365,2034 +2325,6 @@
       },
       "description": "SSH executor configuration for remote command execution."
     },
-    "dockerExecutorConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "image": {
-          "type": "string",
-          "description": "Docker image to use for creating a new container (e.g., 'python:3.11', 'alpine:latest')."
-        },
-        "container_name": {
-          "type": "string",
-          "description": "Name or ID of an existing container to exec into. Use this instead of image to run commands in an existing container."
-        },
-        "platform": {
-          "type": "string",
-          "description": "Target platform for the container (e.g., 'linux/amd64', 'linux/arm64')."
-        },
-        "pull": {
-          "oneOf": [
-            {
-              "type": "boolean",
-              "description": "Boolean shorthand: true = 'always', false = 'never'"
-            },
-            {
-              "type": "string",
-              "enum": ["always", "never", "missing"],
-              "description": "Pull policy string"
-            }
-          ],
-          "default": "missing",
-          "description": "Image pull policy. 'always' pulls every time, 'never' uses only local, 'missing' pulls if not present."
-        },
-        "auto_remove": {
-          "oneOf": [{ "type": "boolean" }, { "type": "string" }],
-          "description": "Automatically remove the container after it exits."
-        },
-        "working_dir": {
-          "type": "string",
-          "description": "Working directory inside the container. Shortcut that maps to container.WorkingDir."
-        },
-        "volumes": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Volume mounts. Format: 'host_path:container_path[:mode]'. Shortcut that maps to host.Binds."
-        },
-        "container": {
-          "type": "object",
-          "additionalProperties": true,
-          "description": "Docker container configuration (docker/api/types/container.Config). See Docker API documentation."
-        },
-        "host": {
-          "type": "object",
-          "additionalProperties": true,
-          "description": "Docker host configuration (docker/api/types/container.HostConfig). See Docker API documentation."
-        },
-        "network": {
-          "type": "object",
-          "additionalProperties": true,
-          "description": "Docker network configuration (docker/api/types/network.NetworkingConfig). See Docker API documentation."
-        },
-        "exec": {
-          "type": "object",
-          "additionalProperties": true,
-          "description": "Docker exec options (docker/api/types/container.ExecOptions). Only valid with container_name."
-        }
-      },
-      "description": "Docker executor configuration for running commands in containers."
-    },
-    "mailExecutorConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["from", "to", "subject", "message"],
-      "properties": {
-        "from": {
-          "type": "string",
-          "description": "Sender email address. Required."
-        },
-        "to": {
-          "oneOf": [
-            {
-              "type": "string",
-              "description": "Single recipient email address"
-            },
-            {
-              "type": "array",
-              "items": { "type": "string" },
-              "description": "List of recipient email addresses"
-            }
-          ],
-          "description": "Recipient email address(es). Required."
-        },
-        "subject": {
-          "type": "string",
-          "description": "Email subject line. Required."
-        },
-        "message": {
-          "type": "string",
-          "description": "Email body content. Required."
-        },
-        "attachments": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "List of file paths to attach to the email."
-        }
-      },
-      "description": "Configuration for sending emails via the mail executor."
-    },
-    "jqExecutorConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "raw": {
-          "type": "boolean",
-          "description": "When true, outputs values without JSON formatting. Strings are printed without quotes, nulls print empty lines."
-        },
-        "input": {
-          "type": "string",
-          "description": "File path to read JSON input from. Mutually exclusive with script."
-        }
-      },
-      "description": "Configuration for JQ JSON query executor."
-    },
-    "ghaExecutorConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "runner": {
-          "type": "string",
-          "default": "node:24-bookworm",
-          "description": "Docker image to use as the runner for executing the GitHub Action."
-        },
-        "auto_remove": {
-          "type": "boolean",
-          "default": true,
-          "description": "Automatically remove containers after execution."
-        },
-        "network": {
-          "type": "string",
-          "description": "Docker network mode (e.g., 'host', 'bridge', or custom network name)."
-        },
-        "github_instance": {
-          "type": "string",
-          "default": "github.com",
-          "description": "GitHub instance hostname for action resolution. Use for GitHub Enterprise."
-        },
-        "docker_socket": {
-          "type": "string",
-          "description": "Custom Docker socket path. Leave empty for default."
-        },
-        "artifacts": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "path": {
-              "type": "string",
-              "description": "Path for artifact server storage."
-            },
-            "port": {
-              "type": "string",
-              "description": "Port for artifact server."
-            }
-          },
-          "description": "Artifact server configuration for GitHub Actions."
-        },
-        "reuse_containers": {
-          "type": "boolean",
-          "default": false,
-          "description": "Reuse containers between runs for faster execution."
-        },
-        "force_rebuild": {
-          "type": "boolean",
-          "default": false,
-          "description": "Force rebuild of action images."
-        },
-        "container_options": {
-          "type": "string",
-          "description": "Additional Docker run options as a string."
-        },
-        "privileged": {
-          "type": "boolean",
-          "default": false,
-          "description": "Run containers in privileged mode. WARNING: Security risk, avoid in production."
-        },
-        "capabilities": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "add": {
-              "oneOf": [
-                { "type": "string" },
-                { "type": "array", "items": { "type": "string" } }
-              ],
-              "description": "Linux capabilities to add to the container."
-            },
-            "drop": {
-              "oneOf": [
-                { "type": "string" },
-                { "type": "array", "items": { "type": "string" } }
-              ],
-              "description": "Linux capabilities to drop from the container."
-            }
-          },
-          "description": "Linux capabilities configuration for container security."
-        }
-      },
-      "description": "Configuration for running GitHub Actions locally using nektos/act."
-    },
-    "archiveExecutorConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["source"],
-      "properties": {
-        "source": {
-          "type": "string",
-          "description": "Source path for archive operations. Required for all operations."
-        },
-        "destination": {
-          "type": "string",
-          "description": "Destination path for archive operations. Required for 'create' operation (unless dry_run)."
-        },
-        "format": {
-          "type": "string",
-          "description": "Archive format (auto-detected from extension if not specified). Supports: tar, tar.gz, tar.bz2, zip, etc."
-        },
-        "compression_level": {
-          "type": "integer",
-          "default": -1,
-          "description": "Compression level. -1 for default, 0 for no compression, 1-9 for gzip/bzip2 levels."
-        },
-        "password": {
-          "type": "string",
-          "description": "Password for encrypted archives. Only supported for extract/list operations."
-        },
-        "overwrite": {
-          "type": "boolean",
-          "description": "Overwrite existing files during extraction."
-        },
-        "preserve_paths": {
-          "type": "boolean",
-          "default": true,
-          "description": "Preserve directory structure in archive."
-        },
-        "strip_components": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Number of leading path components to strip during extraction."
-        },
-        "include": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Glob patterns for files to include. If specified, only matching files are processed."
-        },
-        "exclude": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Glob patterns for files to exclude."
-        },
-        "dry_run": {
-          "type": "boolean",
-          "description": "Simulate the operation without making changes."
-        },
-        "verbose": {
-          "type": "boolean",
-          "description": "Enable verbose output showing processed files."
-        },
-        "follow_symlinks": {
-          "type": "boolean",
-          "description": "Follow symbolic links when creating archives."
-        },
-        "verify_integrity": {
-          "type": "boolean",
-          "description": "Verify archive integrity after creation."
-        },
-        "continue_on_error": {
-          "type": "boolean",
-          "description": "Continue processing even if individual files fail."
-        }
-      },
-      "description": "Configuration for archive operations (create, extract, list)."
-    },
-    "sqlImportConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["input_file", "table"],
-      "properties": {
-        "input_file": {
-          "type": "string",
-          "description": "Path to input file (CSV, TSV, or JSONL). Required."
-        },
-        "table": {
-          "type": "string",
-          "description": "Target table name. Required."
-        },
-        "format": {
-          "type": "string",
-          "enum": ["csv", "tsv", "jsonl"],
-          "description": "Input format. Auto-detected from file extension if not specified."
-        },
-        "has_header": {
-          "type": "boolean",
-          "default": true,
-          "description": "Whether first row is a header row. Default: true for CSV/TSV files."
-        },
-        "delimiter": {
-          "type": "string",
-          "description": "Field delimiter. Default: ',' for csv, '\\t' for tsv."
-        },
-        "columns": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Explicit column names. Overrides header row if specified."
-        },
-        "null_values": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Values to treat as NULL. Default: ['', 'NULL', 'null', '\\N']."
-        },
-        "batch_size": {
-          "type": "integer",
-          "minimum": 1,
-          "default": 1000,
-          "description": "Number of rows per INSERT statement. Default: 1000."
-        },
-        "on_conflict": {
-          "type": "string",
-          "enum": ["error", "ignore", "replace"],
-          "default": "error",
-          "description": "Conflict handling strategy. Default: 'error'. For PostgreSQL, 'replace' requires 'conflict_target' to perform UPSERT (ON CONFLICT DO UPDATE); without it, falls back to DO NOTHING. SQLite uses INSERT OR REPLACE which replaces the entire row."
-        },
-        "skip_rows": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Skip first N data rows."
-        },
-        "max_rows": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Maximum rows to import. 0 = unlimited."
-        },
-        "dry_run": {
-          "type": "boolean",
-          "description": "Validate without actually importing data."
-        }
-      },
-      "description": "Configuration for importing data from CSV/TSV/JSONL files into a database table."
-    },
-    "postgresExecutorConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["dsn"],
-      "properties": {
-        "dsn": {
-          "type": "string",
-          "description": "PostgreSQL connection string. Format: postgres://user:pass@host:port/dbname?sslmode=disable"
-        },
-        "max_open_conns": {
-          "type": "integer",
-          "minimum": 1,
-          "default": 5,
-          "description": "Maximum number of open connections. Default: 5."
-        },
-        "max_idle_conns": {
-          "type": "integer",
-          "minimum": 0,
-          "default": 2,
-          "description": "Maximum number of idle connections. Default: 2."
-        },
-        "conn_max_lifetime": {
-          "type": "integer",
-          "minimum": 0,
-          "default": 300,
-          "description": "Maximum connection lifetime in seconds. 0 = no limit. Default: 300."
-        },
-        "params": {
-          "oneOf": [
-            {
-              "type": "object",
-              "additionalProperties": true,
-              "description": "Named parameters as map (e.g., {name: 'value'}). Use :name in query."
-            },
-            {
-              "type": "array",
-              "items": {},
-              "description": "Positional parameters as array. Use $1, $2, etc. in query."
-            }
-          ],
-          "description": "Query parameters for SQL injection prevention."
-        },
-        "timeout": {
-          "type": "integer",
-          "minimum": 1,
-          "default": 60,
-          "description": "Query timeout in seconds. Default: 60."
-        },
-        "transaction": {
-          "type": "boolean",
-          "description": "Wrap execution in a transaction."
-        },
-        "isolation_level": {
-          "type": "string",
-          "enum": [
-            "default",
-            "read_committed",
-            "repeatable_read",
-            "serializable"
-          ],
-          "description": "Transaction isolation level."
-        },
-        "advisory_lock": {
-          "type": "string",
-          "description": "Named advisory lock. Prevents concurrent execution across distributed workers."
-        },
-        "output_format": {
-          "type": "string",
-          "enum": ["jsonl", "json", "csv"],
-          "default": "jsonl",
-          "description": "Output format for query results. Default: jsonl."
-        },
-        "headers": {
-          "type": "boolean",
-          "description": "Include headers in CSV output."
-        },
-        "null_string": {
-          "type": "string",
-          "default": "null",
-          "description": "String representation for NULL values. Default: 'null'."
-        },
-        "max_rows": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Maximum rows to return. 0 = unlimited."
-        },
-        "streaming": {
-          "type": "boolean",
-          "description": "Stream results to file instead of stdout."
-        },
-        "output_file": {
-          "type": "string",
-          "description": "File path for streaming output."
-        },
-        "import": {
-          "$ref": "#/definitions/sqlImportConfig",
-          "description": "Import data from CSV/TSV/JSONL file into a table."
-        }
-      },
-      "description": "PostgreSQL executor configuration for database operations."
-    },
-    "sqliteExecutorConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["dsn"],
-      "properties": {
-        "dsn": {
-          "type": "string",
-          "description": "SQLite connection string. Format: file:./path/to/db.sqlite or :memory: for in-memory database."
-        },
-        "max_open_conns": {
-          "type": "integer",
-          "minimum": 1,
-          "default": 5,
-          "description": "Maximum number of open connections. Default: 5. Recommended: 1 for SQLite."
-        },
-        "max_idle_conns": {
-          "type": "integer",
-          "minimum": 0,
-          "default": 2,
-          "description": "Maximum number of idle connections. Default: 2."
-        },
-        "params": {
-          "oneOf": [
-            {
-              "type": "object",
-              "additionalProperties": true,
-              "description": "Named parameters as map (e.g., {name: 'value'}). Use :name in query."
-            },
-            {
-              "type": "array",
-              "items": {},
-              "description": "Positional parameters as array. Use ? placeholders in query."
-            }
-          ],
-          "description": "Query parameters for SQL injection prevention."
-        },
-        "timeout": {
-          "type": "integer",
-          "minimum": 1,
-          "default": 60,
-          "description": "Query timeout in seconds. Default: 60."
-        },
-        "transaction": {
-          "type": "boolean",
-          "description": "Wrap execution in a transaction."
-        },
-        "file_lock": {
-          "type": "boolean",
-          "description": "Use file locking for exclusive database access. Creates a .lock file."
-        },
-        "output_format": {
-          "type": "string",
-          "enum": ["jsonl", "json", "csv"],
-          "default": "jsonl",
-          "description": "Output format for query results. Default: jsonl."
-        },
-        "headers": {
-          "type": "boolean",
-          "description": "Include headers in CSV output."
-        },
-        "null_string": {
-          "type": "string",
-          "default": "null",
-          "description": "String representation for NULL values. Default: 'null'."
-        },
-        "max_rows": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Maximum rows to return. 0 = unlimited."
-        },
-        "streaming": {
-          "type": "boolean",
-          "description": "Stream results to file instead of stdout."
-        },
-        "output_file": {
-          "type": "string",
-          "description": "File path for streaming output."
-        },
-        "import": {
-          "$ref": "#/definitions/sqlImportConfig",
-          "description": "Import data from CSV/TSV/JSONL file into a table."
-        }
-      },
-      "description": "SQLite executor configuration for database operations. Uses pure Go SQLite with automatic pragmas: foreign_keys=ON, busy_timeout=5000."
-    },
-    "redisConnectionConfig": {
-      "type": "object",
-      "properties": {
-        "url": {
-          "type": "string",
-          "description": "Redis connection URL (redis://[user:pass@]host:port[/db]). Alternative to host/port."
-        },
-        "host": {
-          "type": "string",
-          "default": "localhost",
-          "description": "Redis server hostname. Required if URL not provided."
-        },
-        "port": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 65535,
-          "default": 6379,
-          "description": "Redis server port. Default: 6379."
-        },
-        "password": {
-          "type": "string",
-          "description": "Authentication password."
-        },
-        "username": {
-          "type": "string",
-          "description": "ACL username (Redis 6+)."
-        },
-        "db": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 15,
-          "default": 0,
-          "description": "Database number (0-15). Default: 0."
-        },
-        "tls": {
-          "type": "boolean",
-          "description": "Enable TLS connection."
-        },
-        "tls_cert": {
-          "type": "string",
-          "description": "Client certificate path for mTLS."
-        },
-        "tls_key": {
-          "type": "string",
-          "description": "Client key path for mTLS. Must be provided with tls_cert."
-        },
-        "tls_ca": {
-          "type": "string",
-          "description": "CA certificate path for TLS verification."
-        },
-        "tls_skip_verify": {
-          "type": "boolean",
-          "description": "Skip TLS certificate verification. WARNING: Only use for testing."
-        },
-        "mode": {
-          "type": "string",
-          "enum": ["standalone", "sentinel", "cluster"],
-          "default": "standalone",
-          "description": "Connection mode. Default: standalone."
-        },
-        "sentinel_master": {
-          "type": "string",
-          "description": "Sentinel master name. Required when mode is 'sentinel'."
-        },
-        "sentinel_addrs": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Sentinel server addresses. Required when mode is 'sentinel'."
-        },
-        "cluster_addrs": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Cluster node addresses. Required when mode is 'cluster'."
-        },
-        "max_retries": {
-          "type": "integer",
-          "minimum": 0,
-          "default": 3,
-          "description": "Maximum retry attempts. Default: 3."
-        }
-      },
-      "description": "Common Redis connection configuration shared between DAG-level and step-level Redis settings."
-    },
-    "redisExecutorConfig": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/redisConnectionConfig"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "command": {
-              "type": "string",
-              "description": "Redis command to execute (e.g., 'GET', 'SET', 'HSET'). Required unless using script/pipeline."
-            },
-            "key": {
-              "type": "string",
-              "description": "Primary key for the command."
-            },
-            "keys": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "description": "Multiple keys for commands like MGET, DEL."
-            },
-            "value": {
-              "description": "Value for SET, LPUSH, etc. Can be string, number, boolean, or object."
-            },
-            "values": {
-              "type": "array",
-              "description": "Multiple values for commands like MSET, LPUSH."
-            },
-            "field": {
-              "type": "string",
-              "description": "Hash field for HGET, HSET."
-            },
-            "fields": {
-              "type": "object",
-              "additionalProperties": true,
-              "description": "Multiple hash fields for HMSET, HGETALL."
-            },
-            "ttl": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Expiration time in seconds for SET with EX option."
-            },
-            "nx": {
-              "type": "boolean",
-              "description": "SET only if key does not exist."
-            },
-            "xx": {
-              "type": "boolean",
-              "description": "SET only if key exists."
-            },
-            "keep_ttl": {
-              "type": "boolean",
-              "description": "Preserve existing TTL when updating key (Redis 6+)."
-            },
-            "count": {
-              "type": "integer",
-              "minimum": 1,
-              "description": "Count parameter for SCAN, LPOP, RPOP."
-            },
-            "match": {
-              "type": "string",
-              "description": "Pattern for SCAN command (e.g., 'user:*')."
-            },
-            "position": {
-              "type": "string",
-              "enum": ["BEFORE", "AFTER"],
-              "description": "Position for LINSERT command."
-            },
-            "pivot": {
-              "type": "string",
-              "description": "Pivot value for LINSERT command."
-            },
-            "start": {
-              "type": "integer",
-              "description": "Range start index for LRANGE, ZRANGE."
-            },
-            "stop": {
-              "type": "integer",
-              "description": "Range stop index for LRANGE, ZRANGE."
-            },
-            "score": {
-              "type": "number",
-              "description": "Member score for ZADD, ZINCRBY."
-            },
-            "min": {
-              "type": "string",
-              "description": "Minimum score/value for ZRANGEBYSCORE, ZCOUNT."
-            },
-            "max": {
-              "type": "string",
-              "description": "Maximum score/value for ZRANGEBYSCORE, ZCOUNT."
-            },
-            "with_scores": {
-              "type": "boolean",
-              "description": "Include scores in ZRANGE output."
-            },
-            "channel": {
-              "type": "string",
-              "description": "Pub/Sub channel name."
-            },
-            "channels": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "description": "Multiple Pub/Sub channels."
-            },
-            "message": {
-              "description": "Message to publish. Can be string, number, boolean, or object."
-            },
-            "stream": {
-              "type": "string",
-              "description": "Stream key for XADD, XREAD."
-            },
-            "stream_id": {
-              "type": "string",
-              "description": "Stream message ID. Use '*' for auto-generation."
-            },
-            "group": {
-              "type": "string",
-              "description": "Consumer group name for XREADGROUP."
-            },
-            "consumer": {
-              "type": "string",
-              "description": "Consumer name for XREADGROUP."
-            },
-            "stream_fields": {
-              "type": "object",
-              "additionalProperties": true,
-              "description": "Stream entry fields for XADD."
-            },
-            "max_len": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Maximum stream length for XADD."
-            },
-            "block": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Block timeout in milliseconds for XREAD, XREADGROUP."
-            },
-            "no_ack": {
-              "type": "boolean",
-              "description": "Skip acknowledging messages in XREADGROUP."
-            },
-            "script": {
-              "type": "string",
-              "description": "Inline Lua script to execute."
-            },
-            "script_file": {
-              "type": "string",
-              "description": "Path to Lua script file."
-            },
-            "script_sha": {
-              "type": "string",
-              "description": "SHA of pre-loaded script. Use EVALSHA instead of EVAL."
-            },
-            "script_keys": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "description": "KEYS array for Lua script."
-            },
-            "script_args": {
-              "type": "array",
-              "description": "ARGV array for Lua script."
-            },
-            "pipeline": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "required": ["command"],
-                "properties": {
-                  "command": {
-                    "type": "string"
-                  },
-                  "key": {
-                    "type": "string"
-                  },
-                  "keys": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "value": {},
-                  "values": {
-                    "type": "array"
-                  },
-                  "field": {
-                    "type": "string"
-                  },
-                  "fields": {
-                    "type": "object",
-                    "additionalProperties": true
-                  },
-                  "ttl": {
-                    "type": "integer"
-                  },
-                  "nx": {
-                    "type": "boolean"
-                  },
-                  "xx": {
-                    "type": "boolean"
-                  },
-                  "score": {
-                    "type": "number"
-                  }
-                }
-              },
-              "description": "Batch of commands to execute in a pipeline."
-            },
-            "watch": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "description": "Keys to WATCH for optimistic locking."
-            },
-            "multi": {
-              "type": "boolean",
-              "description": "Wrap pipeline in MULTI/EXEC transaction."
-            },
-            "lock": {
-              "type": "string",
-              "description": "Distributed lock name. Acquires lock before executing command."
-            },
-            "lock_timeout": {
-              "type": "integer",
-              "minimum": 1,
-              "default": 30,
-              "description": "Lock expiry in seconds. Default: 30."
-            },
-            "lock_retry": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 10,
-              "description": "Lock acquisition retry attempts. Default: 10."
-            },
-            "lock_wait": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 100,
-              "description": "Wait between lock retries in milliseconds. Default: 100."
-            },
-            "output_format": {
-              "type": "string",
-              "enum": ["json", "jsonl", "raw", "csv"],
-              "default": "json",
-              "description": "Output format. Default: json."
-            },
-            "null_value": {
-              "type": "string",
-              "default": "null",
-              "description": "String representation for nil values. Default: 'null'."
-            },
-            "timeout": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 30,
-              "description": "Command timeout in seconds. Default: 30."
-            },
-            "max_result_size": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 10485760,
-              "description": "Maximum result size in bytes. Default: 10MB."
-            }
-          }
-        }
-      ],
-      "description": "Redis executor configuration for executing Redis commands, managing cache, pub/sub, streams, and distributed locks."
-    },
-    "kubernetesKeySelector": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["name", "key"],
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Name of the Secret or ConfigMap."
-        },
-        "key": {
-          "type": "string",
-          "description": "Key to read from the referenced Secret or ConfigMap."
-        }
-      },
-      "description": "Reference to a specific key in a Secret or ConfigMap."
-    },
-    "kubernetesFieldRef": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["field_path"],
-      "properties": {
-        "field_path": {
-          "type": "string",
-          "description": "Pod field path to expose as an environment variable value (for example, metadata.name)."
-        }
-      },
-      "description": "Reference to a Pod field for downward API environment variables."
-    },
-    "kubernetesEnvVarSource": {
-      "oneOf": [
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["secret_key_ref"],
-          "properties": {
-            "secret_key_ref": {
-              "$ref": "#/definitions/kubernetesKeySelector",
-              "description": "Read the value from a specific key in a Secret."
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["config_map_key_ref"],
-          "properties": {
-            "config_map_key_ref": {
-              "$ref": "#/definitions/kubernetesKeySelector",
-              "description": "Read the value from a specific key in a ConfigMap."
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["field_ref"],
-          "properties": {
-            "field_ref": {
-              "$ref": "#/definitions/kubernetesFieldRef",
-              "description": "Read the value from a Pod field."
-            }
-          }
-        }
-      ],
-      "description": "Source configuration for an environment variable value. Exactly one source must be specified."
-    },
-    "kubernetesEnvVar": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["name"],
-      "not": {
-        "required": ["value", "value_from"]
-      },
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Environment variable name."
-        },
-        "value": {
-          "type": "string",
-          "description": "Literal environment variable value."
-        },
-        "value_from": {
-          "$ref": "#/definitions/kubernetesEnvVarSource",
-          "description": "Dynamic source for the environment variable value."
-        }
-      },
-      "description": "A Kubernetes environment variable entry. Set either value or value_from, but not both."
-    },
-    "kubernetesEnvFromRef": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["name"],
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Name of the Secret or ConfigMap to import."
-        }
-      },
-      "description": "Reference to a Secret or ConfigMap for env_from."
-    },
-    "kubernetesEnvFromSource": {
-      "oneOf": [
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["config_map_ref"],
-          "properties": {
-            "config_map_ref": {
-              "$ref": "#/definitions/kubernetesEnvFromRef",
-              "description": "Import all keys from a ConfigMap."
-            },
-            "prefix": {
-              "type": "string",
-              "description": "Optional prefix applied to imported environment variable names."
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["secret_ref"],
-          "properties": {
-            "secret_ref": {
-              "$ref": "#/definitions/kubernetesEnvFromRef",
-              "description": "Import all keys from a Secret."
-            },
-            "prefix": {
-              "type": "string",
-              "description": "Optional prefix applied to imported environment variable names."
-            }
-          }
-        }
-      ],
-      "description": "Import a Secret or ConfigMap as environment variables. Exactly one source must be specified."
-    },
-    "kubernetesResourceRequirements": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "requests": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "description": "Resource requests such as cpu and memory. Values use Kubernetes quantity syntax (for example, 100m, 128Mi)."
-        },
-        "limits": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "description": "Resource limits such as cpu and memory. Values use Kubernetes quantity syntax (for example, 500m, 1Gi)."
-        }
-      },
-      "description": "CPU and memory requests and limits for the Job container."
-    },
-    "kubernetesToleration": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "key": {
-          "type": "string",
-          "description": "Taint key to tolerate."
-        },
-        "operator": {
-          "type": "string",
-          "description": "Toleration operator."
-        },
-        "value": {
-          "type": "string",
-          "description": "Taint value to match."
-        },
-        "effect": {
-          "type": "string",
-          "description": "Taint effect to tolerate."
-        }
-      },
-      "description": "Pod toleration entry."
-    },
-    "kubernetesCapabilities": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "add": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Linux capabilities to add."
-        },
-        "drop": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Linux capabilities to drop."
-        }
-      },
-      "description": "Container capability overrides."
-    },
-    "kubernetesSeccompProfile": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": ["RuntimeDefault", "Unconfined", "Localhost"],
-          "description": "Seccomp profile type."
-        },
-        "localhost_profile": {
-          "type": "string",
-          "description": "Localhost seccomp profile path. Required only when type is Localhost."
-        }
-      },
-      "allOf": [
-        {
-          "if": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "const": "Localhost"
-              }
-            },
-            "required": ["type"]
-          },
-          "then": {
-            "required": ["localhost_profile"]
-          },
-          "else": {
-            "not": {
-              "required": ["localhost_profile"]
-            }
-          }
-        }
-      ],
-      "description": "Typed seccomp profile configuration."
-    },
-    "kubernetesSecurityContext": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "run_as_user": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Container UID."
-        },
-        "run_as_group": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Container GID."
-        },
-        "run_as_non_root": {
-          "type": "boolean",
-          "description": "Require the container to run as non-root."
-        },
-        "privileged": {
-          "type": "boolean",
-          "description": "Run the container in privileged mode."
-        },
-        "read_only_root_filesystem": {
-          "type": "boolean",
-          "description": "Mount the container root filesystem read-only."
-        },
-        "allow_privilege_escalation": {
-          "type": "boolean",
-          "description": "Allow the process to gain more privileges."
-        },
-        "capabilities": {
-          "$ref": "#/definitions/kubernetesCapabilities"
-        },
-        "seccomp_profile": {
-          "$ref": "#/definitions/kubernetesSeccompProfile"
-        }
-      },
-      "description": "Container-level Linux security settings."
-    },
-    "kubernetesSysctl": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["name", "value"],
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Sysctl name."
-        },
-        "value": {
-          "type": "string",
-          "description": "Sysctl value."
-        }
-      },
-      "description": "Namespaced Linux sysctl."
-    },
-    "kubernetesPodSecurityContext": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "run_as_user": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Default Pod UID."
-        },
-        "run_as_group": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Default Pod GID."
-        },
-        "run_as_non_root": {
-          "type": "boolean",
-          "description": "Require containers to run as non-root by default."
-        },
-        "fs_group": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Filesystem group for supported volumes."
-        },
-        "fs_group_change_policy": {
-          "type": "string",
-          "enum": ["Always", "OnRootMismatch"],
-          "description": "Volume ownership change policy."
-        },
-        "supplemental_groups": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "description": "Additional supplemental groups."
-        },
-        "sysctls": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/kubernetesSysctl"
-          },
-          "description": "Namespaced Linux sysctls."
-        },
-        "seccomp_profile": {
-          "$ref": "#/definitions/kubernetesSeccompProfile"
-        }
-      },
-      "description": "Pod-level Linux security defaults."
-    },
-    "kubernetesNodeSelectorRequirement": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["key", "operator"],
-      "properties": {
-        "key": {
-          "type": "string",
-          "description": "Node label key."
-        },
-        "operator": {
-          "type": "string",
-          "enum": ["In", "NotIn", "Exists", "DoesNotExist", "Gt", "Lt"],
-          "description": "Node selector operator."
-        },
-        "values": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Operator values."
-        }
-      },
-      "oneOf": [
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["key", "operator", "values"],
-          "properties": {
-            "key": { "type": "string" },
-            "operator": { "const": "In" },
-            "values": {
-              "type": "array",
-              "items": { "type": "string" },
-              "minItems": 1
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["key", "operator", "values"],
-          "properties": {
-            "key": { "type": "string" },
-            "operator": { "const": "NotIn" },
-            "values": {
-              "type": "array",
-              "items": { "type": "string" },
-              "minItems": 1
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["key", "operator"],
-          "properties": {
-            "key": { "type": "string" },
-            "operator": { "const": "Exists" },
-            "values": {
-              "type": "array",
-              "items": { "type": "string" },
-              "maxItems": 0
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["key", "operator"],
-          "properties": {
-            "key": { "type": "string" },
-            "operator": { "const": "DoesNotExist" },
-            "values": {
-              "type": "array",
-              "items": { "type": "string" },
-              "maxItems": 0
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["key", "operator", "values"],
-          "properties": {
-            "key": { "type": "string" },
-            "operator": { "const": "Gt" },
-            "values": {
-              "type": "array",
-              "items": { "type": "string" },
-              "minItems": 1,
-              "maxItems": 1
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["key", "operator", "values"],
-          "properties": {
-            "key": { "type": "string" },
-            "operator": { "const": "Lt" },
-            "values": {
-              "type": "array",
-              "items": { "type": "string" },
-              "minItems": 1,
-              "maxItems": 1
-            }
-          }
-        }
-      ],
-      "description": "Node selector requirement."
-    },
-    "kubernetesNodeSelectorTerm": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "match_expressions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/kubernetesNodeSelectorRequirement"
-          },
-          "description": "Node label match expressions."
-        }
-      },
-      "description": "Node selector term."
-    },
-    "kubernetesNodeSelector": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "node_selector_terms": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/kubernetesNodeSelectorTerm"
-          },
-          "description": "Node selector terms."
-        }
-      },
-      "description": "Node selector. Empty object is allowed to clear inherited defaults."
-    },
-    "kubernetesPreferredSchedulingTerm": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["weight", "preference"],
-      "properties": {
-        "weight": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 100,
-          "description": "Preference weight."
-        },
-        "preference": {
-          "$ref": "#/definitions/kubernetesNodeSelectorTerm"
-        }
-      },
-      "description": "Preferred node selector term."
-    },
-    "kubernetesNodeAffinity": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "required_during_scheduling_ignored_during_execution": {
-          "$ref": "#/definitions/kubernetesNodeSelector"
-        },
-        "preferred_during_scheduling_ignored_during_execution": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/kubernetesPreferredSchedulingTerm"
-          },
-          "description": "Preferred node selector terms."
-        }
-      },
-      "description": "Node affinity rules."
-    },
-    "kubernetesLabelSelectorRequirement": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["key", "operator"],
-      "properties": {
-        "key": {
-          "type": "string",
-          "description": "Label key."
-        },
-        "operator": {
-          "type": "string",
-          "enum": ["In", "NotIn", "Exists", "DoesNotExist"],
-          "description": "Label selector operator."
-        },
-        "values": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Operator values."
-        }
-      },
-      "oneOf": [
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["key", "operator", "values"],
-          "properties": {
-            "key": { "type": "string" },
-            "operator": { "const": "In" },
-            "values": {
-              "type": "array",
-              "items": { "type": "string" },
-              "minItems": 1
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["key", "operator", "values"],
-          "properties": {
-            "key": { "type": "string" },
-            "operator": { "const": "NotIn" },
-            "values": {
-              "type": "array",
-              "items": { "type": "string" },
-              "minItems": 1
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["key", "operator"],
-          "properties": {
-            "key": { "type": "string" },
-            "operator": { "const": "Exists" },
-            "values": {
-              "type": "array",
-              "items": { "type": "string" },
-              "maxItems": 0
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["key", "operator"],
-          "properties": {
-            "key": { "type": "string" },
-            "operator": { "const": "DoesNotExist" },
-            "values": {
-              "type": "array",
-              "items": { "type": "string" },
-              "maxItems": 0
-            }
-          }
-        }
-      ],
-      "description": "Label selector requirement."
-    },
-    "kubernetesLabelSelector": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "match_labels": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "description": "Exact label matches."
-        },
-        "match_expressions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/kubernetesLabelSelectorRequirement"
-          },
-          "description": "Label selector requirements."
-        }
-      },
-      "description": "Typed label selector."
-    },
-    "kubernetesPodAffinityTerm": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["topology_key"],
-      "properties": {
-        "label_selector": {
-          "$ref": "#/definitions/kubernetesLabelSelector"
-        },
-        "namespaces": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Namespaces to match."
-        },
-        "namespace_selector": {
-          "$ref": "#/definitions/kubernetesLabelSelector"
-        },
-        "topology_key": {
-          "type": "string",
-          "description": "Topology key used for pod affinity."
-        }
-      },
-      "description": "Pod affinity or anti-affinity term."
-    },
-    "kubernetesWeightedPodAffinityTerm": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["weight", "pod_affinity_term"],
-      "properties": {
-        "weight": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 100,
-          "description": "Preference weight."
-        },
-        "pod_affinity_term": {
-          "$ref": "#/definitions/kubernetesPodAffinityTerm"
-        }
-      },
-      "description": "Weighted pod affinity term."
-    },
-    "kubernetesPodAffinity": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "required_during_scheduling_ignored_during_execution": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/kubernetesPodAffinityTerm"
-          },
-          "description": "Required pod affinity terms."
-        },
-        "preferred_during_scheduling_ignored_during_execution": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/kubernetesWeightedPodAffinityTerm"
-          },
-          "description": "Preferred pod affinity terms."
-        }
-      },
-      "description": "Pod affinity or anti-affinity rules."
-    },
-    "kubernetesAffinity": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "node_affinity": {
-          "$ref": "#/definitions/kubernetesNodeAffinity"
-        },
-        "pod_affinity": {
-          "$ref": "#/definitions/kubernetesPodAffinity"
-        },
-        "pod_anti_affinity": {
-          "$ref": "#/definitions/kubernetesPodAffinity"
-        }
-      },
-      "description": "Node and pod affinity rules."
-    },
-    "kubernetesPodFailurePolicyOnExitCodes": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["operator", "values"],
-      "properties": {
-        "container_name": {
-          "type": "string",
-          "description": "Optional container name filter."
-        },
-        "operator": {
-          "type": "string",
-          "enum": ["In", "NotIn"],
-          "description": "Exit-code matching operator."
-        },
-        "values": {
-          "type": "array",
-          "items": {
-            "type": "integer"
-          },
-          "minItems": 1,
-          "maxItems": 255,
-          "uniqueItems": true,
-          "description": "Exit codes to compare against."
-        }
-      },
-      "description": "Exit-code-based pod failure rule."
-    },
-    "kubernetesPodFailurePolicyOnPodCondition": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["type"],
-      "properties": {
-        "type": {
-          "type": "string",
-          "description": "Pod condition type."
-        },
-        "status": {
-          "type": "string",
-          "enum": ["True", "False", "Unknown"],
-          "description": "Pod condition status. Defaults to True when omitted."
-        }
-      },
-      "description": "Pod-condition-based failure pattern."
-    },
-    "kubernetesPodFailurePolicyRule": {
-      "oneOf": [
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["action", "on_exit_codes"],
-          "properties": {
-            "action": {
-              "type": "string",
-              "enum": ["FailJob", "Ignore", "Count"],
-              "description": "Action when the rule matches."
-            },
-            "on_exit_codes": {
-              "$ref": "#/definitions/kubernetesPodFailurePolicyOnExitCodes"
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["action", "on_pod_conditions"],
-          "properties": {
-            "action": {
-              "type": "string",
-              "enum": ["FailJob", "Ignore", "Count"],
-              "description": "Action when the rule matches."
-            },
-            "on_pod_conditions": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/kubernetesPodFailurePolicyOnPodCondition"
-              },
-              "minItems": 1,
-              "maxItems": 20,
-              "description": "Pod conditions to match."
-            }
-          }
-        }
-      ],
-      "description": "A single pod failure policy rule."
-    },
-    "kubernetesPodFailurePolicy": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "rules": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/kubernetesPodFailurePolicyRule"
-          },
-          "maxItems": 20,
-          "description": "Pod failure policy rules. Empty array is allowed to clear inherited defaults."
-        }
-      },
-      "description": "Kubernetes Job pod failure policy."
-    },
-    "kubernetesEmptyDirVolume": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "medium": {
-          "type": "string",
-          "description": "Storage medium for emptyDir, such as Memory."
-        },
-        "size_limit": {
-          "type": "string",
-          "description": "Optional size limit using Kubernetes quantity syntax."
-        }
-      },
-      "description": "emptyDir volume source."
-    },
-    "kubernetesHostPathVolume": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["path"],
-      "properties": {
-        "path": {
-          "type": "string",
-          "description": "Host filesystem path to mount."
-        },
-        "type": {
-          "type": "string",
-          "description": "Optional Kubernetes HostPath type."
-        }
-      },
-      "description": "hostPath volume source."
-    },
-    "kubernetesConfigMapVolume": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["name"],
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "ConfigMap name to mount."
-        }
-      },
-      "description": "configMap volume source."
-    },
-    "kubernetesSecretVolume": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["secret_name"],
-      "properties": {
-        "secret_name": {
-          "type": "string",
-          "description": "Secret name to mount."
-        }
-      },
-      "description": "secret volume source."
-    },
-    "kubernetesPersistentVolumeClaimVolume": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["claim_name"],
-      "properties": {
-        "claim_name": {
-          "type": "string",
-          "description": "PersistentVolumeClaim name to mount."
-        },
-        "read_only": {
-          "type": "boolean",
-          "description": "Mount the PersistentVolumeClaim read-only."
-        }
-      },
-      "description": "persistentVolumeClaim volume source."
-    },
-    "kubernetesVolume": {
-      "oneOf": [
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["name", "empty_dir"],
-          "properties": {
-            "name": {
-              "type": "string",
-              "description": "Volume name."
-            },
-            "empty_dir": {
-              "$ref": "#/definitions/kubernetesEmptyDirVolume"
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["name", "host_path"],
-          "properties": {
-            "name": {
-              "type": "string",
-              "description": "Volume name."
-            },
-            "host_path": {
-              "$ref": "#/definitions/kubernetesHostPathVolume"
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["name", "config_map"],
-          "properties": {
-            "name": {
-              "type": "string",
-              "description": "Volume name."
-            },
-            "config_map": {
-              "$ref": "#/definitions/kubernetesConfigMapVolume"
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["name", "secret"],
-          "properties": {
-            "name": {
-              "type": "string",
-              "description": "Volume name."
-            },
-            "secret": {
-              "$ref": "#/definitions/kubernetesSecretVolume"
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["name", "persistent_volume_claim"],
-          "properties": {
-            "name": {
-              "type": "string",
-              "description": "Volume name."
-            },
-            "persistent_volume_claim": {
-              "$ref": "#/definitions/kubernetesPersistentVolumeClaimVolume"
-            }
-          }
-        }
-      ],
-      "description": "Volume definition. Exactly one volume source must be specified."
-    },
-    "kubernetesVolumeMount": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["name", "mount_path"],
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Name of the referenced volume."
-        },
-        "mount_path": {
-          "type": "string",
-          "description": "Mount path inside the container."
-        },
-        "sub_path": {
-          "type": "string",
-          "description": "Optional sub-path within the volume."
-        },
-        "read_only": {
-          "type": "boolean",
-          "description": "Mount the volume read-only."
-        }
-      },
-      "description": "Volume mount for the Job container."
-    },
-    "kubernetesCommonConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "image": {
-          "type": "string",
-          "description": "Container image to run. Optional in raw step YAML because DAG or base kubernetes defaults may provide it, but required in the effective step config used at runtime."
-        },
-        "namespace": {
-          "type": "string",
-          "default": "default",
-          "description": "Kubernetes namespace for the Job. Default: default."
-        },
-        "kubeconfig": {
-          "type": "string",
-          "description": "Explicit path to a kubeconfig file."
-        },
-        "context": {
-          "type": "string",
-          "description": "Kubeconfig context name."
-        },
-        "service_account": {
-          "type": "string",
-          "description": "Service account name for the Pod."
-        },
-        "working_dir": {
-          "type": "string",
-          "description": "Working directory inside the container."
-        },
-        "image_pull_policy": {
-          "type": "string",
-          "description": "Image pull policy. Accepted values are Always, IfNotPresent, or Never (case-insensitive)."
-        },
-        "image_pull_secrets": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Names of image pull secrets for private registries."
-        },
-        "env": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/kubernetesEnvVar"
-          },
-          "description": "Environment variables for the Job container."
-        },
-        "env_from": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/kubernetesEnvFromSource"
-          },
-          "description": "Bulk environment variable imports from Secrets or ConfigMaps."
-        },
-        "resources": {
-          "$ref": "#/definitions/kubernetesResourceRequirements",
-          "description": "CPU and memory requests and limits."
-        },
-        "node_selector": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "description": "Node selector labels for Pod scheduling."
-        },
-        "tolerations": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/kubernetesToleration"
-          },
-          "description": "Pod tolerations."
-        },
-        "security_context": {
-          "$ref": "#/definitions/kubernetesSecurityContext",
-          "description": "Container-level Linux security settings."
-        },
-        "pod_security_context": {
-          "$ref": "#/definitions/kubernetesPodSecurityContext",
-          "description": "Pod-level Linux security defaults."
-        },
-        "affinity": {
-          "$ref": "#/definitions/kubernetesAffinity",
-          "description": "Node and pod affinity rules."
-        },
-        "termination_grace_period_seconds": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Grace period in seconds before the Pod is forcefully terminated."
-        },
-        "priority_class_name": {
-          "type": "string",
-          "description": "Kubernetes priority class name."
-        },
-        "labels": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "description": "Labels applied to both the Job and Pod."
-        },
-        "annotations": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "description": "Annotations applied to both the Job and Pod."
-        },
-        "volumes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/kubernetesVolume"
-          },
-          "description": "Volumes available to the Pod."
-        },
-        "volume_mounts": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/kubernetesVolumeMount"
-          },
-          "description": "Volume mounts for the Job container."
-        },
-        "active_deadline": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Kubernetes Job active deadline in seconds."
-        },
-        "backoff_limit": {
-          "type": "integer",
-          "minimum": 0,
-          "default": 0,
-          "description": "Kubernetes Job retry limit. Default: 0."
-        },
-        "ttl_after_finished": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Kubernetes TTL-after-finished in seconds."
-        },
-        "cleanup_policy": {
-          "type": "string",
-          "default": "delete",
-          "description": "Cleanup policy after execution. Accepted values are delete or keep (case-insensitive)."
-        },
-        "pod_failure_policy": {
-          "$ref": "#/definitions/kubernetesPodFailurePolicy",
-          "description": "Kubernetes-native Job pod failure policy."
-        }
-      },
-      "description": "Common Kubernetes configuration shared by DAG-level defaults and step-level Kubernetes executor config."
-    },
-    "kubernetesDefaultsConfig": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/kubernetesCommonConfig"
-        }
-      ],
-      "description": "Default Kubernetes configuration for explicit Kubernetes steps. Same fields as step-level config, but image is optional."
-    },
-    "kubernetesExecutorConfig": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/kubernetesCommonConfig"
-        }
-      ],
-      "description": "Kubernetes executor configuration for running a workflow step as a Kubernetes Job."
-    },
     "llmProvider": {
       "type": "string",
       "enum": [
@@ -4417,20 +2349,39 @@
         },
         "model": {
           "oneOf": [
-            { "type": "string" },
+            {
+              "type": "string"
+            },
             {
               "type": "array",
               "items": {
                 "type": "object",
-                "required": ["provider", "name"],
+                "required": [
+                  "provider",
+                  "name"
+                ],
                 "properties": {
-                  "provider": { "$ref": "#/definitions/llmProvider" },
-                  "name": { "type": "string" },
-                  "temperature": { "type": "number" },
-                  "max_tokens": { "type": "integer" },
-                  "top_p": { "type": "number" },
-                  "base_url": { "type": "string" },
-                  "api_key_name": { "type": "string" }
+                  "provider": {
+                    "$ref": "#/definitions/llmProvider"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "temperature": {
+                    "type": "number"
+                  },
+                  "max_tokens": {
+                    "type": "integer"
+                  },
+                  "top_p": {
+                    "type": "number"
+                  },
+                  "base_url": {
+                    "type": "string"
+                  },
+                  "api_key_name": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -4498,22 +2449,38 @@
         },
         "allowed_domains": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "Restrict search results to these domains (Anthropic only)."
         },
         "blocked_domains": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "Exclude search results from these domains (Anthropic only)."
         },
         "user_location": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "city": { "type": "string", "description": "City name for search localization." },
-            "region": { "type": "string", "description": "Region or state." },
-            "country": { "type": "string", "description": "ISO country code (e.g., 'US')." },
-            "timezone": { "type": "string", "description": "IANA timezone (e.g., 'America/New_York')." }
+            "city": {
+              "type": "string",
+              "description": "City name for search localization."
+            },
+            "region": {
+              "type": "string",
+              "description": "Region or state."
+            },
+            "country": {
+              "type": "string",
+              "description": "ISO country code (e.g., 'US')."
+            },
+            "timezone": {
+              "type": "string",
+              "description": "IANA timezone (e.g., 'America/New_York')."
+            }
           },
           "description": "Approximate location for search result localization."
         }
@@ -4531,7 +2498,12 @@
         },
         "effort": {
           "type": "string",
-          "enum": ["low", "medium", "high", "xhigh"],
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "xhigh"
+          ],
           "description": "Reasoning effort level. Maps to provider-specific settings: low (minimal reasoning), medium (default), high (thorough), xhigh (maximum, OpenAI GPT-5.2+ only)."
         },
         "budget_tokens": {
@@ -4550,11 +2522,18 @@
     "llmMessage": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["role", "content"],
+      "required": [
+        "role",
+        "content"
+      ],
       "properties": {
         "role": {
           "type": "string",
-          "enum": ["system", "user", "assistant"],
+          "enum": [
+            "system",
+            "user",
+            "assistant"
+          ],
           "description": "Message role. 'system' for instructions, 'user' for prompts, 'assistant' for model responses."
         },
         "content": {
@@ -4627,7 +2606,16 @@
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["bash", "read", "patch", "think", "read_schema", "output", "use_skill", "search_skills"]
+            "enum": [
+              "bash",
+              "read",
+              "patch",
+              "think",
+              "read_schema",
+              "output",
+              "use_skill",
+              "search_skills"
+            ]
           },
           "description": "List of tools to enable. When omitted, all tools are available."
         },
@@ -4643,12 +2631,18 @@
       "properties": {
         "default_behavior": {
           "type": "string",
-          "enum": ["allow", "deny"],
+          "enum": [
+            "allow",
+            "deny"
+          ],
           "description": "Default action when no rule matches."
         },
         "deny_behavior": {
           "type": "string",
-          "enum": ["block", "ask_user"],
+          "enum": [
+            "block",
+            "ask_user"
+          ],
           "description": "What happens when a command is denied: 'block' rejects it, 'ask_user' asks for approval."
         },
         "rules": {
@@ -4664,7 +2658,10 @@
     "agentBashRule": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["pattern", "action"],
+      "required": [
+        "pattern",
+        "action"
+      ],
       "properties": {
         "name": {
           "type": "string",
@@ -4676,7 +2673,10 @@
         },
         "action": {
           "type": "string",
-          "enum": ["allow", "deny"],
+          "enum": [
+            "allow",
+            "deny"
+          ],
           "description": "Action to take when the pattern matches."
         }
       },
@@ -4687,30 +2687,15 @@
       "enum": [
         "command",
         "shell",
-        "docker",
-        "container",
-        "kubernetes",
-        "k8s",
-        "http",
-        "mail",
         "ssh",
-        "s3",
-        "jq",
-        "gha",
-        "github_action",
-        "github-action",
         "dag",
         "subworkflow",
         "parallel",
-        "archive",
         "chat",
-        "postgres",
-        "sqlite",
-        "redis",
         "router",
         "agent"
       ],
-      "description": "Type of executor to use for this step, including aliases such as k8s / kubernetes and gha / github_action / github-action."
+      "description": "Type of executor to use for this step."
     },
     "executorConfig": {
       "type": "object",
@@ -4719,7 +2704,9 @@
     },
     "executorObject": {
       "type": "object",
-      "required": ["type"],
+      "required": [
+        "type"
+      ],
       "properties": {
         "type": {
           "$ref": "#/definitions/executorType"
@@ -4730,111 +2717,32 @@
       },
       "allOf": [
         {
-          "if": { "properties": { "type": { "const": "http" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/httpExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "ssh" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/sshExecutorConfig" }
-            }
-          }
-        },
-        {
           "if": {
-            "properties": { "type": { "enum": ["docker", "container"] } }
+            "properties": {
+              "type": {
+                "const": "ssh"
+              }
+            }
           },
           "then": {
             "properties": {
-              "config": { "$ref": "#/definitions/dockerExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "mail" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/mailExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "jq" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/jqExecutorConfig" }
+              "config": {
+                "$ref": "#/definitions/sshExecutorConfig"
+              }
             }
           }
         },
         {
           "if": {
             "properties": {
-              "type": { "enum": ["gha", "github_action", "github-action"] }
+              "type": {
+                "enum": [
+                  "command",
+                  "shell"
+                ]
+              }
             }
           },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/ghaExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "archive" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/archiveExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "postgres" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/postgresExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "sqlite" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/sqliteExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "redis" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/redisExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": {
-            "properties": { "type": { "enum": ["kubernetes", "k8s"] } }
-          },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/kubernetesExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "s3" } } },
-          "then": {
-            "properties": {
-              "config": { "$ref": "#/definitions/s3ExecutorConfig" }
-            }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "enum": ["command", "shell"] } } },
           "then": {
             "properties": {
               "config": {
@@ -4847,7 +2755,14 @@
         },
         {
           "if": {
-            "properties": { "type": { "enum": ["dag", "subworkflow"] } }
+            "properties": {
+              "type": {
+                "enum": [
+                  "dag",
+                  "subworkflow"
+                ]
+              }
+            }
           },
           "then": {
             "properties": {
@@ -4860,7 +2775,13 @@
           }
         },
         {
-          "if": { "properties": { "type": { "const": "parallel" } } },
+          "if": {
+            "properties": {
+              "type": {
+                "const": "parallel"
+              }
+            }
+          },
           "then": {
             "properties": {
               "config": {

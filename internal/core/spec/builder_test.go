@@ -547,46 +547,6 @@ steps:
 		assert.Equal(t, "npm", th.Steps[0].Commands[2].Command)
 		assert.Equal(t, []string{"test"}, th.Steps[0].Commands[2].Args)
 	})
-	t.Run("HTTPExecutor", func(t *testing.T) {
-		t.Parallel()
-
-		data := []byte(`
-steps:
-  - command: GET http://example.com
-    name: step1
-    type: http
-`)
-		dag, err := spec.LoadYAML(context.Background(), data)
-		require.NoError(t, err)
-		th := DAG{t: t, DAG: dag}
-		assert.Len(t, th.Steps, 1)
-		assert.Equal(t, "http", th.Steps[0].ExecutorConfig.Type)
-	})
-	t.Run("HTTPExecutorWithConfig", func(t *testing.T) {
-		t.Parallel()
-
-		data := []byte(`
-steps:
-  - command: http://example.com
-    name: step1
-    type: http
-    config:
-      key: value
-      map:
-        foo: bar
-`)
-		dag, err := spec.LoadYAML(context.Background(), data)
-		require.NoError(t, err)
-		th := DAG{t: t, DAG: dag}
-		assert.Len(t, th.Steps, 1)
-		assert.Equal(t, "http", th.Steps[0].ExecutorConfig.Type)
-		assert.Equal(t, map[string]any{
-			"key": "value",
-			"map": map[string]any{
-				"foo": "bar",
-			},
-		}, th.Steps[0].ExecutorConfig.Config)
-	})
 	t.Run("DAGExecutor", func(t *testing.T) {
 		t.Parallel()
 
@@ -1662,9 +1622,6 @@ steps:
   - echo "command"
   - script: |
       echo "script content"
-  - type: http
-    config:
-      url: https://example.com
   - call: sub-dag
   - type: ssh
     config:
@@ -1674,12 +1631,11 @@ steps:
 		require.NoError(t, err)
 		th := DAG{t: t, DAG: dag}
 
-		require.Len(t, th.Steps, 5)
+		require.Len(t, th.Steps, 4)
 		assert.Equal(t, "cmd_1", th.Steps[0].Name)
 		assert.Equal(t, "script_2", th.Steps[1].Name)
-		assert.Equal(t, "http_3", th.Steps[2].Name)
-		assert.Equal(t, "dag_4", th.Steps[3].Name)
-		assert.Equal(t, "ssh_5", th.Steps[4].Name)
+		assert.Equal(t, "dag_3", th.Steps[2].Name)
+		assert.Equal(t, "ssh_4", th.Steps[3].Name)
 	})
 
 	t.Run("BackwardCompatibility", func(t *testing.T) {

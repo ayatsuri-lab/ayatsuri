@@ -99,12 +99,12 @@ type step struct {
 	// Config contains executor-specific configuration.
 	Config map[string]any `yaml:"config,omitempty"`
 
-	// LLM contains the configuration for LLM-based executors (chat, agent, etc.).
-	// Requires explicit type: chat (or future type: agent).
+	// LLM contains the configuration for LLM-based executors (agent, etc.).
+	// Requires explicit type: agent.
 	LLM *llmConfig `yaml:"llm,omitempty"`
 
-	// Messages contains the session messages for chat steps.
-	// Only valid when type is "chat".
+	// Messages contains the session messages for LLM-based steps.
+	// Only valid when type is "agent".
 	Messages []llmMessage `yaml:"messages,omitempty"`
 
 	// Agent contains the configuration for agent-type steps.
@@ -1162,7 +1162,7 @@ func validateLLM(result *core.Step) error {
 		return core.NewValidationError(
 			"llm",
 			result.LLM,
-			fmt.Errorf("executor type %q does not support llm field; use type: chat with llm: config", result.ExecutorConfig.Type),
+			fmt.Errorf("executor type %q does not support llm field; use type: agent with llm: config", result.ExecutorConfig.Type),
 		)
 	}
 
@@ -1207,7 +1207,7 @@ func validateMessages(result *core.Step) error {
 		return core.NewValidationError(
 			"messages",
 			result.Messages,
-			fmt.Errorf("executor type %q does not support messages field; use type: chat or type: agent", result.ExecutorConfig.Type),
+			fmt.Errorf("executor type %q does not support messages field; use type: agent", result.ExecutorConfig.Type),
 		)
 	}
 	return nil
@@ -1338,7 +1338,7 @@ func buildStepContainer(ctx StepBuildContext, s *step, result *core.Step) error 
 
 // buildStepLLM parses the LLM configuration in the step definition.
 // Note: This only populates result.LLM. The executor type must be set explicitly
-// via type: chat in YAML (no auto-detection).
+// via type: agent in YAML (no auto-detection).
 // If step has no llm: config but DAG has one, the DAG config is inherited.
 // If step has llm: config, it completely overrides DAG-level (full override pattern).
 func buildStepLLM(ctx StepBuildContext, s *step, result *core.Step) error {

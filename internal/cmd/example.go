@@ -170,21 +170,26 @@ steps:
 	},
 	{
 		ID:          7,
-		Name:        "http-requests",
-		Description: "Make HTTP requests and use responses",
+		Name:        "template-rendering",
+		Description: "Render text using Go templates",
 		Content: `type: graph
 defaults:
   retry_policy:
     limit: 2
     interval_sec: 5
 steps:
-  - name: get-todo
-    type: http
-    command: "GET https://jsonplaceholder.typicode.com/todos/1"
-    output: TODO
+  - name: render
+    type: template
+    config:
+      data:
+        name: Ayatsuri
+        version: "1.0"
+    script: |
+      Hello from {{ .name }} v{{ .version }}!
+    output: RENDERED
   - name: show-result
-    command: echo "Received - ${TODO}"
-    depends: [get-todo]
+    command: echo "Result - ${RENDERED}"
+    depends: [render]
 `,
 	},
 	{

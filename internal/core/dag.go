@@ -215,7 +215,7 @@ type DAG struct {
 	// Excluded from JSON: may contain password.
 	SSH *SSHConfig `json:"-"`
 	// LLM contains the default LLM configuration for the DAG.
-	// Steps with type: chat inherit this configuration if they don't specify their own llm field.
+	// Steps with type: agent inherit this configuration if they don't specify their own llm field.
 	LLM *LLMConfig `json:"llm,omitempty"`
 	// Secrets contains references to external secrets to be resolved at runtime.
 	Secrets []SecretRef `json:"secrets,omitempty"`

@@ -210,20 +210,21 @@ steps:
     command: npm run build
 ```
 
-### Kubernetes Pod execution
+### Template rendering
 
 ```yaml
 steps:
-  - name: batch-job
-    type: kubernetes
+  - name: render-config
+    type: template
     config:
-      namespace: production
-      image: my-registry/batch-processor:latest
-      resources:
-        requests:
-          cpu: "2"
-          memory: "4Gi"
-    command: ./process.sh
+      data:
+        app: my-service
+        replicas: 3
+    script: |
+      server:
+        name: {{ .app }}
+        instances: {{ .replicas }}
+    output: CONFIG
 ```
 
 ### SSH remote execution
