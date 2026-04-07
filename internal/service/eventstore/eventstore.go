@@ -15,10 +15,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/llm"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/llm"
 )
 
 const SchemaVersion = 1

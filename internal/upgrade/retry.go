@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/backoff"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/backoff"
 	"github.com/go-resty/resty/v2"
 )
 

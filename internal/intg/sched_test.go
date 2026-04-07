@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/core/spec"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/stretchr/testify/require"
 )
 
@@ -21,7 +21,7 @@ import (
 func TestCronScheduleRunsTwice(t *testing.T) {
 	t.Parallel()
 
-	tmpDir, err := os.MkdirTemp("", "dagu-cron-test-*")
+	tmpDir, err := os.MkdirTemp("", "ayatsuri-cron-test-*")
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = os.RemoveAll(tmpDir) })
 

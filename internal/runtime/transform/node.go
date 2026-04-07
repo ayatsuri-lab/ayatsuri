@@ -6,9 +6,9 @@ package transform
 import (
 	"errors"
 
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/runtime"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
 )
 
 // ToNode converts a persistence Node back to a runtime Node

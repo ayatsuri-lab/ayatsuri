@@ -10,9 +10,9 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/dagucloud/dagu/api/v1"
-	"github.com/dagucloud/dagu/internal/gitsync"
-	"github.com/dagucloud/dagu/internal/service/audit"
+	"github.com/ayatsuri-lab/ayatsuri/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/gitsync"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/audit"
 )
 
 // SyncService is the interface for Git sync operations.

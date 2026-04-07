@@ -6,8 +6,8 @@ package api
 import (
 	"testing"
 
-	"github.com/dagucloud/dagu/api/v1"
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 	"github.com/stretchr/testify/assert"
 )
 

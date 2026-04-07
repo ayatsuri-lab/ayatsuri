@@ -15,12 +15,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/persis/filedag/grep"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedag/grep"
 	"github.com/goccy/go-yaml"
 )
 

@@ -16,10 +16,10 @@ import (
 	"time"
 
 	"github.com/coder/websocket"
-	api "github.com/dagucloud/dagu/api/v1"
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	terminalpkg "github.com/dagucloud/dagu/internal/service/frontend/terminal"
-	"github.com/dagucloud/dagu/internal/test"
+	api "github.com/ayatsuri-lab/ayatsuri/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	terminalpkg "github.com/ayatsuri-lab/ayatsuri/internal/service/frontend/terminal"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

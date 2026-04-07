@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 )
 
 // instanceInfo represents the information stored for each service instance

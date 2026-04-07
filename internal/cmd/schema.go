@@ -6,7 +6,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/dagucloud/dagu/internal/agent/schema"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent/schema"
 	"github.com/spf13/cobra"
 )
 
@@ -22,11 +22,11 @@ Available schemas: dag, config
 
 Call without a path to see all root-level fields. Use a dot-separated
 path to drill into nested sections.`,
-		Example: `  dagu schema dag                  Show all DAG root-level fields
-  dagu schema dag steps            Show step properties
-  dagu schema dag steps.container  Show container configuration
-  dagu schema config               Show all config root-level fields
-  dagu schema config server        Show server configuration`,
+		Example: `  ayatsuri schema dag                  Show all DAG root-level fields
+  ayatsuri schema dag steps            Show step properties
+  ayatsuri schema dag steps.container  Show container configuration
+  ayatsuri schema config               Show all config root-level fields
+  ayatsuri schema config server        Show server configuration`,
 		ValidArgs: []string{"dag", "config"},
 		Args:      cobra.RangeArgs(1, 2),
 		RunE:      runSchema,

@@ -17,15 +17,15 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/core/spec"
-	"github.com/dagucloud/dagu/internal/persis/filedag/dagindex"
-	"github.com/dagucloud/dagu/internal/persis/filedag/grep"
-	indexv1 "github.com/dagucloud/dagu/proto/index/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedag/dagindex"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedag/grep"
+	indexv1 "github.com/ayatsuri-lab/ayatsuri/proto/index/v1"
 )
 
 var _ exec.DAGStore = (*Storage)(nil)

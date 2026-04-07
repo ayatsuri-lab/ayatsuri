@@ -8,9 +8,9 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/dagucloud/dagu/api/v1"
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
 )
 
 var (

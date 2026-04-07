@@ -15,9 +15,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 	"github.com/goccy/go-yaml"
 )
 

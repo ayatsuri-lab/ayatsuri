@@ -46,7 +46,7 @@ func GetShellCommand(configuredShell string) string {
 	}
 
 	// Check for global default shell via environment variable
-	if defaultShell := os.Getenv("DAGU_DEFAULT_SHELL"); defaultShell != "" {
+	if defaultShell := os.Getenv("AYATSURI_DEFAULT_SHELL"); defaultShell != "" {
 		return defaultShell
 	}
 

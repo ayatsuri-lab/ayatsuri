@@ -18,11 +18,11 @@ import (
 )
 
 // TestRemoteSessionDetail_JSONDeserialization verifies that the remote session
-// detail struct correctly deserializes the camelCase JSON returned by the Dagu API.
+// detail struct correctly deserializes the camelCase JSON returned by the Ayatsuri API.
 func TestRemoteSessionDetail_JSONDeserialization(t *testing.T) {
 	t.Parallel()
 
-	// This JSON matches the actual Dagu REST API response format (camelCase).
+	// This JSON matches the actual Ayatsuri REST API response format (camelCase).
 	rawJSON := `{
 		"session": {"id": "sess-123"},
 		"sessionState": {

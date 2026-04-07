@@ -12,15 +12,15 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
 )
 
-const defaultCloudURL = "https://console.dagu.sh"
+const defaultCloudURL = "https://console.ayatsuri.sh"
 
 // maxResponseSize is the maximum number of bytes read from a Cloud API response (1 MB).
 const maxResponseSize = 1 << 20
 
-// CloudClient communicates with the Dagu Cloud API for license operations.
+// CloudClient communicates with the Ayatsuri Cloud API for license operations.
 type CloudClient struct {
 	baseURL string
 	client  *http.Client
@@ -106,7 +106,7 @@ func (c *CloudClient) doJSON(ctx context.Context, method, path string, reqBody, 
 		return fmt.Errorf("failed to create request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "dagu-oss/"+config.Version)
+	req.Header.Set("User-Agent", "ayatsuri-oss/"+config.Version)
 
 	resp, err := c.client.Do(req)
 	if err != nil {

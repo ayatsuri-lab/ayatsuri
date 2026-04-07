@@ -16,10 +16,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/eval"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/eval"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
 	"github.com/joho/godotenv"
 	"github.com/robfig/cron/v3"
 )
@@ -143,7 +143,7 @@ type DAG struct {
 	Params []string `json:"-"`
 	// ParamsJSON contains the JSON representation of the resolved parameters.
 	// When params were supplied as JSON, the original payload is preserved.
-	// Steps can consume this via the DAGU_PARAMS_JSON environment variable.
+	// Steps can consume this via the AYATSURI_PARAMS_JSON environment variable.
 	// Note: This field is evaluated at build time and may contain secrets.
 	// It is excluded from JSON serialization to prevent secret leakage.
 	ParamsJSON string `json:"-"`
@@ -866,7 +866,7 @@ func SockAddr(name, dagRunID string) string {
 	const (
 		hashLength          = 6
 		maxSocketNameLength = 50
-		prefix              = "@dagu_"
+		prefix              = "@ayatsuri_"
 		suffix              = ".sock"
 	)
 

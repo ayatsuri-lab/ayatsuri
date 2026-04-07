@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/persis/fileagentskill"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileagentskill"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -108,8 +108,8 @@ func TestDetectAITargetsIncludesBothCodexDirectories(t *testing.T) {
 	}
 
 	assert.ElementsMatch(t, []string{
-		filepath.Join(homeDir, ".agents", "skills", "dagu", "SKILL.md"),
-		filepath.Join(homeDir, ".codex", "skills", "dagu", "SKILL.md"),
+		filepath.Join(homeDir, ".agents", "skills", "ayatsuri", "SKILL.md"),
+		filepath.Join(homeDir, ".codex", "skills", "ayatsuri", "SKILL.md"),
 	}, codexTargets)
 }
 
@@ -132,8 +132,8 @@ func TestRunAIInstallInstallsBothCodexDirectories(t *testing.T) {
 	require.NoError(t, runAIInstall(cmd, nil))
 
 	for _, target := range []string{
-		filepath.Join(homeDir, ".agents", "skills", "dagu", "SKILL.md"),
-		filepath.Join(homeDir, ".codex", "skills", "dagu", "SKILL.md"),
+		filepath.Join(homeDir, ".agents", "skills", "ayatsuri", "SKILL.md"),
+		filepath.Join(homeDir, ".codex", "skills", "ayatsuri", "SKILL.md"),
 	} {
 		_, err := os.Stat(target)
 		assert.NoError(t, err, "expected skill to be installed at %s", target)
@@ -158,7 +158,7 @@ func TestRunAIInstallInstallsIntoCustomSkillsDir(t *testing.T) {
 
 	require.NoError(t, runAIInstall(cmd, nil))
 
-	_, err := os.Stat(filepath.Join(customSkillsDir, "dagu", "SKILL.md"))
+	_, err := os.Stat(filepath.Join(customSkillsDir, "ayatsuri", "SKILL.md"))
 	assert.NoError(t, err)
 }
 
@@ -181,10 +181,10 @@ func TestRunAIInstallCustomSkillsDirReplacesDetection(t *testing.T) {
 
 	require.NoError(t, runAIInstall(cmd, nil))
 
-	_, customErr := os.Stat(filepath.Join(customSkillsDir, "dagu", "SKILL.md"))
+	_, customErr := os.Stat(filepath.Join(customSkillsDir, "ayatsuri", "SKILL.md"))
 	assert.NoError(t, customErr)
 
-	_, autoErr := os.Stat(filepath.Join(homeDir, ".agents", "skills", "dagu", "SKILL.md"))
+	_, autoErr := os.Stat(filepath.Join(homeDir, ".agents", "skills", "ayatsuri", "SKILL.md"))
 	assert.ErrorIs(t, autoErr, os.ErrNotExist)
 }
 
@@ -194,7 +194,7 @@ func TestRunAIInstallDeduplicatesCustomSkillsDirs(t *testing.T) {
 	t.Setenv("XDG_CONFIG_HOME", "")
 
 	customSkillsDir := filepath.Join(t.TempDir(), "skills")
-	target := filepath.Join(customSkillsDir, "dagu", "SKILL.md")
+	target := filepath.Join(customSkillsDir, "ayatsuri", "SKILL.md")
 
 	cmd := aiInstallCmd()
 	require.NoError(t, cmd.Flags().Set(flagSkillsDir, customSkillsDir))
@@ -228,7 +228,7 @@ func TestRunAIInstallRequiresInputWithoutYes(t *testing.T) {
 	require.Error(t, err)
 	assert.ErrorContains(t, err, "rerun with --yes")
 
-	_, statErr := os.Stat(filepath.Join(homeDir, ".agents", "skills", "dagu", "SKILL.md"))
+	_, statErr := os.Stat(filepath.Join(homeDir, ".agents", "skills", "ayatsuri", "SKILL.md"))
 	assert.ErrorIs(t, statErr, os.ErrNotExist)
 }
 
@@ -256,7 +256,7 @@ func TestRunAIInstallPreservesExistingSkillWhenOverwriteDeclined(t *testing.T) {
 	homeDir := t.TempDir()
 	t.Setenv("HOME", homeDir)
 
-	target := filepath.Join(homeDir, ".agents", "skills", "dagu", "SKILL.md")
+	target := filepath.Join(homeDir, ".agents", "skills", "ayatsuri", "SKILL.md")
 	require.NoError(t, os.MkdirAll(filepath.Dir(target), 0o750))
 	require.NoError(t, os.WriteFile(target, []byte("custom skill"), 0o600))
 
@@ -278,7 +278,7 @@ func TestRunAIInstallPreservesExistingCustomSkillWhenOverwriteDeclined(t *testin
 	t.Setenv("XDG_CONFIG_HOME", "")
 
 	customSkillsDir := filepath.Join(t.TempDir(), "skills")
-	target := filepath.Join(customSkillsDir, "dagu", "SKILL.md")
+	target := filepath.Join(customSkillsDir, "ayatsuri", "SKILL.md")
 	require.NoError(t, os.MkdirAll(filepath.Dir(target), 0o750))
 	require.NoError(t, os.WriteFile(target, []byte("custom skill"), 0o600))
 
@@ -303,7 +303,7 @@ func TestRunAIInstallOverwritesExistingSkillWhenConfirmed(t *testing.T) {
 	homeDir := t.TempDir()
 	t.Setenv("HOME", homeDir)
 
-	target := filepath.Join(homeDir, ".agents", "skills", "dagu", "SKILL.md")
+	target := filepath.Join(homeDir, ".agents", "skills", "ayatsuri", "SKILL.md")
 	require.NoError(t, os.MkdirAll(filepath.Dir(target), 0o750))
 	require.NoError(t, os.WriteFile(target, []byte("custom skill"), 0o600))
 
@@ -316,7 +316,7 @@ func TestRunAIInstallOverwritesExistingSkillWhenConfirmed(t *testing.T) {
 
 	data, err := os.ReadFile(target)
 	require.NoError(t, err)
-	assert.Contains(t, string(data), "name: dagu")
+	assert.Contains(t, string(data), "name: ayatsuri")
 }
 
 func TestAIToolDetectionUsesConfiguredCodexHomes(t *testing.T) {
@@ -376,7 +376,7 @@ func TestInstallSkill(t *testing.T) {
 	t.Parallel()
 
 	targetDir := t.TempDir()
-	targetSKILLMD := filepath.Join(targetDir, "dagu", "SKILL.md")
+	targetSKILLMD := filepath.Join(targetDir, "ayatsuri", "SKILL.md")
 
 	skillFS := fileagentskill.SkillFS()
 	err := installSkill(targetSKILLMD, skillFS)
@@ -390,7 +390,7 @@ func TestInstallSkillOverwrites(t *testing.T) {
 	t.Parallel()
 
 	targetDir := t.TempDir()
-	targetSKILLMD := filepath.Join(targetDir, "dagu", "SKILL.md")
+	targetSKILLMD := filepath.Join(targetDir, "ayatsuri", "SKILL.md")
 
 	// Install once
 	skillFS := fileagentskill.SkillFS()
@@ -516,7 +516,7 @@ func TestInstallCopilotRejectsMalformedMarkers(t *testing.T) {
 			skillFS := fileagentskill.SkillFS()
 			err := installCopilot(targetPath, skillFS)
 			require.Error(t, err)
-			assert.ErrorContains(t, err, "malformed DAGU markers")
+			assert.ErrorContains(t, err, "malformed AYATSURI markers")
 		})
 	}
 }
@@ -558,7 +558,7 @@ func TestStripFrontmatter(t *testing.T) {
 func TestTildefy(t *testing.T) {
 	t.Parallel()
 
-	assert.Equal(t, "~/.claude/skills/dagu/SKILL.md", tildefy("/home/user/.claude/skills/dagu/SKILL.md", "/home/user"))
+	assert.Equal(t, "~/.claude/skills/ayatsuri/SKILL.md", tildefy("/home/user/.claude/skills/ayatsuri/SKILL.md", "/home/user"))
 	assert.Equal(t, "/other/path", tildefy("/other/path", "/home/user"))
 }
 
@@ -567,6 +567,6 @@ func TestEmbeddedSkillFS(t *testing.T) {
 
 	skillFS := fileagentskill.SkillFS()
 
-	_, err := skillFS.ReadFile("dagu/SKILL.md")
+	_, err := skillFS.ReadFile("ayatsuri/SKILL.md")
 	require.NoError(t, err)
 }

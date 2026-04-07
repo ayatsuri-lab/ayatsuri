@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 	"github.com/google/uuid"
 	"github.com/robfig/cron/v3"
 	"gopkg.in/yaml.v3"

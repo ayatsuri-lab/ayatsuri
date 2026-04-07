@@ -5,16 +5,16 @@ on:
     branches:
       - main
     paths:
-      - "charts/dagu/Chart.yaml"
-      - "charts/dagu/values.yaml"
-      - "charts/dagu/values.schema.json"
-      - "charts/dagu/.helmignore"
-      - "charts/dagu/README.md"
-      - "charts/dagu/RELEASE.md"
-      - "charts/dagu/LICENSE*"
-      - "charts/dagu/templates/**"
-      - "charts/dagu/charts/**"
-      - "charts/dagu/crds/**"
+      - "charts/ayatsuri/Chart.yaml"
+      - "charts/ayatsuri/values.yaml"
+      - "charts/ayatsuri/values.schema.json"
+      - "charts/ayatsuri/.helmignore"
+      - "charts/ayatsuri/README.md"
+      - "charts/ayatsuri/RELEASE.md"
+      - "charts/ayatsuri/LICENSE*"
+      - "charts/ayatsuri/templates/**"
+      - "charts/ayatsuri/charts/**"
+      - "charts/ayatsuri/crds/**"
 
 concurrency:
   group: chart-release-${{ github.ref }}

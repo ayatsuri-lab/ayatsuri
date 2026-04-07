@@ -73,7 +73,7 @@ export function ResetPasswordModal({ open, user, onClose }: ResetPasswordModalPr
     setIsLoading(true);
 
     try {
-      const token = localStorage.getItem('dagu_auth_token');
+      const token = localStorage.getItem('ayatsuri_auth_token');
       if (!token) {
         throw new Error('Not authenticated');
       }

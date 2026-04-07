@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/cmdutil"
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/cmdutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 	"github.com/go-viper/mapstructure/v2"
 	"github.com/google/jsonschema-go/jsonschema"
 )

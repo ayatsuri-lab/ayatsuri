@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/cmdutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/cmdutil"
 )
 
 const substituteCommandTimeout = 2 * time.Second

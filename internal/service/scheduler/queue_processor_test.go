@@ -13,16 +13,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/persis/filedagrun"
-	"github.com/dagucloud/dagu/internal/persis/filedistributed"
-	"github.com/dagucloud/dagu/internal/persis/fileproc"
-	"github.com/dagucloud/dagu/internal/persis/filequeue"
-	"github.com/dagucloud/dagu/internal/runtime"
-	coordinatorv1 "github.com/dagucloud/dagu/proto/coordinator/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedagrun"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedistributed"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileproc"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filequeue"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
+	coordinatorv1 "github.com/ayatsuri-lab/ayatsuri/proto/coordinator/v1"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -109,7 +109,7 @@ func (f *queueFixture) withProcessor(cfg config.Queues, opts ...QueueProcessorOp
 		WithDispatchTaskStore(f.dispatchStore),
 	}, opts...)
 	f.processor = NewQueueProcessor(f.queueStore, f.dagRunStore, f.procStore,
-		NewDAGExecutor(nil, runtime.NewSubCmdBuilder(&config.Config{Paths: config.PathsConfig{Executable: "/usr/bin/dagu"}}), config.ExecutionModeLocal, ""),
+		NewDAGExecutor(nil, runtime.NewSubCmdBuilder(&config.Config{Paths: config.PathsConfig{Executable: "/usr/bin/ayatsuri"}}), config.ExecutionModeLocal, ""),
 		cfg, options...,
 	)
 	return f

@@ -7,8 +7,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/remotenode"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/remotenode"
 )
 
 type remoteContextResolverAdapter struct {

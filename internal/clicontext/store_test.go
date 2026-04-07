@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/cmn/crypto"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/crypto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -30,7 +30,7 @@ func TestStore_CRUDAndCurrent(t *testing.T) {
 	err = store.Create(context.Background(), &Context{
 		Name:           "prod",
 		ServerURL:      "https://example.com",
-		APIKey:         "dagu_test_123",
+		APIKey:         "ayatsuri_test_123",
 		Description:    "production",
 		SkipTLSVerify:  true,
 		TimeoutSeconds: 15,
@@ -40,7 +40,7 @@ func TestStore_CRUDAndCurrent(t *testing.T) {
 	item, err := store.Get(context.Background(), "prod")
 	require.NoError(t, err)
 	assert.Equal(t, "https://example.com", item.ServerURL)
-	assert.Equal(t, "dagu_test_123", item.APIKey)
+	assert.Equal(t, "ayatsuri_test_123", item.APIKey)
 	assert.True(t, item.SkipTLSVerify)
 
 	items, err := store.List(context.Background())
@@ -77,7 +77,7 @@ func TestStore_ValidateContext(t *testing.T) {
 			name: "missing name",
 			ctx: &Context{
 				ServerURL: "https://example.com",
-				APIKey:    "dagu_test",
+				APIKey:    "ayatsuri_test",
 			},
 			wantErr: "context name is required",
 		},
@@ -86,7 +86,7 @@ func TestStore_ValidateContext(t *testing.T) {
 			ctx: &Context{
 				Name:      LocalContextName,
 				ServerURL: "https://example.com",
-				APIKey:    "dagu_test",
+				APIKey:    "ayatsuri_test",
 			},
 			wantErr: "\"local\"",
 		},
@@ -95,7 +95,7 @@ func TestStore_ValidateContext(t *testing.T) {
 			ctx: &Context{
 				Name:      "current",
 				ServerURL: "https://example.com",
-				APIKey:    "dagu_test",
+				APIKey:    "ayatsuri_test",
 			},
 			wantErr: "\"current\"",
 		},
@@ -104,7 +104,7 @@ func TestStore_ValidateContext(t *testing.T) {
 			ctx: &Context{
 				Name:      "prod",
 				ServerURL: "://bad",
-				APIKey:    "dagu_test",
+				APIKey:    "ayatsuri_test",
 			},
 			wantErr: "invalid server URL",
 		},
@@ -115,14 +115,14 @@ func TestStore_ValidateContext(t *testing.T) {
 				ServerURL: "https://example.com",
 				APIKey:    "token",
 			},
-			wantErr: "api key must use the dagu_ prefix",
+			wantErr: "api key must use the ayatsuri_ prefix",
 		},
 		{
 			name: "path separator",
 			ctx: &Context{
 				Name:      "prod/east",
 				ServerURL: "https://example.com",
-				APIKey:    "dagu_test",
+				APIKey:    "ayatsuri_test",
 			},
 			wantErr: "path separators",
 		},
@@ -149,18 +149,18 @@ func TestStore_CreateNormalizesValues(t *testing.T) {
 	item := &Context{
 		Name:      " prod ",
 		ServerURL: " https://example.com ",
-		APIKey:    " dagu_test ",
+		APIKey:    " ayatsuri_test ",
 	}
 	require.NoError(t, store.Create(context.Background(), item))
 	assert.Equal(t, "prod", item.Name)
 	assert.Equal(t, "https://example.com", item.ServerURL)
-	assert.Equal(t, "dagu_test", item.APIKey)
+	assert.Equal(t, "ayatsuri_test", item.APIKey)
 
 	stored, err := store.Get(context.Background(), "prod")
 	require.NoError(t, err)
 	assert.Equal(t, "prod", stored.Name)
 	assert.Equal(t, "https://example.com", stored.ServerURL)
-	assert.Equal(t, "dagu_test", stored.APIKey)
+	assert.Equal(t, "ayatsuri_test", stored.APIKey)
 }
 
 func TestStore_ListReturnsPartialResultsAndErrorOnCorruptEntry(t *testing.T) {
@@ -176,7 +176,7 @@ func TestStore_ListReturnsPartialResultsAndErrorOnCorruptEntry(t *testing.T) {
 	require.NoError(t, store.Create(context.Background(), &Context{
 		Name:      "prod",
 		ServerURL: "https://example.com",
-		APIKey:    "dagu_test",
+		APIKey:    "ayatsuri_test",
 	}))
 	require.NoError(t, os.WriteFile(filepath.Join(baseDir, "broken.json"), []byte("not-json"), 0o600))
 

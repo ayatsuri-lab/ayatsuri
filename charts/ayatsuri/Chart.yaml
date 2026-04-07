@@ -1,0 +1,5 @@
+apiVersion: v2
+name: ayatsuri
+description: A DAG-based workflow engine
+type: application
+version: 1.0.6

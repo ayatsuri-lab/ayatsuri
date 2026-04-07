@@ -25,37 +25,37 @@ type Metrics struct {
 func NewMetrics(registry *prometheus.Registry) *Metrics {
 	m := &Metrics{
 		messagesSent: prometheus.NewCounterVec(prometheus.CounterOpts{
-			Name: "dagu_sse_messages_sent_total",
+			Name: "ayatsuri_sse_messages_sent_total",
 			Help: "Total number of SSE messages sent by type",
 		}, []string{"type"}),
 		fetchErrors: prometheus.NewCounterVec(prometheus.CounterOpts{
-			Name: "dagu_sse_fetch_errors_total",
+			Name: "ayatsuri_sse_fetch_errors_total",
 			Help: "Total number of SSE fetch errors by topic type",
 		}, []string{"topic_type"}),
 		fetchDuration: prometheus.NewHistogramVec(prometheus.HistogramOpts{
-			Name:    "dagu_sse_fetch_duration_seconds",
+			Name:    "ayatsuri_sse_fetch_duration_seconds",
 			Help:    "Duration of SSE data fetches by topic type",
 			Buckets: []float64{0.01, 0.05, 0.1, 0.25, 0.5, 1, 2, 5},
 		}, []string{"topic_type"}),
 		multiplexSessionsActive: prometheus.NewGauge(prometheus.GaugeOpts{
-			Name: "dagu_sse_multiplex_sessions_active",
+			Name: "ayatsuri_sse_multiplex_sessions_active",
 			Help: "Current number of active multiplexed SSE sessions",
 		}),
 		topicsPerSession: prometheus.NewHistogram(prometheus.HistogramOpts{
-			Name:    "dagu_sse_topics_per_session",
+			Name:    "ayatsuri_sse_topics_per_session",
 			Help:    "Histogram of topics subscribed per multiplexed SSE session",
 			Buckets: []float64{1, 2, 4, 8, 12, 16, 20},
 		}),
 		topicMutations: prometheus.NewCounterVec(prometheus.CounterOpts{
-			Name: "dagu_sse_topic_mutations_total",
+			Name: "ayatsuri_sse_topic_mutations_total",
 			Help: "Total number of multiplexed topic subscribe and unsubscribe operations",
 		}, []string{"operation", "topic_type"}),
 		backpressureDisconnects: prometheus.NewCounter(prometheus.CounterOpts{
-			Name: "dagu_sse_backpressure_disconnects_total",
+			Name: "ayatsuri_sse_backpressure_disconnects_total",
 			Help: "Total number of multiplexed SSE sessions disconnected due to backpressure",
 		}),
 		unknownSessionMutations: prometheus.NewCounter(prometheus.CounterOpts{
-			Name: "dagu_sse_unknown_session_mutations_total",
+			Name: "ayatsuri_sse_unknown_session_mutations_total",
 			Help: "Total number of multiplexed topic mutation requests for unknown or expired sessions",
 		}),
 	}

@@ -313,7 +313,7 @@ export default function SetupPage() {
       <div className="w-full max-w-sm p-6 space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className="text-2xl font-bold">{config.title || 'Dagu'}</h1>
+          <h1 className="text-2xl font-bold">{config.title || 'Ayatsuri'}</h1>
           <p className="text-sm text-muted-foreground">
             {currentStep === 1
               ? 'Create your admin account to get started'

@@ -7,7 +7,7 @@ import (
 	"maps"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 )
 
 const SchedulerStateVersion = 2

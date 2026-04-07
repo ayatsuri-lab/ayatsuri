@@ -12,10 +12,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/service/scheduler"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/scheduler"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/robfig/cron/v3"
 	"github.com/stretchr/testify/require"
 )
@@ -455,7 +455,7 @@ func TestScheduler_SelfFencesOnOwnershipLoss(t *testing.T) {
 	errCh := startSchedulerAsync(t, sc, ctx)
 
 	// Simulate lock theft: remove the lock dir and recreate it with a different token
-	lockDir := filepath.Join(th.Config.Paths.DataDir, "scheduler", "locks", ".dagu_lock")
+	lockDir := filepath.Join(th.Config.Paths.DataDir, "scheduler", "locks", ".ayatsuri_lock")
 	require.NoError(t, os.RemoveAll(lockDir))
 	require.NoError(t, os.MkdirAll(lockDir, 0700))
 	require.NoError(t, os.WriteFile(filepath.Join(lockDir, "owner"), []byte("stolen-token"), 0600))

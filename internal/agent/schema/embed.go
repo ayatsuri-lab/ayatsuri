@@ -4,7 +4,7 @@
 package schema
 
 import (
-	cmnschema "github.com/dagucloud/dagu/internal/cmn/schema"
+	cmnschema "github.com/ayatsuri-lab/ayatsuri/internal/cmn/schema"
 )
 
 func init() {

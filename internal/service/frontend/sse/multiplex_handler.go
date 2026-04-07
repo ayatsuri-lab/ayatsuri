@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/remotenode"
+	"github.com/ayatsuri-lab/ayatsuri/internal/remotenode"
 )
 
 // TopicMutationRequest updates the topic set for a multiplexed SSE session.

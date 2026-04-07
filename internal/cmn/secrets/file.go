@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 )
 
 func init() {

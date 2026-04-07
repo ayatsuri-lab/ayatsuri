@@ -19,13 +19,13 @@ import (
 	"text/template"
 	"time"
 
-	apiv1 "github.com/dagucloud/dagu/api/v1"
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/license"
-	"github.com/dagucloud/dagu/internal/service/frontend/api/pathutil"
-	workspacepkg "github.com/dagucloud/dagu/internal/workspace"
+	apiv1 "github.com/ayatsuri-lab/ayatsuri/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/license"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/frontend/api/pathutil"
+	workspacepkg "github.com/ayatsuri-lab/ayatsuri/internal/workspace"
 )
 
 //go:embed templates/* assets/*

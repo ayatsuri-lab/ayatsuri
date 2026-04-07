@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/dagucloud/dagu/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
 )
 
 //go:embed examples/*.md

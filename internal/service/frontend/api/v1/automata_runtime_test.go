@@ -7,8 +7,8 @@ import (
 	"context"
 	"testing"
 
-	openapi "github.com/dagucloud/dagu/api/v1"
-	"github.com/dagucloud/dagu/internal/core/exec"
+	openapi "github.com/ayatsuri-lab/ayatsuri/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 	"github.com/stretchr/testify/require"
 )
 

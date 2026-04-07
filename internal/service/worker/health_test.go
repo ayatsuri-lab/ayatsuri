@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/service/healthcheck"
-	coordinatorv1 "github.com/dagucloud/dagu/proto/coordinator/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/healthcheck"
+	coordinatorv1 "github.com/ayatsuri-lab/ayatsuri/proto/coordinator/v1"
 	"github.com/stretchr/testify/require"
 )
 

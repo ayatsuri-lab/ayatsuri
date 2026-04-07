@@ -17,11 +17,11 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/dagucloud/dagu/internal/cmn/cmdutil"
-	"github.com/dagucloud/dagu/internal/cmn/eval"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/runtime"
-	"github.com/dagucloud/dagu/internal/runtime/executor"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/cmdutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/eval"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/executor"
 )
 
 var errNoCommandSpecified = fmt.Errorf("no command specified")
@@ -149,7 +149,7 @@ func (e *commandExecutor) annotateStderrTail(tail string) string {
 	errorLines := extractErrorLines(tail, e.scriptFile)
 
 	// Strip temp script path from stderr for clean display.
-	// e.g. "/tmp/dagu_script-123.sh:3: not found" → "line 3: not found"
+	// e.g. "/tmp/ayatsuri_script-123.sh:3: not found" → "line 3: not found"
 	baseName := filepath.Base(e.scriptFile)
 	cleaned := strings.ReplaceAll(tail, e.scriptFile+":", "line ")
 	cleaned = strings.ReplaceAll(cleaned, baseName+":", "line ")
@@ -432,13 +432,13 @@ func init() {
 //
 // Shell classification:
 //   - Unix-like (sh, bash, zsh, ksh, ash, dash) and nix-shell: these expand
-//     ${VAR} natively, so Dagu disables its own env expansion to avoid
+//     ${VAR} natively, so Ayatsuri disables its own env expansion to avoid
 //     double-expanding values.
 //   - fish: intentionally excluded from IsUnixLikeShell (it lacks -e flag
-//     support and uses $VAR but not ${VAR}), so Dagu performs ${VAR} expansion.
+//     support and uses $VAR but not ${VAR}), so Ayatsuri performs ${VAR} expansion.
 //   - Non-Unix (PowerShell, cmd.exe): do not understand ${VAR} syntax at all,
-//     so Dagu must expand variables on their behalf (ExpandEnv stays enabled).
-//   - direct / empty: no shell is involved; Dagu expands OS variables itself.
+//     so Ayatsuri must expand variables on their behalf (ExpandEnv stays enabled).
+//   - direct / empty: no shell is involved; Ayatsuri expands OS variables itself.
 func commandEvalOptions(shell []string) []eval.Option {
 	if len(shell) == 0 || shell[0] == "direct" {
 		return []eval.Option{eval.WithOSExpansion()}

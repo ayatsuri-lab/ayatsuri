@@ -1,5 +1,5 @@
 # PowerShell equivalent of 'make ui'
-# Builds the frontend UI for Dagu on Windows
+# Builds the frontend UI for Ayatsuri on Windows
 
 $ErrorActionPreference = "Stop"
 

@@ -12,20 +12,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetShellCommand_WithDAGUDefaultShell(t *testing.T) {
+func TestGetShellCommand_WithAYATSURIDefaultShell(t *testing.T) {
 	// Save original env var
-	originalShell := os.Getenv("DAGU_DEFAULT_SHELL")
+	originalShell := os.Getenv("AYATSURI_DEFAULT_SHELL")
 	defer func() {
 		if originalShell != "" {
-			_ = os.Setenv("DAGU_DEFAULT_SHELL", originalShell)
+			_ = os.Setenv("AYATSURI_DEFAULT_SHELL", originalShell)
 		} else {
-			_ = os.Unsetenv("DAGU_DEFAULT_SHELL")
+			_ = os.Unsetenv("AYATSURI_DEFAULT_SHELL")
 		}
 	}()
 
-	// Test with DAGU_DEFAULT_SHELL set
+	// Test with AYATSURI_DEFAULT_SHELL set
 	testShell := "/usr/local/bin/fish"
-	_ = os.Setenv("DAGU_DEFAULT_SHELL", testShell)
+	_ = os.Setenv("AYATSURI_DEFAULT_SHELL", testShell)
 
 	result := GetShellCommand("")
 	assert.Equal(t, testShell, result)
@@ -34,23 +34,23 @@ func TestGetShellCommand_WithDAGUDefaultShell(t *testing.T) {
 func TestGetShellCommand_UnixDefaults(t *testing.T) {
 	// Save original env var
 	originalShell := os.Getenv("SHELL")
-	originalDAGUShell := os.Getenv("DAGU_DEFAULT_SHELL")
+	originalAYATSURIShell := os.Getenv("AYATSURI_DEFAULT_SHELL")
 	defer func() {
 		if originalShell != "" {
 			_ = os.Setenv("SHELL", originalShell)
 		} else {
 			_ = os.Unsetenv("SHELL")
 		}
-		if originalDAGUShell != "" {
-			_ = os.Setenv("DAGU_DEFAULT_SHELL", originalDAGUShell)
+		if originalAYATSURIShell != "" {
+			_ = os.Setenv("AYATSURI_DEFAULT_SHELL", originalAYATSURIShell)
 		} else {
-			_ = os.Unsetenv("DAGU_DEFAULT_SHELL")
+			_ = os.Unsetenv("AYATSURI_DEFAULT_SHELL")
 		}
 	}()
 
 	// Clear env vars to test fallback
 	_ = os.Unsetenv("SHELL")
-	_ = os.Unsetenv("DAGU_DEFAULT_SHELL")
+	_ = os.Unsetenv("AYATSURI_DEFAULT_SHELL")
 
 	result := GetShellCommand("")
 	// Should find sh on Unix systems

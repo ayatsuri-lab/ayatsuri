@@ -21,7 +21,7 @@ vi.mock('@/lib/authHeaders', () => ({
 const config: Config = {
   apiURL: '/api/v1',
   basePath: '/',
-  title: 'Dagu',
+  title: 'Ayatsuri',
   navbarColor: '',
   tz: 'UTC',
   tzOffsetInSec: 0,

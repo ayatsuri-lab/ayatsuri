@@ -1,5 +1,5 @@
 # PowerShell equivalent of 'make build' (ui + bin)
-# Builds the complete Dagu application on Windows
+# Builds the complete Ayatsuri application on Windows
 
 $ErrorActionPreference = "Stop"
 
@@ -7,7 +7,7 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RootDir = Split-Path -Parent $ScriptDir
 
 $BinDir = Join-Path $RootDir ".local\bin"
-$AppName = "dagu"
+$AppName = "ayatsuri"
 
 # Get version info
 Push-Location $RootDir

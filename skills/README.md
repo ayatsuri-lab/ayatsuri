@@ -1,8 +1,8 @@
 # Bundled Skills
 
-This directory is the source of truth for the skills shipped inside the Dagu binary.
+This directory is the source of truth for the skills shipped inside the Ayatsuri binary.
 
-- `dagu/` is the installer/reference skill used by `dagu ai install`.
+- `ayatsuri/` is the installer/reference skill used by `ayatsuri ai install`.
 - No example skills are currently bundled with the binary.
 
 `embed.go` lives here because Go's `embed` patterns can only read files inside the package directory tree.

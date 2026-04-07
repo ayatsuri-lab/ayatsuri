@@ -15,7 +15,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/backoff"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/backoff"
 	"github.com/google/uuid"
 )
 

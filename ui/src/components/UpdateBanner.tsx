@@ -22,7 +22,7 @@ export function UpdateBanner() {
       <span className="text-blue-800 dark:text-blue-200">
         Update available: v{config.version} &rarr; {config.latestVersion}
         <a
-          href="https://github.com/dagucloud/dagu/releases"
+          href="https://github.com/ayatsuri-lab/ayatsuri/releases"
           target="_blank"
           rel="noopener noreferrer"
           className="ml-2 underline hover:no-underline"
@@ -30,7 +30,7 @@ export function UpdateBanner() {
           View release
         </a>
         <span className="ml-2">
-          · Run <code className="font-mono bg-blue-100 dark:bg-blue-900 px-1 rounded text-xs">dagu upgrade</code> to update
+          · Run <code className="font-mono bg-blue-100 dark:bg-blue-900 px-1 rounded text-xs">ayatsuri upgrade</code> to update
         </span>
       </span>
       <button

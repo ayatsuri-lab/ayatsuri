@@ -9,7 +9,7 @@ import { ToggleButton, ToggleGroup } from '@/components/ui/toggle-group';
 import { AppBarContext } from '@/contexts/AppBarContext';
 import { useConfig } from '@/contexts/ConfigContext';
 
-const COCKPIT_MODE_STORAGE_KEY = 'dagu_cockpit_mode';
+const COCKPIT_MODE_STORAGE_KEY = 'ayatsuri_cockpit_mode';
 type CockpitMode = 'runs' | 'automata';
 
 export default function CockpitPage(): React.ReactElement {

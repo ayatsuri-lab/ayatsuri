@@ -103,7 +103,7 @@ export default function LicensePage() {
       <div>
         <h1 className="text-lg font-semibold">License</h1>
         <p className="text-sm text-muted-foreground">
-          View license status and activate a Dagu Pro license key.
+          View license status and activate a Ayatsuri Pro license key.
         </p>
       </div>
 
@@ -164,9 +164,9 @@ export default function LicensePage() {
               <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />
               <span>
                 This license is configured via an environment variable
-                (<code className="text-xs">DAGU_LICENSE</code> or{' '}
-                <code className="text-xs">DAGU_LICENSE_KEY</code>). To
-                deactivate, remove the environment variable and restart Dagu.
+                (<code className="text-xs">AYATSURI_LICENSE</code> or{' '}
+                <code className="text-xs">AYATSURI_LICENSE_KEY</code>). To
+                deactivate, remove the environment variable and restart Ayatsuri.
               </span>
             </div>
           ) : (
@@ -197,7 +197,7 @@ export default function LicensePage() {
           <Input
             value={key}
             onChange={(e) => setKey(e.target.value)}
-            placeholder="DAGU-XXXX-XXXX-XXXX-XXXX"
+            placeholder="AYATSURI-XXXX-XXXX-XXXX-XXXX"
             className="font-mono text-sm h-8"
             aria-label="License key"
           />
@@ -219,7 +219,7 @@ export default function LicensePage() {
           </div>
         )}
         <p className="text-xs text-muted-foreground">
-          Enter your license key to activate Dagu Pro features. You can obtain a
+          Enter your license key to activate Ayatsuri Pro features. You can obtain a
           key from{' '}
           <a
             href={LICENSE_CONSOLE_URL}
@@ -227,7 +227,7 @@ export default function LicensePage() {
             rel="noopener noreferrer"
             className="underline hover:no-underline"
           >
-            console.dagu.sh
+            console.ayatsuri.sh
           </a>
           .
         </p>

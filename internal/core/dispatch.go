@@ -3,7 +3,7 @@
 
 package core
 
-import "github.com/dagucloud/dagu/internal/cmn/config"
+import "github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
 
 // ShouldDispatchToCoordinator decides whether a DAG should be dispatched
 // to the coordinator for distributed execution.

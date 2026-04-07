@@ -26,7 +26,7 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
   return {
     apiURL: '/api/v1',
     basePath: '/',
-    title: 'Dagu',
+    title: 'Ayatsuri',
     navbarColor: '',
     tz: 'UTC',
     tzOffsetInSec: 0,
@@ -123,7 +123,7 @@ describe('APIDocsPage', () => {
     fetchJsonMock.mockResolvedValue({
       openapi: '3.0.0',
       info: {
-        title: 'Dagu',
+        title: 'Ayatsuri',
       },
     });
 
@@ -142,11 +142,11 @@ describe('APIDocsPage', () => {
   });
 
   it('prefills the builtin bearer token for the viewer', async () => {
-    localStorage.setItem('dagu_auth_token', 'builtin-token');
+    localStorage.setItem('ayatsuri_auth_token', 'builtin-token');
     fetchJsonMock.mockResolvedValue({
       openapi: '3.0.0',
       info: {
-        title: 'Dagu',
+        title: 'Ayatsuri',
       },
     });
 

@@ -12,11 +12,11 @@ rm -f *.pem *.key *.crt *.csr *.srl
 
 # Generate CA key and certificate
 openssl genrsa -out ca-key.pem 2048
-openssl req -new -x509 -days 3650 -key ca-key.pem -out ca.pem -subj "/C=US/ST=Test/L=Test/O=DaguTest/CN=Test CA"
+openssl req -new -x509 -days 3650 -key ca-key.pem -out ca.pem -subj "/C=US/ST=Test/L=Test/O=AyatsuriTest/CN=Test CA"
 
 # Generate peer certificate and key
 openssl genrsa -out key.pem 2048
-openssl req -new -key key.pem -out cert.csr -subj "/C=US/ST=Test/L=Test/O=DaguTest/CN=localhost"
+openssl req -new -key key.pem -out cert.csr -subj "/C=US/ST=Test/L=Test/O=AyatsuriTest/CN=localhost"
 openssl x509 -req -in cert.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out cert.pem -days 3650
 
 # Clean up temporary files

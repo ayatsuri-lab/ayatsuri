@@ -69,13 +69,13 @@ func TestDiscoverySource_NeedsHeartbeat(t *testing.T) {
 	}
 }
 
-// TestDiscover_EnvInline covers DAGU_LICENSE environment variable discovery.
+// TestDiscover_EnvInline covers AYATSURI_LICENSE environment variable discovery.
 // Tests using t.Setenv cannot use t.Parallel in subtests.
 func TestDiscover_EnvInline(t *testing.T) {
-	t.Run("DAGU_LICENSE env returns SourceEnvInline with token", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "some-jwt-token")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+	t.Run("AYATSURI_LICENSE env returns SourceEnvInline with token", func(t *testing.T) {
+		t.Setenv("AYATSURI_LICENSE", "some-jwt-token")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		result, err := Discover("", "", nil)
 
@@ -88,12 +88,12 @@ func TestDiscover_EnvInline(t *testing.T) {
 	})
 }
 
-// TestDiscover_EnvKey covers DAGU_LICENSE_KEY environment variable discovery.
+// TestDiscover_EnvKey covers AYATSURI_LICENSE_KEY environment variable discovery.
 func TestDiscover_EnvKey(t *testing.T) {
-	t.Run("DAGU_LICENSE_KEY env returns SourceEnvKey with key", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "my-license-key-abc")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+	t.Run("AYATSURI_LICENSE_KEY env returns SourceEnvKey with key", func(t *testing.T) {
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "my-license-key-abc")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		result, err := Discover("", "", nil)
 
@@ -109,9 +109,9 @@ func TestDiscover_EnvKey(t *testing.T) {
 // TestDiscover_ConfigKey covers the configKey parameter path.
 func TestDiscover_ConfigKey(t *testing.T) {
 	t.Run("configKey param returns SourceConfigKey with key", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		result, err := Discover("", "config-license-key-xyz", nil)
 
@@ -127,9 +127,9 @@ func TestDiscover_ConfigKey(t *testing.T) {
 // TestDiscover_ActivationStore covers all activation store scenarios.
 func TestDiscover_ActivationStore(t *testing.T) {
 	t.Run("valid store data with non-empty token returns SourceActivationFile", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		ad := &ActivationData{
 			Token:           "activation-jwt-token",
@@ -152,9 +152,9 @@ func TestDiscover_ActivationStore(t *testing.T) {
 	})
 
 	t.Run("activation data with empty token is skipped and falls through", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		ad := &ActivationData{
 			Token:      "",
@@ -170,9 +170,9 @@ func TestDiscover_ActivationStore(t *testing.T) {
 	})
 
 	t.Run("nil data from store is skipped and falls through", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		store := &mockActivationStore{data: nil}
 
@@ -184,9 +184,9 @@ func TestDiscover_ActivationStore(t *testing.T) {
 	})
 
 	t.Run("store Load error is propagated as error", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		loadErr := errors.New("disk read failure")
 		store := &mockActivationStore{loadErr: loadErr}
@@ -199,9 +199,9 @@ func TestDiscover_ActivationStore(t *testing.T) {
 	})
 
 	t.Run("nil store is skipped and falls through", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		result, err := Discover("", "", nil)
 
@@ -213,15 +213,15 @@ func TestDiscover_ActivationStore(t *testing.T) {
 
 // TestDiscover_FileJWT covers all file-based JWT discovery paths.
 func TestDiscover_FileJWT(t *testing.T) {
-	t.Run("DAGU_LICENSE_FILE env points to valid file returns SourceFileJWT", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
+	t.Run("AYATSURI_LICENSE_FILE env points to valid file returns SourceFileJWT", func(t *testing.T) {
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
 
 		dir := t.TempDir()
 		jwtPath := filepath.Join(dir, "my-license.jwt")
 		require.NoError(t, os.WriteFile(jwtPath, []byte("file-jwt-token-from-env"), 0600))
 
-		t.Setenv("DAGU_LICENSE_FILE", jwtPath)
+		t.Setenv("AYATSURI_LICENSE_FILE", jwtPath)
 
 		result, err := Discover("", "", nil)
 
@@ -234,9 +234,9 @@ func TestDiscover_FileJWT(t *testing.T) {
 	})
 
 	t.Run("default path licenseDir/license.jwt returns SourceFileJWT", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		dir := t.TempDir()
 		jwtPath := filepath.Join(dir, "license.jwt")
@@ -251,9 +251,9 @@ func TestDiscover_FileJWT(t *testing.T) {
 	})
 
 	t.Run("empty file content is skipped and falls through", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		dir := t.TempDir()
 		jwtPath := filepath.Join(dir, "license.jwt")
@@ -267,9 +267,9 @@ func TestDiscover_FileJWT(t *testing.T) {
 	})
 
 	t.Run("missing file is skipped and falls through", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		dir := t.TempDir()
 		// license.jwt is intentionally absent in this temp directory.
@@ -285,9 +285,9 @@ func TestDiscover_FileJWT(t *testing.T) {
 // TestDiscover_None verifies SourceNone is returned when no source is configured.
 func TestDiscover_None(t *testing.T) {
 	t.Run("no sources configured returns SourceNone", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		result, err := Discover("", "", nil)
 
@@ -308,9 +308,9 @@ func TestDiscover_Precedence(t *testing.T) {
 		jwtPath := filepath.Join(dir, "license.jwt")
 		require.NoError(t, os.WriteFile(jwtPath, []byte("file-jwt"), 0600))
 
-		t.Setenv("DAGU_LICENSE", "inline-jwt-token")
-		t.Setenv("DAGU_LICENSE_KEY", "env-license-key")
-		t.Setenv("DAGU_LICENSE_FILE", jwtPath)
+		t.Setenv("AYATSURI_LICENSE", "inline-jwt-token")
+		t.Setenv("AYATSURI_LICENSE_KEY", "env-license-key")
+		t.Setenv("AYATSURI_LICENSE_FILE", jwtPath)
 
 		ad := &ActivationData{Token: "activation-token"}
 		store := &mockActivationStore{data: ad}
@@ -323,10 +323,10 @@ func TestDiscover_Precedence(t *testing.T) {
 		assert.Equal(t, "inline-jwt-token", result.Token)
 	})
 
-	t.Run("env key wins over config key when DAGU_LICENSE not set", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "env-key-wins")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+	t.Run("env key wins over config key when AYATSURI_LICENSE not set", func(t *testing.T) {
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "env-key-wins")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		result, err := Discover("", "config-key-loses", nil)
 
@@ -337,9 +337,9 @@ func TestDiscover_Precedence(t *testing.T) {
 	})
 
 	t.Run("config key wins over activation store when env vars not set", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		ad := &ActivationData{Token: "activation-token"}
 		store := &mockActivationStore{data: ad}
@@ -357,9 +357,9 @@ func TestDiscover_Precedence(t *testing.T) {
 		jwtPath := filepath.Join(dir, "license.jwt")
 		require.NoError(t, os.WriteFile(jwtPath, []byte("file-jwt-loses"), 0600))
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		ad := &ActivationData{Token: "activation-wins"}
 		store := &mockActivationStore{data: ad}

@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/service/eventstore"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/eventstore"
 	"github.com/spf13/cobra"
 )
 
@@ -28,7 +28,7 @@ Flags:
   --dags string   Path to the directory containing DAG definition files
 
 Example:
-  dagu scheduler --dags=/path/to/dags
+  ayatsuri scheduler --dags=/path/to/dags
 
 This process runs continuously in the foreground until terminated.
 `,

@@ -67,7 +67,7 @@ type Props = {
   config: Config;
 };
 
-const REMOTE_NODE_STORAGE_KEY = 'dagu-selected-remote-node';
+const REMOTE_NODE_STORAGE_KEY = 'ayatsuri-selected-remote-node';
 
 function parseRemoteNodes(remoteNodesConfig: string): string[] {
   const nodes = remoteNodesConfig
@@ -127,7 +127,7 @@ function LicensedRoute({
       <Shield size={48} className="text-muted-foreground" />
       <h2 className="text-xl font-semibold">Pro License Required</h2>
       <p className="text-sm text-muted-foreground max-w-md">
-        This feature requires a Dagu Pro license. Visit the{' '}
+        This feature requires a Ayatsuri Pro license. Visit the{' '}
         <Link
           to="/license"
           className="text-primary underline underline-offset-2"
@@ -176,7 +176,7 @@ function AppInner({ config: initialConfig }: Props): React.ReactElement {
   React.useEffect(() => {
     const fetchRemoteNodeNames = async () => {
       try {
-        const token = localStorage.getItem('dagu_auth_token');
+        const token = localStorage.getItem('ayatsuri_auth_token');
         const headers: Record<string, string> = { Accept: 'application/json' };
         if (token) {
           headers['Authorization'] = `Bearer ${token}`;

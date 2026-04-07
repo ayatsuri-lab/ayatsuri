@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -22,7 +22,7 @@ func TestResolver(t *testing.T) {
 		defer os.RemoveAll(tmpDir)
 
 		_ = os.Setenv("TEST_APP_HOME", filepath.Join(tmpDir, config.AppSlug))
-		paths, err := config.ResolvePaths("TEST_APP_HOME", filepath.Join(tmpDir, ".dagu"), config.XDGConfig{})
+		paths, err := config.ResolvePaths("TEST_APP_HOME", filepath.Join(tmpDir, ".ayatsuri"), config.XDGConfig{})
 		require.NoError(t, err)
 
 		assert.Equal(t, config.Paths{

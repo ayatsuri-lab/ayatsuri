@@ -13,7 +13,7 @@ type Options struct {
 
 	// DeferShellVars skips simple $VAR/${VAR} expansion in the variables
 	// phase, deferring to the shell at runtime. JSON path references like
-	// ${step.stdout} are still expanded by Dagu since shells cannot handle
+	// ${step.stdout} are still expanded by Ayatsuri since shells cannot handle
 	// them. This prevents shell-special characters (backticks, $(), etc.)
 	// in variable values from being interpreted when the script executes.
 	DeferShellVars bool

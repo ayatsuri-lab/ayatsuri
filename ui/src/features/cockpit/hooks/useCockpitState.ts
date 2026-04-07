@@ -4,7 +4,7 @@ import { useClient } from '@/hooks/api';
 import { AppBarContext } from '@/contexts/AppBarContext';
 import { useConfig, useUpdateConfig } from '@/contexts/ConfigContext';
 
-const WORKSPACE_STORAGE_KEY = 'dagu_cockpit_workspace';
+const WORKSPACE_STORAGE_KEY = 'ayatsuri_cockpit_workspace';
 type WorkspaceResponse = components['schemas']['WorkspaceResponse'];
 
 export function useCockpitState() {

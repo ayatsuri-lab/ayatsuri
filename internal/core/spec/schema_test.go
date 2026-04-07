@@ -427,7 +427,7 @@ func TestResolveSchemaDeclaration(t *testing.T) {
 		}, "", "")
 		require.NoError(t, err)
 		require.NotNil(t, resolved)
-		assert.NoError(t, resolved.Validate(map[string]any{"name": "dagu"}))
+		assert.NoError(t, resolved.Validate(map[string]any{"name": "ayatsuri"}))
 		assert.Error(t, resolved.Validate(map[string]any{}))
 	})
 

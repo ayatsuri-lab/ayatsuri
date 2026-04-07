@@ -1,29 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dagu-server
-  namespace: dagu-dev
+  name: ayatsuri-server
+  namespace: ayatsuri-dev
   labels:
-    app: dagu
+    app: ayatsuri
     component: server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dagu
+      app: ayatsuri
       component: server
   template:
     metadata:
       labels:
-        app: dagu
+        app: ayatsuri
         component: server
     spec:
       containers:
-      - name: dagu
+      - name: ayatsuri
         # Use official latest image
-        image: ghcr.io/dagucloud/dagu:latest
+        image: ghcr.io/ayatsuri-lab/ayatsuri:latest
         imagePullPolicy: IfNotPresent
-        command: ["dagu", "start-all"]
+        command: ["ayatsuri", "start-all"]
         ports:
         - containerPort: 8080
           name: http
@@ -33,17 +33,17 @@ spec:
           protocol: TCP
         envFrom:
         - configMapRef:
-            name: dagu-config
+            name: ayatsuri-config
         env:
         # Enable distributed mode: coordinator binds to all interfaces and advertises service name
         # Note: start-all only starts coordinator when host is not 127.0.0.1/localhost
-        - name: DAGU_COORDINATOR_HOST
+        - name: AYATSURI_COORDINATOR_HOST
           value: "0.0.0.0"
-        - name: DAGU_COORDINATOR_ADVERTISE
-          value: "dagu-server"
+        - name: AYATSURI_COORDINATOR_ADVERTISE
+          value: "ayatsuri-server"
         volumeMounts:
-        - name: dagu-data
-          mountPath: /var/lib/dagu
+        - name: ayatsuri-data
+          mountPath: /var/lib/ayatsuri
         resources:
           requests:
             memory: "256Mi"
@@ -64,22 +64,22 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
       volumes:
-      - name: dagu-data
+      - name: ayatsuri-data
         persistentVolumeClaim:
-          claimName: dagu-data
+          claimName: ayatsuri-data
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: dagu-server
-  namespace: dagu-dev
+  name: ayatsuri-server
+  namespace: ayatsuri-dev
   labels:
-    app: dagu
+    app: ayatsuri
     component: server
 spec:
   type: NodePort
   selector:
-    app: dagu
+    app: ayatsuri
     component: server
   ports:
   - name: http

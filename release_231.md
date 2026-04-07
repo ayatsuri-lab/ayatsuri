@@ -4,7 +4,7 @@
 
 ## Changed
 
-- Vault Environment Variable Renamed: The HashiCorp Vault environment variable has been renamed for consistency with the `DAGU_` prefix convention. (#1801)
+- Vault Environment Variable Renamed: The HashiCorp Vault environment variable has been renamed for consistency with the `AYATSURI_` prefix convention. (#1801)
 - Centralized Vault Config Defaults: Vault configuration defaults are now centralized, reducing duplication and improving maintainability. (#1804)
 
 ## Fixed
@@ -36,4 +36,4 @@ Thanks to our contributors for this release:
 | Task with retry stays in running state, blocking scheduling (#1792) | @mtaohuang (report) |
 | Variables not resolved in sub-DAG paths with `parallel` (#1790) | @VKdennis (report) |
 
-**Full Changelog**: https://github.com/dagucloud/dagu/compare/v2.3.0...v2.3.1
+**Full Changelog**: https://github.com/ayatsuri-lab/ayatsuri/compare/v2.3.0...v2.3.1

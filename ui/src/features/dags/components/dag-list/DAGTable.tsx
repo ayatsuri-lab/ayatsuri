@@ -883,7 +883,7 @@ function DAGTable({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>(() => {
     try {
-      const saved = localStorage.getItem('dagu_dag_table_expanded');
+      const saved = localStorage.getItem('ayatsuri_dag_table_expanded');
       return saved ? JSON.parse(saved) : {};
     } catch {
       return {};
@@ -894,7 +894,7 @@ function DAGTable({
     (updater: Updater<ExpandedState>) => {
       setExpanded((prev) => {
         const next = typeof updater === 'function' ? updater(prev) : updater;
-        localStorage.setItem('dagu_dag_table_expanded', JSON.stringify(next));
+        localStorage.setItem('ayatsuri_dag_table_expanded', JSON.stringify(next));
         return next;
       });
     },

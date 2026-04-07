@@ -2,16 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## What is Dagu?
+## What is Ayatsuri?
 
-Dagu is a self-contained, single-binary workflow orchestration engine. Workflows are defined as DAGs (Directed Acyclic Graphs) in YAML. It requires no external databases or message brokers — all data is stored locally in files. It supports local, queue-based, and distributed (coordinator/worker) execution modes.
+Ayatsuri is a self-contained, single-binary workflow orchestration engine. Workflows are defined as DAGs (Directed Acyclic Graphs) in YAML. It requires no external databases or message brokers — all data is stored locally in files. It supports local, queue-based, and distributed (coordinator/worker) execution modes.
 
 ## Build & Development Commands
 
 | Command | Description |
 |---------|-------------|
 | `make build` | Build frontend UI + Go binary |
-| `make bin` | Build Go binary only (output: `.local/bin/dagu`) |
+| `make bin` | Build Go binary only (output: `.local/bin/ayatsuri`) |
 | `make ui` | Build frontend only (cleans node_modules, installs, webpack builds) |
 | `make run` | Run frontend server + scheduler (requires built UI assets) |
 | `make run-server` | Run backend server only |
@@ -72,7 +72,7 @@ For distributed mode: Scheduler → Queue → Coordinator (gRPC) → Worker → 
 - All storage is behind interfaces (in `core/exec/`) with file-based implementations (in `persis/`).
 - Executors follow the factory pattern — registered globally, instantiated dynamically by type name.
 - DAGs can compose hierarchically — a step can invoke another DAG via the `dag` executor.
-- Configuration uses `DAGU_*` environment variables, with fallback to `~/.config/dagu/config.yaml`.
+- Configuration uses `AYATSURI_*` environment variables, with fallback to `~/.config/ayatsuri/config.yaml`.
 - Go commit message guidelines apply. Run `make fmt` before committing.
 - License: GPL v3. License headers on source files managed via `make addlicense`.
 

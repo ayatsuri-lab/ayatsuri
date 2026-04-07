@@ -1,4 +1,4 @@
-module github.com/dagucloud/dagu
+module github.com/ayatsuri-lab/ayatsuri
 
 go 1.26
 

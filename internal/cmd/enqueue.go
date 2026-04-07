@@ -8,12 +8,12 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/runtime/transform"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/transform"
 	"github.com/spf13/cobra"
 )
 
@@ -25,8 +25,8 @@ func Enqueue() *cobra.Command {
 			Long: `Enqueue a DAG-run to the queue.
 
 Examples:
-	dagu enqueue --run-id=run_id my_dag -- P1=foo P2=bar
-	dagu enqueue --name my_custom_name my_dag.yaml -- P1=foo P2=bar
+	ayatsuri enqueue --run-id=run_id my_dag -- P1=foo P2=bar
+	ayatsuri enqueue --name my_custom_name my_dag.yaml -- P1=foo P2=bar
 `,
 		}, enqueueFlags, runEnqueue,
 	)

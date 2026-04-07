@@ -170,25 +170,25 @@ func TestPlatformAssetName(t *testing.T) {
 			name:     "darwin arm64 with v prefix",
 			platform: Platform{OS: "darwin", Arch: "arm64"},
 			version:  "v1.30.3",
-			want:     "dagu_1.30.3_darwin_arm64.tar.gz",
+			want:     "ayatsuri_1.30.3_darwin_arm64.tar.gz",
 		},
 		{
 			name:     "linux amd64 without v prefix",
 			platform: Platform{OS: "linux", Arch: "amd64"},
 			version:  "1.30.3",
-			want:     "dagu_1.30.3_linux_amd64.tar.gz",
+			want:     "ayatsuri_1.30.3_linux_amd64.tar.gz",
 		},
 		{
 			name:     "windows 386",
 			platform: Platform{OS: "windows", Arch: "386"},
 			version:  "v2.0.0",
-			want:     "dagu_2.0.0_windows_386.tar.gz",
+			want:     "ayatsuri_2.0.0_windows_386.tar.gz",
 		},
 		{
 			name:     "linux armv7",
 			platform: Platform{OS: "linux", Arch: "armv7"},
 			version:  "v1.30.3",
-			want:     "dagu_1.30.3_linux_armv7.tar.gz",
+			want:     "ayatsuri_1.30.3_linux_armv7.tar.gz",
 		},
 	}
 
@@ -278,27 +278,27 @@ func TestParseChecksums(t *testing.T) {
 	}{
 		{
 			name: "standard sha256sum format (two spaces)",
-			content: `abc123def456  dagu_1.30.3_darwin_arm64.tar.gz
-789xyz012345  dagu_1.30.3_linux_amd64.tar.gz`,
+			content: `abc123def456  ayatsuri_1.30.3_darwin_arm64.tar.gz
+789xyz012345  ayatsuri_1.30.3_linux_amd64.tar.gz`,
 			want: map[string]string{
-				"dagu_1.30.3_darwin_arm64.tar.gz": "abc123def456",
-				"dagu_1.30.3_linux_amd64.tar.gz":  "789xyz012345",
+				"ayatsuri_1.30.3_darwin_arm64.tar.gz": "abc123def456",
+				"ayatsuri_1.30.3_linux_amd64.tar.gz":  "789xyz012345",
 			},
 		},
 		{
 			name: "with extra whitespace",
-			content: `  abc123def456  dagu_1.30.3_darwin_arm64.tar.gz
-789xyz012345  dagu_1.30.3_linux_amd64.tar.gz`,
+			content: `  abc123def456  ayatsuri_1.30.3_darwin_arm64.tar.gz
+789xyz012345  ayatsuri_1.30.3_linux_amd64.tar.gz`,
 			want: map[string]string{
-				"dagu_1.30.3_darwin_arm64.tar.gz": "abc123def456",
-				"dagu_1.30.3_linux_amd64.tar.gz":  "789xyz012345",
+				"ayatsuri_1.30.3_darwin_arm64.tar.gz": "abc123def456",
+				"ayatsuri_1.30.3_linux_amd64.tar.gz":  "789xyz012345",
 			},
 		},
 		{
 			name:    "single space fallback",
-			content: `abc123def456 dagu_1.30.3_darwin_arm64.tar.gz`,
+			content: `abc123def456 ayatsuri_1.30.3_darwin_arm64.tar.gz`,
 			want: map[string]string{
-				"dagu_1.30.3_darwin_arm64.tar.gz": "abc123def456",
+				"ayatsuri_1.30.3_darwin_arm64.tar.gz": "abc123def456",
 			},
 		},
 		{name: "empty content", content: "", wantErr: true},
@@ -376,8 +376,8 @@ func TestFindAsset(t *testing.T) {
 	release := &Release{
 		TagName: "v1.30.3",
 		Assets: []Asset{
-			{Name: "dagu_1.30.3_darwin_arm64.tar.gz", BrowserDownloadURL: "https://example.com/darwin_arm64"},
-			{Name: "dagu_1.30.3_linux_amd64.tar.gz", BrowserDownloadURL: "https://example.com/linux_amd64"},
+			{Name: "ayatsuri_1.30.3_darwin_arm64.tar.gz", BrowserDownloadURL: "https://example.com/darwin_arm64"},
+			{Name: "ayatsuri_1.30.3_linux_amd64.tar.gz", BrowserDownloadURL: "https://example.com/linux_amd64"},
 			{Name: "checksums.txt", BrowserDownloadURL: "https://example.com/checksums"},
 		},
 	}
@@ -393,13 +393,13 @@ func TestFindAsset(t *testing.T) {
 			name:     "darwin arm64 found",
 			platform: Platform{OS: "darwin", Arch: "arm64"},
 			version:  "v1.30.3",
-			wantName: "dagu_1.30.3_darwin_arm64.tar.gz",
+			wantName: "ayatsuri_1.30.3_darwin_arm64.tar.gz",
 		},
 		{
 			name:     "linux amd64 found",
 			platform: Platform{OS: "linux", Arch: "amd64"},
 			version:  "v1.30.3",
-			wantName: "dagu_1.30.3_linux_amd64.tar.gz",
+			wantName: "ayatsuri_1.30.3_linux_amd64.tar.gz",
 		},
 		{
 			name:     "platform not found",
@@ -755,12 +755,12 @@ func TestFindBinary(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	t.Run("binary at root", func(t *testing.T) {
-		binaryPath := filepath.Join(tmpDir, "dagu")
+		binaryPath := filepath.Join(tmpDir, "ayatsuri")
 		if err := os.WriteFile(binaryPath, []byte("binary"), 0755); err != nil {
 			t.Fatalf("Failed to create test binary: %v", err)
 		}
 
-		found, err := findBinary(tmpDir, "dagu")
+		found, err := findBinary(tmpDir, "ayatsuri")
 		if err != nil {
 			t.Fatalf("findBinary() error: %v", err)
 		}
@@ -808,7 +808,7 @@ func TestExtractArchive(t *testing.T) {
 	}
 
 	createTestTarGz(t, archivePath, map[string]string{
-		"dagu":       "#!/bin/sh\necho test",
+		"ayatsuri":       "#!/bin/sh\necho test",
 		"readme.txt": "test readme",
 	})
 
@@ -817,12 +817,12 @@ func TestExtractArchive(t *testing.T) {
 		t.Fatalf("extractArchive() error: %v", err)
 	}
 
-	daguPath := filepath.Join(extractDir, "dagu")
-	if _, err := os.Stat(daguPath); os.IsNotExist(err) {
-		t.Error("extractArchive() did not extract dagu binary")
+	ayatsuriPath := filepath.Join(extractDir, "ayatsuri")
+	if _, err := os.Stat(ayatsuriPath); os.IsNotExist(err) {
+		t.Error("extractArchive() did not extract ayatsuri binary")
 	}
 
-	content, err := os.ReadFile(daguPath)
+	content, err := os.ReadFile(ayatsuriPath)
 	if err != nil {
 		t.Fatalf("Failed to read extracted file: %v", err)
 	}
@@ -903,8 +903,8 @@ func TestExtractArchiveWithSubdirectory(t *testing.T) {
 
 func TestInstall(t *testing.T) {
 	tmpDir := t.TempDir()
-	archivePath := filepath.Join(tmpDir, "dagu_1.30.3_darwin_arm64.tar.gz")
-	targetPath := filepath.Join(tmpDir, "target", "dagu")
+	archivePath := filepath.Join(tmpDir, "ayatsuri_1.30.3_darwin_arm64.tar.gz")
+	targetPath := filepath.Join(tmpDir, "target", "ayatsuri")
 
 	if err := os.MkdirAll(filepath.Dir(targetPath), 0755); err != nil {
 		t.Fatalf("Failed to create target dir: %v", err)
@@ -914,7 +914,7 @@ func TestInstall(t *testing.T) {
 	}
 
 	createTestTarGz(t, archivePath, map[string]string{
-		"dagu": "#!/bin/sh\necho new",
+		"ayatsuri": "#!/bin/sh\necho new",
 	})
 
 	ctx := context.Background()
@@ -949,10 +949,10 @@ func TestInstall(t *testing.T) {
 func TestInstallWithoutBackup(t *testing.T) {
 	tmpDir := t.TempDir()
 	archivePath := filepath.Join(tmpDir, "test.tar.gz")
-	targetPath := filepath.Join(tmpDir, "dagu")
+	targetPath := filepath.Join(tmpDir, "ayatsuri")
 
 	createTestTarGz(t, archivePath, map[string]string{
-		"dagu": "#!/bin/sh\necho test",
+		"ayatsuri": "#!/bin/sh\necho test",
 	})
 
 	ctx := context.Background()
@@ -985,7 +985,7 @@ func TestInstallErrors(t *testing.T) {
 		ctx := context.Background()
 		_, err := Install(ctx, InstallOptions{
 			ArchivePath: archivePath,
-			TargetPath:  filepath.Join(tmpDir, "dagu"),
+			TargetPath:  filepath.Join(tmpDir, "ayatsuri"),
 		})
 		if err == nil {
 			t.Error("Install() should error for invalid archive")
@@ -1001,7 +1001,7 @@ func TestInstallErrors(t *testing.T) {
 		ctx := context.Background()
 		_, err := Install(ctx, InstallOptions{
 			ArchivePath: archivePath,
-			TargetPath:  filepath.Join(tmpDir, "dagu2"),
+			TargetPath:  filepath.Join(tmpDir, "ayatsuri2"),
 		})
 		if err == nil {
 			t.Error("Install() should error when binary not found in archive")
@@ -1036,9 +1036,9 @@ func TestFormatResult(t *testing.T) {
 			TargetVersion:  "v1.30.3",
 			UpgradeNeeded:  true,
 			DryRun:         true,
-			AssetName:      "dagu_1.30.3_darwin_arm64.tar.gz",
+			AssetName:      "ayatsuri_1.30.3_darwin_arm64.tar.gz",
 			AssetSize:      1024 * 1024,
-			ExecutablePath: "/usr/local/bin/dagu",
+			ExecutablePath: "/usr/local/bin/ayatsuri",
 		}
 
 		output := FormatResult(result)
@@ -1073,7 +1073,7 @@ func TestFormatResult(t *testing.T) {
 			TargetVersion:  "v1.30.3",
 			UpgradeNeeded:  true,
 			WasUpgraded:    true,
-			BackupPath:     "/usr/local/bin/dagu.bak",
+			BackupPath:     "/usr/local/bin/ayatsuri.bak",
 		}
 
 		output := FormatResult(result)
@@ -1191,9 +1191,9 @@ func TestGetLatestRelease(t *testing.T) {
 		Name:       "Release v1.30.3",
 		Draft:      false,
 		Prerelease: false,
-		HTMLURL:    "https://github.com/dagucloud/dagu/releases/tag/v1.30.3",
+		HTMLURL:    "https://github.com/ayatsuri-lab/ayatsuri/releases/tag/v1.30.3",
 		Assets: []Asset{
-			{Name: "dagu_1.30.3_darwin_arm64.tar.gz", BrowserDownloadURL: "https://example.com/asset"},
+			{Name: "ayatsuri_1.30.3_darwin_arm64.tar.gz", BrowserDownloadURL: "https://example.com/asset"},
 		},
 	}
 
@@ -1237,8 +1237,8 @@ func TestGetLatestRelease(t *testing.T) {
 }
 
 func TestGetChecksums(t *testing.T) {
-	checksumContent := `abc123def456  dagu_1.30.3_darwin_arm64.tar.gz
-789xyz012345  dagu_1.30.3_linux_amd64.tar.gz`
+	checksumContent := `abc123def456  ayatsuri_1.30.3_darwin_arm64.tar.gz
+789xyz012345  ayatsuri_1.30.3_linux_amd64.tar.gz`
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/checksums.txt" {
@@ -1266,7 +1266,7 @@ func TestGetChecksums(t *testing.T) {
 	if len(checksums) != 2 {
 		t.Errorf("GetChecksums() returned %d checksums, want 2", len(checksums))
 	}
-	if checksums["dagu_1.30.3_darwin_arm64.tar.gz"] != "abc123def456" {
+	if checksums["ayatsuri_1.30.3_darwin_arm64.tar.gz"] != "abc123def456" {
 		t.Error("GetChecksums() wrong checksum for darwin")
 	}
 }
@@ -1275,7 +1275,7 @@ func TestGetChecksumsNoChecksumsFile(t *testing.T) {
 	release := &Release{
 		TagName: "v1.30.3",
 		Assets: []Asset{
-			{Name: "dagu_1.30.3_darwin_arm64.tar.gz"},
+			{Name: "ayatsuri_1.30.3_darwin_arm64.tar.gz"},
 		},
 	}
 
@@ -1428,8 +1428,8 @@ func TestVerifyBinary(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	t.Run("successful verification", func(t *testing.T) {
-		scriptPath := filepath.Join(tmpDir, "dagu-test")
-		if err := os.WriteFile(scriptPath, []byte("#!/bin/sh\necho 'dagu version 1.30.3'"), 0755); err != nil {
+		scriptPath := filepath.Join(tmpDir, "ayatsuri-test")
+		if err := os.WriteFile(scriptPath, []byte("#!/bin/sh\necho 'ayatsuri version 1.30.3'"), 0755); err != nil {
 			t.Fatalf("Failed to create test script: %v", err)
 		}
 
@@ -1439,8 +1439,8 @@ func TestVerifyBinary(t *testing.T) {
 	})
 
 	t.Run("version mismatch", func(t *testing.T) {
-		scriptPath := filepath.Join(tmpDir, "dagu-wrong")
-		if err := os.WriteFile(scriptPath, []byte("#!/bin/sh\necho 'dagu version 1.29.0'"), 0755); err != nil {
+		scriptPath := filepath.Join(tmpDir, "ayatsuri-wrong")
+		if err := os.WriteFile(scriptPath, []byte("#!/bin/sh\necho 'ayatsuri version 1.29.0'"), 0755); err != nil {
 			t.Fatalf("Failed to create test script: %v", err)
 		}
 
@@ -1751,8 +1751,8 @@ func TestValidateVersionTag(t *testing.T) {
 
 func TestInstallBackupTimestamp(t *testing.T) {
 	tmpDir := t.TempDir()
-	archivePath := filepath.Join(tmpDir, "dagu_1.30.3_darwin_arm64.tar.gz")
-	targetPath := filepath.Join(tmpDir, "target", "dagu")
+	archivePath := filepath.Join(tmpDir, "ayatsuri_1.30.3_darwin_arm64.tar.gz")
+	targetPath := filepath.Join(tmpDir, "target", "ayatsuri")
 
 	if err := os.MkdirAll(filepath.Dir(targetPath), 0755); err != nil {
 		t.Fatalf("Failed to create target dir: %v", err)
@@ -1762,7 +1762,7 @@ func TestInstallBackupTimestamp(t *testing.T) {
 	}
 
 	createTestTarGz(t, archivePath, map[string]string{
-		"dagu": "#!/bin/sh\necho new",
+		"ayatsuri": "#!/bin/sh\necho new",
 	})
 
 	// Create an existing .bak file

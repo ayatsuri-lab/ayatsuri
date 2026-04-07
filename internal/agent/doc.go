@@ -10,7 +10,7 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 )
 
 // Sentinel errors for doc store operations.

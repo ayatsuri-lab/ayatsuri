@@ -3,7 +3,7 @@
 
 package exec
 
-import "github.com/dagucloud/dagu/internal/core"
+import "github.com/ayatsuri-lab/ayatsuri/internal/core"
 
 // IsQueuedCatchup reports whether the queued status belongs to a catchup run.
 func IsQueuedCatchup(status *DAGRunStatus) bool {

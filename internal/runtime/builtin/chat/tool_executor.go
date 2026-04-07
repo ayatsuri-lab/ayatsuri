@@ -13,13 +13,13 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/core"
-	exec1 "github.com/dagucloud/dagu/internal/core/exec"
-	llmpkg "github.com/dagucloud/dagu/internal/llm"
-	"github.com/dagucloud/dagu/internal/runtime"
-	"github.com/dagucloud/dagu/internal/runtime/executor"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	exec1 "github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	llmpkg "github.com/ayatsuri-lab/ayatsuri/internal/llm"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/executor"
 )
 
 // ToolCallResult bundles a tool result with sub-DAG run info for tracking.

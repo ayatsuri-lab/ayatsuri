@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -102,9 +102,9 @@ func TestNewContext_DAGDocsDir(t *testing.T) {
 	}{
 		{
 			name:      "ConfigHasDocsDir",
-			docsDir:   "/var/dagu/docs",
+			docsDir:   "/var/ayatsuri/docs",
 			dagName:   "my-workflow",
-			expected:  filepath.Join("/var/dagu/docs", "my-workflow"),
+			expected:  filepath.Join("/var/ayatsuri/docs", "my-workflow"),
 			expectSet: true,
 		},
 		{
@@ -191,7 +191,7 @@ func TestNewContext_DAGParamsJSON(t *testing.T) {
 				_, ok1 := result[exec.EnvKeyDAGParamsJSONCompat]
 				_, ok2 := result[exec.EnvKeyDAGParamsJSON]
 				assert.False(t, ok1, "DAG_PARAMS_JSON should not be set")
-				assert.False(t, ok2, "DAGU_PARAMS_JSON should not be set")
+				assert.False(t, ok2, "AYATSURI_PARAMS_JSON should not be set")
 			}
 		})
 	}

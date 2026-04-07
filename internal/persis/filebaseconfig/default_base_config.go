@@ -55,7 +55,7 @@ retry_policy:
 
 # -- Shell --
 # Shell interpreter for command steps.
-# Default resolution order: $DAGU_DEFAULT_SHELL -> $SHELL -> sh
+# Default resolution order: $AYATSURI_DEFAULT_SHELL -> $SHELL -> sh
 # Can be a string (split on spaces) or an explicit array.
 # shell: "bash -e"
 # shell: ["/bin/bash", "-e"]
@@ -77,14 +77,14 @@ retry_policy:
 # -- Timeout & Delays --
 # timeout_sec: Max execution time for the entire DAG in seconds. 0 = no timeout.
 # delay_sec: Seconds to sleep before starting the first step. 0 = start immediately.
-# restart_wait_sec: Seconds to wait before restart (dagu restart command). 0 = no wait.
+# restart_wait_sec: Seconds to wait before restart (ayatsuri restart command). 0 = no wait.
 # timeout_sec: 3600
 # delay_sec: 0
 # restart_wait_sec: 0
 
 # -- Logging --
-# Directory for log files. Default: $XDG_DATA_HOME/dagu/logs or $DAGU_HOME/logs
-# log_dir: /var/log/dagu
+# Directory for log files. Default: $XDG_DATA_HOME/ayatsuri/logs or $AYATSURI_HOME/logs
+# log_dir: /var/log/ayatsuri
 
 # -- Queue --
 # Assign DAGs to a named queue for concurrency control across DAGs.
@@ -173,23 +173,23 @@ retry_policy:
 #
 # # Sent on DAG failure (when mail_on.failure is true).
 # error_mail:
-#   from: dagu@example.com
+#   from: ayatsuri@example.com
 #   to: alerts@example.com        # Can also be an array: [a@x.com, b@x.com]
-#   prefix: "[DAGU]"              # Subject line prefix.
+#   prefix: "[AYATSURI]"              # Subject line prefix.
 #   attach_logs: true
 #
 # # Sent on DAG success (when mail_on.success is true).
 # info_mail:
-#   from: dagu@example.com
+#   from: ayatsuri@example.com
 #   to: team@example.com
-#   prefix: "[DAGU]"
+#   prefix: "[AYATSURI]"
 #   attach_logs: false
 #
 # # Sent when DAG enters wait status (when mail_on.wait is true).
 # wait_mail:
-#   from: dagu@example.com
+#   from: ayatsuri@example.com
 #   to: approvers@example.com
-#   prefix: "[DAGU APPROVAL]"
+#   prefix: "[AYATSURI APPROVAL]"
 #   attach_logs: false
 #
 # # Controls which events trigger emails.
@@ -264,7 +264,7 @@ retry_policy:
 #   headers:
 #     Authorization: "Bearer token"
 #   resource:                         # Resource attributes attached to spans.
-#     service.name: dagu
+#     service.name: ayatsuri
 
 # -- Docker Registry Auth --
 # Credentials for pulling container images. Map of registry hostname to auth.

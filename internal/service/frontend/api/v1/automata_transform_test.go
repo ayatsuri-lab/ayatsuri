@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	openapi "github.com/dagucloud/dagu/api/v1"
-	"github.com/dagucloud/dagu/internal/automata"
+	openapi "github.com/ayatsuri-lab/ayatsuri/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/automata"
 	"github.com/stretchr/testify/require"
 )
 

@@ -15,8 +15,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/backoff"
-	"github.com/dagucloud/dagu/internal/llm"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/backoff"
+	"github.com/ayatsuri-lab/ayatsuri/internal/llm"
 	"github.com/google/uuid"
 )
 
@@ -313,7 +313,7 @@ func remoteCreateSession(ctx context.Context, client *http.Client, node *RemoteC
 }
 
 // remoteSessionState represents the session state returned by the remote API.
-// JSON tags use camelCase to match the Dagu REST API (generated from OpenAPI spec).
+// JSON tags use camelCase to match the Ayatsuri REST API (generated from OpenAPI spec).
 type remoteSessionState struct {
 	Working          bool   `json:"working"`
 	HasPendingPrompt bool   `json:"hasPendingPrompt"`

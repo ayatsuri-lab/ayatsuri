@@ -40,7 +40,7 @@ type Props = {
 function DocOutlinePanel({ markdown, onHeadingClick }: Props) {
   const [collapsed, setCollapsed] = useState(() => {
     try {
-      return localStorage.getItem('dagu_doc_outline_collapsed') === 'true';
+      return localStorage.getItem('ayatsuri_doc_outline_collapsed') === 'true';
     } catch {
       return false;
     }
@@ -48,7 +48,7 @@ function DocOutlinePanel({ markdown, onHeadingClick }: Props) {
 
   useEffect(() => {
     try {
-      localStorage.setItem('dagu_doc_outline_collapsed', collapsed.toString());
+      localStorage.setItem('ayatsuri_doc_outline_collapsed', collapsed.toString());
     } catch { /* ignore */ }
   }, [collapsed]);
 

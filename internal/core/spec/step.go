@@ -14,12 +14,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/cmdutil"
-	"github.com/dagucloud/dagu/internal/cmn/collections"
-	"github.com/dagucloud/dagu/internal/cmn/signal"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/spec/types"
-	"github.com/dagucloud/dagu/internal/llm"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/cmdutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/collections"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/signal"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec/types"
+	"github.com/ayatsuri-lab/ayatsuri/internal/llm"
 	"github.com/google/jsonschema-go/jsonschema"
 )
 

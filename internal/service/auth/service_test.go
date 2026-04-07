@@ -12,9 +12,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/auth"
-	"github.com/dagucloud/dagu/internal/persis/fileapikey"
-	"github.com/dagucloud/dagu/internal/persis/fileuser"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileapikey"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileuser"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -709,7 +709,7 @@ func TestService_CreateAPIKey(t *testing.T) {
 	assert.Equal(t, auth.RoleManager, result.APIKey.Role)
 	assert.Equal(t, "creator-id", result.APIKey.CreatedBy)
 	assert.NotEmpty(t, result.FullKey)
-	assert.True(t, strings.HasPrefix(result.FullKey, "dagu_"), "full key should start with 'dagu_'")
+	assert.True(t, strings.HasPrefix(result.FullKey, "ayatsuri_"), "full key should start with 'ayatsuri_'")
 	assert.NotEmpty(t, result.APIKey.KeyPrefix)
 	assert.NotEmpty(t, result.APIKey.KeyHash)
 }
@@ -1029,7 +1029,7 @@ func TestService_ValidateAPIKey_WrongKey(t *testing.T) {
 	require.NoError(t, err)
 
 	// Try to validate with wrong key (correct prefix but wrong value)
-	_, err = svc.ValidateAPIKey(ctx, "dagu_wrongkeywrongkeywrongkeywrongkey")
+	_, err = svc.ValidateAPIKey(ctx, "ayatsuri_wrongkeywrongkeywrongkeywrongkey")
 	require.ErrorIs(t, err, ErrInvalidAPIKey)
 }
 
@@ -1039,7 +1039,7 @@ func TestService_ValidateAPIKey_NotConfigured(t *testing.T) {
 
 	ctx := context.Background()
 
-	_, err := svc.ValidateAPIKey(ctx, "dagu_somekey")
+	_, err := svc.ValidateAPIKey(ctx, "ayatsuri_somekey")
 	require.ErrorIs(t, err, ErrAPIKeyNotConfigured)
 }
 
@@ -1104,7 +1104,7 @@ func TestGenerateAPIKey(t *testing.T) {
 	require.NoError(t, err)
 
 	// Verify full key has correct prefix
-	assert.True(t, strings.HasPrefix(keyParts.fullKey, "dagu_"), "Full key should start with 'dagu_'")
+	assert.True(t, strings.HasPrefix(keyParts.fullKey, "ayatsuri_"), "Full key should start with 'ayatsuri_'")
 
 	// Verify key prefix is correct length
 	assert.Len(t, keyParts.keyPrefix, apiKeyPrefixLength, "Key prefix should be %d characters", apiKeyPrefixLength)

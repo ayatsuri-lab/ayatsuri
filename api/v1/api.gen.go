@@ -1390,7 +1390,7 @@ type CreateModelConfigRequestThinkingEffort string
 
 // CreateRemoteNodeRequest defines model for CreateRemoteNodeRequest.
 type CreateRemoteNodeRequest struct {
-	// ApiBaseUrl Base URL of the remote Dagu instance API
+	// ApiBaseUrl Base URL of the remote Ayatsuri instance API
 	ApiBaseUrl string `json:"apiBaseUrl"`
 
 	// AuthToken Bearer token for token auth
@@ -4420,7 +4420,7 @@ type ListEventLogsParamsPaginationMode string
 
 // ActivateLicenseJSONBody defines parameters for ActivateLicense.
 type ActivateLicenseJSONBody struct {
-	// Key License key (e.g. DAGU-XXXX-XXXX-XXXX-XXXX)
+	// Key License key (e.g. AYATSURI-XXXX-XXXX-XXXX-XXXX)
 	Key string `json:"key"`
 }
 
@@ -4933,7 +4933,7 @@ type TriggerWebhookParams struct {
 	// RemoteNode name of the remote node
 	RemoteNode *RemoteNode `form:"remoteNode,omitempty" json:"remoteNode,omitempty"`
 
-	// Authorization Bearer token for webhook authentication (e.g., 'Bearer dagu_wh_...'). Required for authentication but marked optional in schema so the handler can return proper 401 responses.
+	// Authorization Bearer token for webhook authentication (e.g., 'Bearer ayatsuri_wh_...'). Required for authentication but marked optional in schema so the handler can return proper 401 responses.
 	Authorization *string `json:"Authorization,omitempty"`
 }
 

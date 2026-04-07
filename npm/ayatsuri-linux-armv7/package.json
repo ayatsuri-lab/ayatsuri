@@ -1,0 +1,24 @@
+{
+  "name": "@ayatsuri-lab/ayatsuri-linux-armv7",
+  "version": "0.0.0-development",
+  "description": "Ayatsuri binary for Linux ARMv7 (32-bit ARM)",
+  "keywords": ["ayatsuri", "workflow", "linux", "arm", "armv7", "raspberry-pi"],
+  "homepage": "https://github.com/ayatsuri-lab/ayatsuri",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayatsuri-lab/ayatsuri.git"
+  },
+  "license": "GPL-3.0",
+  "author": "Ayatsuri Contributors",
+  "os": ["linux"],
+  "cpu": ["arm"],
+  "bin": {
+    "ayatsuri": "./bin/ayatsuri"
+  },
+  "files": [
+    "bin/ayatsuri"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

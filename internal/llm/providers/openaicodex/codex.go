@@ -14,7 +14,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/dagucloud/dagu/internal/llm"
+	"github.com/ayatsuri-lab/ayatsuri/internal/llm"
 )
 
 const (
@@ -178,7 +178,7 @@ func (p *Provider) doRequest(ctx context.Context, body []byte, cred llm.OAuthCre
 	req.Header.Set("Authorization", "Bearer "+cred.AccessToken)
 	req.Header.Set("chatgpt-account-id", cred.AccountID)
 	req.Header.Set("OpenAI-Beta", "responses=experimental")
-	req.Header.Set("originator", "dagu")
+	req.Header.Set("originator", "ayatsuri")
 	req.Header.Set("accept", "text/event-stream")
 	req.Header.Set("content-type", "application/json")
 

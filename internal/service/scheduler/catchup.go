@@ -7,7 +7,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 )
 
 // ComputeReplayFrom computes the earliest timestamp worth replaying for a DAG.

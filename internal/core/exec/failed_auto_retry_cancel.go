@@ -8,7 +8,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 )
 
 // FailedAutoRetryCancelEligibility describes whether a failed DAG-run can be

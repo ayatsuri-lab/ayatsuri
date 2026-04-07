@@ -6,8 +6,8 @@ package cmd_test
 import (
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/cmd"
-	"github.com/dagucloud/dagu/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmd"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -52,7 +52,7 @@ func TestWorkerCommand(t *testing.T) {
 
 		// Verify examples are present in long description
 		assert.Contains(t, cli.Long, "Example:")
-		assert.Contains(t, cli.Long, "dagu worker")
+		assert.Contains(t, cli.Long, "ayatsuri worker")
 	})
 }
 

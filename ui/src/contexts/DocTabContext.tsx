@@ -31,7 +31,7 @@ interface DocTabContextType {
   isTabUnsaved: (tabId: string) => boolean;
 }
 
-const STORAGE_KEY = 'dagu_doc_tabs';
+const STORAGE_KEY = 'ayatsuri_doc_tabs';
 
 const DocTabContext = createContext<DocTabContextType | null>(null);
 

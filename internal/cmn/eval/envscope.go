@@ -13,11 +13,11 @@ import (
 
 // internalSecretPrefix must match secrets.PresolvedEnvPrefix.
 // Duplicated here to avoid a circular import (eval <- secrets).
-const internalSecretPrefix = "_DAGU_PRESOLVED_SECRET_" //nolint:gosec // Not a credential; this is an env var prefix for transport.
+const internalSecretPrefix = "_AYATSURI_PRESOLVED_SECRET_" //nolint:gosec // Not a credential; this is an env var prefix for transport.
 
 // internalBuildEnvFileKey must match buildenv.PresolvedEnvFileKey.
 // Duplicated here to avoid a circular import (eval <- buildenv).
-const internalBuildEnvFileKey = "_DAGU_PRESOLVED_BUILD_ENV_FILE"
+const internalBuildEnvFileKey = "_AYATSURI_PRESOLVED_BUILD_ENV_FILE"
 
 // EnvSource tracks where an environment variable came from (for debugging)
 type EnvSource string

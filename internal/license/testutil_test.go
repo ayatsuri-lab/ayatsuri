@@ -36,7 +36,7 @@ func validClaims() *LicenseClaims {
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			Issuer:    "dagu-test",
+			Issuer:    "ayatsuri-test",
 			Subject:   "test-license",
 		},
 		ClaimsVersion: 1,
@@ -52,7 +52,7 @@ func expiredInGraceClaims() *LicenseClaims {
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(-24 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now().Add(-48 * time.Hour)),
-			Issuer:    "dagu-test",
+			Issuer:    "ayatsuri-test",
 			Subject:   "test-license",
 		},
 		ClaimsVersion: 1,
@@ -68,7 +68,7 @@ func expiredPastGraceClaims() *LicenseClaims {
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(-15 * 24 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now().Add(-30 * 24 * time.Hour)),
-			Issuer:    "dagu-test",
+			Issuer:    "ayatsuri-test",
 			Subject:   "test-license",
 		},
 		ClaimsVersion: 1,

@@ -6,17 +6,17 @@ package main
 import (
 	"os"
 
-	"github.com/dagucloud/dagu/internal/cmd"
-	"github.com/dagucloud/dagu/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmd"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
 	"github.com/spf13/cobra"
 
-	_ "github.com/dagucloud/dagu/internal/runtime/builtin" // Register built-in executors
+	_ "github.com/ayatsuri-lab/ayatsuri/internal/runtime/builtin" // Register built-in executors
 )
 
 var rootCmd = &cobra.Command{
 	Use:   config.AppSlug,
-	Short: "Dagu is a compact, portable workflow engine",
-	Long: `Dagu is a compact, portable workflow engine.
+	Short: "Ayatsuri is a compact, portable workflow engine",
+	Long: `Ayatsuri is a compact, portable workflow engine.
 
 It provides a declarative model for orchestrating command execution across
 diverse environments, including shell scripts, Python commands, containerized

@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/api/v1"
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/service/frontend"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/frontend"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -25,7 +25,7 @@ func TestActivateLicense_NoLicenseManager(t *testing.T) {
 	server := test.SetupServer(t)
 
 	resp := server.Client().Post("/api/v1/license/activate", map[string]string{
-		"key": "DAGU-TEST-0000-0000-0000",
+		"key": "AYATSURI-TEST-0000-0000-0000",
 	}).ExpectStatus(http.StatusBadRequest).Send(t)
 
 	var errResp api.Error
@@ -86,7 +86,7 @@ func TestActivateLicense_RequiresAuth_BasicMode(t *testing.T) {
 
 	// No credentials at all — must be rejected by auth middleware.
 	server.Client().Post("/api/v1/license/activate", map[string]string{
-		"key": "DAGU-TEST-0000-0000-0000",
+		"key": "AYATSURI-TEST-0000-0000-0000",
 	}).ExpectStatus(http.StatusUnauthorized).Send(t)
 }
 
@@ -103,7 +103,7 @@ func TestActivateLicense_ValidBasicAuth(t *testing.T) {
 	}))
 
 	resp := server.Client().Post("/api/v1/license/activate", map[string]string{
-		"key": "DAGU-TEST-0000-0000-0000",
+		"key": "AYATSURI-TEST-0000-0000-0000",
 	}).WithBasicAuth("admin", "secret").
 		ExpectStatus(http.StatusBadRequest).Send(t)
 
@@ -132,7 +132,7 @@ func TestActivateLicense_RequiresAuth_BuiltinMode(t *testing.T) {
 
 	// No bearer token — must be rejected.
 	server.Client().Post("/api/v1/license/activate", map[string]string{
-		"key": "DAGU-TEST-0000-0000-0000",
+		"key": "AYATSURI-TEST-0000-0000-0000",
 	}).ExpectStatus(http.StatusUnauthorized).Send(t)
 }
 
@@ -178,7 +178,7 @@ func TestActivateLicense_RequiresAdmin_BuiltinMode(t *testing.T) {
 
 	// Viewer must be forbidden from activating a license.
 	server.Client().Post("/api/v1/license/activate", map[string]string{
-		"key": "DAGU-TEST-0000-0000-0000",
+		"key": "AYATSURI-TEST-0000-0000-0000",
 	}).WithBearerToken(viewerLogin.Token).
 		ExpectStatus(http.StatusForbidden).Send(t)
 }
@@ -204,7 +204,7 @@ func TestActivateLicense_AdminToken_NoLicenseManager(t *testing.T) {
 	adminToken := getAdminToken(t, server)
 
 	resp := server.Client().Post("/api/v1/license/activate", map[string]string{
-		"key": "DAGU-TEST-0000-0000-0000",
+		"key": "AYATSURI-TEST-0000-0000-0000",
 	}).WithBearerToken(adminToken).
 		ExpectStatus(http.StatusBadRequest).Send(t)
 

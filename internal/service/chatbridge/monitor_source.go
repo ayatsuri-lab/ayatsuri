@@ -8,7 +8,7 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/service/eventstore"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/eventstore"
 )
 
 func (m *NotificationMonitor) initializeSession(ctx context.Context) {

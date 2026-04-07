@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmd"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmd"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/stretchr/testify/require"
 )
 
@@ -105,10 +105,10 @@ func TestCoordinatorCommand(t *testing.T) {
 			Args: []string{
 				"coordinator",
 				"--coordinator.host=0.0.0.0",
-				"--coordinator.advertise=dagu-server",
+				"--coordinator.advertise=ayatsuri-server",
 				fmt.Sprintf("--coordinator.port=%s", port),
 			},
-			ExpectedOut: []string{"Coordinator initialization", "bind-address=0.0.0.0", "advertise-address=dagu-server", port},
+			ExpectedOut: []string{"Coordinator initialization", "bind-address=0.0.0.0", "advertise-address=ayatsuri-server", port},
 		})
 	})
 }

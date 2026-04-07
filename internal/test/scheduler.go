@@ -9,13 +9,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/persis/filedag"
-	"github.com/dagucloud/dagu/internal/persis/filedagrun"
-	"github.com/dagucloud/dagu/internal/persis/filequeue"
-	"github.com/dagucloud/dagu/internal/runtime"
-	"github.com/dagucloud/dagu/internal/service/coordinator"
-	"github.com/dagucloud/dagu/internal/service/scheduler"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedagrun"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filequeue"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/coordinator"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/scheduler"
 	"github.com/stretchr/testify/require"
 )
 

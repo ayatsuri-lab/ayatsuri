@@ -7,9 +7,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 	"github.com/spf13/cobra"
 )
 
@@ -21,8 +21,8 @@ func Dequeue() *cobra.Command {
 			Long: `Dequeue a DAG-run from the queue.
 
 Example:
-	dagu dequeue default --dag-run=dag_name:my_dag_run_id
-	dagu dequeue default
+	ayatsuri dequeue default --dag-run=dag_name:my_dag_run_id
+	ayatsuri dequeue default
 `,
 			Args: cobra.ExactArgs(1),
 		}, dequeueFlags, runDequeue,

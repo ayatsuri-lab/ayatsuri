@@ -13,26 +13,26 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/agentoauth"
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/core/spec"
-	"github.com/dagucloud/dagu/internal/persis/fileagentconfig"
-	"github.com/dagucloud/dagu/internal/persis/fileagentmodel"
-	"github.com/dagucloud/dagu/internal/persis/fileagentoauth"
-	"github.com/dagucloud/dagu/internal/persis/filememory"
-	"github.com/dagucloud/dagu/internal/proto/convert"
-	"github.com/dagucloud/dagu/internal/runtime"
-	rtagent "github.com/dagucloud/dagu/internal/runtime/agent"
-	"github.com/dagucloud/dagu/internal/runtime/remote"
-	"github.com/dagucloud/dagu/internal/service/coordinator"
-	coordinatorv1 "github.com/dagucloud/dagu/proto/coordinator/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agentoauth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileagentconfig"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileagentmodel"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileagentoauth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filememory"
+	"github.com/ayatsuri-lab/ayatsuri/internal/proto/convert"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
+	rtagent "github.com/ayatsuri-lab/ayatsuri/internal/runtime/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/remote"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/coordinator"
+	coordinatorv1 "github.com/ayatsuri-lab/ayatsuri/proto/coordinator/v1"
 )
 
 var _ TaskHandler = (*remoteTaskHandler)(nil)
@@ -357,7 +357,7 @@ type agentEnv struct {
 // The cleanup function must be called after execution completes.
 // Includes workerID in path to prevent collisions with concurrent workers on the same host.
 func (h *remoteTaskHandler) createAgentEnv(ctx context.Context, dagRunID string) (*agentEnv, error) {
-	logDir := filepath.Join(os.TempDir(), "dagu", "worker-logs", h.workerID, dagRunID)
+	logDir := filepath.Join(os.TempDir(), "ayatsuri", "worker-logs", h.workerID, dagRunID)
 	if err := os.MkdirAll(logDir, 0750); err != nil {
 		return nil, fmt.Errorf("failed to create log directory: %w", err)
 	}

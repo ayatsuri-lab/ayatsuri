@@ -9,8 +9,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dagucloud/dagu/internal/persis/fileupgradecheck"
-	"github.com/dagucloud/dagu/internal/upgrade"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileupgradecheck"
+	"github.com/ayatsuri-lab/ayatsuri/internal/upgrade"
 	"github.com/spf13/cobra"
 )
 
@@ -30,23 +30,23 @@ func Upgrade() *cobra.Command {
 	return NewCommand(
 		&cobra.Command{
 			Use:   "upgrade [flags]",
-			Short: "Upgrade dagu to the latest version",
-			Long: `Upgrade the dagu binary to the latest version or a specified version.
+			Short: "Upgrade ayatsuri to the latest version",
+			Long: `Upgrade the ayatsuri binary to the latest version or a specified version.
 
 This command downloads the latest (or specified) release from GitHub, verifies
 the checksum, and replaces the current binary.
 
 Examples:
-  dagu upgrade                    # Upgrade to latest version
-  dagu upgrade --check            # Check if an update is available
-  dagu upgrade --version v1.30.0  # Upgrade to specific version
-  dagu upgrade --dry-run          # Show what would happen
-  dagu upgrade --backup           # Create backup before upgrade
-  dagu upgrade -y                 # Skip confirmation prompt
-  dagu upgrade -f                 # Allow downgrade to older version
-  dagu upgrade -y -f              # Skip prompt and allow downgrade
+  ayatsuri upgrade                    # Upgrade to latest version
+  ayatsuri upgrade --check            # Check if an update is available
+  ayatsuri upgrade --version v1.30.0  # Upgrade to specific version
+  ayatsuri upgrade --dry-run          # Show what would happen
+  ayatsuri upgrade --backup           # Create backup before upgrade
+  ayatsuri upgrade -y                 # Skip confirmation prompt
+  ayatsuri upgrade -f                 # Allow downgrade to older version
+  ayatsuri upgrade -y -f              # Skip prompt and allow downgrade
 
-Note: This command cannot be used if dagu was installed via Homebrew, Snap,
+Note: This command cannot be used if ayatsuri was installed via Homebrew, Snap,
 go install, or is running in Docker. Use the appropriate package manager instead.`,
 		},
 		upgradeFlags,

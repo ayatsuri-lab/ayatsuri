@@ -11,7 +11,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/license"
+	"github.com/ayatsuri-lab/ayatsuri/internal/license"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

@@ -1,0 +1,59 @@
+{
+  "name": "@ayatsuri-lab/ayatsuri",
+  "version": "0.0.0-development",
+  "description": "A powerful Workflow Orchestration Engine with simple declarative YAML API. Zero-dependency, single binary for Linux, macOS, and Windows.",
+  "keywords": [
+    "workflow",
+    "automation",
+    "orchestration",
+    "dag",
+    "pipeline",
+    "scheduler",
+    "task-runner",
+    "workflow-engine",
+    "devops",
+    "ci-cd"
+  ],
+  "homepage": "https://github.com/ayatsuri-lab/ayatsuri",
+  "bugs": {
+    "url": "https://github.com/ayatsuri-lab/ayatsuri/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayatsuri-lab/ayatsuri.git"
+  },
+  "license": "GPL-3.0",
+  "author": "Ayatsuri Contributors",
+  "bin": {
+    "ayatsuri": "bin/cli"
+  },
+  "scripts": {
+    "postinstall": "node ./install.js"
+  },
+  "dependencies": {
+    "tar": "^7.4.3"
+  },
+  "optionalDependencies": {
+    "@ayatsuri-lab/ayatsuri-linux-x64": "1.30.2",
+    "@ayatsuri-lab/ayatsuri-linux-arm64": "0.0.0-development",
+    "@ayatsuri-lab/ayatsuri-darwin-x64": "0.0.0-development",
+    "@ayatsuri-lab/ayatsuri-darwin-arm64": "0.0.0-development",
+    "@ayatsuri-lab/ayatsuri-win32-x64": "0.0.0-development",
+    "@ayatsuri-lab/ayatsuri-linux-ia32": "0.0.0-development",
+    "@ayatsuri-lab/ayatsuri-linux-armv7": "0.0.0-development",
+    "@ayatsuri-lab/ayatsuri-linux-armv6": "0.0.0-development",
+    "@ayatsuri-lab/ayatsuri-win32-ia32": "0.0.0-development",
+    "@ayatsuri-lab/ayatsuri-freebsd-x64": "0.0.0-development"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "install.js",
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ]
+}

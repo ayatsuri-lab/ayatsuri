@@ -6,7 +6,7 @@ package agent
 import (
 	"encoding/json"
 
-	"github.com/dagucloud/dagu/internal/llm"
+	"github.com/ayatsuri-lab/ayatsuri/internal/llm"
 )
 
 func init() {

@@ -1,10 +1,10 @@
-# Contributing to Dagu
+# Contributing to Ayatsuri
 
-Thank you for considering to help improve Dagu! We welcome contributions from anyone on the internet.
+Thank you for considering to help improve Ayatsuri! We welcome contributions from anyone on the internet.
 
 ## Quick Start
 
-- Browse [`good first issue`](https://github.com/dagucloud/dagu/labels/good%20first%20issue) or [`help wanted`](https://github.com/dagucloud/dagu/labels/help%20wanted) labels and comment to claim.
+- Browse [`good first issue`](https://github.com/ayatsuri-lab/ayatsuri/labels/good%20first%20issue) or [`help wanted`](https://github.com/ayatsuri-lab/ayatsuri/labels/help%20wanted) labels and comment to claim.
 - Join the [Discord server](https://discord.gg/gpahPUjGRk) for questions or to share progress.
 
 ## Getting Started
@@ -70,7 +70,7 @@ make test-coverage
 Starting the backend server on port 8080:
 
 ```bash
-DAGU_PORT=8080 make
+AYATSURI_PORT=8080 make
 ```
 
 Starting the development server:
@@ -101,7 +101,7 @@ Before submitting:
 
 ### Review Process
 
-- All PRs are reviewed by [maintainers](https://github.com/dagucloud/dagu/graphs/contributors).
+- All PRs are reviewed by [maintainers](https://github.com/ayatsuri-lab/ayatsuri/graphs/contributors).
 - Community members are encouraged to review and provide feedback.
 
 ## Issues
@@ -127,4 +127,4 @@ When requesting features, please describe:
 
 ## License
 
-By contributing to Dagu, you agree that your contributions will be licensed under the **GNU General Public License v3.0**.
+By contributing to Ayatsuri, you agree that your contributions will be licensed under the **GNU General Public License v3.0**.

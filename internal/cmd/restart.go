@@ -9,12 +9,12 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/runtime"
-	"github.com/dagucloud/dagu/internal/runtime/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/agent"
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +33,7 @@ Flags:
                              the command will find the current running DAG-run by the given DAG name.
 
 Example:
-  dagu restart --run-id=abc123 my_dag
+  ayatsuri restart --run-id=abc123 my_dag
 `,
 			Args: cobra.ExactArgs(1),
 		}, restartFlags, runRestart,

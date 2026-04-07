@@ -16,17 +16,17 @@ import (
 
 	"github.com/fatih/color"
 
-	"github.com/dagucloud/dagu/internal/persis/fileagentskill"
-	bundledskills "github.com/dagucloud/dagu/skills"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileagentskill"
+	bundledskills "github.com/ayatsuri-lab/ayatsuri/skills"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )
 
 const (
-	skillDirName     = bundledskills.DaguSkillDir
-	skillEmbedPrefix = bundledskills.DaguSkillDir
-	copilotBeginMark = "<!-- BEGIN DAGU -->"
-	copilotEndMark   = "<!-- END DAGU -->"
+	skillDirName     = bundledskills.AyatsuriSkillDir
+	skillEmbedPrefix = bundledskills.AyatsuriSkillDir
+	copilotBeginMark = "<!-- BEGIN AYATSURI -->"
+	copilotEndMark   = "<!-- END AYATSURI -->"
 	copilotFileName  = "copilot-instructions.md"
 	flagSkillsDir    = "skills-dir"
 )
@@ -58,11 +58,11 @@ func AI() *cobra.Command {
 func aiInstallCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "install",
-		Short: "Install Dagu skill into AI coding tools",
-		Long: `Install the Dagu DAG authoring skill into detected AI coding tools.
+		Short: "Install Ayatsuri skill into AI coding tools",
+		Long: `Install the Ayatsuri DAG authoring skill into detected AI coding tools.
 
-Detects installed tools and installs the Dagu skill (SKILL.md) into each
-tool's skill directory, enabling it to write correct Dagu DAG YAML files.
+Detects installed tools and installs the Ayatsuri skill (SKILL.md) into each
+tool's skill directory, enabling it to write correct Ayatsuri DAG YAML files.
 
 Supported tools: Claude Code, Codex, OpenCode, Gemini CLI, Copilot CLI`,
 		Args: cobra.NoArgs,
@@ -345,7 +345,7 @@ func detectInstallState(target detectedTool) (installState, error) {
 	return installStateFresh, nil
 }
 
-// installSkill copies the embedded dagu skill directory to the target path.
+// installSkill copies the embedded ayatsuri skill directory to the target path.
 func installSkill(targetSKILLMD string, skillFS embed.FS) error {
 	targetDir := filepath.Dir(targetSKILLMD)
 
@@ -434,7 +434,7 @@ func inspectCopilotContent(content string) (copilotContentInspection, error) {
 		beginIdx := strings.Index(content, copilotBeginMark)
 		endIdx := strings.Index(content, copilotEndMark)
 		if endIdx <= beginIdx {
-			return copilotContentInspection{}, errors.New("found malformed DAGU markers")
+			return copilotContentInspection{}, errors.New("found malformed AYATSURI markers")
 		}
 		return copilotContentInspection{
 			state:    installStateUpdate,
@@ -442,7 +442,7 @@ func inspectCopilotContent(content string) (copilotContentInspection, error) {
 			endIdx:   endIdx,
 		}, nil
 	default:
-		return copilotContentInspection{}, errors.New("found malformed DAGU markers")
+		return copilotContentInspection{}, errors.New("found malformed AYATSURI markers")
 	}
 }
 

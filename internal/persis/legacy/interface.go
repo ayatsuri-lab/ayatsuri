@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/persis/legacy/model"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/legacy/model"
 )
 
 var (

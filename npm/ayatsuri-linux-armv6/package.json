@@ -1,0 +1,10 @@
+{
+  "name": "@ayatsuri-lab/ayatsuri-linux-armv6",
+  "version": "0.0.0-development",
+  "description": "Ayatsuri binary for Linux ARMv6",
+  "repository": "github:ayatsuri-lab/ayatsuri",
+  "license": "GPL-3.0",
+  "os": ["linux"],
+  "cpu": ["arm"],
+  "files": ["bin/ayatsuri"]
+}

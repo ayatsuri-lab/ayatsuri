@@ -204,7 +204,7 @@ export default function RemoteNodesPage() {
         <div>
           <h1 className="text-lg font-semibold">Remote Nodes</h1>
           <p className="text-sm text-muted-foreground">
-            Manage connections to remote Dagu instances
+            Manage connections to remote Ayatsuri instances
           </p>
         </div>
         <Button

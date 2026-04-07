@@ -12,7 +12,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/dagucloud/dagu/internal/llm"
+	"github.com/ayatsuri-lab/ayatsuri/internal/llm"
 )
 
 const (

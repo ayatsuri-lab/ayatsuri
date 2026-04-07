@@ -16,10 +16,10 @@ import (
 
 	sprig "github.com/go-task/slim-sprig/v3"
 
-	"github.com/dagucloud/dagu/internal/cmn/eval"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/runtime"
-	"github.com/dagucloud/dagu/internal/runtime/executor"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/eval"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/executor"
 	"github.com/go-viper/mapstructure/v2"
 )
 
@@ -165,7 +165,7 @@ var blockedFuncs = []string{
 }
 
 // funcMap provides template functions for pipeline-compatible usage.
-// Built from the hermetic slim-sprig base with Dagu-specific overrides.
+// Built from the hermetic slim-sprig base with Ayatsuri-specific overrides.
 // Functions that accept a pipeline value take it as the last argument.
 var funcMap = buildFuncMap()
 
@@ -179,16 +179,16 @@ func buildFuncMap() template.FuncMap {
 		delete(m, name)
 	}
 
-	// Dagu-specific overrides. These preserve pipeline-compatible argument
+	// Ayatsuri-specific overrides. These preserve pipeline-compatible argument
 	// order (pipeline value as last arg) and existing behavior. Each
 	// override is intentional — slim-sprig defines overlapping names with
 	// different arg order or semantics.
 
-	// split: sprig uses split(s, sep); Dagu uses split(sep, s) for pipelines.
+	// split: sprig uses split(s, sep); Ayatsuri uses split(sep, s) for pipelines.
 	m["split"] = func(sep, s string) []string {
 		return strings.Split(s, sep)
 	}
-	// join: Dagu accepts []string; also accept []any for interop with
+	// join: Ayatsuri accepts []string; also accept []any for interop with
 	// sprig functions like list/uniq/sortAlpha that return []any.
 	m["join"] = func(sep string, v any) string {
 		if v == nil {
@@ -226,7 +226,7 @@ func buildFuncMap() template.FuncMap {
 			return 0, fmt.Errorf("count: unsupported type %T", v)
 		}
 	}
-	// add: sprig uses add(a, b any); Dagu uses add(b, a int) for pipelines.
+	// add: sprig uses add(a, b any); Ayatsuri uses add(b, a int) for pipelines.
 	m["add"] = func(b, a int) int {
 		return a + b
 	}

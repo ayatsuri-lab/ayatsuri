@@ -10,7 +10,7 @@ import { useInfiniteKanban } from '../useInfiniteKanban';
 const testConfig: Config = {
   apiURL: '/api/v1',
   basePath: '/',
-  title: 'Dagu',
+  title: 'Ayatsuri',
   navbarColor: '',
   tz: 'UTC',
   tzOffsetInSec: 0,

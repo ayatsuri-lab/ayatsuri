@@ -9,8 +9,8 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/dagucloud/dagu/internal/cmn/cmdutil"
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/cmdutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 )
 
 // setupScript creates a temporary executable script file containing the provided
@@ -26,7 +26,7 @@ func setupScript(workDir, script string, shell []string) (string, error) {
 		shellCmd = shell[0]
 	}
 	ext := cmdutil.GetScriptExtension(shellCmd)
-	pattern := "dagu_script-*" + ext
+	pattern := "ayatsuri_script-*" + ext
 
 	file, err := os.CreateTemp(workDir, pattern)
 	if err != nil {

@@ -6,7 +6,7 @@ package agent
 import (
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -260,7 +260,7 @@ func TestGenerateSystemPrompt(t *testing.T) {
 		// The identity tag must be present (soul content is rendered).
 		assert.Contains(t, result, "<identity>")
 		// Fallback prompt must NOT be used.
-		assert.NotContains(t, result, "You are Dagu Assistant, an AI assistant")
+		assert.NotContains(t, result, "You are Ayatsuri Assistant, an AI assistant")
 	})
 
 	t.Run("execution guidance prefers enqueue without preflight checks", func(t *testing.T) {
@@ -269,12 +269,12 @@ func TestGenerateSystemPrompt(t *testing.T) {
 
 		result := GenerateSystemPrompt(SystemPromptParams{Env: env, Role: auth.RoleDeveloper})
 
-		assert.Contains(t, result, "Default to queue-based execution: `dagu enqueue <dag-name>`")
+		assert.Contains(t, result, "Default to queue-based execution: `ayatsuri enqueue <dag-name>`")
 		assert.Contains(t, result, "Do not check running jobs, queued jobs")
 		assert.Contains(t, result, "pass user parameters with `-p`")
-		assert.Contains(t, result, `dagu enqueue my-dag -p 'topic="OpenAI new model released March 2026"'`)
+		assert.Contains(t, result, `ayatsuri enqueue my-dag -p 'topic="OpenAI new model released March 2026"'`)
 		assert.Contains(t, result, "Avoid passing spaced values after `--`")
-		assert.NotContains(t, result, "2. Start: `dagu start <dag-name>`")
+		assert.NotContains(t, result, "2. Start: `ayatsuri start <dag-name>`")
 	})
 
 	t.Run("includes active progress reporting guidance", func(t *testing.T) {
@@ -300,7 +300,7 @@ func TestFallbackPrompt(t *testing.T) {
 		result := fallbackPrompt(EnvironmentInfo{DAGsDir: "/my/dags"})
 
 		assert.Contains(t, result, "/my/dags")
-		assert.Contains(t, result, "Dagu Assistant")
+		assert.Contains(t, result, "Ayatsuri Assistant")
 	})
 
 	t.Run("works with empty environment", func(t *testing.T) {
@@ -309,6 +309,6 @@ func TestFallbackPrompt(t *testing.T) {
 		result := fallbackPrompt(EnvironmentInfo{})
 
 		assert.NotEmpty(t, result)
-		assert.Contains(t, result, "Dagu Assistant")
+		assert.Contains(t, result, "Ayatsuri Assistant")
 	})
 }

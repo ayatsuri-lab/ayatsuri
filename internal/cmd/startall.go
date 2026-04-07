@@ -14,16 +14,16 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/service/coordinator"
-	"github.com/dagucloud/dagu/internal/service/eventstore"
-	"github.com/dagucloud/dagu/internal/service/frontend"
-	"github.com/dagucloud/dagu/internal/service/resource"
-	daguslack "github.com/dagucloud/dagu/internal/service/slack"
-	"github.com/dagucloud/dagu/internal/service/telegram"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/coordinator"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/eventstore"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/frontend"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/resource"
+	ayatsurislack "github.com/ayatsuri-lab/ayatsuri/internal/service/slack"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/telegram"
 	"github.com/spf13/cobra"
 )
 
@@ -34,13 +34,13 @@ func StartAll() *cobra.Command {
 			Short: "Launch web UI server, scheduler, and optionally coordinator in a single process",
 			Long: `Simultaneously start the web UI server, scheduler, and optionally coordinator in a single command.
 
-This convenience command combines the functionality of 'dagu server', 'dagu scheduler',
-and optionally 'dagu coordinator' into a single process. The web UI provides the management
+This convenience command combines the functionality of 'ayatsuri server', 'ayatsuri scheduler',
+and optionally 'ayatsuri coordinator' into a single process. The web UI provides the management
 interface, the scheduler handles automated DAG-run execution based on defined schedules,
 and the coordinator (when enabled) manages distributed task execution across workers.
 
 The coordinator is enabled by default and can be disabled by setting coordinator.enabled=false
-in the config file or DAGU_COORDINATOR_ENABLED=false as an environment variable.
+in the config file or AYATSURI_COORDINATOR_ENABLED=false as an environment variable.
 
 Flags:
   --host string                     Host address to bind the web server to (default: 127.0.0.1)
@@ -57,16 +57,16 @@ Flags:
 
 Example:
   # Default mode (coordinator enabled)
-  dagu start-all
+  ayatsuri start-all
 
   # Disable coordinator
-  DAGU_COORDINATOR_ENABLED=false dagu start-all
+  AYATSURI_COORDINATOR_ENABLED=false ayatsuri start-all
 
   # Distributed mode with coordinator on all interfaces
-  dagu start-all --coordinator.host=0.0.0.0 --coordinator.port=50055
+  ayatsuri start-all --coordinator.host=0.0.0.0 --coordinator.port=50055
 
   # Production with both web and coordinator on all interfaces
-  dagu start-all --host=0.0.0.0 --port=8080 --coordinator.host=0.0.0.0
+  ayatsuri start-all --host=0.0.0.0 --port=8080 --coordinator.host=0.0.0.0
 
 This process runs continuously in the foreground until terminated.
 `,
@@ -163,7 +163,7 @@ func runStartAll(ctx *Context, _ []string) error {
 
 	// Initialize bot if selected as provider
 	var tgBot *telegram.Bot
-	var slackBot *daguslack.Bot
+	var slackBot *ayatsurislack.Bot
 	if agentAPI != nil {
 		switch ctx.Config.Bots.Provider {
 		case config.BotProviderTelegram:
@@ -186,8 +186,8 @@ func runStartAll(ctx *Context, _ []string) error {
 			}
 
 		case config.BotProviderSlack:
-			slackBot, err = daguslack.New(
-				daguslack.Config{
+			slackBot, err = ayatsurislack.New(
+				ayatsurislack.Config{
 					BotToken:              ctx.Config.Bots.Slack.BotToken,
 					AppToken:              ctx.Config.Bots.Slack.AppToken,
 					AllowedChannelIDs:     ctx.Config.Bots.Slack.AllowedChannelIDs,

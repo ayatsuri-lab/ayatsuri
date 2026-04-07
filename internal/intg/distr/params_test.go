@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/core"
-	exec1 "github.com/dagucloud/dagu/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	exec1 "github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -43,7 +43,7 @@ steps:
     command: echo "region=$region count=$count debug=$debug"
     output: SHELL_VALUES
   - name: params-json
-    command: printenv DAGU_PARAMS_JSON
+    command: printenv AYATSURI_PARAMS_JSON
     output: PARAMS_JSON
 `, withLabels(map[string]string{"type": "test-worker"}))
 

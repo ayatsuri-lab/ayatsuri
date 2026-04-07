@@ -15,8 +15,8 @@ import (
 	"sort"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/service/eventstore"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/eventstore"
 )
 
 var _ eventstore.DAGRunReader = (*Store)(nil)

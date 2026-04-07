@@ -15,9 +15,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/runtime"
-	"github.com/dagucloud/dagu/internal/runtime/executor"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/executor"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -978,7 +978,7 @@ func TestCommandExecutor_ScriptErrorAnnotation(t *testing.T) {
 	errMsg := err.Error()
 	assert.Contains(t, errMsg, "nonexistent_command_xyz_12345")
 	assert.NotContains(t, errMsg, "--- script content ---")
-	assert.NotContains(t, errMsg, "dagu_script-")
+	assert.NotContains(t, errMsg, "ayatsuri_script-")
 
 	// Full script with error marker should appear in stderr log output
 	stderrOutput := stderr.String()
@@ -1090,7 +1090,7 @@ func TestCommandExecutor_ScriptCleanedOnCancel(t *testing.T) {
 	entries, err := os.ReadDir(tmpDir)
 	require.NoError(t, err)
 	for _, entry := range entries {
-		assert.False(t, strings.HasPrefix(entry.Name(), "dagu_script-"),
+		assert.False(t, strings.HasPrefix(entry.Name(), "ayatsuri_script-"),
 			"temporary script file should be cleaned up after cancellation: %s", entry.Name())
 	}
 }
@@ -1555,12 +1555,12 @@ func TestCommandExecutor_ScriptCleanup(t *testing.T) {
 	err = exec.Run(ctx)
 	require.NoError(t, err)
 
-	// Check that no dagu_script-* files remain in tmpDir
+	// Check that no ayatsuri_script-* files remain in tmpDir
 	entries, err := os.ReadDir(tmpDir)
 	require.NoError(t, err)
 
 	for _, entry := range entries {
-		assert.False(t, strings.HasPrefix(entry.Name(), "dagu_script-"),
+		assert.False(t, strings.HasPrefix(entry.Name(), "ayatsuri_script-"),
 			"temporary script file should be cleaned up: %s", entry.Name())
 	}
 }

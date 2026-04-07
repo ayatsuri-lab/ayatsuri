@@ -15,12 +15,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/dirlock"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/persis/fileeventstore"
-	"github.com/dagucloud/dagu/internal/service/eventstore"
-	"github.com/dagucloud/dagu/internal/testutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/dirlock"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileeventstore"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/eventstore"
+	"github.com/ayatsuri-lab/ayatsuri/internal/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -779,7 +779,7 @@ func TestNotificationMonitor_LockTheftSelfFencesActiveOwner(t *testing.T) {
 	}, time.Second, 10*time.Millisecond)
 
 	lockDir := notificationStateLockDir(stateFile)
-	lockTokenPath := filepath.Join(lockDir, ".dagu_lock", "owner")
+	lockTokenPath := filepath.Join(lockDir, ".ayatsuri_lock", "owner")
 	require.NoError(t, os.WriteFile(lockTokenPath, []byte("replacement-owner"), 0o600))
 	require.Eventually(t, func() bool {
 		return !monitor.ownsNotificationLock() && !monitor.notificationSessionActive()

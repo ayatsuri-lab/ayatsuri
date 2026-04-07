@@ -1,6 +1,6 @@
 # Issue 1837 Reproduction
 
-This stack mirrors the topology reported in [dagu-org/dagu#1837](https://github.com/dagucloud/dagu/issues/1837):
+This stack mirrors the topology reported in [ayatsuri-lab/ayatsuri#1837](https://github.com/ayatsuri-lab/ayatsuri/issues/1837):
 
 - 1 UI/API service on `http://localhost:8888`
 - 3 schedulers
@@ -37,6 +37,6 @@ Useful paths on the host:
 To test a locally built image instead of the released `2.3.4` image:
 
 ```bash
-docker build -t dagu-issue-1837:local .
-DAGU_IMAGE=dagu-issue-1837:local docker compose -f deploy/docker/compose.issue-1837.yaml up -d
+docker build -t ayatsuri-issue-1837:local .
+AYATSURI_IMAGE=ayatsuri-issue-1837:local docker compose -f deploy/docker/compose.issue-1837.yaml up -d
 ```

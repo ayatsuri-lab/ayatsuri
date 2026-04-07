@@ -6,7 +6,7 @@ package core_test
 import (
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 	"github.com/stretchr/testify/assert"
 )
 

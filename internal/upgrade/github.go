@@ -11,12 +11,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/backoff"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/backoff"
 	"github.com/go-resty/resty/v2"
 )
 
 const (
-	githubAPIURL = "https://api.github.com/repos/dagucloud/dagu/releases"
+	githubAPIURL = "https://api.github.com/repos/ayatsuricloud/ayatsuri/releases"
 
 	defaultTimeout = 30 * time.Second
 )
@@ -49,7 +49,7 @@ func NewGitHubClient() *GitHubClient {
 	client := resty.New().
 		SetTimeout(defaultTimeout).
 		SetHeader("Accept", "application/vnd.github+json").
-		SetHeader("User-Agent", "dagu-upgrade-client")
+		SetHeader("User-Agent", "ayatsuri-upgrade-client")
 	return &GitHubClient{client: client}
 }
 

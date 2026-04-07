@@ -1,0 +1,10 @@
+{
+  "name": "@ayatsuri-lab/ayatsuri-linux-ppc64",
+  "version": "0.0.0-development",
+  "description": "Ayatsuri binary for Linux PowerPC 64-bit",
+  "repository": "github:ayatsuri-lab/ayatsuri",
+  "license": "GPL-3.0",
+  "os": ["linux"],
+  "cpu": ["ppc64"],
+  "files": ["bin/ayatsuri"]
+}

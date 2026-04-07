@@ -1,0 +1,24 @@
+{
+  "name": "@ayatsuri-lab/ayatsuri-win32-x64",
+  "version": "0.0.0-development",
+  "description": "Ayatsuri binary for Windows x64",
+  "keywords": ["ayatsuri", "workflow", "windows", "win32", "x64"],
+  "homepage": "https://github.com/ayatsuri-lab/ayatsuri",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayatsuri-lab/ayatsuri.git"
+  },
+  "license": "GPL-3.0",
+  "author": "Ayatsuri Contributors",
+  "os": ["win32"],
+  "cpu": ["x64"],
+  "bin": {
+    "ayatsuri": "./bin/ayatsuri.exe"
+  },
+  "files": [
+    "bin/ayatsuri.exe"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

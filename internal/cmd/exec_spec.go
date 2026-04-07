@@ -9,11 +9,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/dagucloud/dagu/internal/cmn/cmdutil"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/spec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/cmdutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec"
 	"github.com/goccy/go-yaml"
 )
 
@@ -82,7 +82,7 @@ func buildExecDAG(ctx *Context, opts ExecOptions) (*core.DAG, string, error) {
 		return nil, "", fmt.Errorf("failed to marshal generated DAG spec: %w", err)
 	}
 
-	tempFile, err := os.CreateTemp("", fmt.Sprintf("dagu-exec-%s-*.yaml", fileutil.SafeName(name)))
+	tempFile, err := os.CreateTemp("", fmt.Sprintf("ayatsuri-exec-%s-*.yaml", fileutil.SafeName(name)))
 	if err != nil {
 		return nil, "", fmt.Errorf("failed to create temporary DAG file: %w", err)
 	}

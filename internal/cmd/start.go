@@ -14,18 +14,18 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/buildenv"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/core/spec"
-	"github.com/dagucloud/dagu/internal/proto/convert"
-	"github.com/dagucloud/dagu/internal/runtime/agent"
-	"github.com/dagucloud/dagu/internal/runtime/executor"
-	"github.com/dagucloud/dagu/internal/service/coordinator"
-	coordinatorv1 "github.com/dagucloud/dagu/proto/coordinator/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/buildenv"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/proto/convert"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/executor"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/coordinator"
+	coordinatorv1 "github.com/ayatsuri-lab/ayatsuri/proto/coordinator/v1"
 	"github.com/spf13/cobra"
 )
 
@@ -50,8 +50,8 @@ Parameters after the "--" separator are passed as execution parameters (either p
 Flags can override default settings such as DAG-run ID, DAG name, or suppress output.
 
 Examples:
-  dagu start my_dag -- P1=foo P2=bar
-  dagu start --name my_custom_name my_dag.yaml -- P1=foo P2=bar
+  ayatsuri start my_dag -- P1=foo P2=bar
+  ayatsuri start --name my_custom_name my_dag.yaml -- P1=foo P2=bar
 
 This command parses the DAG definition, resolves parameters, and initiates the DAG-run execution.
 `,

@@ -308,7 +308,7 @@ func TestBuildJobAppliesExtendedKubernetesConfig(t *testing.T) {
 				RequiredDuringSchedulingIgnoredDuringExecution: []PodAffinityTerm{{
 					TopologyKey: "kubernetes.io/hostname",
 					LabelSelector: &LabelSelector{
-						MatchLabels: map[string]string{"app": "dagu"},
+						MatchLabels: map[string]string{"app": "ayatsuri"},
 					},
 				}},
 			},

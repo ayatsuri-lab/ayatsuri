@@ -10,8 +10,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/dagucloud/dagu/internal/auth"
-	"github.com/dagucloud/dagu/internal/service/frontend/api/pathutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/frontend/api/pathutil"
 )
 
 // Options configures the authentication middleware.
@@ -27,7 +27,7 @@ type Options struct {
 	// When set, JWT Bearer tokens are accepted as an authentication method.
 	JWTValidator TokenValidator
 	// APIKeyValidator validates API keys with roles.
-	// When set, API keys with the "dagu_" prefix are accepted as an authentication method.
+	// When set, API keys with the "ayatsuri_" prefix are accepted as an authentication method.
 	APIKeyValidator APIKeyValidator
 	// AuthRequired indicates whether authentication is required.
 	// When false (e.g., auth mode "none"), credentials are validated if provided
@@ -74,7 +74,7 @@ func ClientIPMiddleware() func(next http.Handler) http.Handler {
 // Middleware creates an HTTP middleware for authentication.
 // It supports multiple authentication methods simultaneously:
 // - JWT Bearer tokens (if JWTValidator is set)
-// - API keys with "dagu_" prefix (if APIKeyValidator is set)
+// - API keys with "ayatsuri_" prefix (if APIKeyValidator is set)
 // - HTTP Basic Auth (if BasicAuthEnabled)
 // All configured methods work at the same time.
 func Middleware(opts Options) func(next http.Handler) http.Handler {
@@ -143,8 +143,8 @@ func Middleware(opts Options) func(next http.Handler) http.Handler {
 			}
 
 			// Try API key authentication if enabled
-			// API keys have the "dagu_" prefix and have their own role assignment
-			if apiKeyEnabled && bearerToken != "" && strings.HasPrefix(bearerToken, "dagu_") {
+			// API keys have the "ayatsuri_" prefix and have their own role assignment
+			if apiKeyEnabled && bearerToken != "" && strings.HasPrefix(bearerToken, "ayatsuri_") {
 				apiKey, err := opts.APIKeyValidator.ValidateAPIKey(r.Context(), bearerToken)
 				if err == nil {
 					syntheticUser := &auth.User{

@@ -13,31 +13,31 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/dagucloud/dagu/api/v1"
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/agentoauth"
-	"github.com/dagucloud/dagu/internal/auth"
-	"github.com/dagucloud/dagu/internal/automata"
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/eval"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/baseconfig"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/license"
-	"github.com/dagucloud/dagu/internal/remotenode"
-	"github.com/dagucloud/dagu/internal/runtime"
-	"github.com/dagucloud/dagu/internal/service/audit"
-	authservice "github.com/dagucloud/dagu/internal/service/auth"
-	"github.com/dagucloud/dagu/internal/service/coordinator"
-	"github.com/dagucloud/dagu/internal/service/eventstore"
-	"github.com/dagucloud/dagu/internal/service/frontend/api/pathutil"
-	frontendauth "github.com/dagucloud/dagu/internal/service/frontend/auth"
-	"github.com/dagucloud/dagu/internal/service/resource"
-	"github.com/dagucloud/dagu/internal/service/scheduler"
-	"github.com/dagucloud/dagu/internal/tunnel"
-	"github.com/dagucloud/dagu/internal/workspace"
+	"github.com/ayatsuri-lab/ayatsuri/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agentoauth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/automata"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/eval"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/baseconfig"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/license"
+	"github.com/ayatsuri-lab/ayatsuri/internal/remotenode"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/audit"
+	authservice "github.com/ayatsuri-lab/ayatsuri/internal/service/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/coordinator"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/eventstore"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/frontend/api/pathutil"
+	frontendauth "github.com/ayatsuri-lab/ayatsuri/internal/service/frontend/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/resource"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/scheduler"
+	"github.com/ayatsuri-lab/ayatsuri/internal/tunnel"
+	"github.com/ayatsuri-lab/ayatsuri/internal/workspace"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/go-chi/chi/v5"
@@ -622,12 +622,12 @@ var (
 	errRBACNotLicensed = &Error{
 		HTTPStatus: http.StatusForbidden,
 		Code:       api.ErrorCodeForbidden,
-		Message:    "User management requires a Dagu Pro license",
+		Message:    "User management requires a Ayatsuri Pro license",
 	}
 	errAuditNotLicensed = &Error{
 		HTTPStatus: http.StatusForbidden,
 		Code:       api.ErrorCodeForbidden,
-		Message:    "Audit logs require a Dagu Pro license",
+		Message:    "Audit logs require a Ayatsuri Pro license",
 	}
 )
 

@@ -1,0 +1,10 @@
+{
+  "name": "@ayatsuri-lab/ayatsuri-freebsd-x64",
+  "version": "0.0.0-development",
+  "description": "Ayatsuri binary for FreeBSD x64",
+  "repository": "github:ayatsuri-lab/ayatsuri",
+  "license": "GPL-3.0",
+  "os": ["freebsd"],
+  "cpu": ["x64"],
+  "files": ["bin/ayatsuri"]
+}

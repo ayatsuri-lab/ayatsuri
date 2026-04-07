@@ -4,8 +4,8 @@
 package spec
 
 import (
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/spec/types"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec/types"
 	"github.com/go-viper/mapstructure/v2"
 )
 

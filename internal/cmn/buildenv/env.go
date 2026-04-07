@@ -13,7 +13,7 @@ import (
 // PresolvedEnvFileKey is the env var key used to reference a secure transport
 // file carrying pre-resolved DAG/base-config env values from a parent process
 // to a subprocess.
-const PresolvedEnvFileKey = "_DAGU_PRESOLVED_BUILD_ENV_FILE"
+const PresolvedEnvFileKey = "_AYATSURI_PRESOLVED_BUILD_ENV_FILE"
 
 // Prepare writes resolved env entries to a secure temp file and returns the
 // transport env vars plus a cleanup function. Duplicate keys are collapsed so
@@ -24,7 +24,7 @@ func Prepare(env []string) ([]string, func() error, error) {
 		return nil, nil, nil
 	}
 
-	file, err := os.CreateTemp("", "dagu-buildenv-*")
+	file, err := os.CreateTemp("", "ayatsuri-buildenv-*")
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create presolved build env file: %w", err)
 	}

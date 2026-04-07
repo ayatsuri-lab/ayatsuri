@@ -7,8 +7,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/persis/fileworkspace"
-	"github.com/dagucloud/dagu/internal/workspace"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileworkspace"
+	"github.com/ayatsuri-lab/ayatsuri/internal/workspace"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

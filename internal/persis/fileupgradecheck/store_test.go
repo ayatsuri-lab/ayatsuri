@@ -11,7 +11,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/dagucloud/dagu/internal/upgrade"
+	"github.com/ayatsuri-lab/ayatsuri/internal/upgrade"
 )
 
 func TestNew(t *testing.T) {

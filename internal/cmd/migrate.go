@@ -8,8 +8,8 @@ import (
 	"log/slog"
 	"path/filepath"
 
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
 	"github.com/spf13/cobra"
 )
 
@@ -42,7 +42,7 @@ This command will:
 - Report migration progress and any errors
 
 Example:
-  dagu migrate history`,
+  ayatsuri migrate history`,
 	}
 
 	return NewCommand(cmd, nil, func(ctx *Context, _ []string) error {

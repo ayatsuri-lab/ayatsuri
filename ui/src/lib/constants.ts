@@ -1,1 +1,1 @@
-export const LICENSE_CONSOLE_URL = 'https://console.dagu.sh';
+export const LICENSE_CONSOLE_URL = 'https://console.ayatsuri.sh';

@@ -6,7 +6,7 @@ package exec_test
 import (
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 	"github.com/stretchr/testify/assert"
 )
 

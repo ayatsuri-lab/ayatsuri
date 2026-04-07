@@ -12,8 +12,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
-	"github.com/dagucloud/dagu/internal/llm"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/llm"
 )
 
 const (
@@ -97,7 +97,7 @@ func (m *Manager) StartLogin(ctx context.Context, provider string) (*StartLoginR
 		FlowID:  flowID,
 		AuthURL: flow.AuthURL,
 		Instructions: "Open the URL in your browser. After authentication, copy the full redirect URL " +
-			"or the authorization code and paste it back into Dagu.",
+			"or the authorization code and paste it back into Ayatsuri.",
 	}, nil
 }
 

@@ -33,7 +33,7 @@ func TestNewMetrics(t *testing.T) {
 		metricNames[family.GetName()] = true
 	}
 
-	assert.True(t, metricNames["dagu_sse_messages_sent_total"])
+	assert.True(t, metricNames["ayatsuri_sse_messages_sent_total"])
 }
 
 func TestMetricsMessageSent(t *testing.T) {

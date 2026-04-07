@@ -1,7 +1,7 @@
 // Copyright (C) 2026 Yota Hamada
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-// Package redis provides Redis executor capabilities for Dagu workflows.
+// Package redis provides Redis executor capabilities for Ayatsuri workflows.
 package redis
 
 import (

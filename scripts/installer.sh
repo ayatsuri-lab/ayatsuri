@@ -4,9 +4,9 @@
 
 set -euo pipefail
 
-RELEASES_URL="https://github.com/dagucloud/dagu/releases"
-GITHUB_API_URL="https://api.github.com/repos/dagucloud/dagu/releases/latest"
-FILE_BASENAME="dagu"
+RELEASES_URL="https://github.com/ayatsuri-lab/ayatsuri/releases"
+GITHUB_API_URL="https://api.github.com/repos/ayatsuri-lab/ayatsuri/releases/latest"
+FILE_BASENAME="ayatsuri"
 WINSW_VERSION="v2.12.0"
 GUM_VERSION="0.17.0"
 
@@ -32,7 +32,7 @@ mktempdir() {
     local d
     if [[ -n "${WORKING_ROOT_DIR:-}" ]]; then
         mkdir -p "${WORKING_ROOT_DIR}" >/dev/null 2>&1 || true
-        d="$(mktemp -d "${WORKING_ROOT_DIR%/}/dagu-installer.XXXXXX")"
+        d="$(mktemp -d "${WORKING_ROOT_DIR%/}/ayatsuri-installer.XXXXXX")"
     else
         d="$(mktemp -d)"
     fi
@@ -49,7 +49,7 @@ mktempfile() {
 }
 
 WORKING_ROOT_DIR=""
-DAGU_INSTALL_DIR="${DAGU_INSTALL_DIR:-}"
+AYATSURI_INSTALL_DIR="${AYATSURI_INSTALL_DIR:-}"
 VERSION=""
 NO_PROMPT=0
 DRY_RUN=0
@@ -79,15 +79,15 @@ SERVICE_ENV_FILE=""
 SERVICE_BOOTSTRAP_FILE=""
 SERVICE_UNIT_FILE=""
 SERVICE_PLIST_FILE=""
-SERVICE_LABEL="local.dagu.server"
-DAGU_HOME_DIR=""
+SERVICE_LABEL="local.ayatsuri.server"
+AYATSURI_HOME_DIR=""
 INSTALL_PATH=""
 SERVICE_URL=""
 SERVICE_PATH=""
 SKILL_DETECTED_COUNT=0
 SCRUB_BACKUP_FILE=""
 declare -a UNINSTALL_INSTALL_PATHS=()
-declare -a UNINSTALL_DAGU_HOMES=()
+declare -a UNINSTALL_AYATSURI_HOMES=()
 declare -a UNINSTALL_PATH_PROFILES=()
 declare -a UNINSTALL_SKILL_DIRS=()
 declare -a UNINSTALL_COPILOT_FILES=()
@@ -97,24 +97,24 @@ UNINSTALL_MULTIPLE_INSTALLS_CONFIRMED=0
 
 usage() {
     cat <<'EOF'
-Dagu installer wizard
+Ayatsuri installer wizard
 
 Options:
-  --uninstall                Remove Dagu, its background service, and installer PATH changes
-  --purge-data               Also delete the detected Dagu data directory
-  --remove-skill             Also remove Dagu AI skill installs
+  --uninstall                Remove Ayatsuri, its background service, and installer PATH changes
+  --purge-data               Also delete the detected Ayatsuri data directory
+  --remove-skill             Also remove Ayatsuri AI skill installs
   --version <tag>            Install a specific version (for example: v1.24.0)
   --install-dir <path>       Install to a custom directory
   --prefix <path>            Alias for --install-dir
   --working-dir <path>       Store temporary files under this directory
-  --service <yes|no>         Install and start Dagu as a background service
+  --service <yes|no>         Install and start Ayatsuri as a background service
   --service-scope <scope>    Service scope: user or system
-  --host <host>              Host address for the Dagu web UI
-  --port <port>              Port for the Dagu web UI
-  --skills-dir <path>        Install the Dagu skill into this skills directory (repeatable)
+  --host <host>              Host address for the Ayatsuri web UI
+  --port <port>              Port for the Ayatsuri web UI
+  --skills-dir <path>        Install the Ayatsuri skill into this skills directory (repeatable)
   --admin-username <name>    Initial admin username for builtin auth bootstrap
   --admin-password <pass>    Initial admin password for builtin auth bootstrap
-  --open-browser <yes|no>    Open the Dagu URL after successful setup
+  --open-browser <yes|no>    Open the Ayatsuri URL after successful setup
   --no-prompt                Disable interactive prompts
   --dry-run                  Print the plan without making changes
   --verbose                  Show command output during install
@@ -130,7 +130,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         --install-dir|--prefix)
             shift
-            DAGU_INSTALL_DIR="${1:-}"
+            AYATSURI_INSTALL_DIR="${1:-}"
             ;;
         --working-dir)
             shift
@@ -460,14 +460,14 @@ ui_kv() {
 print_banner() {
     if [[ -n "$GUM" ]]; then
         local title tagline card
-        title="$("$GUM" style --foreground "#0b5d44" --bold "Dagu Installer")"
-        tagline="$("$GUM" style --foreground "#5c6c7a" "Install Dagu, set it up as a background app, and get you to the UI quickly.")"
+        title="$("$GUM" style --foreground "#0b5d44" --bold "Ayatsuri Installer")"
+        tagline="$("$GUM" style --foreground "#5c6c7a" "Install Ayatsuri, set it up as a background app, and get you to the UI quickly.")"
         card="$(printf '%s\n%s' "$title" "$tagline")"
         "$GUM" style --border rounded --border-foreground "#0b5d44" --padding "1 2" "$card"
         printf '\n'
     else
-        printf '%b%bDagu Installer%b\n' "${ACCENT}" "${BOLD}" "${NC}"
-        printf '%bInstall Dagu, set it up as a background app, and get you to the UI quickly.%b\n\n' "${INFO}" "${NC}"
+        printf '%b%bAyatsuri Installer%b\n' "${ACCENT}" "${BOLD}" "${NC}"
+        printf '%bInstall Ayatsuri, set it up as a background app, and get you to the UI quickly.%b\n\n' "${INFO}" "${NC}"
     fi
 }
 
@@ -605,7 +605,7 @@ resolve_version() {
     fi
     VERSION="$(download_stdout "${RELEASES_URL}/latest" 2>/dev/null | sed -n 's#.*/tag/\([^"]*\).*#\1#p' | head -n1 || true)"
     if [[ -z "$VERSION" ]]; then
-        ui_error "Failed to determine the latest Dagu version."
+        ui_error "Failed to determine the latest Ayatsuri version."
         exit 1
     fi
 }
@@ -652,8 +652,8 @@ detect_skill_targets() {
 }
 
 default_install_dir() {
-    if [[ -n "$DAGU_INSTALL_DIR" ]]; then
-        printf '%s' "$DAGU_INSTALL_DIR"
+    if [[ -n "$AYATSURI_INSTALL_DIR" ]]; then
+        printf '%s' "$AYATSURI_INSTALL_DIR"
         return 0
     fi
     if [[ "$SERVICE_MODE" == "yes" && "$OS" == "linux" && "$SERVICE_SCOPE" == "system" ]]; then
@@ -663,11 +663,11 @@ default_install_dir() {
     fi
 }
 
-default_dagu_home() {
+default_ayatsuri_home() {
     if [[ "$OS" == "linux" && "$SERVICE_MODE" == "yes" && "$SERVICE_SCOPE" == "system" ]]; then
-        printf '/var/lib/dagu'
+        printf '/var/lib/ayatsuri'
     else
-        printf '%s/.dagu' "$HOME"
+        printf '%s/.ayatsuri' "$HOME"
     fi
 }
 
@@ -710,9 +710,9 @@ configure_defaults() {
     if [[ -z "$PORT" ]]; then
         PORT="8080"
     fi
-    DAGU_INSTALL_DIR="$(default_install_dir)"
-    DAGU_HOME_DIR="$(default_dagu_home)"
-    INSTALL_PATH="${DAGU_INSTALL_DIR}/dagu"
+    AYATSURI_INSTALL_DIR="$(default_install_dir)"
+    AYATSURI_HOME_DIR="$(default_ayatsuri_home)"
+    INSTALL_PATH="${AYATSURI_INSTALL_DIR}/ayatsuri"
     SERVICE_URL="http://${HOST}:${PORT}"
     resolve_service_path
     if [[ -z "$OPEN_BROWSER" ]]; then
@@ -762,7 +762,7 @@ resolve_service_path() {
         path_helper_output="$("/usr/libexec/path_helper" -s 2>/dev/null | sed -n 's/^PATH=\"\(.*\)\"; export PATH$/\1/p' | head -n1 || true)"
         append_service_path_list "${path_helper_output}"
     fi
-    append_service_path_segment "${DAGU_INSTALL_DIR}"
+    append_service_path_segment "${AYATSURI_INSTALL_DIR}"
     append_service_path_segment "${HOME}/.local/bin"
     append_service_path_segment "${HOME}/bin"
     append_service_path_segment "${HOME}/.npm-global/bin"
@@ -790,14 +790,14 @@ add_uninstall_install_path() {
     UNINSTALL_INSTALL_PATHS+=("$item")
 }
 
-add_uninstall_dagu_home() {
+add_uninstall_ayatsuri_home() {
     local item="$1"
     local existing
     [[ -z "$item" ]] && return 0
-    for existing in "${UNINSTALL_DAGU_HOMES[@]:-}"; do
+    for existing in "${UNINSTALL_AYATSURI_HOMES[@]:-}"; do
         [[ "$existing" == "$item" ]] && return 0
     done
-    UNINSTALL_DAGU_HOMES+=("$item")
+    UNINSTALL_AYATSURI_HOMES+=("$item")
 }
 
 add_uninstall_path_profile() {
@@ -886,7 +886,7 @@ choose_operation_mode() {
         return 0
     fi
     ui_section "Choose setup"
-    if prompt_yes_no "Install or repair Dagu now?" "yes"; then
+    if prompt_yes_no "Install or repair Ayatsuri now?" "yes"; then
         UNINSTALL_MODE=0
     else
         UNINSTALL_MODE=1
@@ -933,9 +933,9 @@ run_install_wizard() {
         return 0
     fi
     ui_section "Recommended setup"
-    ui_info "This wizard can install Dagu, run it in the background, create your first admin, and install the Dagu AI skill."
+    ui_info "This wizard can install Ayatsuri, run it in the background, create your first admin, and install the Ayatsuri AI skill."
 
-    if prompt_yes_no "Install Dagu as a background service?" "yes"; then
+    if prompt_yes_no "Install Ayatsuri as a background service?" "yes"; then
         SERVICE_MODE="yes"
     else
         SERVICE_MODE="no"
@@ -950,18 +950,18 @@ run_install_wizard() {
         fi
     fi
 
-    if prompt_yes_no "Open Dagu only on this computer?" "yes"; then
+    if prompt_yes_no "Open Ayatsuri only on this computer?" "yes"; then
         HOST="127.0.0.1"
     else
         HOST="0.0.0.0"
     fi
 
     PORT="$(prompt_text "Web UI port" "${PORT}")"
-    DAGU_INSTALL_DIR="$(prompt_text "Install directory" "${DAGU_INSTALL_DIR}")"
-    INSTALL_PATH="${DAGU_INSTALL_DIR}/dagu"
+    AYATSURI_INSTALL_DIR="$(prompt_text "Install directory" "${AYATSURI_INSTALL_DIR}")"
+    INSTALL_PATH="${AYATSURI_INSTALL_DIR}/ayatsuri"
 
     if [[ "$SERVICE_MODE" == "yes" ]]; then
-        DAGU_HOME_DIR="$(prompt_text "Dagu data directory" "${DAGU_HOME_DIR}")"
+        AYATSURI_HOME_DIR="$(prompt_text "Ayatsuri data directory" "${AYATSURI_HOME_DIR}")"
         ADMIN_USERNAME="$(prompt_text "Initial admin username" "${ADMIN_USERNAME:-admin}")"
         if [[ -z "$ADMIN_PASSWORD" ]]; then
             ADMIN_PASSWORD="$(prompt_secret_confirm "Initial admin password")"
@@ -974,12 +974,12 @@ run_install_wizard() {
 
     if [[ ${#EXPLICIT_SKILL_DIRS[@]} -eq 0 ]]; then
         if [[ "$SKILL_DETECTED_COUNT" -gt 0 ]]; then
-            if prompt_yes_no "Install the Dagu AI skill into detected AI tools?" "yes"; then
+            if prompt_yes_no "Install the Ayatsuri AI skill into detected AI tools?" "yes"; then
                 SKILL_MODE="auto"
             else
                 SKILL_MODE="skip"
             fi
-        elif prompt_yes_no "Install the Dagu AI skill into a custom skills directory?" "no"; then
+        elif prompt_yes_no "Install the Ayatsuri AI skill into a custom skills directory?" "no"; then
             answer="$(prompt_text "Skills directory" "${HOME}/.agents/skills")"
             if [[ -n "$answer" ]]; then
                 EXPLICIT_SKILL_DIRS+=("$answer")
@@ -996,11 +996,11 @@ show_install_plan() {
     ui_kv "Version" "${VERSION}"
     ui_kv "OS" "${OS}"
     ui_kv "Architecture" "${ARCH}"
-    ui_kv "Install directory" "${DAGU_INSTALL_DIR}"
+    ui_kv "Install directory" "${AYATSURI_INSTALL_DIR}"
     ui_kv "Run as background app" "${SERVICE_MODE}"
     if [[ "$SERVICE_MODE" == "yes" ]]; then
         ui_kv "Service scope" "${SERVICE_SCOPE}"
-        ui_kv "Dagu home" "${DAGU_HOME_DIR}"
+        ui_kv "Ayatsuri home" "${AYATSURI_HOME_DIR}"
         ui_kv "URL" "${SERVICE_URL}"
         ui_kv "Admin bootstrap" "${ADMIN_USERNAME:-disabled}"
     fi
@@ -1105,7 +1105,7 @@ read_mac_program_argument0() {
 find_managed_path_profiles() {
     local profile
     for profile in "${HOME}/.zprofile" "${HOME}/.bash_profile" "${HOME}/.bashrc" "${HOME}/.profile"; do
-        if [[ -f "$profile" ]] && grep -Fq "# >>> dagu installer >>>" "$profile" 2>/dev/null; then
+        if [[ -f "$profile" ]] && grep -Fq "# >>> ayatsuri installer >>>" "$profile" 2>/dev/null; then
             add_uninstall_path_profile "$profile"
         fi
     done
@@ -1123,11 +1123,11 @@ discover_linux_uninstall_scope() {
     discovered_exec="$(read_systemd_setting "${SERVICE_UNIT_FILE}" "ExecStart")"
     discovered_exec="${discovered_exec%% *}"
     add_uninstall_install_path "$discovered_exec"
-    discovered_home="$(read_env_value_maybe_sudo "${SERVICE_ENV_FILE}" "DAGU_HOME")"
+    discovered_home="$(read_env_value_maybe_sudo "${SERVICE_ENV_FILE}" "AYATSURI_HOME")"
     if [[ -z "$discovered_home" ]]; then
         discovered_home="$(read_systemd_setting "${SERVICE_UNIT_FILE}" "WorkingDirectory")"
     fi
-    add_uninstall_dagu_home "$discovered_home"
+    add_uninstall_ayatsuri_home "$discovered_home"
 }
 
 discover_mac_uninstall() {
@@ -1139,31 +1139,31 @@ discover_mac_uninstall() {
     UNINSTALL_MAC_SERVICE=1
     discovered_exec="$(read_mac_program_argument0 "${SERVICE_PLIST_FILE}")"
     add_uninstall_install_path "$discovered_exec"
-    discovered_home="$(read_env_value_maybe_sudo "${SERVICE_ENV_FILE}" "DAGU_HOME")"
+    discovered_home="$(read_env_value_maybe_sudo "${SERVICE_ENV_FILE}" "AYATSURI_HOME")"
     if [[ -z "$discovered_home" ]]; then
         discovered_home="$(read_mac_plist_string_key "${SERVICE_PLIST_FILE}" "WorkingDirectory")"
     fi
-    add_uninstall_dagu_home "$discovered_home"
+    add_uninstall_ayatsuri_home "$discovered_home"
 }
 
 discover_skill_removals() {
     local agents_home codex_home xdg_copilot home_copilot custom_dir
-    if [[ -d "${HOME}/.claude/skills/dagu" ]]; then
-        add_uninstall_skill_dir "${HOME}/.claude/skills/dagu"
+    if [[ -d "${HOME}/.claude/skills/ayatsuri" ]]; then
+        add_uninstall_skill_dir "${HOME}/.claude/skills/ayatsuri"
     fi
     agents_home="${AGENTS_HOME:-${HOME}/.agents}"
-    if [[ -d "${agents_home}/skills/dagu" ]]; then
-        add_uninstall_skill_dir "${agents_home}/skills/dagu"
+    if [[ -d "${agents_home}/skills/ayatsuri" ]]; then
+        add_uninstall_skill_dir "${agents_home}/skills/ayatsuri"
     fi
     codex_home="${CODEX_HOME:-${HOME}/.codex}"
-    if [[ -d "${codex_home}/skills/dagu" ]]; then
-        add_uninstall_skill_dir "${codex_home}/skills/dagu"
+    if [[ -d "${codex_home}/skills/ayatsuri" ]]; then
+        add_uninstall_skill_dir "${codex_home}/skills/ayatsuri"
     fi
-    if [[ -d "${HOME}/.config/opencode/skills/dagu" ]]; then
-        add_uninstall_skill_dir "${HOME}/.config/opencode/skills/dagu"
+    if [[ -d "${HOME}/.config/opencode/skills/ayatsuri" ]]; then
+        add_uninstall_skill_dir "${HOME}/.config/opencode/skills/ayatsuri"
     fi
-    if [[ -d "${HOME}/.gemini/skills/dagu" ]]; then
-        add_uninstall_skill_dir "${HOME}/.gemini/skills/dagu"
+    if [[ -d "${HOME}/.gemini/skills/ayatsuri" ]]; then
+        add_uninstall_skill_dir "${HOME}/.gemini/skills/ayatsuri"
     fi
     xdg_copilot="${XDG_CONFIG_HOME:-${HOME}}/.copilot/copilot-instructions.md"
     home_copilot="${HOME}/.copilot/copilot-instructions.md"
@@ -1175,15 +1175,15 @@ discover_skill_removals() {
     fi
     if [[ ${#EXPLICIT_SKILL_DIRS[@]} -gt 0 ]]; then
         for custom_dir in "${EXPLICIT_SKILL_DIRS[@]}"; do
-            add_uninstall_skill_dir "${custom_dir%/}/dagu"
+            add_uninstall_skill_dir "${custom_dir%/}/ayatsuri"
         done
     fi
 }
 
 apply_uninstall_filters() {
     local explicit_install_path
-    if [[ -n "$DAGU_INSTALL_DIR" ]]; then
-        explicit_install_path="${DAGU_INSTALL_DIR%/}/dagu"
+    if [[ -n "$AYATSURI_INSTALL_DIR" ]]; then
+        explicit_install_path="${AYATSURI_INSTALL_DIR%/}/ayatsuri"
         strip_matching_install_paths "$explicit_install_path"
         if [[ ${#UNINSTALL_INSTALL_PATHS[@]} -eq 0 ]]; then
             add_uninstall_install_path "$explicit_install_path"
@@ -1200,7 +1200,7 @@ apply_uninstall_filters() {
 discover_uninstall_artifacts() {
     local requested_scope="${SERVICE_SCOPE}"
     UNINSTALL_INSTALL_PATHS=()
-    UNINSTALL_DAGU_HOMES=()
+    UNINSTALL_AYATSURI_HOMES=()
     UNINSTALL_PATH_PROFILES=()
     UNINSTALL_SKILL_DIRS=()
     UNINSTALL_COPILOT_FILES=()
@@ -1214,20 +1214,20 @@ discover_uninstall_artifacts() {
         discover_mac_uninstall
     fi
 
-    if command -v dagu >/dev/null 2>&1; then
-        add_uninstall_install_path "$(command -v dagu)"
+    if command -v ayatsuri >/dev/null 2>&1; then
+        add_uninstall_install_path "$(command -v ayatsuri)"
     fi
-    if [[ -f "${HOME}/.local/bin/dagu" ]]; then
-        add_uninstall_install_path "${HOME}/.local/bin/dagu"
+    if [[ -f "${HOME}/.local/bin/ayatsuri" ]]; then
+        add_uninstall_install_path "${HOME}/.local/bin/ayatsuri"
     fi
-    if [[ -f "/usr/local/bin/dagu" ]]; then
-        add_uninstall_install_path "/usr/local/bin/dagu"
+    if [[ -f "/usr/local/bin/ayatsuri" ]]; then
+        add_uninstall_install_path "/usr/local/bin/ayatsuri"
     fi
-    if [[ -d "${HOME}/.dagu" ]]; then
-        add_uninstall_dagu_home "${HOME}/.dagu"
+    if [[ -d "${HOME}/.ayatsuri" ]]; then
+        add_uninstall_ayatsuri_home "${HOME}/.ayatsuri"
     fi
-    if [[ -d "/var/lib/dagu" ]]; then
-        add_uninstall_dagu_home "/var/lib/dagu"
+    if [[ -d "/var/lib/ayatsuri" ]]; then
+        add_uninstall_ayatsuri_home "/var/lib/ayatsuri"
     fi
     SERVICE_SCOPE="${requested_scope}"
     find_managed_path_profiles
@@ -1239,13 +1239,13 @@ validate_uninstall_discovery() {
     if [[ "$UNINSTALL_MODE" != "1" ]]; then
         return 0
     fi
-    if [[ ${#UNINSTALL_INSTALL_PATHS[@]} -gt 1 && -z "$DAGU_INSTALL_DIR" ]]; then
+    if [[ ${#UNINSTALL_INSTALL_PATHS[@]} -gt 1 && -z "$AYATSURI_INSTALL_DIR" ]]; then
         if ! is_promptable; then
-            ui_error "Multiple Dagu installations were detected. Rerun with --install-dir to choose which one to remove."
+            ui_error "Multiple Ayatsuri installations were detected. Rerun with --install-dir to choose which one to remove."
             exit 1
         fi
-        ui_warn "Multiple Dagu binaries were detected: $(join_with_comma "${UNINSTALL_INSTALL_PATHS[@]}")"
-        if ! prompt_yes_no "Remove all detected Dagu binaries?" "yes"; then
+        ui_warn "Multiple Ayatsuri binaries were detected: $(join_with_comma "${UNINSTALL_INSTALL_PATHS[@]}")"
+        if ! prompt_yes_no "Remove all detected Ayatsuri binaries?" "yes"; then
             ui_error "Rerun with --install-dir to choose which installation to remove."
             exit 1
         fi
@@ -1259,12 +1259,12 @@ run_uninstall_wizard() {
     fi
     ui_section "Uninstall options"
     if [[ ${#UNINSTALL_SKILL_DIRS[@]} -gt 0 || ${#UNINSTALL_COPILOT_FILES[@]} -gt 0 ]]; then
-        if prompt_yes_no "Remove the Dagu AI skill from detected AI tools too?" "no"; then
+        if prompt_yes_no "Remove the Ayatsuri AI skill from detected AI tools too?" "no"; then
             REMOVE_SKILL=1
         fi
     fi
-    if [[ ${#UNINSTALL_DAGU_HOMES[@]} -gt 0 ]]; then
-        if prompt_yes_no "Delete the detected Dagu data directory too?" "no"; then
+    if [[ ${#UNINSTALL_AYATSURI_HOMES[@]} -gt 0 ]]; then
+        if prompt_yes_no "Delete the detected Ayatsuri data directory too?" "no"; then
             PURGE_DATA=1
         fi
     fi
@@ -1284,7 +1284,7 @@ show_uninstall_plan() {
     if [[ "$PURGE_DATA" == "1" ]]; then
         data_action="remove"
     fi
-    ui_kv "Data directory" "${data_action}: $( [[ ${#UNINSTALL_DAGU_HOMES[@]} -gt 0 ]] && join_with_comma "${UNINSTALL_DAGU_HOMES[@]}" || printf 'none detected' )"
+    ui_kv "Data directory" "${data_action}: $( [[ ${#UNINSTALL_AYATSURI_HOMES[@]} -gt 0 ]] && join_with_comma "${UNINSTALL_AYATSURI_HOMES[@]}" || printf 'none detected' )"
     ui_kv "PATH cleanup" "$( [[ ${#UNINSTALL_PATH_PROFILES[@]} -gt 0 ]] && join_with_comma "${UNINSTALL_PATH_PROFILES[@]}" || printf 'none detected' )"
     if [[ "$REMOVE_SKILL" == "1" ]]; then
         ui_kv "AI skill removal" "$( [[ ${#UNINSTALL_SKILL_DIRS[@]} -gt 0 || ${#UNINSTALL_COPILOT_FILES[@]} -gt 0 ]] && join_with_comma "${UNINSTALL_SKILL_DIRS[@]}" "${UNINSTALL_COPILOT_FILES[@]}" || printf 'requested, but nothing detected' )"
@@ -1306,7 +1306,7 @@ uninstall_has_anything() {
     if [[ ${#UNINSTALL_PATH_PROFILES[@]} -gt 0 ]]; then
         return 0
     fi
-    if [[ ${#UNINSTALL_DAGU_HOMES[@]} -gt 0 ]]; then
+    if [[ ${#UNINSTALL_AYATSURI_HOMES[@]} -gt 0 ]]; then
         return 0
     fi
     if [[ ${#UNINSTALL_SKILL_DIRS[@]} -gt 0 || ${#UNINSTALL_COPILOT_FILES[@]} -gt 0 ]]; then
@@ -1319,7 +1319,7 @@ remove_managed_path_block_from_profile() {
     local profile="$1"
     local tmp
     [[ -f "$profile" ]] || return 0
-    if ! grep -Fq "# >>> dagu installer >>>" "$profile" 2>/dev/null; then
+    if ! grep -Fq "# >>> ayatsuri installer >>>" "$profile" 2>/dev/null; then
         return 0
     fi
     if [[ "$DRY_RUN" == "1" ]]; then
@@ -1328,8 +1328,8 @@ remove_managed_path_block_from_profile() {
     fi
     tmp="$(mktempfile)"
     awk '
-        /^# >>> dagu installer >>>$/ { skip=1; next }
-        /^# <<< dagu installer <<<$/{ skip=0; next }
+        /^# >>> ayatsuri installer >>>$/ { skip=1; next }
+        /^# <<< ayatsuri installer <<<$/{ skip=0; next }
         !skip { print }
     ' "$profile" >"${tmp}"
     cat "${tmp}" >"${profile}"
@@ -1371,14 +1371,14 @@ remove_linux_service_scope() {
         return 0
     fi
     if [[ "$scope" == "system" ]]; then
-        sudo systemctl stop dagu >/dev/null 2>&1 || true
-        sudo systemctl disable dagu >/dev/null 2>&1 || true
+        sudo systemctl stop ayatsuri >/dev/null 2>&1 || true
+        sudo systemctl disable ayatsuri >/dev/null 2>&1 || true
         sudo rm -f "${SERVICE_UNIT_FILE}" "${SERVICE_ENV_FILE}" "${SERVICE_BOOTSTRAP_FILE}"
         sudo rmdir "$(dirname "${SERVICE_ENV_FILE}")" >/dev/null 2>&1 || true
         sudo systemctl daemon-reload >/dev/null 2>&1 || true
     else
-        systemctl --user stop dagu >/dev/null 2>&1 || true
-        systemctl --user disable dagu >/dev/null 2>&1 || true
+        systemctl --user stop ayatsuri >/dev/null 2>&1 || true
+        systemctl --user disable ayatsuri >/dev/null 2>&1 || true
         rm -f "${SERVICE_UNIT_FILE}" "${SERVICE_ENV_FILE}" "${SERVICE_BOOTSTRAP_FILE}"
         rmdir "$(dirname "${SERVICE_UNIT_FILE}")" >/dev/null 2>&1 || true
         rmdir "$(dirname "${SERVICE_ENV_FILE}")" >/dev/null 2>&1 || true
@@ -1401,7 +1401,7 @@ remove_mac_service_artifacts() {
 remove_skill_dir() {
     local dir="$1"
     [[ -z "$dir" ]] && return 0
-    if [[ "$(basename "$dir")" != "dagu" ]]; then
+    if [[ "$(basename "$dir")" != "ayatsuri" ]]; then
         ui_warn "Skipping unexpected skill path: ${dir}"
         return 0
     fi
@@ -1416,8 +1416,8 @@ remove_copilot_markers() {
     local file="$1"
     local begin_count end_count begin_line end_line tmp
     [[ -f "$file" ]] || return 0
-    begin_count="$(grep -c '<!-- BEGIN DAGU -->' "$file" 2>/dev/null || true)"
-    end_count="$(grep -c '<!-- END DAGU -->' "$file" 2>/dev/null || true)"
+    begin_count="$(grep -c '<!-- BEGIN AYATSURI -->' "$file" 2>/dev/null || true)"
+    end_count="$(grep -c '<!-- END AYATSURI -->' "$file" 2>/dev/null || true)"
     [[ -z "$begin_count" ]] && begin_count="0"
     [[ -z "$end_count" ]] && end_count="0"
     if [[ "$begin_count" != "1" || "$end_count" != "1" ]]; then
@@ -1426,20 +1426,20 @@ remove_copilot_markers() {
         fi
         return 0
     fi
-    begin_line="$(grep -n '<!-- BEGIN DAGU -->' "$file" | head -n1 | cut -d: -f1)"
-    end_line="$(grep -n '<!-- END DAGU -->' "$file" | head -n1 | cut -d: -f1)"
+    begin_line="$(grep -n '<!-- BEGIN AYATSURI -->' "$file" | head -n1 | cut -d: -f1)"
+    end_line="$(grep -n '<!-- END AYATSURI -->' "$file" | head -n1 | cut -d: -f1)"
     if [[ -z "$begin_line" || -z "$end_line" || "$end_line" -le "$begin_line" ]]; then
         ui_warn "Skipping malformed Copilot instructions file: ${file}"
         return 0
     fi
     if [[ "$DRY_RUN" == "1" ]]; then
-        ui_info "Would remove the Dagu section from ${file}"
+        ui_info "Would remove the Ayatsuri section from ${file}"
         return 0
     fi
     tmp="$(mktempfile)"
     awk '
-        /<!-- BEGIN DAGU -->/ { skip=1; next }
-        /<!-- END DAGU -->/ { skip=0; next }
+        /<!-- BEGIN AYATSURI -->/ { skip=1; next }
+        /<!-- END AYATSURI -->/ { skip=0; next }
         !skip { print }
     ' "$file" >"${tmp}"
     if [[ ! -s "${tmp}" ]]; then
@@ -1449,7 +1449,7 @@ remove_copilot_markers() {
     cat "${tmp}" >"${file}"
 }
 
-purge_dagu_home() {
+purge_ayatsuri_home() {
     local dir="$1"
     [[ -z "$dir" ]] && return 0
     if is_unsafe_delete_target "$dir"; then
@@ -1467,7 +1467,7 @@ run_uninstall() {
     local path scope profile skill_dir copilot_file
     if ! uninstall_has_anything; then
         ui_section "Uninstall"
-        ui_info "Nothing to uninstall. No Dagu install, service, managed PATH block, data directory, or skill install was detected."
+        ui_info "Nothing to uninstall. No Ayatsuri install, service, managed PATH block, data directory, or skill install was detected."
         return 0
     fi
     if [[ "$DRY_RUN" == "1" ]]; then
@@ -1496,8 +1496,8 @@ run_uninstall() {
         done
     fi
     if [[ "$PURGE_DATA" == "1" ]]; then
-        for path in "${UNINSTALL_DAGU_HOMES[@]:-}"; do
-            purge_dagu_home "$path"
+        for path in "${UNINSTALL_AYATSURI_HOMES[@]:-}"; do
+            purge_ayatsuri_home "$path"
         done
     fi
 }
@@ -1533,11 +1533,11 @@ verify_release_archive() {
     fi
 }
 
-download_dagu_archive() {
+download_ayatsuri_archive() {
     local tmpdir="$1"
-    local asset="dagu_${VERSION#v}_${ARCHIVE_OS}_${ARCH}.tar.gz"
+    local asset="ayatsuri_${VERSION#v}_${ARCHIVE_OS}_${ARCH}.tar.gz"
     local archive="${tmpdir}/${asset}"
-    ui_info "Downloading Dagu ${VERSION}" >&2
+    ui_info "Downloading Ayatsuri ${VERSION}" >&2
     download_file "${RELEASES_URL}/download/${VERSION}/${asset}" "${archive}"
     verify_release_archive "${tmpdir}" "${asset}"
     printf '%s\n' "${archive}"
@@ -1547,11 +1547,11 @@ extract_binary_from_archive() {
     local archive="$1"
     local tmpdir="$2"
     tar -xzf "${archive}" -C "${tmpdir}"
-    if [[ ! -f "${tmpdir}/dagu" ]]; then
-        ui_error "The Dagu binary was not found in the release archive."
+    if [[ ! -f "${tmpdir}/ayatsuri" ]]; then
+        ui_error "The Ayatsuri binary was not found in the release archive."
         exit 1
     fi
-    printf '%s\n' "${tmpdir}/dagu"
+    printf '%s\n' "${tmpdir}/ayatsuri"
 }
 
 sudo_if_needed() {
@@ -1572,21 +1572,21 @@ install_binary() {
         return 0
     fi
 
-    mkdir -p "${DAGU_INSTALL_DIR}" 2>/dev/null || true
+    mkdir -p "${AYATSURI_INSTALL_DIR}" 2>/dev/null || true
     if install -m 0755 "${source_binary}" "${INSTALL_PATH}" 2>/dev/null; then
         return 0
     fi
 
-    ui_info "Using sudo to install into ${DAGU_INSTALL_DIR}"
-    sudo mkdir -p "${DAGU_INSTALL_DIR}"
+    ui_info "Using sudo to install into ${AYATSURI_INSTALL_DIR}"
+    sudo mkdir -p "${AYATSURI_INSTALL_DIR}"
     sudo install -m 0755 "${source_binary}" "${INSTALL_PATH}"
 }
 
 managed_path_block() {
     cat <<EOF
-# >>> dagu installer >>>
-export PATH="\$PATH:${DAGU_INSTALL_DIR}"
-# <<< dagu installer <<<
+# >>> ayatsuri installer >>>
+export PATH="\$PATH:${AYATSURI_INSTALL_DIR}"
+# <<< ayatsuri installer <<<
 EOF
 }
 
@@ -1608,31 +1608,31 @@ detect_profile_file() {
 
 ensure_path_block() {
     local profile
-    if printf '%s' "${PATH}" | tr ':' '\n' | grep -Fxq "${DAGU_INSTALL_DIR}"; then
+    if printf '%s' "${PATH}" | tr ':' '\n' | grep -Fxq "${AYATSURI_INSTALL_DIR}"; then
         return 0
     fi
     profile="$(detect_profile_file)"
     if [[ "$DRY_RUN" == "1" ]]; then
-        ui_info "Would add ${DAGU_INSTALL_DIR} to ${profile}"
+        ui_info "Would add ${AYATSURI_INSTALL_DIR} to ${profile}"
         return 0
     fi
     touch "${profile}"
-    if grep -Fq "# >>> dagu installer >>>" "${profile}" 2>/dev/null; then
+    if grep -Fq "# >>> ayatsuri installer >>>" "${profile}" 2>/dev/null; then
         return 0
     fi
     printf '\n%s\n' "$(managed_path_block)" >>"${profile}"
-    ui_success "Added ${DAGU_INSTALL_DIR} to ${profile}"
+    ui_success "Added ${AYATSURI_INSTALL_DIR} to ${profile}"
 }
 
 linux_service_files() {
     if [[ "$SERVICE_SCOPE" == "system" ]]; then
-        SERVICE_UNIT_FILE="/etc/systemd/system/dagu.service"
-        SERVICE_ENV_FILE="/etc/dagu/dagu.env"
-        SERVICE_BOOTSTRAP_FILE="/etc/dagu/bootstrap.env"
+        SERVICE_UNIT_FILE="/etc/systemd/system/ayatsuri.service"
+        SERVICE_ENV_FILE="/etc/ayatsuri/ayatsuri.env"
+        SERVICE_BOOTSTRAP_FILE="/etc/ayatsuri/bootstrap.env"
     else
-        SERVICE_UNIT_FILE="${HOME}/.config/systemd/user/dagu.service"
-        SERVICE_ENV_FILE="${HOME}/.config/dagu/dagu.env"
-        SERVICE_BOOTSTRAP_FILE="${HOME}/.config/dagu/bootstrap.env"
+        SERVICE_UNIT_FILE="${HOME}/.config/systemd/user/ayatsuri.service"
+        SERVICE_ENV_FILE="${HOME}/.config/ayatsuri/ayatsuri.env"
+        SERVICE_BOOTSTRAP_FILE="${HOME}/.config/ayatsuri/bootstrap.env"
     fi
 }
 
@@ -1642,13 +1642,13 @@ write_linux_env_file() {
     local tmp
     tmp="$(mktempfile)"
     {
-        printf 'DAGU_HOME=%s\n' "$(quote_env_value "${DAGU_HOME_DIR}")"
-        printf 'DAGU_HOST=%s\n' "$(quote_env_value "${HOST}")"
-        printf 'DAGU_PORT=%s\n' "$(quote_env_value "${PORT}")"
+        printf 'AYATSURI_HOME=%s\n' "$(quote_env_value "${AYATSURI_HOME_DIR}")"
+        printf 'AYATSURI_HOST=%s\n' "$(quote_env_value "${HOST}")"
+        printf 'AYATSURI_PORT=%s\n' "$(quote_env_value "${PORT}")"
         printf 'PATH=%s\n' "$(quote_env_value "${SERVICE_PATH}")"
         if [[ "$bootstrap" == "yes" ]]; then
-            printf 'DAGU_AUTH_BUILTIN_INITIAL_ADMIN_USERNAME=%s\n' "$(quote_env_value "${ADMIN_USERNAME}")"
-            printf 'DAGU_AUTH_BUILTIN_INITIAL_ADMIN_PASSWORD=%s\n' "$(quote_env_value "${ADMIN_PASSWORD}")"
+            printf 'AYATSURI_AUTH_BUILTIN_INITIAL_ADMIN_USERNAME=%s\n' "$(quote_env_value "${ADMIN_USERNAME}")"
+            printf 'AYATSURI_AUTH_BUILTIN_INITIAL_ADMIN_PASSWORD=%s\n' "$(quote_env_value "${ADMIN_PASSWORD}")"
         fi
     } >"${tmp}"
 
@@ -1670,14 +1670,14 @@ write_linux_unit() {
     tmp="$(mktempfile)"
     cat >"${tmp}" <<EOF
 [Unit]
-Description=Dagu Workflow Engine
+Description=Ayatsuri Workflow Engine
 After=network.target
 Wants=network-online.target
 
 [Service]
 Type=simple
 ExecStart=${INSTALL_PATH} start-all
-WorkingDirectory=${DAGU_HOME_DIR}
+WorkingDirectory=${AYATSURI_HOME_DIR}
 EnvironmentFile=${SERVICE_ENV_FILE}
 EnvironmentFile=-${SERVICE_BOOTSTRAP_FILE}
 Restart=always
@@ -1712,9 +1712,9 @@ EOF
 linux_service_ctl() {
     local action="$1"
     if [[ "$SERVICE_SCOPE" == "system" ]]; then
-        sudo systemctl "${action}" dagu
+        sudo systemctl "${action}" ayatsuri
     else
-        systemctl --user "${action}" dagu
+        systemctl --user "${action}" ayatsuri
     fi
 }
 
@@ -1728,7 +1728,7 @@ maybe_enable_linux_linger() {
     if ! is_promptable; then
         return 0
     fi
-    if prompt_yes_no "Keep the Dagu background service running even after you log out?" "yes"; then
+    if prompt_yes_no "Keep the Ayatsuri background service running even after you log out?" "yes"; then
         if command -v sudo >/dev/null 2>&1; then
             sudo loginctl enable-linger "${INSTALL_OWNER}" >/dev/null 2>&1 || ui_warn "Could not enable linger automatically."
         fi
@@ -1737,8 +1737,8 @@ maybe_enable_linux_linger() {
 
 mac_service_files() {
     SERVICE_PLIST_FILE="${HOME}/Library/LaunchAgents/${SERVICE_LABEL}.plist"
-    SERVICE_ENV_FILE="${HOME}/.config/dagu/dagu.env"
-    SERVICE_BOOTSTRAP_FILE="${HOME}/.config/dagu/bootstrap.env"
+    SERVICE_ENV_FILE="${HOME}/.config/ayatsuri/ayatsuri.env"
+    SERVICE_BOOTSTRAP_FILE="${HOME}/.config/ayatsuri/bootstrap.env"
 }
 
 write_mac_env_file() {
@@ -1746,13 +1746,13 @@ write_mac_env_file() {
     local bootstrap="$2"
     mkdir -p "$(dirname "${target}")"
     {
-        printf 'DAGU_HOME=%s\n' "$(quote_env_value "${DAGU_HOME_DIR}")"
-        printf 'DAGU_HOST=%s\n' "$(quote_env_value "${HOST}")"
-        printf 'DAGU_PORT=%s\n' "$(quote_env_value "${PORT}")"
+        printf 'AYATSURI_HOME=%s\n' "$(quote_env_value "${AYATSURI_HOME_DIR}")"
+        printf 'AYATSURI_HOST=%s\n' "$(quote_env_value "${HOST}")"
+        printf 'AYATSURI_PORT=%s\n' "$(quote_env_value "${PORT}")"
         printf 'PATH=%s\n' "$(quote_env_value "${SERVICE_PATH}")"
         if [[ "$bootstrap" == "yes" ]]; then
-            printf 'DAGU_AUTH_BUILTIN_INITIAL_ADMIN_USERNAME=%s\n' "$(quote_env_value "${ADMIN_USERNAME}")"
-            printf 'DAGU_AUTH_BUILTIN_INITIAL_ADMIN_PASSWORD=%s\n' "$(quote_env_value "${ADMIN_PASSWORD}")"
+            printf 'AYATSURI_AUTH_BUILTIN_INITIAL_ADMIN_USERNAME=%s\n' "$(quote_env_value "${ADMIN_USERNAME}")"
+            printf 'AYATSURI_AUTH_BUILTIN_INITIAL_ADMIN_PASSWORD=%s\n' "$(quote_env_value "${ADMIN_PASSWORD}")"
         fi
     } >"${target}"
     chmod 0600 "${target}"
@@ -1768,12 +1768,12 @@ read_env_value() {
 }
 
 write_mac_plist() {
-    local logs_dir="${HOME}/Library/Logs/Dagu"
+    local logs_dir="${HOME}/Library/Logs/Ayatsuri"
     local bootstrap_user="" bootstrap_pass="" service_path="" tmp
     mkdir -p "${logs_dir}" "$(dirname "${SERVICE_PLIST_FILE}")"
     if [[ -f "${SERVICE_BOOTSTRAP_FILE}" ]]; then
-        bootstrap_user="$(read_env_value "${SERVICE_BOOTSTRAP_FILE}" "DAGU_AUTH_BUILTIN_INITIAL_ADMIN_USERNAME")"
-        bootstrap_pass="$(read_env_value "${SERVICE_BOOTSTRAP_FILE}" "DAGU_AUTH_BUILTIN_INITIAL_ADMIN_PASSWORD")"
+        bootstrap_user="$(read_env_value "${SERVICE_BOOTSTRAP_FILE}" "AYATSURI_AUTH_BUILTIN_INITIAL_ADMIN_USERNAME")"
+        bootstrap_pass="$(read_env_value "${SERVICE_BOOTSTRAP_FILE}" "AYATSURI_AUTH_BUILTIN_INITIAL_ADMIN_PASSWORD")"
     fi
     if [[ -f "${SERVICE_ENV_FILE}" ]]; then
         service_path="$(read_env_value "${SERVICE_ENV_FILE}" "PATH")"
@@ -1795,31 +1795,31 @@ write_mac_plist() {
     <string>start-all</string>
   </array>
   <key>WorkingDirectory</key>
-  <string>$(xml_escape "${DAGU_HOME_DIR}")</string>
+  <string>$(xml_escape "${AYATSURI_HOME_DIR}")</string>
   <key>RunAtLoad</key>
   <true/>
   <key>KeepAlive</key>
   <true/>
   <key>StandardOutPath</key>
-  <string>$(xml_escape "${logs_dir}/dagu.out.log")</string>
+  <string>$(xml_escape "${logs_dir}/ayatsuri.out.log")</string>
   <key>StandardErrorPath</key>
-  <string>$(xml_escape "${logs_dir}/dagu.err.log")</string>
+  <string>$(xml_escape "${logs_dir}/ayatsuri.err.log")</string>
   <key>EnvironmentVariables</key>
   <dict>
-    <key>DAGU_HOME</key>
-    <string>$(xml_escape "${DAGU_HOME_DIR}")</string>
-    <key>DAGU_HOST</key>
+    <key>AYATSURI_HOME</key>
+    <string>$(xml_escape "${AYATSURI_HOME_DIR}")</string>
+    <key>AYATSURI_HOST</key>
     <string>$(xml_escape "${HOST}")</string>
-    <key>DAGU_PORT</key>
+    <key>AYATSURI_PORT</key>
     <string>$(xml_escape "${PORT}")</string>
     <key>PATH</key>
     <string>$(xml_escape "${service_path}")</string>
 EOF
     if [[ -n "${bootstrap_user}" ]]; then
         cat >>"${tmp}" <<EOF
-    <key>DAGU_AUTH_BUILTIN_INITIAL_ADMIN_USERNAME</key>
+    <key>AYATSURI_AUTH_BUILTIN_INITIAL_ADMIN_USERNAME</key>
     <string>$(xml_escape "${bootstrap_user}")</string>
-    <key>DAGU_AUTH_BUILTIN_INITIAL_ADMIN_PASSWORD</key>
+    <key>AYATSURI_AUTH_BUILTIN_INITIAL_ADMIN_PASSWORD</key>
     <string>$(xml_escape "${bootstrap_pass}")</string>
 EOF
     fi
@@ -1904,10 +1904,10 @@ write_service_files() {
             return 0
         fi
         if [[ "$SERVICE_SCOPE" == "system" ]]; then
-            sudo mkdir -p "${DAGU_HOME_DIR}"
-            sudo chown "${INSTALL_OWNER}:${INSTALL_GROUP}" "${DAGU_HOME_DIR}" >/dev/null 2>&1 || true
+            sudo mkdir -p "${AYATSURI_HOME_DIR}"
+            sudo chown "${INSTALL_OWNER}:${INSTALL_GROUP}" "${AYATSURI_HOME_DIR}" >/dev/null 2>&1 || true
         else
-            mkdir -p "${DAGU_HOME_DIR}"
+            mkdir -p "${AYATSURI_HOME_DIR}"
         fi
         write_linux_env_file "${SERVICE_ENV_FILE}" "no"
         if has_admin_bootstrap; then
@@ -1923,7 +1923,7 @@ write_service_files() {
             ui_info "Would write ${SERVICE_PLIST_FILE} and bootstrap environment files"
             return 0
         fi
-        mkdir -p "${DAGU_HOME_DIR}"
+        mkdir -p "${AYATSURI_HOME_DIR}"
         write_mac_env_file "${SERVICE_ENV_FILE}" "no"
         if has_admin_bootstrap; then
             write_mac_env_file "${SERVICE_BOOTSTRAP_FILE}" "yes"
@@ -1939,16 +1939,16 @@ start_service() {
         return 0
     fi
     if [[ "$DRY_RUN" == "1" ]]; then
-        ui_info "Would start the Dagu service"
+        ui_info "Would start the Ayatsuri service"
         return 0
     fi
     if [[ "$OS" == "linux" ]]; then
         if [[ "$SERVICE_SCOPE" == "system" ]]; then
             sudo systemctl daemon-reload
-            sudo systemctl enable dagu >/dev/null 2>&1 || true
+            sudo systemctl enable ayatsuri >/dev/null 2>&1 || true
         else
             systemctl --user daemon-reload
-            systemctl --user enable dagu >/dev/null 2>&1 || true
+            systemctl --user enable ayatsuri >/dev/null 2>&1 || true
         fi
         linux_service_ctl restart
     else
@@ -1973,9 +1973,9 @@ service_status_hint() {
     fi
     if [[ "$OS" == "linux" ]]; then
         if [[ "$SERVICE_SCOPE" == "system" ]]; then
-            printf 'sudo systemctl status dagu\n'
+            printf 'sudo systemctl status ayatsuri\n'
         else
-            printf 'systemctl --user status dagu\n'
+            printf 'systemctl --user status ayatsuri\n'
         fi
     else
         printf 'launchctl print %s\n' "$(mac_launchctl_target)"
@@ -2041,22 +2041,22 @@ verify_bootstrap_flow() {
         return 0
     fi
     if ! wait_for_health 60; then
-        ui_error "Dagu did not become healthy."
+        ui_error "Ayatsuri did not become healthy."
         ui_warn "Check the service status with: $(service_status_hint)"
         return 1
     fi
     if ! verify_login; then
-        ui_error "Dagu started, but the admin login bootstrap did not verify."
+        ui_error "Ayatsuri started, but the admin login bootstrap did not verify."
         ui_warn "The bootstrap credentials were left in place so you can rerun the installer safely."
         return 1
     fi
     if ! scrub_bootstrap_credentials; then
-        ui_error "Dagu could not restart after removing the bootstrap credentials."
+        ui_error "Ayatsuri could not restart after removing the bootstrap credentials."
         ui_warn "The bootstrap credentials were restored so you can retry safely."
         return 1
     fi
     if ! wait_for_health 60; then
-        ui_error "Dagu did not come back after removing the bootstrap credentials."
+        ui_error "Ayatsuri did not come back after removing the bootstrap credentials."
         restore_bootstrap_credentials
         ui_warn "The bootstrap credentials were restored so you can retry safely."
         return 1
@@ -2077,12 +2077,12 @@ install_skill() {
         return 0
     fi
     if [[ "$DRY_RUN" == "1" ]]; then
-        ui_info "Would install the Dagu AI skill"
+        ui_info "Would install the Ayatsuri AI skill"
         return 0
     fi
     if [[ ${#EXPLICIT_SKILL_DIRS[@]} -gt 0 ]]; then
         for custom_dir in "${EXPLICIT_SKILL_DIRS[@]}"; do
-            ui_info "Installing Dagu AI skill into ${custom_dir}"
+            ui_info "Installing Ayatsuri AI skill into ${custom_dir}"
             "${INSTALL_PATH}" ai install --skills-dir "${custom_dir}"
         done
         return 0
@@ -2090,7 +2090,7 @@ install_skill() {
     output="$("${INSTALL_PATH}" ai install --yes 2>&1 || true)"
     printf '%s\n' "${output}"
     if printf '%s' "${output}" | grep -q "No AI coding tools detected"; then
-        if is_promptable && prompt_yes_no "No supported AI tool was detected. Install the Dagu skill into a custom skills directory instead?" "no"; then
+        if is_promptable && prompt_yes_no "No supported AI tool was detected. Install the Ayatsuri skill into a custom skills directory instead?" "no"; then
             custom_dir="$(prompt_text "Skills directory" "${HOME}/.agents/skills")"
             if [[ -n "${custom_dir}" ]]; then
                 "${INSTALL_PATH}" ai install --skills-dir "${custom_dir}"
@@ -2098,7 +2098,7 @@ install_skill() {
             fi
         fi
         if is_promptable && command -v npx >/dev/null 2>&1 && prompt_yes_no "Use the shared skills installer instead?" "no"; then
-            npx skills add https://github.com/dagucloud/dagu --skill dagu
+            npx skills add https://github.com/ayatsuri-lab/ayatsuri --skill ayatsuri
         fi
     fi
 }
@@ -2110,7 +2110,7 @@ open_browser_if_requested() {
     if ! is_promptable; then
         return 0
     fi
-    if ! prompt_yes_no "Open Dagu in your browser now?" "yes"; then
+    if ! prompt_yes_no "Open Ayatsuri in your browser now?" "yes"; then
         return 0
     fi
     if [[ "$OS" == "macos" && -x /usr/bin/open ]]; then
@@ -2170,7 +2170,7 @@ main() {
     local tmpdir archive binary
     tmpdir="$(mktempdir)"
 
-    archive="$(download_dagu_archive "${tmpdir}")"
+    archive="$(download_ayatsuri_archive "${tmpdir}")"
     binary="$(extract_binary_from_archive "${archive}" "${tmpdir}")"
 
     install_binary "${binary}"

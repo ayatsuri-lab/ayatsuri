@@ -8,15 +8,15 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dagucloud/dagu/internal/cmn/eval"
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/eval"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 )
 
 // PresolvedEnvPrefix is the env var prefix used to transport pre-resolved
 // env-provider secret values from the parent process to the subprocess.
-// When present, _DAGU_PRESOLVED_SECRET_<KEY>=<value> lets the subprocess
+// When present, _AYATSURI_PRESOLVED_SECRET_<KEY>=<value> lets the subprocess
 // resolve env secrets without requiring the original source variable.
-const PresolvedEnvPrefix = "_DAGU_PRESOLVED_SECRET_"
+const PresolvedEnvPrefix = "_AYATSURI_PRESOLVED_SECRET_"
 
 func init() {
 	registerResolver("env", func(_ []string) Resolver {

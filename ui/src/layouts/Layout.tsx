@@ -170,10 +170,10 @@ function Content({ navbarColor, children }: LayoutProps) {
           <span
             className={cn(
               'font-semibold tracking-tight whitespace-normal leading-tight text-center px-2',
-              getResponsiveTitleClass(config.title || 'Dagu', 'header-mobile')
+              getResponsiveTitleClass(config.title || 'Ayatsuri', 'header-mobile')
             )}
           >
-            {config.title || 'Dagu'}
+            {config.title || 'Ayatsuri'}
           </span>
           {config.agentEnabled ? (
             <button
@@ -215,10 +215,10 @@ function Content({ navbarColor, children }: LayoutProps) {
               <span
                 className={cn(
                   'font-semibold whitespace-normal leading-tight',
-                  getResponsiveTitleClass(config.title || 'Dagu', 'sidebar-mobile')
+                  getResponsiveTitleClass(config.title || 'Ayatsuri', 'sidebar-mobile')
                 )}
               >
-                {config.title || 'Dagu'}
+                {config.title || 'Ayatsuri'}
               </span>
               <button
                 onClick={() => setIsMobileSidebarOpen(false)}

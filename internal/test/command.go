@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
 )

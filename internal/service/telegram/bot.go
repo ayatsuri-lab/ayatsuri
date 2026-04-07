@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // Package telegram provides a Telegram bot service that bridges Telegram
-// chats with the Dagu AI agent, allowing users to interact with the agent
+// chats with the Ayatsuri AI agent, allowing users to interact with the agent
 // via Telegram messages.
 package telegram
 
@@ -14,10 +14,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/auth"
-	"github.com/dagucloud/dagu/internal/service/chatbridge"
-	"github.com/dagucloud/dagu/internal/service/eventstore"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/chatbridge"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/eventstore"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -57,7 +57,7 @@ type chatState struct {
 	typingLoopGen uint64
 }
 
-// Bot is a Telegram bot that forwards messages to the Dagu agent API.
+// Bot is a Telegram bot that forwards messages to the Ayatsuri agent API.
 type Bot struct {
 	cfg                   Config
 	agentAPI              AgentService
@@ -75,10 +75,10 @@ type Bot struct {
 // New creates a new Telegram bot instance.
 func New(cfg Config, agentAPI AgentService, logger *slog.Logger) (*Bot, error) {
 	if cfg.Token == "" {
-		return nil, fmt.Errorf("telegram bot token is required (set DAGU_BOTS_TELEGRAM_TOKEN)")
+		return nil, fmt.Errorf("telegram bot token is required (set AYATSURI_BOTS_TELEGRAM_TOKEN)")
 	}
 	if len(cfg.AllowedChatIDs) == 0 {
-		return nil, fmt.Errorf("at least one allowed chat ID is required (set DAGU_BOTS_TELEGRAM_ALLOWED_CHAT_IDS)")
+		return nil, fmt.Errorf("at least one allowed chat ID is required (set AYATSURI_BOTS_TELEGRAM_ALLOWED_CHAT_IDS)")
 	}
 
 	botAPI, err := tgbotapi.NewBotAPI(cfg.Token)
@@ -207,7 +207,7 @@ func (b *Bot) handleCommand(ctx context.Context, msg *tgbotapi.Message) {
 		b.sendText(chatID, "Session cancelled.")
 
 	case "start":
-		b.sendText(chatID, "Welcome to Dagu AI Agent! Send any message to start chatting.\n\nCommands:\n/new - Start a new session\n/cancel - Cancel current session")
+		b.sendText(chatID, "Welcome to Ayatsuri AI Agent! Send any message to start chatting.\n\nCommands:\n/new - Start a new session\n/cancel - Cancel current session")
 
 	default:
 		b.sendText(chatID, "Unknown command. Use /new, /cancel, or just send a message.")

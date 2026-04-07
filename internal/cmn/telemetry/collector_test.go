@@ -9,14 +9,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 	"github.com/prometheus/client_golang/prometheus"
 	dto "github.com/prometheus/client_model/go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/core/spec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec"
 )
 
 var _ exec.DAGStore = (*mockDAGStore)(nil)
@@ -444,33 +444,33 @@ func TestCollector_Collect_WithDAGRuns(t *testing.T) {
 		metricMap[*m.Name] = m
 	}
 
-	// Check dagu_info
-	assert.Contains(t, metricMap, "dagu_info")
-	assert.Equal(t, float64(1), *metricMap["dagu_info"].Metric[0].Gauge.Value)
+	// Check ayatsuri_info
+	assert.Contains(t, metricMap, "ayatsuri_info")
+	assert.Equal(t, float64(1), *metricMap["ayatsuri_info"].Metric[0].Gauge.Value)
 
-	// Check dagu_uptime_seconds
-	assert.Contains(t, metricMap, "dagu_uptime_seconds")
-	assert.Greater(t, *metricMap["dagu_uptime_seconds"].Metric[0].Gauge.Value, float64(0))
+	// Check ayatsuri_uptime_seconds
+	assert.Contains(t, metricMap, "ayatsuri_uptime_seconds")
+	assert.Greater(t, *metricMap["ayatsuri_uptime_seconds"].Metric[0].Gauge.Value, float64(0))
 
-	// Check dagu_scheduler_running
-	assert.Contains(t, metricMap, "dagu_scheduler_running")
-	assert.Equal(t, float64(1), *metricMap["dagu_scheduler_running"].Metric[0].Gauge.Value)
+	// Check ayatsuri_scheduler_running
+	assert.Contains(t, metricMap, "ayatsuri_scheduler_running")
+	assert.Equal(t, float64(1), *metricMap["ayatsuri_scheduler_running"].Metric[0].Gauge.Value)
 
-	// Check dagu_dags_total
-	assert.Contains(t, metricMap, "dagu_dags_total")
-	assert.Equal(t, float64(3), *metricMap["dagu_dags_total"].Metric[0].Gauge.Value)
+	// Check ayatsuri_dags_total
+	assert.Contains(t, metricMap, "ayatsuri_dags_total")
+	assert.Equal(t, float64(3), *metricMap["ayatsuri_dags_total"].Metric[0].Gauge.Value)
 
-	// Check dagu_dag_runs_currently_running
-	assert.Contains(t, metricMap, "dagu_dag_runs_currently_running")
-	assert.Equal(t, float64(1), *metricMap["dagu_dag_runs_currently_running"].Metric[0].Gauge.Value)
+	// Check ayatsuri_dag_runs_currently_running
+	assert.Contains(t, metricMap, "ayatsuri_dag_runs_currently_running")
+	assert.Equal(t, float64(1), *metricMap["ayatsuri_dag_runs_currently_running"].Metric[0].Gauge.Value)
 
-	// Check dagu_dag_runs_queued_total
-	assert.Contains(t, metricMap, "dagu_dag_runs_queued_total")
-	assert.Equal(t, float64(2), *metricMap["dagu_dag_runs_queued_total"].Metric[0].Gauge.Value)
+	// Check ayatsuri_dag_runs_queued_total
+	assert.Contains(t, metricMap, "ayatsuri_dag_runs_queued_total")
+	assert.Equal(t, float64(2), *metricMap["ayatsuri_dag_runs_queued_total"].Metric[0].Gauge.Value)
 
-	// Check dagu_dag_runs_total by status
-	assert.Contains(t, metricMap, "dagu_dag_runs_total")
-	for _, metric := range metricMap["dagu_dag_runs_total"].Metric {
+	// Check ayatsuri_dag_runs_total by status
+	assert.Contains(t, metricMap, "ayatsuri_dag_runs_total")
+	for _, metric := range metricMap["ayatsuri_dag_runs_total"].Metric {
 		for _, label := range metric.Label {
 			if *label.Name == "status" {
 				switch *label.Value {

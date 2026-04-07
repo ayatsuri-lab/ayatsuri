@@ -840,15 +840,15 @@ func TestCollectBySource_WithParent(t *testing.T) {
 }
 
 func TestEnvScope_ExcludesInternalTransportVars(t *testing.T) {
-	t.Setenv("_DAGU_PRESOLVED_SECRET_FOO", "bar")
-	t.Setenv("_DAGU_PRESOLVED_BUILD_ENV_FILE", "/tmp/buildenv.json")
+	t.Setenv("_AYATSURI_PRESOLVED_SECRET_FOO", "bar")
+	t.Setenv("_AYATSURI_PRESOLVED_BUILD_ENV_FILE", "/tmp/buildenv.json")
 	t.Setenv("NORMAL_VAR", "visible")
 
 	scope := NewEnvScope(nil, true)
 
-	_, exists := scope.Get("_DAGU_PRESOLVED_SECRET_FOO")
+	_, exists := scope.Get("_AYATSURI_PRESOLVED_SECRET_FOO")
 	require.False(t, exists, "presolved secret vars must not enter scope")
-	_, exists = scope.Get("_DAGU_PRESOLVED_BUILD_ENV_FILE")
+	_, exists = scope.Get("_AYATSURI_PRESOLVED_BUILD_ENV_FILE")
 	require.False(t, exists, "presolved build env transport vars must not enter scope")
 
 	val, exists := scope.Get("NORMAL_VAR")

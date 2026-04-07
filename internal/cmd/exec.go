@@ -9,11 +9,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 	"github.com/spf13/cobra"
 )
 
@@ -42,7 +42,7 @@ var (
 	}
 	shellFlag = commandLineFlag{
 		name:  flagShell,
-		usage: "Override shell binary for the command (default: use DAGU default shell)",
+		usage: "Override shell binary for the command (default: use AYATSURI default shell)",
 	}
 	baseFlag = commandLineFlag{
 		name:  flagBase,
@@ -58,9 +58,9 @@ func Exec() *cobra.Command {
 		Long: `Execute a one-off command as a DAG run without creating a DAG YAML file.
 
 Examples:
-  dagu exec -- echo "hello world"
-  dagu exec --env FOO=bar -- sh -c 'echo $FOO'
-  dagu exec --worker-label role=batch -- python remote_script.py`,
+  ayatsuri exec -- echo "hello world"
+  ayatsuri exec --env FOO=bar -- sh -c 'echo $FOO'
+  ayatsuri exec --worker-label role=batch -- python remote_script.py`,
 		Args: cobra.ArbitraryArgs,
 	}
 
@@ -76,7 +76,7 @@ Examples:
 // runExec parses flags and arguments and executes the provided command as an inline DAG run.
 func runExec(ctx *Context, args []string) error {
 	if len(args) == 0 {
-		return fmt.Errorf("command is required (try: dagu exec -- <command>)")
+		return fmt.Errorf("command is required (try: ayatsuri exec -- <command>)")
 	}
 
 	runID, err := resolveRunID(ctx)

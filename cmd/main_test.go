@@ -8,8 +8,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/cmd"
-	"github.com/dagucloud/dagu/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmd"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 )
@@ -29,16 +29,16 @@ func TestRootCommand(t *testing.T) {
 	}{
 		{
 			name:        "HelpCommand",
-			args:        []string{"dagu", "--help"},
+			args:        []string{"ayatsuri", "--help"},
 			expectError: false,
 			expectContains: []string{
-				"Dagu is a compact, portable workflow engine",
+				"Ayatsuri is a compact, portable workflow engine",
 				"declarative model for orchestrating command execution",
 			},
 		},
 		{
 			name:        "InvalidCommand",
-			args:        []string{"dagu", "invalid-command"},
+			args:        []string{"ayatsuri", "invalid-command"},
 			expectError: true,
 			expectContains: []string{
 				"unknown command",
@@ -46,10 +46,10 @@ func TestRootCommand(t *testing.T) {
 		},
 		{
 			name:        "NoArguments",
-			args:        []string{"dagu"},
+			args:        []string{"ayatsuri"},
 			expectError: false,
 			expectContains: []string{
-				"Dagu is a compact, portable workflow engine",
+				"Ayatsuri is a compact, portable workflow engine",
 			},
 		},
 	}
@@ -192,7 +192,7 @@ func TestRootCommandStructure(t *testing.T) {
 
 func TestRootCommandMetadata(t *testing.T) {
 	assert.Equal(t, config.AppSlug, rootCmd.Use)
-	assert.Equal(t, "Dagu is a compact, portable workflow engine", rootCmd.Short)
+	assert.Equal(t, "Ayatsuri is a compact, portable workflow engine", rootCmd.Short)
 	assert.Contains(t, rootCmd.Long, "declarative model for orchestrating command execution")
 	assert.Contains(t, rootCmd.Long, "shell scripts, Python commands, containerized")
 }
@@ -225,8 +225,8 @@ func TestCommandHelp(t *testing.T) {
 func resetRootCommand() {
 	rootCmd = &cobra.Command{
 		Use:   config.AppSlug,
-		Short: "Dagu is a compact, portable workflow engine",
-		Long: `Dagu is a compact, portable workflow engine.
+		Short: "Ayatsuri is a compact, portable workflow engine",
+		Long: `Ayatsuri is a compact, portable workflow engine.
 
 It provides a declarative model for orchestrating command execution across
 diverse environments, including shell scripts, Python commands, containerized

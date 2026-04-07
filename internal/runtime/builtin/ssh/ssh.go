@@ -13,12 +13,12 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/dagucloud/dagu/internal/cmn/cmdutil"
-	"github.com/dagucloud/dagu/internal/cmn/eval"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/runtime/executor"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/cmdutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/eval"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/executor"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -202,7 +202,7 @@ func (e *sshExecutor) buildScript() string {
 	}
 
 	// Wrap in function - shell MUST read entire body before executing
-	return fmt.Sprintf("__dagu_exec(){\n%s}\n__dagu_exec\n", body.String())
+	return fmt.Sprintf("__ayatsuri_exec(){\n%s}\n__ayatsuri_exec\n", body.String())
 }
 
 // buildCommandString constructs a command string from a CommandEntry.

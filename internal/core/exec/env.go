@@ -3,7 +3,7 @@
 
 package exec
 
-// Environment variable keys that are automatically set by Dagu during execution.
+// Environment variable keys that are automatically set by Ayatsuri during execution.
 const (
 	// EnvKeyDAGName holds the name of the currently executing DAG.
 	EnvKeyDAGName = "DAG_NAME"
@@ -28,13 +28,13 @@ const (
 
 	// EnvKeyDAGParamsJSON exposes the resolved parameters encoded as JSON.
 	// When params were provided as JSON, the original payload is preserved.
-	EnvKeyDAGParamsJSON = "DAGU_PARAMS_JSON"
+	EnvKeyDAGParamsJSON = "AYATSURI_PARAMS_JSON"
 
 	// EnvKeyDAGDocsDir holds the per-DAG docs directory path.
 	EnvKeyDAGDocsDir = "DAG_DOCS_DIR"
 
 	// EnvKeyDAGParamsJSONCompat is the DAG_-prefixed key for resolved parameters JSON.
-	// Both DAG_PARAMS_JSON and DAGU_PARAMS_JSON are set for backward compatibility.
+	// Both DAG_PARAMS_JSON and AYATSURI_PARAMS_JSON are set for backward compatibility.
 	EnvKeyDAGParamsJSONCompat = "DAG_PARAMS_JSON"
 
 	// EnvKeyDAGRunWorkDir holds the path to the per-DAG-run working directory.
@@ -43,9 +43,9 @@ const (
 	// EnvKeyExternalStepRetry enables parent-managed step retries for sub-DAG runs.
 	// When set, retriable step failures transition to a queued retry state instead of
 	// sleeping inline inside the child DAG process.
-	EnvKeyExternalStepRetry = "DAGU_EXTERNAL_STEP_RETRY"
+	EnvKeyExternalStepRetry = "AYATSURI_EXTERNAL_STEP_RETRY"
 
 	// EnvKeyQueueDispatchRetry marks an internal retry invocation that is consuming
 	// an already-queued run from the scheduler/worker queue dispatch path.
-	EnvKeyQueueDispatchRetry = "DAGU_QUEUE_DISPATCH_RETRY"
+	EnvKeyQueueDispatchRetry = "AYATSURI_QUEUE_DISPATCH_RETRY"
 )

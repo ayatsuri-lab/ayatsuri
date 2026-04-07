@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/auth"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -37,7 +37,7 @@ func setupStoreWithCache(t *testing.T) (*Store, string, *fileutil.Cache[*auth.We
 
 func newWebhook(t *testing.T, dagName string) *auth.Webhook {
 	t.Helper()
-	wh, err := auth.NewWebhook(dagName, "hash", "dagu_wh_", "admin")
+	wh, err := auth.NewWebhook(dagName, "hash", "ayatsuri_wh_", "admin")
 	require.NoError(t, err)
 	return wh
 }
@@ -598,7 +598,7 @@ func TestStore_UpdateLastUsedPreservesFields(t *testing.T) {
 	store, _ := setupStore(t)
 	ctx := context.Background()
 
-	wh, _ := auth.NewWebhook("dag", "secret-hash", "dagu_wh_", "creator")
+	wh, _ := auth.NewWebhook("dag", "secret-hash", "ayatsuri_wh_", "creator")
 	wh.Enabled = false
 	require.NoError(t, store.Create(ctx, wh))
 

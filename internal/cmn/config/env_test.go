@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
 	"github.com/stretchr/testify/require"
 )
 
@@ -18,7 +18,7 @@ func TestLoadBaseEnv(t *testing.T) {
 		expected bool
 	}{
 		{"TEST_VAR_BASE_ENV", false},
-		{"DAGU_TEST_BASE_ENV", true},
+		{"AYATSURI_TEST_BASE_ENV", true},
 
 		// Docker daemon connection vars must pass through.
 		{"DOCKER_HOST", true},

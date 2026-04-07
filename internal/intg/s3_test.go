@@ -8,8 +8,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/stretchr/testify/require"
 )
 
@@ -20,7 +20,7 @@ const minioImage = "minio/minio:RELEASE.2024-10-02T17-50-41Z"
 func TestMinIOContainer_WithMCCommands(t *testing.T) {
 	t.Parallel()
 
-	tempDir, err := os.MkdirTemp("", "dagu-s3-test-*")
+	tempDir, err := os.MkdirTemp("", "ayatsuri-s3-test-*")
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = os.RemoveAll(tempDir) })
 

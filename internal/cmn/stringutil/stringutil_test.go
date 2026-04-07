@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
 	"github.com/stretchr/testify/require"
 )
 

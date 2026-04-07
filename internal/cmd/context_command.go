@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"text/tabwriter"
 
-	"github.com/dagucloud/dagu/internal/clicontext"
+	"github.com/ayatsuri-lab/ayatsuri/internal/clicontext"
 	"golang.org/x/term"
 
 	"github.com/spf13/cobra"
@@ -18,7 +18,7 @@ import (
 func ContextCommand() *cobra.Command {
 	cmd := NewCommand(&cobra.Command{
 		Use:   "context",
-		Short: "Manage CLI contexts for local and remote Dagu servers",
+		Short: "Manage CLI contexts for local and remote Ayatsuri servers",
 	}, nil, func(cmd *Context, _ []string) error {
 		return cmd.Command.Help()
 	})
@@ -41,7 +41,7 @@ var contextManageFlags = []commandLineFlag{
 }
 
 var (
-	contextServerFlag        = commandLineFlag{name: "server", usage: "Base URL of the remote Dagu server"}
+	contextServerFlag        = commandLineFlag{name: "server", usage: "Base URL of the remote Ayatsuri server"}
 	contextAPIKeyFlag        = commandLineFlag{name: "api-key", usage: "API key to use for the context"}
 	contextDescriptionFlag   = commandLineFlag{name: "description", usage: "Optional human-readable description"}
 	contextSkipTLSVerifyFlag = commandLineFlag{name: "skip-tls-verify", usage: "Skip TLS certificate verification", isBool: true}

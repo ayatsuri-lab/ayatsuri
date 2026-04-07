@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/dagucloud/dagu/internal/llm"
+	"github.com/ayatsuri-lab/ayatsuri/internal/llm"
 )
 
 // NewOutputTool creates a tool that writes the final result to the given writer.

@@ -1,8 +1,8 @@
-## 🎯 What is Dagu?
+## 🎯 What is Ayatsuri?
 
-Dagu is a **modern, powerful, yet surprisingly simple workflow orchestration engine** that runs as a single binary with zero external dependencies. Born from the frustration of managing hundreds of legacy cron jobs scattered across multiple servers, Dagu brings clarity, visibility, and control to workflow automation.
+Ayatsuri is a **modern, powerful, yet surprisingly simple workflow orchestration engine** that runs as a single binary with zero external dependencies. Born from the frustration of managing hundreds of legacy cron jobs scattered across multiple servers, Ayatsuri brings clarity, visibility, and control to workflow automation.
 
-**The Game Changer**: Unlike traditional workflow engines, Dagu introduces **hierarchical DAG composition** - the ability to nest workflows within workflows to unlimited depth. This transforms how you build and maintain complex systems, enabling true modularity and reusability at scale.
+**The Game Changer**: Unlike traditional workflow engines, Ayatsuri introduces **hierarchical DAG composition** - the ability to nest workflows within workflows to unlimited depth. This transforms how you build and maintain complex systems, enabling true modularity and reusability at scale.
 
 ## 🚀 Core Philosophy & Design Principles
 
@@ -175,8 +175,8 @@ Dagu is a **modern, powerful, yet surprisingly simple workflow orchestration eng
   - API access control
   - UI permission enforcement
 - **Configuration Methods**:
-  - Environment variables (DAGU_* prefix)
-  - Configuration file (`~/.config/dagu/config.yaml`)
+  - Environment variables (AYATSURI_* prefix)
+  - Configuration file (`~/.config/ayatsuri/config.yaml`)
   - Base configuration inheritance
   - Per-DAG overrides
   - Command-line arguments
@@ -245,9 +245,9 @@ Dagu is a **modern, powerful, yet surprisingly simple workflow orchestration eng
   - Recovery mechanisms
   - Notification on errors
 
-# UI Design Guidelines for Dagu
+# UI Design Guidelines for Ayatsuri
 
-This document outlines the design principles and guidelines for the Dagu UI based on user feedback and requirements.
+This document outlines the design principles and guidelines for the Ayatsuri UI based on user feedback and requirements.
 
 ## Core Design Principles
 
@@ -402,7 +402,7 @@ This document outlines the design principles and guidelines for the Dagu UI base
 
 **CRITICAL: All API calls MUST include the `remoteNode` parameter.**
 
-Dagu supports managing workflows across multiple remote nodes. Every API endpoint that interacts with DAGs, services, or system resources must include the `remoteNode` query parameter to ensure the request is routed to the correct node.
+Ayatsuri supports managing workflows across multiple remote nodes. Every API endpoint that interacts with DAGs, services, or system resources must include the `remoteNode` query parameter to ensure the request is routed to the correct node.
 
 #### Pattern for `useQuery` hooks:
 ```tsx

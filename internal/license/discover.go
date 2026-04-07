@@ -15,11 +15,11 @@ type DiscoverySource int
 
 const (
 	SourceNone           DiscoverySource = iota
-	SourceEnvInline                      // DAGU_LICENSE env (inline JWT)
-	SourceEnvKey                         // DAGU_LICENSE_KEY env (needs activation)
+	SourceEnvInline                      // AYATSURI_LICENSE env (inline JWT)
+	SourceEnvKey                         // AYATSURI_LICENSE_KEY env (needs activation)
 	SourceConfigKey                      // config file license.key (needs activation)
 	SourceActivationFile                 // activation.json (has token)
-	SourceFileJWT                        // file-based JWT (DAGU_LICENSE_FILE or default path)
+	SourceFileJWT                        // file-based JWT (AYATSURI_LICENSE_FILE or default path)
 )
 
 // String returns a human-readable name for the discovery source.
@@ -67,14 +67,14 @@ type DiscoveryResult struct {
 }
 
 // Discover searches for a license using the following precedence:
-//  1. DAGU_LICENSE env var (inline JWT)
-//  2. DAGU_LICENSE_KEY env var (needs activation)
+//  1. AYATSURI_LICENSE env var (inline JWT)
+//  2. AYATSURI_LICENSE_KEY env var (needs activation)
 //  3. configKey parameter (needs activation)
 //  4. activation.json via store (has token)
-//  5. DAGU_LICENSE_FILE env var or $DAGU_HOME/license.jwt (offline JWT)
+//  5. AYATSURI_LICENSE_FILE env var or $AYATSURI_HOME/license.jwt (offline JWT)
 func Discover(licenseDir, configKey string, store ActivationStore) (*DiscoveryResult, error) {
 	// 1. Inline JWT from env
-	if token := os.Getenv("DAGU_LICENSE"); token != "" {
+	if token := os.Getenv("AYATSURI_LICENSE"); token != "" {
 		return &DiscoveryResult{
 			Source: SourceEnvInline,
 			Token:  token,
@@ -82,7 +82,7 @@ func Discover(licenseDir, configKey string, store ActivationStore) (*DiscoveryRe
 	}
 
 	// 2. License key from env (needs activation)
-	if key := os.Getenv("DAGU_LICENSE_KEY"); key != "" {
+	if key := os.Getenv("AYATSURI_LICENSE_KEY"); key != "" {
 		return &DiscoveryResult{
 			Source:     SourceEnvKey,
 			LicenseKey: key,
@@ -113,7 +113,7 @@ func Discover(licenseDir, configKey string, store ActivationStore) (*DiscoveryRe
 	}
 
 	// 5. Offline JWT file
-	filePath := os.Getenv("DAGU_LICENSE_FILE")
+	filePath := os.Getenv("AYATSURI_LICENSE_FILE")
 	if filePath == "" && licenseDir != "" {
 		filePath = filepath.Join(licenseDir, "license.jwt")
 	}

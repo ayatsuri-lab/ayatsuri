@@ -12,10 +12,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/runtime"
-	"github.com/dagucloud/dagu/internal/runtime/executor"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/executor"
 	"github.com/goccy/go-yaml"
 	"github.com/moby/moby/api/types/container"
 	"github.com/nektos/act/pkg/model"
@@ -61,7 +61,7 @@ const (
 	defaultPlatform     = "ubuntu-latest"
 	defaultEventName    = "push"
 	defaultGitHubHost   = "github.com"
-	defaultWorkflowName = "Dagu GitHub Action"
+	defaultWorkflowName = "Ayatsuri GitHub Action"
 )
 
 var _ executor.Executor = (*githubAction)(nil)
@@ -73,25 +73,25 @@ type githubAction struct {
 	cancel func()
 }
 
-// daguJobLoggerFactory implements runner.JobLoggerFactory to integrate
-// act's logging with Dagu's stdout/stderr writers without hijacking global stdout/stderr
-type daguJobLoggerFactory struct {
+// ayatsuriJobLoggerFactory implements runner.JobLoggerFactory to integrate
+// act's logging with Ayatsuri's stdout/stderr writers without hijacking global stdout/stderr
+type ayatsuriJobLoggerFactory struct {
 	stdout io.Writer
 	stderr io.Writer
 }
 
-// daguLogrusHook intercepts log entries and routes them based on content
+// ayatsuriLogrusHook intercepts log entries and routes them based on content
 // Raw output (container stdout/stderr) goes to stdout, other logs go to stderr
-type daguLogrusHook struct {
+type ayatsuriLogrusHook struct {
 	stdout io.Writer
 	stderr io.Writer
 }
 
-func (h *daguLogrusHook) Levels() []logrus.Level {
+func (h *ayatsuriLogrusHook) Levels() []logrus.Level {
 	return logrus.AllLevels
 }
 
-func (h *daguLogrusHook) Fire(entry *logrus.Entry) error {
+func (h *ayatsuriLogrusHook) Fire(entry *logrus.Entry) error {
 	// Check if this is raw output from the container
 	if rawOutput, ok := entry.Data["raw_output"]; ok && rawOutput == true {
 		// Container output goes to stdout - write only the message, not formatted log entry
@@ -109,7 +109,7 @@ func (h *daguLogrusHook) Fire(entry *logrus.Entry) error {
 }
 
 // WithJobLogger creates a logrus logger that routes output appropriately
-func (f *daguJobLoggerFactory) WithJobLogger() *logrus.Logger {
+func (f *ayatsuriJobLoggerFactory) WithJobLogger() *logrus.Logger {
 	logger := logrus.New()
 	logger.SetOutput(io.Discard) // Disable default output, use hook instead
 	logger.SetLevel(logrus.InfoLevel)
@@ -120,7 +120,7 @@ func (f *daguJobLoggerFactory) WithJobLogger() *logrus.Logger {
 		DisableTimestamp: false,
 	})
 	// Add hook to route output: raw_output to stdout, everything else to stderr
-	logger.AddHook(&daguLogrusHook{
+	logger.AddHook(&ayatsuriLogrusHook{
 		stdout: f.stdout,
 		stderr: f.stderr,
 	})
@@ -162,7 +162,7 @@ func (e *githubAction) Run(ctx context.Context) error {
 	}
 
 	// Create temporary directory for workflow file (not for execution)
-	tmpDir, err := os.MkdirTemp("", "dagu-github-action-workflow-*")
+	tmpDir, err := os.MkdirTemp("", "ayatsuri-github-action-workflow-*")
 	if err != nil {
 		return fmt.Errorf("failed to create temp directory: %w", err)
 	}
@@ -280,12 +280,12 @@ func (e *githubAction) generateEventJSON() (string, error) {
 	event := map[string]any{
 		"ref": "refs/heads/main",
 		"repository": map[string]any{
-			"name":      "dagu",
-			"full_name": "dagucloud/dagu",
+			"name":      "ayatsuri",
+			"full_name": "ayatsuricloud/ayatsuri",
 			"private":   false,
 		},
 		"pusher": map[string]any{
-			"name": "dagu",
+			"name": "ayatsuri",
 		},
 	}
 
@@ -306,7 +306,7 @@ func (e *githubAction) executeAct(ctx context.Context, workDir, tmpDir, workflow
 	defer file.Close()
 
 	// Create workflow planner
-	planner, err := model.NewSingleWorkflowPlanner("dagu-action", file)
+	planner, err := model.NewSingleWorkflowPlanner("ayatsuri-action", file)
 	if err != nil {
 		return fmt.Errorf("failed to create workflow planner: %w", err)
 	}
@@ -344,7 +344,7 @@ func (e *githubAction) executeAct(ctx context.Context, workDir, tmpDir, workflow
 
 	// Inject custom JobLoggerFactory into context
 	// This routes container output (raw_output=true) to stdout and other logs to stderr
-	loggerFactory := &daguJobLoggerFactory{
+	loggerFactory := &ayatsuriJobLoggerFactory{
 		stdout: e.stdout,
 		stderr: e.stderr,
 	}

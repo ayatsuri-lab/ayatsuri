@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/spec/types"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec/types"
 	"github.com/goccy/go-yaml"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -503,10 +503,10 @@ func TestBuildSkipIfSuccessful(t *testing.T) {
 func TestBuildLogDir(t *testing.T) {
 	t.Parallel()
 
-	d := &dag{LogDir: "/var/log/dagu"}
+	d := &dag{LogDir: "/var/log/ayatsuri"}
 	result, err := buildLogDir(testBuildContext(), d)
 	require.NoError(t, err)
-	assert.Equal(t, "/var/log/dagu", result)
+	assert.Equal(t, "/var/log/ayatsuri", result)
 }
 
 func TestBuildMailOn(t *testing.T) {
@@ -1727,7 +1727,7 @@ func TestBuildOTel(t *testing.T) {
 				"insecure": true,
 				"timeout":  "30s",
 				"resource": map[string]any{
-					"service.name":    "dagu-test",
+					"service.name":    "ayatsuri-test",
 					"service.version": "1.0.0",
 				},
 			},
@@ -1740,7 +1740,7 @@ func TestBuildOTel(t *testing.T) {
 				Insecure: true,
 				Timeout:  30 * time.Second,
 				Resource: map[string]any{
-					"service.name":    "dagu-test",
+					"service.name":    "ayatsuri-test",
 					"service.version": "1.0.0",
 				},
 			},

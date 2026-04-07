@@ -17,12 +17,12 @@ func TestNewWebhook(t *testing.T) {
 
 	t.Run("Valid", func(t *testing.T) {
 		t.Parallel()
-		wh, err := NewWebhook("dag.yaml", "hash", "dagu_wh_", "creator")
+		wh, err := NewWebhook("dag.yaml", "hash", "ayatsuri_wh_", "creator")
 		require.NoError(t, err)
 		assert.NotEmpty(t, wh.ID)
 		assert.Equal(t, "dag.yaml", wh.DAGName)
 		assert.Equal(t, "hash", wh.TokenHash)
-		assert.Equal(t, "dagu_wh_", wh.TokenPrefix)
+		assert.Equal(t, "ayatsuri_wh_", wh.TokenPrefix)
 		assert.Equal(t, "creator", wh.CreatedBy)
 		assert.True(t, wh.Enabled)
 		assert.Nil(t, wh.LastUsedAt)
@@ -52,7 +52,7 @@ func TestWebhook_StorageRoundtrip(t *testing.T) {
 		ID:          "id",
 		DAGName:     "dag.yaml",
 		TokenHash:   "hash",
-		TokenPrefix: "dagu_wh_",
+		TokenPrefix: "ayatsuri_wh_",
 		Enabled:     false,
 		CreatedAt:   now,
 		UpdatedAt:   now,

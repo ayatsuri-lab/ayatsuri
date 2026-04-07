@@ -21,15 +21,15 @@ WORKDIR /app
 COPY . .
 RUN go mod download && rm -rf frontend/assets
 COPY --from=ui-builder /app/dist/ ./internal/service/frontend/assets/
-RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags="${LDFLAGS}" -o ./bin/dagu ./cmd
+RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags="${LDFLAGS}" -o ./bin/ayatsuri ./cmd
 
 # Stage 3: Final Image
 FROM --platform=$TARGETPLATFORM ubuntu:24.04
 
-ARG USER="dagu"
+ARG USER="ayatsuri"
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-ARG DAGU_HOME="/var/lib/dagu"
+ARG AYATSURI_HOME="/var/lib/ayatsuri"
 
 # WORKAROUND — Ubuntu 24.04 switched repo signatures to Ed25519.
 # Older base images ship an outdated ubuntu-keyring that cannot verify
@@ -53,7 +53,7 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=go-builder /app/bin/dagu /usr/local/bin/
+COPY --from=go-builder /app/bin/ayatsuri /usr/local/bin/
 COPY ./entrypoint.sh /entrypoint.sh
 
 RUN set -eux; \
@@ -74,29 +74,29 @@ RUN set -eux; \
 # Create user and set permissions
 RUN set -eux; \
     { \
-        echo 'dagu ALL=(ALL) NOPASSWD:ALL'; \
-        echo 'Defaults:dagu !requiretty'; \
-    } > /etc/sudoers.d/99-dagu && \
-    chmod 0440 /etc/sudoers.d/99-dagu && \
-    visudo -cf /etc/sudoers.d/99-dagu
+        echo 'ayatsuri ALL=(ALL) NOPASSWD:ALL'; \
+        echo 'Defaults:ayatsuri !requiretty'; \
+    } > /etc/sudoers.d/99-ayatsuri && \
+    chmod 0440 /etc/sudoers.d/99-ayatsuri && \
+    visudo -cf /etc/sudoers.d/99-ayatsuri
 
 # Delete the default ubuntu user if it exists
 RUN userdel -f ubuntu || true
 
-# Create the DAGU_HOME directory and set permissions
-RUN mkdir -p "${DAGU_HOME}" && \
-    chown -R "${USER_UID}:${USER_GID}" "${DAGU_HOME}" && \
-    chmod 755 "${DAGU_HOME}"
+# Create the AYATSURI_HOME directory and set permissions
+RUN mkdir -p "${AYATSURI_HOME}" && \
+    chown -R "${USER_UID}:${USER_GID}" "${AYATSURI_HOME}" && \
+    chmod 755 "${AYATSURI_HOME}"
 
 WORKDIR /home/${USER}
-ENV DAGU_HOST=0.0.0.0
-ENV DAGU_PORT=8080
-ENV DAGU_HOME=${DAGU_HOME}
-ENV DAGU_TZ="Etc/UTC"
+ENV AYATSURI_HOST=0.0.0.0
+ENV AYATSURI_PORT=8080
+ENV AYATSURI_HOME=${AYATSURI_HOME}
+ENV AYATSURI_TZ="Etc/UTC"
 ENV PUID=${USER_UID}
 ENV PGID=${USER_GID}
 ENV DOCKER_GID=-1
 ENV DEBIAN_FRONTEND=noninteractive
 EXPOSE 8080
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["dagu", "start-all"]
+CMD ["ayatsuri", "start-all"]

@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	coreexec "github.com/dagucloud/dagu/internal/core/exec"
+	coreexec "github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 	"github.com/stretchr/testify/require"
 )
 
@@ -30,7 +30,7 @@ func RunBuiltCLICommand(tb testing.TB, th Helper, extraEnv []string, args ...str
 	}
 	defer cancel()
 
-	cmd := exec.CommandContext(ctx, th.Config.Paths.Executable, WithConfigFlag(args, th.Config)...) //nolint:gosec // Test helper executes the built dagu binary from the harness config.
+	cmd := exec.CommandContext(ctx, th.Config.Paths.Executable, WithConfigFlag(args, th.Config)...) //nolint:gosec // Test helper executes the built ayatsuri binary from the harness config.
 	cmd.Env = append(append([]string{}, th.ChildEnv...), extraEnv...)
 	return cmd.CombinedOutput()
 }

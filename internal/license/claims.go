@@ -9,7 +9,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// LicenseClaims represents the custom JWT claims for a Dagu license.
+// LicenseClaims represents the custom JWT claims for a Ayatsuri license.
 type LicenseClaims struct {
 	jwt.RegisteredClaims
 

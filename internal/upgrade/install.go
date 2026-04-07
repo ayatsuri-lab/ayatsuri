@@ -21,7 +21,7 @@ import (
 // InstallOptions configures the installation operation.
 type InstallOptions struct {
 	ArchivePath     string // Downloaded .tar.gz
-	TargetPath      string // Path to current dagu binary
+	TargetPath      string // Path to current ayatsuri binary
 	CreateBackup    bool
 	ExpectedVersion string // for verification after install
 }
@@ -36,7 +36,7 @@ type InstallResult struct {
 func Install(ctx context.Context, opts InstallOptions) (*InstallResult, error) {
 	result := &InstallResult{}
 
-	tempDir, err := os.MkdirTemp("", "dagu-upgrade-*")
+	tempDir, err := os.MkdirTemp("", "ayatsuri-upgrade-*")
 	if err != nil {
 		return nil, fmt.Errorf("failed to create temp directory: %w", err)
 	}
@@ -46,9 +46,9 @@ func Install(ctx context.Context, opts InstallOptions) (*InstallResult, error) {
 		return nil, fmt.Errorf("failed to extract archive: %w", err)
 	}
 
-	binaryName := "dagu"
+	binaryName := "ayatsuri"
 	if runtime.GOOS == "windows" {
-		binaryName = "dagu.exe"
+		binaryName = "ayatsuri.exe"
 	}
 
 	extractedBinary, err := findBinary(tempDir, binaryName)
@@ -185,7 +185,7 @@ func replaceBinary(src, target string) error {
 // replaceUnixBinary replaces the binary on Unix systems.
 func replaceUnixBinary(src, target string, perm os.FileMode) error {
 	dir := filepath.Dir(target)
-	tempFile, err := os.CreateTemp(dir, "dagu-new-*")
+	tempFile, err := os.CreateTemp(dir, "ayatsuri-new-*")
 	if err != nil {
 		return fmt.Errorf("failed to create temp file: %w", err)
 	}
@@ -217,7 +217,7 @@ func replaceUnixBinary(src, target string, perm os.FileMode) error {
 // This reduces the vulnerable window from a full copy to just two renames.
 func replaceWindowsBinary(src, target string, perm os.FileMode) error {
 	dir := filepath.Dir(target)
-	tempFile, err := os.CreateTemp(dir, "dagu-new-*")
+	tempFile, err := os.CreateTemp(dir, "ayatsuri-new-*")
 	if err != nil {
 		return fmt.Errorf("failed to create temp file: %w", err)
 	}
@@ -299,7 +299,7 @@ func GetExecutablePath() (string, error) {
 // CheckWritePermission verifies we can write to the target directory.
 func CheckWritePermission(targetPath string) error {
 	dir := filepath.Dir(targetPath)
-	tempFile, err := os.CreateTemp(dir, ".dagu-permission-check-*")
+	tempFile, err := os.CreateTemp(dir, ".ayatsuri-permission-check-*")
 	if err != nil {
 		if os.IsPermission(err) {
 			return fmt.Errorf("permission denied: cannot write to %s (try running with sudo)", dir)

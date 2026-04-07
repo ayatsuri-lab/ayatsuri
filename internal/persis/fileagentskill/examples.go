@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	bundledskills "github.com/dagucloud/dagu/skills"
+	bundledskills "github.com/ayatsuri-lab/ayatsuri/skills"
 )
 
 const examplesMarkerFile = ".examples-created"
@@ -62,7 +62,7 @@ func SeedExampleSkills(baseDir string) bool {
 		relPath := path
 		topDir := strings.SplitN(relPath, "/", 2)[0]
 		if _, ok := seedableIDs[topDir]; !ok {
-			return nil // skip non-example skills (e.g. dagu/ used by ai install)
+			return nil // skip non-example skills (e.g. ayatsuri/ used by ai install)
 		}
 		destPath := filepath.Join(baseDir, relPath)
 
@@ -100,7 +100,7 @@ func SeedExampleSkills(baseDir string) bool {
 	return true
 }
 
-const builtinKnowledgeEmbedDir = bundledskills.DaguReferencesDir
+const builtinKnowledgeEmbedDir = bundledskills.AyatsuriReferencesDir
 
 // SeedReferences extracts built-in reference documents to the given directory.
 // These are read-only knowledge files the AI agent can read on demand.

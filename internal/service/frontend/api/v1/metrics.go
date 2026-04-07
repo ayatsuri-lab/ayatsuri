@@ -7,7 +7,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/dagucloud/dagu/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/api/v1"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 

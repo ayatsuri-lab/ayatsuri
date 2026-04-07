@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/dagucloud/dagu/internal/license"
-	"github.com/dagucloud/dagu/internal/persis/filelicense"
+	"github.com/ayatsuri-lab/ayatsuri/internal/license"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filelicense"
 	"github.com/spf13/cobra"
 )
 
@@ -18,8 +18,8 @@ import (
 func License() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "license",
-		Short: "Manage Dagu license",
-		Long:  "Activate, deactivate, and check Dagu license status.",
+		Short: "Manage Ayatsuri license",
+		Long:  "Activate, deactivate, and check Ayatsuri license status.",
 	}
 
 	cmd.AddCommand(licenseActivate())

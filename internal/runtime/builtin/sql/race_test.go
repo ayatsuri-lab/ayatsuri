@@ -12,13 +12,13 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/runtime/executor"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/executor"
 	"github.com/stretchr/testify/require"
 
-	sqlexec "github.com/dagucloud/dagu/internal/runtime/builtin/sql"
+	sqlexec "github.com/ayatsuri-lab/ayatsuri/internal/runtime/builtin/sql"
 	// Import drivers for testing
-	_ "github.com/dagucloud/dagu/internal/runtime/builtin/sql/drivers/sqlite"
+	_ "github.com/ayatsuri-lab/ayatsuri/internal/runtime/builtin/sql/drivers/sqlite"
 )
 
 // TestRace_ConcurrentExecutors tests that multiple executors can run concurrently

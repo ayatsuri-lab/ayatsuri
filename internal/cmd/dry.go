@@ -7,11 +7,11 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/core/spec"
-	"github.com/dagucloud/dagu/internal/runtime/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/agent"
 	"github.com/spf13/cobra"
 )
 
@@ -32,7 +32,7 @@ Parameters after the "--" separator are passed as execution parameters (either p
 allowing you to test different parameter configurations.
 
 Example:
-  dagu dry my_dag.yaml -- P1=foo P2=bar
+  ayatsuri dry my_dag.yaml -- P1=foo P2=bar
 `,
 			Args: cobra.MinimumNArgs(1),
 		}, dryFlags,

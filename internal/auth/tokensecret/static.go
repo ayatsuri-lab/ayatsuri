@@ -6,7 +6,7 @@ package tokensecret
 import (
 	"context"
 
-	"github.com/dagucloud/dagu/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
 )
 
 var _ auth.TokenSecretProvider = (*StaticProvider)(nil)

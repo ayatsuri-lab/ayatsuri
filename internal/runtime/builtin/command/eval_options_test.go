@@ -7,9 +7,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/cmn/eval"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/runtime"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/eval"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
 	"github.com/stretchr/testify/require"
 )
 
@@ -53,56 +53,56 @@ func TestCommandExecutor_GetEvalOptions(t *testing.T) {
 			wantEscape:    true,
 		},
 		{
-			name:          "ShDisablesDaguEnvExpansion",
+			name:          "ShDisablesAyatsuriEnvExpansion",
 			shell:         "/bin/sh",
 			wantExpandEnv: false,
 			wantExpandOS:  false,
 			wantEscape:    false,
 		},
 		{
-			name:          "BashDisablesDaguEnvExpansion",
+			name:          "BashDisablesAyatsuriEnvExpansion",
 			shell:         "/bin/bash",
 			wantExpandEnv: false,
 			wantExpandOS:  false,
 			wantEscape:    false,
 		},
 		{
-			name:          "ZshDisablesDaguEnvExpansion",
+			name:          "ZshDisablesAyatsuriEnvExpansion",
 			shell:         "/bin/zsh",
 			wantExpandEnv: false,
 			wantExpandOS:  false,
 			wantEscape:    false,
 		},
 		{
-			name:          "FishKeepsDaguEnvExpansion",
+			name:          "FishKeepsAyatsuriEnvExpansion",
 			shell:         "fish",
 			wantExpandEnv: true,
 			wantExpandOS:  false,
 			wantEscape:    false,
 		},
 		{
-			name:          "NuKeepsDaguEnvExpansion",
+			name:          "NuKeepsAyatsuriEnvExpansion",
 			shell:         "nu",
 			wantExpandEnv: true,
 			wantExpandOS:  false,
 			wantEscape:    false,
 		},
 		{
-			name:          "PowerShellKeepsDaguEnvExpansion",
+			name:          "PowerShellKeepsAyatsuriEnvExpansion",
 			shell:         "powershell",
 			wantExpandEnv: true,
 			wantExpandOS:  false,
 			wantEscape:    false,
 		},
 		{
-			name:          "PwshKeepsDaguEnvExpansion",
+			name:          "PwshKeepsAyatsuriEnvExpansion",
 			shell:         "pwsh",
 			wantExpandEnv: true,
 			wantExpandOS:  false,
 			wantEscape:    false,
 		},
 		{
-			name:          "CmdKeepsDaguEnvExpansion",
+			name:          "CmdKeepsAyatsuriEnvExpansion",
 			shell:         "cmd.exe",
 			wantExpandEnv: true,
 			wantExpandOS:  false,

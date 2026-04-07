@@ -32,21 +32,21 @@ $ProgressPreference = "SilentlyContinue"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 $Script:InstallerSource = $MyInvocation.MyCommand.Definition
-$Script:ReleaseBase = "https://github.com/dagucloud/dagu/releases"
-$Script:ReleaseApi = "https://api.github.com/repos/dagucloud/dagu/releases/latest"
+$Script:ReleaseBase = "https://github.com/ayatsuri-lab/ayatsuri/releases"
+$Script:ReleaseApi = "https://api.github.com/repos/ayatsuri-lab/ayatsuri/releases/latest"
 $Script:WinSWVersion = "v2.12.0"
 $Script:WinSWBase = "https://github.com/winsw/winsw/releases/download/$($Script:WinSWVersion)"
-$Script:ServiceName = "Dagu"
+$Script:ServiceName = "Ayatsuri"
 $Script:ServiceWrapperExe = $null
 $Script:ServiceConfigXml = $null
-$Script:DaguExe = $null
-$Script:DaguHome = $null
+$Script:AyatsuriExe = $null
+$Script:AyatsuriHome = $null
 $Script:ServiceUrl = $null
 $Script:DetectedSkillTargets = 0
 $Script:RebootElevated = $false
 $Script:SkillMode = ""
 $Script:UninstallInstallPaths = @()
-$Script:UninstallDaguHomes = @()
+$Script:UninstallAyatsuriHomes = @()
 $Script:UninstallSkillDirs = @()
 $Script:UninstallCopilotFiles = @()
 $Script:UninstallPathScopes = @()
@@ -80,8 +80,8 @@ function Write-ErrorMessage {
 }
 
 function Show-Banner {
-    Write-Host "Dagu Installer" -ForegroundColor Green
-    Write-Host "Install Dagu, set it up as a background app, and get you to the UI quickly." -ForegroundColor DarkGray
+    Write-Host "Ayatsuri Installer" -ForegroundColor Green
+    Write-Host "Install Ayatsuri, set it up as a background app, and get you to the UI quickly." -ForegroundColor DarkGray
 }
 
 function Test-Interactive {
@@ -143,7 +143,7 @@ function Choose-OperationMode {
         return
     }
     Write-Section "Choose setup"
-    if (Confirm-Choice "Install or repair Dagu now?" $true) {
+    if (Confirm-Choice "Install or repair Ayatsuri now?" $true) {
         $script:Uninstall = $false
     }
     else {
@@ -281,7 +281,7 @@ function Validate-UninstallArgs {
         throw "-Service is only supported during install. Use -ServiceScope to narrow service uninstall discovery."
     }
     if ($ServiceScope -and $ServiceScope -ne "system") {
-        Write-WarnMessage "Windows uninstall ignores -ServiceScope user. The Dagu service is machine-scoped when installed."
+        Write-WarnMessage "Windows uninstall ignores -ServiceScope user. The Ayatsuri service is machine-scoped when installed."
     }
 }
 
@@ -306,19 +306,19 @@ function Resolve-Defaults {
     }
     if (-not $InstallDir) {
         if ($Service -eq "yes") {
-            $script:InstallDir = Join-Path ${env:ProgramFiles} "Dagu"
+            $script:InstallDir = Join-Path ${env:ProgramFiles} "Ayatsuri"
         } else {
-            $script:InstallDir = Join-Path $env:LOCALAPPDATA "Programs\dagu"
+            $script:InstallDir = Join-Path $env:LOCALAPPDATA "Programs\ayatsuri"
         }
     }
     if ($Service -eq "yes") {
-        $script:DaguHome = Join-Path $env:ProgramData "Dagu"
+        $script:AyatsuriHome = Join-Path $env:ProgramData "Ayatsuri"
     } else {
-        $script:DaguHome = Join-Path $env:LOCALAPPDATA "Dagu"
+        $script:AyatsuriHome = Join-Path $env:LOCALAPPDATA "Ayatsuri"
     }
-    $script:DaguExe = Join-Path $InstallDir "dagu.exe"
-    $script:ServiceWrapperExe = Join-Path $InstallDir "dagu-service.exe"
-    $script:ServiceConfigXml = Join-Path $InstallDir "dagu-service.xml"
+    $script:AyatsuriExe = Join-Path $InstallDir "ayatsuri.exe"
+    $script:ServiceWrapperExe = Join-Path $InstallDir "ayatsuri-service.exe"
+    $script:ServiceConfigXml = Join-Path $InstallDir "ayatsuri-service.xml"
     $script:ServiceUrl = "http://$HostAddress`:$Port"
     if ($SkillsDir.Count -gt 0) {
         $script:SkillMode = "explicit"
@@ -381,11 +381,11 @@ function Discover-SkillRemovals {
     $agentsHome = if ($env:AGENTS_HOME) { $env:AGENTS_HOME } else { Join-Path $home ".agents" }
     $codexHome = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $home ".codex" }
     $xdg = if ($env:XDG_CONFIG_HOME) { $env:XDG_CONFIG_HOME } else { $home }
-    $claudeSkill = Join-Path $home ".claude\skills\dagu"
-    $agentsSkill = Join-Path $agentsHome "skills\dagu"
-    $codexSkill = Join-Path $codexHome "skills\dagu"
-    $openCodeSkill = Join-Path $home ".config\opencode\skills\dagu"
-    $geminiSkill = Join-Path $home ".gemini\skills\dagu"
+    $claudeSkill = Join-Path $home ".claude\skills\ayatsuri"
+    $agentsSkill = Join-Path $agentsHome "skills\ayatsuri"
+    $codexSkill = Join-Path $codexHome "skills\ayatsuri"
+    $openCodeSkill = Join-Path $home ".config\opencode\skills\ayatsuri"
+    $geminiSkill = Join-Path $home ".gemini\skills\ayatsuri"
     $xdgCopilot = Join-Path $xdg ".copilot\copilot-instructions.md"
     $homeCopilot = Join-Path $home ".copilot\copilot-instructions.md"
     foreach ($dir in @($claudeSkill, $agentsSkill, $codexSkill, $openCodeSkill, $geminiSkill)) {
@@ -399,13 +399,13 @@ function Discover-SkillRemovals {
         }
     }
     foreach ($dir in $SkillsDir) {
-        Add-UniqueItem ([ref]$Script:UninstallSkillDirs) (Join-Path $dir "dagu")
+        Add-UniqueItem ([ref]$Script:UninstallSkillDirs) (Join-Path $dir "ayatsuri")
     }
 }
 
 function Discover-UninstallArtifacts {
     $script:UninstallInstallPaths = @()
-    $script:UninstallDaguHomes = @()
+    $script:UninstallAyatsuriHomes = @()
     $script:UninstallSkillDirs = @()
     $script:UninstallCopilotFiles = @()
     $script:UninstallPathScopes = @()
@@ -416,38 +416,38 @@ function Discover-UninstallArtifacts {
         $serviceInstallDir = Split-Path -Parent $serviceWrapper
         $script:UninstallServicePresent = $true
         $script:ServiceWrapperExe = $serviceWrapper
-        $script:ServiceConfigXml = Join-Path $serviceInstallDir "dagu-service.xml"
-        $script:DaguExe = Join-Path $serviceInstallDir "dagu.exe"
-        Add-UniqueItem ([ref]$Script:UninstallInstallPaths) $Script:DaguExe
+        $script:ServiceConfigXml = Join-Path $serviceInstallDir "ayatsuri-service.xml"
+        $script:AyatsuriExe = Join-Path $serviceInstallDir "ayatsuri.exe"
+        Add-UniqueItem ([ref]$Script:UninstallInstallPaths) $Script:AyatsuriExe
         Add-UniqueItem ([ref]$Script:UninstallPathScopes) $serviceInstallDir
-        Add-UniqueItem ([ref]$Script:UninstallDaguHomes) (Get-XmlEnvValue -XmlPath $Script:ServiceConfigXml -Name "DAGU_HOME")
+        Add-UniqueItem ([ref]$Script:UninstallAyatsuriHomes) (Get-XmlEnvValue -XmlPath $Script:ServiceConfigXml -Name "DAGU_HOME")
     }
 
-    $cmd = Get-Command dagu.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+    $cmd = Get-Command ayatsuri.exe -ErrorAction SilentlyContinue | Select-Object -First 1
     if ($cmd -and $cmd.Source) {
         Add-UniqueItem ([ref]$Script:UninstallInstallPaths) $cmd.Source
         Add-UniqueItem ([ref]$Script:UninstallPathScopes) (Split-Path -Parent $cmd.Source)
     }
 
-    $userInstallDir = Join-Path $env:LOCALAPPDATA "Programs\dagu"
-    $systemInstallDir = Join-Path ${env:ProgramFiles} "Dagu"
-    foreach ($path in @((Join-Path $userInstallDir "dagu.exe"), (Join-Path $systemInstallDir "dagu.exe"))) {
+    $userInstallDir = Join-Path $env:LOCALAPPDATA "Programs\ayatsuri"
+    $systemInstallDir = Join-Path ${env:ProgramFiles} "Ayatsuri"
+    foreach ($path in @((Join-Path $userInstallDir "ayatsuri.exe"), (Join-Path $systemInstallDir "ayatsuri.exe"))) {
         if (Test-Path $path) {
             Add-UniqueItem ([ref]$Script:UninstallInstallPaths) $path
             Add-UniqueItem ([ref]$Script:UninstallPathScopes) (Split-Path -Parent $path)
         }
     }
 
-    foreach ($homePath in @((Join-Path $env:LOCALAPPDATA "Dagu"), (Join-Path $env:ProgramData "Dagu"))) {
+    foreach ($homePath in @((Join-Path $env:LOCALAPPDATA "Ayatsuri"), (Join-Path $env:ProgramData "Ayatsuri"))) {
         if (Test-Path $homePath) {
-            Add-UniqueItem ([ref]$Script:UninstallDaguHomes) $homePath
+            Add-UniqueItem ([ref]$Script:UninstallAyatsuriHomes) $homePath
         }
     }
 
     Discover-SkillRemovals
 
     if ($InstallDir) {
-        $explicitExe = Join-Path $InstallDir "dagu.exe"
+        $explicitExe = Join-Path $InstallDir "ayatsuri.exe"
         $script:UninstallInstallPaths = @($Script:UninstallInstallPaths | Where-Object { $_ -eq $explicitExe })
         if ($Script:UninstallInstallPaths.Count -eq 0) {
             $script:UninstallInstallPaths = @($explicitExe)
@@ -460,9 +460,9 @@ function Discover-UninstallArtifacts {
             $script:UninstallServicePresent = $false
         }
         if (-not $Script:UninstallServicePresent) {
-            $script:ServiceWrapperExe = Join-Path $InstallDir "dagu-service.exe"
-            $script:ServiceConfigXml = Join-Path $InstallDir "dagu-service.xml"
-            $script:DaguExe = $explicitExe
+            $script:ServiceWrapperExe = Join-Path $InstallDir "ayatsuri-service.exe"
+            $script:ServiceConfigXml = Join-Path $InstallDir "ayatsuri-service.xml"
+            $script:AyatsuriExe = $explicitExe
         }
     }
 }
@@ -473,10 +473,10 @@ function Validate-UninstallDiscovery {
     }
     if ($Script:UninstallInstallPaths.Count -gt 1 -and -not $InstallDir) {
         if (-not (Test-Interactive)) {
-            throw "Multiple Dagu installations were detected. Rerun with -InstallDir to choose which one to remove."
+            throw "Multiple Ayatsuri installations were detected. Rerun with -InstallDir to choose which one to remove."
         }
-        Write-WarnMessage ("Multiple Dagu binaries were detected: " + (Join-Values $Script:UninstallInstallPaths))
-        if (-not (Confirm-Choice "Remove all detected Dagu binaries?" $true)) {
+        Write-WarnMessage ("Multiple Ayatsuri binaries were detected: " + (Join-Values $Script:UninstallInstallPaths))
+        if (-not (Confirm-Choice "Remove all detected Ayatsuri binaries?" $true)) {
             throw "Rerun with -InstallDir to choose which installation to remove."
         }
         $script:UninstallMultipleInstallsConfirmed = $true
@@ -488,10 +488,10 @@ function Invoke-UninstallWizard {
         return
     }
     Write-Section "Uninstall options"
-    if (($Script:UninstallSkillDirs.Count -gt 0 -or $Script:UninstallCopilotFiles.Count -gt 0) -and (Confirm-Choice "Remove the Dagu AI skill from detected AI tools too?" $false)) {
+    if (($Script:UninstallSkillDirs.Count -gt 0 -or $Script:UninstallCopilotFiles.Count -gt 0) -and (Confirm-Choice "Remove the Ayatsuri AI skill from detected AI tools too?" $false)) {
         $script:RemoveSkill = $true
     }
-    if ($Script:UninstallDaguHomes.Count -gt 0 -and (Confirm-Choice "Delete the detected Dagu data directory too?" $false)) {
+    if ($Script:UninstallAyatsuriHomes.Count -gt 0 -and (Confirm-Choice "Delete the detected Ayatsuri data directory too?" $false)) {
         $script:PurgeData = $true
     }
 }
@@ -501,7 +501,7 @@ function Show-UninstallPlan {
     Write-Host ("Binary paths".PadRight(20) + $(if ($Script:UninstallInstallPaths.Count -gt 0) { Join-Values $Script:UninstallInstallPaths } else { "none" }))
     Write-Host ("Background service".PadRight(20) + $(if ($Script:UninstallServicePresent) { $Script:ServiceName } else { "none" }))
     $dataAction = if ($PurgeData) { "remove" } else { "keep" }
-    Write-Host ("Data directory".PadRight(20) + "$dataAction: $(if ($Script:UninstallDaguHomes.Count -gt 0) { Join-Values $Script:UninstallDaguHomes } else { 'none detected' })")
+    Write-Host ("Data directory".PadRight(20) + "$dataAction: $(if ($Script:UninstallAyatsuriHomes.Count -gt 0) { Join-Values $Script:UninstallAyatsuriHomes } else { 'none detected' })")
     Write-Host ("PATH cleanup".PadRight(20) + $(if ($Script:UninstallPathScopes.Count -gt 0) { Join-Values $Script:UninstallPathScopes } else { "none detected" }))
     if ($RemoveSkill) {
         $skillTargets = @($Script:UninstallSkillDirs + $Script:UninstallCopilotFiles)
@@ -519,7 +519,7 @@ function Test-UninstallHasAnything {
     return ($Script:UninstallInstallPaths.Count -gt 0) -or
         $Script:UninstallServicePresent -or
         ($Script:UninstallPathScopes.Count -gt 0) -or
-        ($Script:UninstallDaguHomes.Count -gt 0) -or
+        ($Script:UninstallAyatsuriHomes.Count -gt 0) -or
         ($Script:UninstallSkillDirs.Count -gt 0) -or
         ($Script:UninstallCopilotFiles.Count -gt 0)
 }
@@ -581,7 +581,7 @@ function Remove-SkillDirectory {
     if ([string]::IsNullOrWhiteSpace($Path)) {
         return
     }
-    if ((Split-Path -Leaf $Path) -ne "dagu") {
+    if ((Split-Path -Leaf $Path) -ne "ayatsuri") {
         Write-WarnMessage "Skipping unexpected skill path: $Path"
         return
     }
@@ -598,8 +598,8 @@ function Remove-CopilotMarkers {
         return
     }
     $lines = Get-Content -Path $Path
-    $beginCount = @($lines | Where-Object { $_ -eq "<!-- BEGIN DAGU -->" }).Count
-    $endCount = @($lines | Where-Object { $_ -eq "<!-- END DAGU -->" }).Count
+    $beginCount = @($lines | Where-Object { $_ -eq "<!-- BEGIN AYATSURI -->" }).Count
+    $endCount = @($lines | Where-Object { $_ -eq "<!-- END AYATSURI -->" }).Count
     if (($beginCount -eq 0) -and ($endCount -eq 0)) {
         return
     }
@@ -608,17 +608,17 @@ function Remove-CopilotMarkers {
         return
     }
     if ($DryRun) {
-        Write-Info "Would remove the Dagu section from $Path"
+        Write-Info "Would remove the Ayatsuri section from $Path"
         return
     }
     $result = New-Object System.Collections.Generic.List[string]
     $skip = $false
     foreach ($line in $lines) {
-        if ($line -eq "<!-- BEGIN DAGU -->") {
+        if ($line -eq "<!-- BEGIN AYATSURI -->") {
             $skip = $true
             continue
         }
-        if ($line -eq "<!-- END DAGU -->") {
+        if ($line -eq "<!-- END AYATSURI -->") {
             $skip = $false
             continue
         }
@@ -668,7 +668,7 @@ function Remove-UninstallFile {
 function Invoke-Uninstall {
     if (-not (Test-UninstallHasAnything)) {
         Write-Section "Uninstall"
-        Write-Info "Nothing to uninstall. No Dagu install, service, PATH entry, data directory, or skill install was detected."
+        Write-Info "Nothing to uninstall. No Ayatsuri install, service, PATH entry, data directory, or skill install was detected."
         return
     }
     if ($DryRun) {
@@ -712,7 +712,7 @@ function Invoke-Uninstall {
         }
     }
     if ($PurgeData) {
-        foreach ($dir in $Script:UninstallDaguHomes) {
+        foreach ($dir in $Script:UninstallAyatsuriHomes) {
             Remove-UninstallDataDirectory -Path $dir
         }
     }
@@ -734,7 +734,7 @@ function Show-Plan {
     Write-Host ("Background service".PadRight(20) + $Service)
     if ($Service -eq "yes") {
         Write-Host ("Service scope".PadRight(20) + $ServiceScope)
-        Write-Host ("Dagu home".PadRight(20) + $DaguHome)
+        Write-Host ("Ayatsuri home".PadRight(20) + $AyatsuriHome)
         Write-Host ("Web URL".PadRight(20) + $ServiceUrl)
         Write-Host ("Admin bootstrap".PadRight(20) + $(if ($AdminUsername) { $AdminUsername } else { "disabled" }))
     }
@@ -750,24 +750,24 @@ function Invoke-InstallerWizard {
     }
 
     Write-Section "Recommended setup"
-    $script:Service = if (Confirm-Choice "Install Dagu as a background service?" $true) { "yes" } else { "no" }
+    $script:Service = if (Confirm-Choice "Install Ayatsuri as a background service?" $true) { "yes" } else { "no" }
     if ($script:Service -eq "yes") {
         $script:ServiceScope = "system"
     } else {
         $script:ServiceScope = "user"
     }
-    $script:HostAddress = if (Confirm-Choice "Open Dagu only on this computer?" $true) { "127.0.0.1" } else { "0.0.0.0" }
+    $script:HostAddress = if (Confirm-Choice "Open Ayatsuri only on this computer?" $true) { "127.0.0.1" } else { "0.0.0.0" }
     $script:Port = Read-Default "Web UI port" $Port
     $script:InstallDir = Read-Default "Install directory" $InstallDir
     if ($script:Service -eq "yes") {
-        $script:DaguHome = Read-Default "Dagu data directory" $DaguHome
+        $script:AyatsuriHome = Read-Default "Ayatsuri data directory" $AyatsuriHome
         $script:AdminUsername = Read-Default "Initial admin username" $(if ($AdminUsername) { $AdminUsername } else { "admin" })
         if (-not $AdminPassword) {
             $script:AdminPassword = Read-PasswordConfirm "Initial admin password"
         }
     }
     if ($DetectedSkillTargets -gt 0 -and $SkillsDir.Count -eq 0) {
-        if (-not (Confirm-Choice "Install the Dagu AI skill into detected AI tools?" $true)) {
+        if (-not (Confirm-Choice "Install the Ayatsuri AI skill into detected AI tools?" $true)) {
             $script:SkillMode = "skip"
         }
         else {
@@ -824,7 +824,7 @@ function Ensure-ElevatedForService {
     }
 
     $argsList = Get-ForwardArgs
-    $tmpScript = Join-Path $env:TEMP ("dagu-installer-" + [guid]::NewGuid().ToString("N") + ".ps1")
+    $tmpScript = Join-Path $env:TEMP ("ayatsuri-installer-" + [guid]::NewGuid().ToString("N") + ".ps1")
     [IO.File]::WriteAllText($tmpScript, $Script:InstallerSource, [Text.Encoding]::UTF8)
     Start-Process -Verb RunAs powershell -ArgumentList @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $tmpScript) + $argsList | Out-Null
     exit 0
@@ -844,7 +844,7 @@ function Ensure-ElevatedForUninstall {
             Normalize-InstallerPath ${env:ProgramFiles(x86)},
             Normalize-InstallerPath $env:ProgramData
         ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
-        foreach ($path in @($Script:UninstallInstallPaths + $Script:UninstallPathScopes + $Script:UninstallDaguHomes)) {
+        foreach ($path in @($Script:UninstallInstallPaths + $Script:UninstallPathScopes + $Script:UninstallAyatsuriHomes)) {
             $normalized = Normalize-InstallerPath $path
             if ([string]::IsNullOrWhiteSpace($normalized)) {
                 continue
@@ -866,7 +866,7 @@ function Ensure-ElevatedForUninstall {
     }
 
     $argsList = Get-ForwardArgs
-    $tmpScript = Join-Path $env:TEMP ("dagu-installer-" + [guid]::NewGuid().ToString("N") + ".ps1")
+    $tmpScript = Join-Path $env:TEMP ("ayatsuri-installer-" + [guid]::NewGuid().ToString("N") + ".ps1")
     [IO.File]::WriteAllText($tmpScript, $Script:InstallerSource, [Text.Encoding]::UTF8)
     Start-Process -Verb RunAs powershell -ArgumentList @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $tmpScript) + $argsList | Out-Null
     exit 0
@@ -880,7 +880,7 @@ function Invoke-Download {
     Invoke-WebRequest -Uri $Url -OutFile $OutFile
 }
 
-function Verify-DaguArchive {
+function Verify-AyatsuriArchive {
     param(
         [string]$ArchiveFile,
         [string]$AssetName,
@@ -900,34 +900,34 @@ function Verify-DaguArchive {
 }
 
 function New-TempDir {
-    $path = Join-Path $env:TEMP ("dagu-installer-" + [guid]::NewGuid().ToString("N"))
+    $path = Join-Path $env:TEMP ("ayatsuri-installer-" + [guid]::NewGuid().ToString("N"))
     New-Item -ItemType Directory -Force -Path $path | Out-Null
     return $path
 }
 
-function Install-DaguBinary {
+function Install-AyatsuriBinary {
     $arch = Get-WindowsArch
     $tmpDir = New-TempDir
     try {
-        $asset = "dagu_$($Version.TrimStart('v'))_windows_$arch.tar.gz"
+        $asset = "ayatsuri_$($Version.TrimStart('v'))_windows_$arch.tar.gz"
         $archive = Join-Path $tmpDir $asset
         $extractDir = Join-Path $tmpDir "extract"
         New-Item -ItemType Directory -Force -Path $extractDir | Out-Null
-        Write-Info "Downloading Dagu $Version"
+        Write-Info "Downloading Ayatsuri $Version"
         Invoke-Download -Url "$($Script:ReleaseBase)/download/$Version/$asset" -OutFile $archive
-        Verify-DaguArchive -ArchiveFile $archive -AssetName $asset -TempDir $tmpDir
+        Verify-AyatsuriArchive -ArchiveFile $archive -AssetName $asset -TempDir $tmpDir
         tar -xzf $archive -C $extractDir
-        $sourceExe = Join-Path $extractDir "dagu.exe"
+        $sourceExe = Join-Path $extractDir "ayatsuri.exe"
         if (-not (Test-Path $sourceExe)) {
-            throw "dagu.exe was not found in the downloaded archive."
+            throw "ayatsuri.exe was not found in the downloaded archive."
         }
         if ($DryRun) {
-            Write-Info "Would install $sourceExe to $DaguExe"
+            Write-Info "Would install $sourceExe to $AyatsuriExe"
             return
         }
         New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
-        Move-Item -Path $sourceExe -Destination $DaguExe -Force
-        Write-Success "Installed Dagu to $DaguExe"
+        Move-Item -Path $sourceExe -Destination $AyatsuriExe -Force
+        Write-Success "Installed Ayatsuri to $AyatsuriExe"
     }
     finally {
         Remove-Item -Recurse -Force $tmpDir -ErrorAction SilentlyContinue
@@ -972,29 +972,29 @@ function Install-WinSWWrapper {
 function Write-ServiceXml {
     param([switch]$IncludeBootstrap)
 
-    $logDir = Join-Path $DaguHome "logs"
+    $logDir = Join-Path $AyatsuriHome "logs"
     $xml = @"
 <service>
   <id>$($Script:ServiceName)</id>
-  <name>Dagu</name>
-  <description>Dagu Workflow Engine</description>
-  <executable>$(Escape-XmlValue $Script:DaguExe)</executable>
+  <name>Ayatsuri</name>
+  <description>Ayatsuri Workflow Engine</description>
+  <executable>$(Escape-XmlValue $Script:AyatsuriExe)</executable>
   <arguments>start-all</arguments>
-  <workingdirectory>$(Escape-XmlValue $Script:DaguHome)</workingdirectory>
+  <workingdirectory>$(Escape-XmlValue $Script:AyatsuriHome)</workingdirectory>
   <startmode>Automatic</startmode>
   <onfailure action="restart" delay="10 sec"/>
   <resetfailure>1 hour</resetfailure>
   <stoptimeout>30 sec</stoptimeout>
   <logpath>$(Escape-XmlValue $logDir)</logpath>
   <log mode="append" />
-  <env name="DAGU_HOME" value="$(Escape-XmlValue $Script:DaguHome)" />
-  <env name="DAGU_HOST" value="$(Escape-XmlValue $Script:HostAddress)" />
-  <env name="DAGU_PORT" value="$(Escape-XmlValue $Script:Port)" />
+  <env name="DAGU_HOME" value="$(Escape-XmlValue $Script:AyatsuriHome)" />
+  <env name="AYATSURI_HOST" value="$(Escape-XmlValue $Script:HostAddress)" />
+  <env name="AYATSURI_PORT" value="$(Escape-XmlValue $Script:Port)" />
 "@
     if ($IncludeBootstrap -and (Has-AdminBootstrap)) {
         $xml += @"
-  <env name="DAGU_AUTH_BUILTIN_INITIAL_ADMIN_USERNAME" value="$(Escape-XmlValue $AdminUsername)" />
-  <env name="DAGU_AUTH_BUILTIN_INITIAL_ADMIN_PASSWORD" value="$(Escape-XmlValue $AdminPassword)" />
+  <env name="AYATSURI_AUTH_BUILTIN_INITIAL_ADMIN_USERNAME" value="$(Escape-XmlValue $AdminUsername)" />
+  <env name="AYATSURI_AUTH_BUILTIN_INITIAL_ADMIN_PASSWORD" value="$(Escape-XmlValue $AdminPassword)" />
 "@
     }
     $xml += @"
@@ -1004,7 +1004,7 @@ function Write-ServiceXml {
         Write-Info "Would write $ServiceConfigXml"
         return
     }
-    New-Item -ItemType Directory -Force -Path $DaguHome | Out-Null
+    New-Item -ItemType Directory -Force -Path $AyatsuriHome | Out-Null
     New-Item -ItemType Directory -Force -Path $logDir | Out-Null
     if (Test-Path $ServiceConfigXml) {
         Copy-Item $ServiceConfigXml "$ServiceConfigXml.$((Get-Date).ToString('yyyyMMddHHmmss')).bak"
@@ -1028,14 +1028,14 @@ function Install-WindowsService {
     Install-WinSWWrapper
     Write-ServiceXml -IncludeBootstrap
     if ($DryRun) {
-        Write-Info "Would install and start the Dagu Windows service"
+        Write-Info "Would install and start the Ayatsuri Windows service"
         return
     }
     try { Invoke-WinSW stop } catch {}
     try { Invoke-WinSW uninstall } catch {}
     Invoke-WinSW install
     Invoke-WinSW start
-    Write-Success "Installed the Dagu Windows service"
+    Write-Success "Installed the Ayatsuri Windows service"
 }
 
 function Wait-ForHealth {
@@ -1078,16 +1078,16 @@ function Verify-Bootstrap {
         return
     }
     if (-not (Wait-ForHealth)) {
-        throw "Dagu did not become healthy after the Windows service started."
+        throw "Ayatsuri did not become healthy after the Windows service started."
     }
     if (-not (Test-AdminLogin)) {
-        throw "Dagu started, but the initial admin login did not verify."
+        throw "Ayatsuri started, but the initial admin login did not verify."
     }
     $backupPath = $null
     $backupDir = $null
     if (Test-Path $ServiceConfigXml) {
         $backupDir = New-TempDir
-        $backupPath = Join-Path $backupDir "dagu-service.xml"
+        $backupPath = Join-Path $backupDir "ayatsuri-service.xml"
         Copy-Item $ServiceConfigXml $backupPath -Force
     }
     Write-ServiceXml
@@ -1097,7 +1097,7 @@ function Verify-Bootstrap {
             Invoke-WinSW start
         }
         if (-not (Wait-ForHealth)) {
-            throw "Dagu did not return after removing the bootstrap credentials."
+            throw "Ayatsuri did not return after removing the bootstrap credentials."
         }
         if (-not (Test-AdminLogin)) {
             throw "The admin login no longer works after the bootstrap cleanup."
@@ -1128,33 +1128,33 @@ function Install-AISkill {
     }
     if ($DryRun) {
         if ($SkillMode -eq "explicit" -or $SkillMode -eq "auto") {
-            Write-Info "Would install the Dagu AI skill"
+            Write-Info "Would install the Ayatsuri AI skill"
         }
         return
     }
     if ($SkillMode -eq "explicit" -and $SkillsDir.Count -gt 0) {
         foreach ($dir in $SkillsDir) {
-            & $DaguExe ai install --skills-dir $dir
+            & $AyatsuriExe ai install --skills-dir $dir
         }
         return
     }
     if ($SkillMode -eq "auto" -and $DetectedSkillTargets -gt 0) {
-        $output = & $DaguExe ai install --yes 2>&1 | Out-String
+        $output = & $AyatsuriExe ai install --yes 2>&1 | Out-String
         Write-Host $output.TrimEnd()
         if ($output -match "No AI coding tools detected") {
             Write-WarnMessage "No supported AI tool was detected."
         }
         return
     }
-    if ((Test-Interactive) -and (Confirm-Choice "Install the Dagu AI skill into a custom skills directory?" $false)) {
+    if ((Test-Interactive) -and (Confirm-Choice "Install the Ayatsuri AI skill into a custom skills directory?" $false)) {
         $dir = Read-Default "Skills directory" (Join-Path ([Environment]::GetFolderPath("UserProfile")) ".agents\skills")
         if ($dir) {
-            & $DaguExe ai install --skills-dir $dir
+            & $AyatsuriExe ai install --skills-dir $dir
             return
         }
     }
     if ((Test-Interactive) -and (Get-Command npx -ErrorAction SilentlyContinue) -and (Confirm-Choice "Use the shared skills installer instead?" $false)) {
-        & npx skills add https://github.com/dagucloud/dagu --skill dagu
+        & npx skills add https://github.com/ayatsuri-lab/ayatsuri --skill ayatsuri
     }
 }
 
@@ -1162,7 +1162,7 @@ function Open-BrowserIfRequested {
     if ($OpenBrowser -ne "yes" -or $DryRun -or -not (Test-Interactive)) {
         return
     }
-    if (-not (Confirm-Choice "Open Dagu in your browser now?" $true)) {
+    if (-not (Confirm-Choice "Open Ayatsuri in your browser now?" $true)) {
         return
     }
     Start-Process $ServiceUrl | Out-Null
@@ -1170,11 +1170,11 @@ function Open-BrowserIfRequested {
 
 function Show-Summary {
     Write-Section "Success"
-    Write-Host ("Installed".PadRight(20) + $DaguExe)
+    Write-Host ("Installed".PadRight(20) + $AyatsuriExe)
     if ($Service -eq "yes") {
         Write-Host ("Service URL".PadRight(20) + $ServiceUrl)
         Write-Host ("Service".PadRight(20) + $Script:ServiceName)
-        Write-Host ("Logs".PadRight(20) + (Join-Path $DaguHome "logs"))
+        Write-Host ("Logs".PadRight(20) + (Join-Path $AyatsuriHome "logs"))
         Write-Host ("Status".PadRight(20) + "Get-Service $($Script:ServiceName)")
     }
     if ($AdminUsername) {
@@ -1216,7 +1216,7 @@ if ($DryRun) {
     return
 }
 
-Install-DaguBinary
+Install-AyatsuriBinary
 Ensure-PathEntry
 Install-WindowsService
 Verify-Bootstrap

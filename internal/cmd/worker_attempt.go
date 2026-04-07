@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/dagucloud/dagu/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 )
 
 var attemptIDFlag = commandLineFlag{

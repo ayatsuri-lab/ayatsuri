@@ -11,7 +11,7 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/dagucloud/dagu/internal/gitsync"
+	"github.com/ayatsuri-lab/ayatsuri/internal/gitsync"
 	"github.com/spf13/cobra"
 )
 
@@ -59,7 +59,7 @@ Shows overall sync status including:
 - Per-DAG status (synced, modified, untracked, conflict)
 
 Example:
-  dagu sync status`,
+  ayatsuri sync status`,
 			Args: cobra.NoArgs,
 		},
 		nil,
@@ -148,7 +148,7 @@ This command fetches and applies changes from the remote repository
 to your local DAG definitions.
 
 Example:
-  dagu sync pull`,
+  ayatsuri sync pull`,
 			Args: cobra.NoArgs,
 		},
 		nil,
@@ -205,8 +205,8 @@ When a DAG name is provided, only that DAG's changes are published.
 When no DAG name is provided with --all flag, all modified DAGs are published.
 
 Examples:
-  dagu sync publish my_dag -m "Updated schedule"
-  dagu sync publish --all -m "Batch update"`,
+  ayatsuri sync publish my_dag -m "Updated schedule"
+  ayatsuri sync publish --all -m "Batch update"`,
 		Args: cobra.MaximumNArgs(1),
 	}
 
@@ -302,8 +302,8 @@ the version from the remote repository.
 WARNING: This will permanently discard your local changes!
 
 Example:
-  dagu sync discard my_dag
-  dagu sync discard my_dag --yes`,
+  ayatsuri sync discard my_dag
+  ayatsuri sync discard my_dag --yes`,
 		Args: cobra.ExactArgs(1),
 	}
 
@@ -351,8 +351,8 @@ This command removes items from the sync state without deleting them from the
 remote repository. Only missing, untracked, and conflict items can be forgotten.
 
 Example:
-  dagu sync forget my_dag
-  dagu sync forget my_dag other_dag --yes`,
+  ayatsuri sync forget my_dag
+  ayatsuri sync forget my_dag other_dag --yes`,
 		Args: cobra.MinimumNArgs(1),
 	}
 
@@ -396,9 +396,9 @@ This command removes all items with "missing" status from the sync state.
 These are items that were previously tracked but whose files have been deleted.
 
 Example:
-  dagu sync cleanup
-  dagu sync cleanup --yes
-  dagu sync cleanup --dry-run`,
+  ayatsuri sync cleanup
+  ayatsuri sync cleanup --yes
+  ayatsuri sync cleanup --dry-run`,
 		Args: cobra.NoArgs,
 	}
 
@@ -480,10 +480,10 @@ Modified items require --force.
 Use --all-missing to delete all missing items at once.
 
 Examples:
-  dagu sync delete my_dag -m "Remove old workflow"
-  dagu sync delete my_dag --force -y
-  dagu sync delete --all-missing -m "Clean up deleted items"
-  dagu sync delete --all-missing --dry-run`,
+  ayatsuri sync delete my_dag -m "Remove old workflow"
+  ayatsuri sync delete my_dag --force -y
+  ayatsuri sync delete --all-missing -m "Clean up deleted items"
+  ayatsuri sync delete --all-missing --dry-run`,
 		Args: cobra.MaximumNArgs(1),
 	}
 
@@ -601,9 +601,9 @@ Supports two modes:
     reads new file, stages old removal + new addition, commits and pushes.
 
 Examples:
-  dagu sync mv old_dag new_dag -m "Rename workflow"
-  dagu sync mv old_dag new_dag --force -y
-  dagu sync mv memory/OLD memory/NEW`,
+  ayatsuri sync mv old_dag new_dag -m "Rename workflow"
+  ayatsuri sync mv old_dag new_dag --force -y
+  ayatsuri sync mv memory/OLD memory/NEW`,
 		Args: cobra.ExactArgs(2),
 	}
 

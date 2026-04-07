@@ -11,11 +11,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/core/spec"
-	"github.com/dagucloud/dagu/internal/persis/filedagrun"
-	legacymodel "github.com/dagucloud/dagu/internal/persis/legacy/model"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedagrun"
+	legacymodel "github.com/ayatsuri-lab/ayatsuri/internal/persis/legacy/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

@@ -8,11 +8,11 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/service/coordinator"
-	"github.com/dagucloud/dagu/internal/service/worker"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/coordinator"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/worker"
 	"github.com/spf13/cobra"
 )
 
@@ -44,22 +44,22 @@ TLS Configuration (uses global peer settings):
   --peer.skip-tls-verify                   Skip TLS certificate verification (insecure)
 
 Example:
-  dagu worker
-  dagu worker --worker.max-active-runs=50
-  dagu worker --worker.id=worker-1 --worker.max-active-runs=200
-  dagu worker --worker.health-port=0
+  ayatsuri worker
+  ayatsuri worker --worker.max-active-runs=50
+  ayatsuri worker --worker.id=worker-1 --worker.max-active-runs=200
+  ayatsuri worker --worker.health-port=0
 
   # Worker with labels for capability matching:
-  dagu worker --worker.labels gpu=true,memory=64G,region=us-east-1
-  dagu worker --worker.labels cpu-arch=amd64,instance-type=m5.xlarge
+  ayatsuri worker --worker.labels gpu=true,memory=64G,region=us-east-1
+  ayatsuri worker --worker.labels cpu-arch=amd64,instance-type=m5.xlarge
 
   # For TLS connections (when coordinator has TLS enabled):
-  dagu worker --peer.insecure=false --peer.cert-file=client.crt --peer.key-file=client.key
-  dagu worker --peer.insecure=false --peer.client-ca-file=ca.crt
-  dagu worker --peer.insecure=false --peer.skip-tls-verify  # For self-signed certificates
+  ayatsuri worker --peer.insecure=false --peer.cert-file=client.crt --peer.key-file=client.key
+  ayatsuri worker --peer.insecure=false --peer.client-ca-file=ca.crt
+  ayatsuri worker --peer.insecure=false --peer.skip-tls-verify  # For self-signed certificates
 
   # Shared-nothing deployment (worker doesn't need shared filesystem):
-  dagu worker --worker.coordinators=coordinator-1:50055,coordinator-2:50055
+  ayatsuri worker --worker.coordinators=coordinator-1:50055,coordinator-2:50055
 
 This process runs continuously in the foreground until terminated.
 `,

@@ -4,9 +4,9 @@
 package api
 
 import (
-	"github.com/dagucloud/dagu/api/v1"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 )
 
 const maxIntValue = int(^uint(0) >> 1)

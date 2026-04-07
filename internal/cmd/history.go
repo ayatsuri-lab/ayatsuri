@@ -13,8 +13,8 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 	"github.com/spf13/cobra"
 )
 
@@ -49,15 +49,15 @@ Default Behavior:
   All timestamps are displayed in UTC timezone.
 
 Examples:
-  dagu history                                # All runs from last 30 days
-  dagu history my-dag                         # All runs for specific DAG
-  dagu history --from 2026-01-01              # Runs since date
-  dagu history --last 7d                      # Last 7 days
-  dagu history --status failed                # Only failed runs
-  dagu history --format json                  # JSON output
-  dagu history --tags "prod,critical"         # Filter by tags (AND logic)
-  dagu history --limit 50                     # Limit to 50 results
-  dagu history my-dag --status failed --last 24h  # Combined filters
+  ayatsuri history                                # All runs from last 30 days
+  ayatsuri history my-dag                         # All runs for specific DAG
+  ayatsuri history --from 2026-01-01              # Runs since date
+  ayatsuri history --last 7d                      # Last 7 days
+  ayatsuri history --status failed                # Only failed runs
+  ayatsuri history --format json                  # JSON output
+  ayatsuri history --tags "prod,critical"         # Filter by tags (AND logic)
+  ayatsuri history --limit 50                     # Limit to 50 results
+  ayatsuri history my-dag --status failed --last 24h  # Combined filters
 `,
 			Args: cobra.MaximumNArgs(1),
 		},

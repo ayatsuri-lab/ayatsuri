@@ -8,14 +8,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/dagucloud/dagu/internal/llm"
+	"github.com/ayatsuri-lab/ayatsuri/internal/llm"
 )
 
 func init() {
 	RegisterTool(ToolRegistration{
 		Name:           "navigate",
 		Label:          "Navigate",
-		Description:    "Navigate Dagu UI pages",
+		Description:    "Navigate Ayatsuri UI pages",
 		DefaultEnabled: true,
 		Factory:        func(_ ToolConfig) *AgentTool { return NewNavigateTool() },
 	})
@@ -26,7 +26,7 @@ type NavigateToolInput struct {
 	Path string `json:"path"`
 }
 
-const navigateDescription = "Navigate the user to a specific page in the Dagu UI. " +
+const navigateDescription = "Navigate the user to a specific page in the Ayatsuri UI. " +
 	"Only use this when the user explicitly asks to navigate or view a page. " +
 	"Available paths: '/dags' for DAG list, '/dags/<dag-name>' for DAG details, " +
 	"'/dags/<dag-name>/<tab>' for specific tab (spec, history), '/dag-runs' for all DAG runs, " +

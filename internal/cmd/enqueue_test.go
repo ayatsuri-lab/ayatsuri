@@ -6,8 +6,8 @@ package cmd_test
 import (
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/cmd"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmd"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 )
 
 func TestEnqueueCommand(t *testing.T) {

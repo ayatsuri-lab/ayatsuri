@@ -14,7 +14,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/dagucloud/dagu/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
 )
 
 const (

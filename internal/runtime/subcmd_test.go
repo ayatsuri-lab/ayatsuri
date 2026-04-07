@@ -14,21 +14,21 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/runtime"
-	"github.com/dagucloud/dagu/internal/runtime/transform"
-	"github.com/dagucloud/dagu/internal/test"
-	coordinatorv1 "github.com/dagucloud/dagu/proto/coordinator/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/transform"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
+	coordinatorv1 "github.com/ayatsuri-lab/ayatsuri/proto/coordinator/v1"
 )
 
 func TestNewSubCmdBuilder(t *testing.T) {
 	t.Parallel()
 	cfg := &config.Config{
 		Paths: config.PathsConfig{
-			Executable:     "/path/to/dagu",
+			Executable:     "/path/to/ayatsuri",
 			ConfigFileUsed: "/path/to/config.yaml",
 		},
 		Core: config.Core{
@@ -45,7 +45,7 @@ func TestSubCmdBuilderStartInheritsParentEnv(t *testing.T) {
 
 	cfg := &config.Config{
 		Paths: config.PathsConfig{
-			Executable:     "/path/to/dagu",
+			Executable:     "/path/to/ayatsuri",
 			ConfigFileUsed: "/path/to/config.yaml",
 		},
 		Core: config.Core{
@@ -66,7 +66,7 @@ func TestSubCmdBuilderFilteredCommandsUseBaseEnv(t *testing.T) {
 	baseEnv := []string{"PATH=/usr/bin", "HOME=/tmp/test-home"}
 	cfg := &config.Config{
 		Paths: config.PathsConfig{
-			Executable:     "/path/to/dagu",
+			Executable:     "/path/to/ayatsuri",
 			ConfigFileUsed: "/path/to/config.yaml",
 		},
 		Core: config.Core{
@@ -284,7 +284,7 @@ steps:
 
 	spec := th.SubCmdBuilder.Start(dagFile.DAG, runtime.StartOptions{})
 	for _, entry := range spec.Env {
-		require.False(t, strings.HasPrefix(entry, "_DAGU_PRESOLVED_SECRET_"), "unexpected presolved secret transport env: %s", entry)
+		require.False(t, strings.HasPrefix(entry, "_AYATSURI_PRESOLVED_SECRET_"), "unexpected presolved secret transport env: %s", entry)
 	}
 
 	err := runtime.Start(th.Context, spec)
@@ -307,8 +307,8 @@ func TestStart(t *testing.T) {
 	baseEnv := config.NewBaseEnv([]string{"PATH=/usr/bin", "HOME=/tmp/test-home"})
 	cfg := &config.Config{
 		Paths: config.PathsConfig{
-			Executable:     "/usr/bin/dagu",
-			ConfigFileUsed: "/etc/dagu/config.yaml",
+			Executable:     "/usr/bin/ayatsuri",
+			ConfigFileUsed: "/etc/ayatsuri/config.yaml",
 		},
 		Core: config.Core{
 			BaseEnv: baseEnv,
@@ -326,10 +326,10 @@ func TestStart(t *testing.T) {
 		opts := runtime.StartOptions{}
 		spec := builder.Start(dag, opts)
 
-		assert.Equal(t, "/usr/bin/dagu", spec.Executable)
+		assert.Equal(t, "/usr/bin/ayatsuri", spec.Executable)
 		assert.Contains(t, spec.Args, "start")
 		assert.Contains(t, spec.Args, "--config")
-		assert.Contains(t, spec.Args, "/etc/dagu/config.yaml")
+		assert.Contains(t, spec.Args, "/etc/ayatsuri/config.yaml")
 		assert.Contains(t, spec.Args, "/path/to/dag.yaml")
 	})
 
@@ -386,7 +386,7 @@ func TestStart(t *testing.T) {
 		t.Parallel()
 		cfgNoFile := &config.Config{
 			Paths: config.PathsConfig{
-				Executable:     "/usr/bin/dagu",
+				Executable:     "/usr/bin/ayatsuri",
 				ConfigFileUsed: "",
 			},
 		}
@@ -402,8 +402,8 @@ func TestEnqueue(t *testing.T) {
 	t.Parallel()
 	cfg := &config.Config{
 		Paths: config.PathsConfig{
-			Executable:     "/usr/bin/dagu",
-			ConfigFileUsed: "/etc/dagu/config.yaml",
+			Executable:     "/usr/bin/ayatsuri",
+			ConfigFileUsed: "/etc/ayatsuri/config.yaml",
 		},
 	}
 
@@ -419,10 +419,10 @@ func TestEnqueue(t *testing.T) {
 		opts := runtime.EnqueueOptions{}
 		spec := builder.Enqueue(dag, opts)
 
-		assert.Equal(t, "/usr/bin/dagu", spec.Executable)
+		assert.Equal(t, "/usr/bin/ayatsuri", spec.Executable)
 		assert.Contains(t, spec.Args, "enqueue")
 		assert.Contains(t, spec.Args, "--config")
-		assert.Contains(t, spec.Args, "/etc/dagu/config.yaml")
+		assert.Contains(t, spec.Args, "/etc/ayatsuri/config.yaml")
 		assert.Contains(t, spec.Args, "/path/to/dag.yaml")
 		assert.Equal(t, os.Stdout, spec.Stdout)
 		assert.Equal(t, os.Stderr, spec.Stderr)
@@ -495,8 +495,8 @@ func TestDequeue(t *testing.T) {
 	t.Parallel()
 	cfg := &config.Config{
 		Paths: config.PathsConfig{
-			Executable:     "/usr/bin/dagu",
-			ConfigFileUsed: "/etc/dagu/config.yaml",
+			Executable:     "/usr/bin/ayatsuri",
+			ConfigFileUsed: "/etc/ayatsuri/config.yaml",
 		},
 	}
 
@@ -512,13 +512,13 @@ func TestDequeue(t *testing.T) {
 		dagRun := exec.NewDAGRunRef("test-dag", "run-123")
 		spec := builder.Dequeue(dag, dagRun)
 
-		assert.Equal(t, "/usr/bin/dagu", spec.Executable)
+		assert.Equal(t, "/usr/bin/ayatsuri", spec.Executable)
 		assert.Contains(t, spec.Args, "dequeue")
 		// Queue name should be the first argument after "dequeue"
 		assert.Equal(t, "test-dag", spec.Args[1])
 		assert.Contains(t, spec.Args, "--dag-run=test-dag:run-123")
 		assert.Contains(t, spec.Args, "--config")
-		assert.Contains(t, spec.Args, "/etc/dagu/config.yaml")
+		assert.Contains(t, spec.Args, "/etc/ayatsuri/config.yaml")
 		assert.Equal(t, os.Stdout, spec.Stdout)
 		assert.Equal(t, os.Stderr, spec.Stderr)
 	})
@@ -527,7 +527,7 @@ func TestDequeue(t *testing.T) {
 		t.Parallel()
 		cfgNoFile := &config.Config{
 			Paths: config.PathsConfig{
-				Executable: "/usr/bin/dagu",
+				Executable: "/usr/bin/ayatsuri",
 			},
 		}
 		builderNoFile := runtime.NewSubCmdBuilder(cfgNoFile)
@@ -561,8 +561,8 @@ func TestRestart(t *testing.T) {
 	t.Parallel()
 	cfg := &config.Config{
 		Paths: config.PathsConfig{
-			Executable:     "/usr/bin/dagu",
-			ConfigFileUsed: "/etc/dagu/config.yaml",
+			Executable:     "/usr/bin/ayatsuri",
+			ConfigFileUsed: "/etc/ayatsuri/config.yaml",
 		},
 	}
 
@@ -578,10 +578,10 @@ func TestRestart(t *testing.T) {
 		opts := runtime.RestartOptions{}
 		spec := builder.Restart(dag, opts)
 
-		assert.Equal(t, "/usr/bin/dagu", spec.Executable)
+		assert.Equal(t, "/usr/bin/ayatsuri", spec.Executable)
 		assert.Contains(t, spec.Args, "restart")
 		assert.Contains(t, spec.Args, "--config")
-		assert.Contains(t, spec.Args, "/etc/dagu/config.yaml")
+		assert.Contains(t, spec.Args, "/etc/ayatsuri/config.yaml")
 		assert.Contains(t, spec.Args, "/path/to/dag.yaml")
 	})
 
@@ -609,7 +609,7 @@ func TestRestart(t *testing.T) {
 		t.Parallel()
 		cfgNoFile := &config.Config{
 			Paths: config.PathsConfig{
-				Executable: "/usr/bin/dagu",
+				Executable: "/usr/bin/ayatsuri",
 			},
 		}
 		builderNoFile := runtime.NewSubCmdBuilder(cfgNoFile)
@@ -623,8 +623,8 @@ func TestRestart(t *testing.T) {
 func TestRetry(t *testing.T) {
 	cfg := &config.Config{
 		Paths: config.PathsConfig{
-			Executable:     "/usr/bin/dagu",
-			ConfigFileUsed: "/etc/dagu/config.yaml",
+			Executable:     "/usr/bin/ayatsuri",
+			ConfigFileUsed: "/etc/ayatsuri/config.yaml",
 		},
 	}
 
@@ -639,11 +639,11 @@ func TestRetry(t *testing.T) {
 		t.Parallel()
 		spec := builder.Retry(dag, "retry-run-id", "")
 
-		assert.Equal(t, "/usr/bin/dagu", spec.Executable)
+		assert.Equal(t, "/usr/bin/ayatsuri", spec.Executable)
 		assert.Contains(t, spec.Args, "retry")
 		assert.Contains(t, spec.Args, "--run-id=retry-run-id")
 		assert.Contains(t, spec.Args, "--config")
-		assert.Contains(t, spec.Args, "/etc/dagu/config.yaml")
+		assert.Contains(t, spec.Args, "/etc/ayatsuri/config.yaml")
 		assert.Contains(t, spec.Args, "test-dag")
 	})
 
@@ -682,7 +682,7 @@ func TestRetry(t *testing.T) {
 		t.Parallel()
 		cfgNoFile := &config.Config{
 			Paths: config.PathsConfig{
-				Executable: "/usr/bin/dagu",
+				Executable: "/usr/bin/ayatsuri",
 			},
 		}
 		builderNoFile := runtime.NewSubCmdBuilder(cfgNoFile)
@@ -696,8 +696,8 @@ func TestTaskStart(t *testing.T) {
 	t.Parallel()
 	cfg := &config.Config{
 		Paths: config.PathsConfig{
-			Executable:     "/usr/bin/dagu",
-			ConfigFileUsed: "/etc/dagu/config.yaml",
+			Executable:     "/usr/bin/ayatsuri",
+			ConfigFileUsed: "/etc/ayatsuri/config.yaml",
 		},
 	}
 
@@ -712,13 +712,13 @@ func TestTaskStart(t *testing.T) {
 		}
 		spec := builder.TaskStart(task, nil, "")
 
-		assert.Equal(t, "/usr/bin/dagu", spec.Executable)
+		assert.Equal(t, "/usr/bin/ayatsuri", spec.Executable)
 		assert.Contains(t, spec.Args, "start")
 		assert.Contains(t, spec.Args, "--run-id=task-run-id")
 		assert.Contains(t, spec.Args, "--attempt-id=attempt-1")
 
 		assert.Contains(t, spec.Args, "--config")
-		assert.Contains(t, spec.Args, "/etc/dagu/config.yaml")
+		assert.Contains(t, spec.Args, "/etc/ayatsuri/config.yaml")
 		assert.Contains(t, spec.Args, "/path/to/task.yaml")
 	})
 
@@ -874,7 +874,7 @@ func TestTaskStart(t *testing.T) {
 		t.Parallel()
 		cfgNoFile := &config.Config{
 			Paths: config.PathsConfig{
-				Executable: "/usr/bin/dagu",
+				Executable: "/usr/bin/ayatsuri",
 			},
 		}
 		builderNoFile := runtime.NewSubCmdBuilder(cfgNoFile)
@@ -892,8 +892,8 @@ func TestTaskStart(t *testing.T) {
 func TestTaskRetry(t *testing.T) {
 	cfg := &config.Config{
 		Paths: config.PathsConfig{
-			Executable:     "/usr/bin/dagu",
-			ConfigFileUsed: "/etc/dagu/config.yaml",
+			Executable:     "/usr/bin/ayatsuri",
+			ConfigFileUsed: "/etc/ayatsuri/config.yaml",
 		},
 	}
 
@@ -909,12 +909,12 @@ func TestTaskRetry(t *testing.T) {
 		}
 		spec := builder.TaskRetry(task, nil, "")
 
-		assert.Equal(t, "/usr/bin/dagu", spec.Executable)
+		assert.Equal(t, "/usr/bin/ayatsuri", spec.Executable)
 		assert.Contains(t, spec.Args, "retry")
 		assert.Contains(t, spec.Args, "--run-id=retry-run-id")
 		assert.Contains(t, spec.Args, "--attempt-id=attempt-2")
 		assert.Contains(t, spec.Args, "--config")
-		assert.Contains(t, spec.Args, "/etc/dagu/config.yaml")
+		assert.Contains(t, spec.Args, "/etc/ayatsuri/config.yaml")
 		assert.Contains(t, spec.Args, "root-dag")
 	})
 
@@ -1002,7 +1002,7 @@ func TestTaskRetry(t *testing.T) {
 		t.Parallel()
 		cfgNoFile := &config.Config{
 			Paths: config.PathsConfig{
-				Executable: "/usr/bin/dagu",
+				Executable: "/usr/bin/ayatsuri",
 			},
 		}
 		builderNoFile := runtime.NewSubCmdBuilder(cfgNoFile)

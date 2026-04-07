@@ -8,10 +8,10 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/dagucloud/dagu/api/v1"
-	"github.com/dagucloud/dagu/internal/auth"
-	"github.com/dagucloud/dagu/internal/service/audit"
-	authservice "github.com/dagucloud/dagu/internal/service/auth"
+	"github.com/ayatsuri-lab/ayatsuri/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/audit"
+	authservice "github.com/ayatsuri-lab/ayatsuri/internal/service/auth"
 )
 
 // ListUsers returns a list of all users. Requires admin role.

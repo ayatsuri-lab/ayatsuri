@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
 )
 
 // Paths holds various file system path settings used by the application.
@@ -44,8 +44,8 @@ type XDGConfig struct {
 var resolverLock sync.Mutex
 
 // ExistingHomeDirNoticePrefix identifies the informational message emitted when an
-// existing unified Dagu home directory is detected at the default ~/.dagu path.
-const ExistingHomeDirNoticePrefix = "Using existing Dagu home directory at "
+// existing unified Ayatsuri home directory is detected at the default ~/.ayatsuri path.
+const ExistingHomeDirNoticePrefix = "Using existing Ayatsuri home directory at "
 
 // ResolvePaths determines application paths based on the provided application home environment variable,
 // a legacy path, and an XDGConfig. It chooses the configuration directory based on these inputs.

@@ -343,7 +343,7 @@ func TestCloudClient_RequestHeaders(t *testing.T) {
 		assert.Equal(t, "application/json", capturedContentType)
 	})
 
-	t.Run("User-Agent header starts with dagu-oss/", func(t *testing.T) {
+	t.Run("User-Agent header starts with ayatsuri-oss/", func(t *testing.T) {
 		t.Parallel()
 
 		var capturedUserAgent string
@@ -362,7 +362,7 @@ func TestCloudClient_RequestHeaders(t *testing.T) {
 		})
 
 		require.NoError(t, err)
-		assert.True(t, strings.HasPrefix(capturedUserAgent, "dagu-oss/"),
-			"User-Agent %q should start with \"dagu-oss/\"", capturedUserAgent)
+		assert.True(t, strings.HasPrefix(capturedUserAgent, "ayatsuri-oss/"),
+			"User-Agent %q should start with \"ayatsuri-oss/\"", capturedUserAgent)
 	})
 }

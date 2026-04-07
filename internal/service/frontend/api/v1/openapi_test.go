@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/stretchr/testify/require"
 )
 
@@ -77,17 +77,17 @@ func TestOpenapiJSON_MountedServerURL(t *testing.T) {
 		},
 		{
 			name:        "non-root base path",
-			basePath:    "/dagu",
+			basePath:    "/ayatsuri",
 			apiBasePath: "/api/v1",
-			requestPath: "/dagu/api/v1/openapi.json",
-			wantServer:  "/dagu/api/v1",
+			requestPath: "/ayatsuri/api/v1/openapi.json",
+			wantServer:  "/ayatsuri/api/v1",
 		},
 		{
 			name:        "non-root base and custom api path",
-			basePath:    "/dagu",
+			basePath:    "/ayatsuri",
 			apiBasePath: "/rest",
-			requestPath: "/dagu/rest/openapi.json",
-			wantServer:  "/dagu/rest",
+			requestPath: "/ayatsuri/rest/openapi.json",
+			wantServer:  "/ayatsuri/rest",
 		},
 	}
 

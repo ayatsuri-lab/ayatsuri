@@ -62,7 +62,7 @@ func (openAICodexProvider) StartAuthFlow(_ context.Context) (*oauthFlow, error) 
 	q.Set("state", state)
 	q.Set("id_token_add_organizations", "true")
 	q.Set("codex_cli_simplified_flow", "true")
-	q.Set("originator", "dagu")
+	q.Set("originator", "ayatsuri")
 	u.RawQuery = q.Encode()
 
 	return &oauthFlow{

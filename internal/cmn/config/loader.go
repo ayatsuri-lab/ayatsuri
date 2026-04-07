@@ -15,7 +15,7 @@ import (
 	"time"
 
 	"github.com/adrg/xdg"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
 	"github.com/spf13/viper"
 )
 
@@ -76,7 +76,7 @@ func WithConfigFile(configFile string) ConfigLoaderOption {
 }
 
 // WithAppHomeDir returns a ConfigLoaderOption that sets the application home directory
-// used by the ConfigLoader, overriding the default DAGU_HOME resolution.
+// used by the ConfigLoader, overriding the default AYATSURI_HOME resolution.
 func WithAppHomeDir(dir string) ConfigLoaderOption {
 	return func(l *ConfigLoader) {
 		l.appHomeDir = dir
@@ -182,7 +182,7 @@ func (l *ConfigLoader) Load() (*Config, error) {
 	}
 
 	if l.appHomeDir != "" {
-		l.additionalBaseEnv = append(l.additionalBaseEnv, fmt.Sprintf("DAGU_HOME=%s", fileutil.ResolvePathOrBlank(l.appHomeDir)))
+		l.additionalBaseEnv = append(l.additionalBaseEnv, fmt.Sprintf("AYATSURI_HOME=%s", fileutil.ResolvePathOrBlank(l.appHomeDir)))
 	}
 
 	notices, err := l.setupViper(xdgConfig, homeDir, l.configFile, l.appHomeDir)
@@ -336,10 +336,10 @@ func (l *ConfigLoader) finalizeBaseEnv(cfg *Config) {
 
 	overrides := append([]string{}, l.additionalBaseEnv...)
 	if cfg.Paths.ConfigFileUsed != "" {
-		overrides = append(overrides, fmt.Sprintf("DAGU_CONFIG=%s", cfg.Paths.ConfigFileUsed))
+		overrides = append(overrides, fmt.Sprintf("AYATSURI_CONFIG=%s", cfg.Paths.ConfigFileUsed))
 	}
 	if cfg.Paths.Executable != "" {
-		overrides = append(overrides, fmt.Sprintf("DAGU_EXECUTABLE=%s", cfg.Paths.Executable))
+		overrides = append(overrides, fmt.Sprintf("AYATSURI_EXECUTABLE=%s", cfg.Paths.Executable))
 	}
 	if cfg.Core.DefaultShell != "" {
 		overrides = append(overrides, fmt.Sprintf("SHELL=%s", cfg.Core.DefaultShell))
@@ -600,14 +600,14 @@ func (l *ConfigLoader) setAuthDefaults(cfg *Config) {
 		// Warn on weak/default token secrets.
 		if cfg.Server.Auth.Builtin.Token.Secret != "" {
 			l.warnIfWeakValue(cfg.Server.Auth.Builtin.Token.Secret,
-				[]string{"changeme", "secret", "password", "test", "dagu"},
+				[]string{"changeme", "secret", "password", "test", "ayatsuri"},
 				"Token secret is a well-known default value — use a strong random value for production")
 		}
 
 		// Warn on weak initial admin passwords.
 		if cfg.Server.Auth.Builtin.InitialAdmin.IsConfigured() {
 			l.warnIfWeakValue(cfg.Server.Auth.Builtin.InitialAdmin.Password,
-				[]string{"password", "changeme", "admin", "dagu", "12345678"},
+				[]string{"password", "changeme", "admin", "ayatsuri", "12345678"},
 				"Initial admin password is a well-known default value — use a strong password for production")
 		}
 	}
@@ -1034,8 +1034,8 @@ func (l *ConfigLoader) setGitSyncDefaults(cfg *Config) {
 	cfg.GitSync.Auth.Type = "token"
 	cfg.GitSync.AutoSync.OnStartup = true
 	cfg.GitSync.AutoSync.Interval = 300
-	cfg.GitSync.Commit.AuthorName = "Dagu"
-	cfg.GitSync.Commit.AuthorEmail = "dagu@localhost"
+	cfg.GitSync.Commit.AuthorName = "Ayatsuri"
+	cfg.GitSync.Commit.AuthorEmail = "ayatsuri@localhost"
 }
 
 func (l *ConfigLoader) applyGitSyncDefinition(cfg *Config, def *GitSyncDef) {
@@ -1402,18 +1402,18 @@ func (l *ConfigLoader) loadLegacyEnv(cfg *Config) {
 	}
 
 	legacyEnvs := map[string]legacyEnvMapping{
-		"DAGU__ADMIN_NAVBAR_COLOR": {
-			newKey:   "DAGU_NAVBAR_COLOR",
+		"AYATSURI__ADMIN_NAVBAR_COLOR": {
+			newKey:   "AYATSURI_NAVBAR_COLOR",
 			setter:   func(c *Config, v string) { c.UI.NavbarColor = v },
 			requires: SectionUI,
 		},
-		"DAGU__ADMIN_NAVBAR_TITLE": {
-			newKey:   "DAGU_NAVBAR_TITLE",
+		"AYATSURI__ADMIN_NAVBAR_TITLE": {
+			newKey:   "AYATSURI_NAVBAR_TITLE",
 			setter:   func(c *Config, v string) { c.UI.NavbarTitle = v },
 			requires: SectionUI,
 		},
-		"DAGU__ADMIN_PORT": {
-			newKey: "DAGU_PORT",
+		"AYATSURI__ADMIN_PORT": {
+			newKey: "AYATSURI_PORT",
 			setter: func(c *Config, v string) {
 				if i, err := strconv.Atoi(v); err == nil {
 					c.Server.Port = i
@@ -1421,28 +1421,28 @@ func (l *ConfigLoader) loadLegacyEnv(cfg *Config) {
 			},
 			requires: SectionServer,
 		},
-		"DAGU__ADMIN_HOST": {
-			newKey:   "DAGU_HOST",
+		"AYATSURI__ADMIN_HOST": {
+			newKey:   "AYATSURI_HOST",
 			setter:   func(c *Config, v string) { c.Server.Host = v },
 			requires: SectionServer,
 		},
-		"DAGU__DATA": {
-			newKey:   "DAGU_DATA_DIR",
+		"AYATSURI__DATA": {
+			newKey:   "AYATSURI_DATA_DIR",
 			setter:   func(c *Config, v string) { c.Paths.DataDir = fileutil.ResolvePathOrBlank(v) },
 			requires: SectionNone,
 		},
-		"DAGU__SUSPEND_FLAGS_DIR": {
-			newKey:   "DAGU_SUSPEND_FLAGS_DIR",
+		"AYATSURI__SUSPEND_FLAGS_DIR": {
+			newKey:   "AYATSURI_SUSPEND_FLAGS_DIR",
 			setter:   func(c *Config, v string) { c.Paths.SuspendFlagsDir = fileutil.ResolvePathOrBlank(v) },
 			requires: SectionNone,
 		},
-		"DAGU__ADMIN_LOGS_DIR": {
-			newKey:   "DAGU_ADMIN_LOG_DIR",
+		"AYATSURI__ADMIN_LOGS_DIR": {
+			newKey:   "AYATSURI_ADMIN_LOG_DIR",
 			setter:   func(c *Config, v string) { c.Paths.AdminLogsDir = fileutil.ResolvePathOrBlank(v) },
 			requires: SectionNone,
 		},
-		"DAGU__EVENT_STORE_DIR": {
-			newKey:   "DAGU_EVENT_STORE_DIR",
+		"AYATSURI__EVENT_STORE_DIR": {
+			newKey:   "AYATSURI_EVENT_STORE_DIR",
 			setter:   func(c *Config, v string) { c.Paths.EventStoreDir = fileutil.ResolvePathOrBlank(v) },
 			requires: SectionNone,
 		},
@@ -1467,7 +1467,7 @@ func (l *ConfigLoader) setupViper(xdgConfig XDGConfig, homeDir, configFile, appH
 	if appHomeOverride != "" {
 		paths = setUnifiedPaths(fileutil.ResolvePathOrBlank(appHomeOverride))
 	} else {
-		paths, err = ResolvePaths("DAGU_HOME", filepath.Join(homeDir, ".dagu"), xdgConfig)
+		paths, err = ResolvePaths("AYATSURI_HOME", filepath.Join(homeDir, ".ayatsuri"), xdgConfig)
 		if err != nil {
 			return nil, err
 		}

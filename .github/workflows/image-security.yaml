@@ -43,10 +43,10 @@ jobs:
         include:
           - name: Ubuntu Image
             dockerfile: Dockerfile
-            tag: dagu-ci:ubuntu
+            tag: ayatsuri-ci:ubuntu
           - name: Alpine Image
             dockerfile: Dockerfile.alpine
-            tag: dagu-ci:alpine
+            tag: ayatsuri-ci:alpine
 
     steps:
       - name: Check out code

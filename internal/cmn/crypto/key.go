@@ -10,7 +10,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
 )
 
 const (
@@ -22,12 +22,12 @@ const (
 )
 
 // ResolveKey returns an encryption key using the following priority:
-// 1. DAGU_ENCRYPTION_KEY environment variable
+// 1. AYATSURI_ENCRYPTION_KEY environment variable
 // 2. Key file at <dataDir>/auth/encryption_key
 // 3. Auto-generates and persists a new random key
 func ResolveKey(dataDir string) (string, error) {
 	// 1. Environment variable
-	if key := os.Getenv("DAGU_ENCRYPTION_KEY"); key != "" {
+	if key := os.Getenv("AYATSURI_ENCRYPTION_KEY"); key != "" {
 		return key, nil
 	}
 

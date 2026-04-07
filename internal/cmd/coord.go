@@ -11,13 +11,13 @@ import (
 	"net"
 	"os"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/service/coordinator"
-	"github.com/dagucloud/dagu/internal/service/eventstore"
-	"github.com/dagucloud/dagu/internal/service/healthcheck"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/coordinator"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/eventstore"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/healthcheck"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -59,19 +59,19 @@ Flags:
 
 Example:
   # Basic usage
-  dagu coordinator --coordinator.host=0.0.0.0 --coordinator.port=50055
+  ayatsuri coordinator --coordinator.host=0.0.0.0 --coordinator.port=50055
 
   # Bind to all interfaces and advertise service name (for containers/K8s)
-  dagu coordinator --coordinator.host=0.0.0.0 --coordinator.advertise=dagu-server
+  ayatsuri coordinator --coordinator.host=0.0.0.0 --coordinator.advertise=ayatsuri-server
 
   # Disable the dedicated HTTP health server
-  dagu coordinator --coordinator.health-port=0
+  ayatsuri coordinator --coordinator.health-port=0
 
   # With TLS
-  dagu coordinator --peer.cert-file=server.crt --peer.key-file=server.key
+  ayatsuri coordinator --peer.cert-file=server.crt --peer.key-file=server.key
 
   # With mutual TLS
-  dagu coordinator --peer.cert-file=server.crt --peer.key-file=server.key --peer.client-ca-file=ca.crt
+  ayatsuri coordinator --peer.cert-file=server.crt --peer.key-file=server.key --peer.client-ca-file=ca.crt
 
 This process runs continuously in the foreground until terminated.
 `,

@@ -12,12 +12,12 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/eval"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
-	"github.com/dagucloud/dagu/internal/core"
-	coordinatorv1 "github.com/dagucloud/dagu/proto/coordinator/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/eval"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	coordinatorv1 "github.com/ayatsuri-lab/ayatsuri/proto/coordinator/v1"
 )
 
 // Context contains the execution metadata for a dag-run.
@@ -326,7 +326,7 @@ func NewContext(
 	// Build EnvScope with proper source tracking and layering.
 	// Seed the lowest-precedence layer from filtered BaseEnv so workflow step
 	// subprocesses stay isolated from arbitrary host env inherited by parent-
-	// spawned dagu start/retry/restart commands.
+	// spawned ayatsuri start/retry/restart commands.
 	// Precedence (highest to lowest): Secrets > DAG Env > Params > BaseEnv
 	scope := eval.NewEnvScope(nil, false)
 	if baseEnv := config.GetBaseEnv(ctx); baseEnv != nil {

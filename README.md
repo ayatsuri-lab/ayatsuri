@@ -1,36 +1,36 @@
 <div align="center">
-  <img src="./assets/images/hero-logo.webp" width="480" alt="Dagu Logo">
+  <img src="./assets/images/hero-logo.webp" width="480" alt="Ayatsuri Logo">
   <p>
-    <a href="https://docs.dagu.sh/overview/changelog"><img src="https://img.shields.io/github/release/dagucloud/dagu.svg?style=flat-square" alt="Latest Release"></a>
-    <a href="https://github.com/dagucloud/dagu/actions/workflows/ci.yaml"><img src="https://img.shields.io/github/actions/workflow/status/dagucloud/dagu/ci.yaml?style=flat-square" alt="Build Status"></a>
+    <a href="https://docs.ayatsuri.sh/overview/changelog"><img src="https://img.shields.io/github/release/ayatsuri-lab/ayatsuri.svg?style=flat-square" alt="Latest Release"></a>
+    <a href="https://github.com/ayatsuri-lab/ayatsuri/actions/workflows/ci.yaml"><img src="https://img.shields.io/github/actions/workflow/status/ayatsuri-lab/ayatsuri/ci.yaml?style=flat-square" alt="Build Status"></a>
     <a href="https://discord.gg/gpahPUjGRk"><img src="https://img.shields.io/discord/1095289480774172772?style=flat-square&logo=discord" alt="Discord"></a>
-    <a href="https://bsky.app/profile/dagu-org.bsky.social"><img src="https://img.shields.io/badge/Bluesky-0285FF?style=flat-square&logo=bluesky&logoColor=white" alt="Bluesky"></a>
+    <a href="https://bsky.app/profile/ayatsuri-lab.bsky.social"><img src="https://img.shields.io/badge/Bluesky-0285FF?style=flat-square&logo=bluesky&logoColor=white" alt="Bluesky"></a>
   </p>
 
   <p>
-    <a href="https://docs.dagu.sh">Docs</a> |
-    <a href="https://docs.dagu.sh/writing-workflows/examples">Examples</a> |
+    <a href="https://docs.ayatsuri.sh">Docs</a> |
+    <a href="https://docs.ayatsuri.sh/writing-workflows/examples">Examples</a> |
     <a href="https://discord.gg/gpahPUjGRk">Support & Community</a>
   </p>
 </div>
 
 ## Zero-invasive Lightweight Workflow Orchestration Engine
 
-Dagu is a workflow orchestration engine that runs as a single binary with no external dependencies. Workflows are defined as DAGs (Directed Acyclic Graphs) in YAML. It supports local execution, cron scheduling, queue-based concurrency control, and distributed coordinator/worker execution across multiple machines over gRPC.
+Ayatsuri is a workflow orchestration engine that runs as a single binary with no external dependencies. Workflows are defined as DAGs (Directed Acyclic Graphs) in YAML. It supports local execution, cron scheduling, queue-based concurrency control, and distributed coordinator/worker execution across multiple machines over gRPC.
 
 It requires no external databases, no message brokers, and no language-specific runtimes. All state is stored in local files by default.
 
-For a quick look at how workflows are defined, see the [examples](https://docs.dagu.sh/writing-workflows/examples).
+For a quick look at how workflows are defined, see the [examples](https://docs.ayatsuri.sh/writing-workflows/examples).
 
 <div align="center">
-  <img src="./assets/images/dagu-demo.gif" alt="Demo" width="720">
+  <img src="./assets/images/ayatsuri-demo.gif" alt="Demo" width="720">
 </div>
 
 | Cockpit (Kanban) | DAG Run Details |
 |---|---|
 | ![Cockpit](./assets/images/ui-cockpit.png) | ![DAG Run Details](./assets/images/ui-dag-run-details.png) |
 
-**Try it live:** [Live Demo](https://demo-instance.dagu.sh/) (credentials: `demouser` / `demouser`)
+**Try it live:** [Live Demo](https://demo-instance.ayatsuri.sh/) (credentials: `demouser` / `demouser`)
 
 ## Use Cases
 
@@ -42,23 +42,23 @@ For a quick look at how workflows are defined, see the [examples](https://docs.d
 
 **Batch processing.** Run compute-heavy workloads across a pool of workers using the coordinator/worker architecture. Workers connect to a coordinator over gRPC, pull tasks from a queue, and report status back. Workers support label-based routing (e.g., `gpu=true`) so DAGs can target specific machine capabilities.
 
-**Legacy script orchestration.** Wrap existing shell scripts, Python scripts, HTTP calls, or any executable into workflow steps without modifying them. Dagu orchestrates execution order, captures stdout/stderr, and handles retries and error propagation around your existing code.
+**Legacy script orchestration.** Wrap existing shell scripts, Python scripts, HTTP calls, or any executable into workflow steps without modifying them. Ayatsuri orchestrates execution order, captures stdout/stderr, and handles retries and error propagation around your existing code.
 
 ## Architecture
 
-Dagu can run in three configurations:
+Ayatsuri can run in three configurations:
 
-**Standalone** — A single `dagu start-all` process runs the HTTP server, scheduler, and executor. Suitable for single-machine deployments.
+**Standalone** — A single `ayatsuri start-all` process runs the HTTP server, scheduler, and executor. Suitable for single-machine deployments.
 
 **Coordinator/Worker** — The scheduler enqueues jobs to a local file-based queue, then dispatches them to a coordinator over gRPC. Workers long-poll the coordinator for tasks, execute DAGs locally, and report status back. Workers can run on separate machines and are routed tasks based on labels.
 
-**Headless** — Run without the web UI (`DAGU_HEADLESS=true`). Useful for CI/CD environments or when Dagu is managed through the CLI or API only.
+**Headless** — Run without the web UI (`AYATSURI_HEADLESS=true`). Useful for CI/CD environments or when Ayatsuri is managed through the CLI or API only.
 
 ```
 Standalone:
 
   ┌─────────────────────────────────────────┐
-  │  dagu start-all                         │
+  │  ayatsuri start-all                         │
   │  ┌───────────┐ ┌───────────┐ ┌────────┐│
   │  │ HTTP / UI │ │ Scheduler │ │Executor││
   │  └───────────┘ └───────────┘ └────────┘│
@@ -105,55 +105,55 @@ Distributed:
 **macOS/Linux:**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/dagucloud/dagu/main/scripts/installer.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ayatsuri-lab/ayatsuri/main/scripts/installer.sh | bash
 ```
 
 **Homebrew:**
 
 ```bash
-brew install dagu
+brew install ayatsuri
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
-irm https://raw.githubusercontent.com/dagucloud/dagu/main/scripts/installer.ps1 | iex
+irm https://raw.githubusercontent.com/ayatsuri-lab/ayatsuri/main/scripts/installer.ps1 | iex
 ```
 
 **Docker:**
 
 ```bash
-docker run --rm -v ~/.dagu:/var/lib/dagu -p 8080:8080 ghcr.io/dagucloud/dagu:latest dagu start-all
+docker run --rm -v ~/.ayatsuri:/var/lib/ayatsuri -p 8080:8080 ghcr.io/ayatsuri-lab/ayatsuri:latest ayatsuri start-all
 ```
 
 **Kubernetes (Helm):**
 
 ```bash
-helm repo add dagu https://dagucloud.github.io/dagu
+helm repo add ayatsuri https://ayatsuricloud.github.io/ayatsuri
 helm repo update
-helm install dagu dagu/dagu --set persistence.storageClass=<your-rwx-storage-class>
+helm install ayatsuri ayatsuri/ayatsuri --set persistence.storageClass=<your-rwx-storage-class>
 ```
 
-> Replace `<your-rwx-storage-class>` with a StorageClass that supports `ReadWriteMany`. See [charts/dagu/README.md](./charts/dagu/README.md) for chart configuration.
+> Replace `<your-rwx-storage-class>` with a StorageClass that supports `ReadWriteMany`. See [charts/ayatsuri/README.md](./charts/ayatsuri/README.md) for chart configuration.
 
-The script installers run a guided wizard that can add Dagu to your PATH, set it up as a background service, and create the initial admin account. Homebrew, npm, Docker, and Helm install without the wizard. See [Installation docs](https://docs.dagu.sh/getting-started/installation) for all options.
+The script installers run a guided wizard that can add Ayatsuri to your PATH, set it up as a background service, and create the initial admin account. Homebrew, npm, Docker, and Helm install without the wizard. See [Installation docs](https://docs.ayatsuri.sh/getting-started/installation) for all options.
 
 ### Create and run a workflow
 
 ```bash
 cat > ./hello.yaml << 'EOF'
 steps:
-  - echo "Hello from Dagu!"
+  - echo "Hello from Ayatsuri!"
   - echo "Running step 2"
 EOF
 
-dagu start hello.yaml
+ayatsuri start hello.yaml
 ```
 
 ### Start the server
 
 ```bash
-dagu start-all
+ayatsuri start-all
 ```
 
 Visit http://localhost:8080
@@ -283,11 +283,11 @@ handlerOn:
     command: cleanup.sh
 ```
 
-For more examples, see the [Examples documentation](https://docs.dagu.sh/writing-workflows/examples).
+For more examples, see the [Examples documentation](https://docs.ayatsuri.sh/writing-workflows/examples).
 
 ## Built-in Executors
 
-Dagu includes 17 built-in step executors. Each runs within the Dagu process (or worker) — no plugins or external runtimes required.
+Ayatsuri includes 17 built-in step executors. Each runs within the Ayatsuri process (or worker) — no plugins or external runtimes required.
 
 | Executor | Purpose |
 |----------|---------|
@@ -309,13 +309,13 @@ Dagu includes 17 built-in step executors. Each runs within the Dagu process (or 
 | `agentstep` | Multi-step LLM agent execution with tool calling |
 | `gha` | GitHub Actions execution |
 
-See [step type documentation](https://docs.dagu.sh/step-types/shell) for configuration details of each executor.
+See [step type documentation](https://docs.ayatsuri.sh/step-types/shell) for configuration details of each executor.
 
 ## Security and Access Control
 
 ### Authentication
 
-Dagu supports four authentication modes, configured via `DAGU_AUTH_MODE`:
+Ayatsuri supports four authentication modes, configured via `AYATSURI_AUTH_MODE`:
 
 - **`none`** — No authentication
 - **`basic`** — HTTP Basic authentication
@@ -338,27 +338,27 @@ API keys can be created with independent role assignments. Audit logging tracks 
 
 ### TLS and Secrets
 
-- TLS for the HTTP server (`DAGU_CERT_FILE`, `DAGU_KEY_FILE`)
-- Mutual TLS for gRPC coordinator/worker communication (`DAGU_PEER_CERT_FILE`, `DAGU_PEER_KEY_FILE`, `DAGU_PEER_CLIENT_CA_FILE`)
+- TLS for the HTTP server (`AYATSURI_CERT_FILE`, `AYATSURI_KEY_FILE`)
+- Mutual TLS for gRPC coordinator/worker communication (`AYATSURI_PEER_CERT_FILE`, `AYATSURI_PEER_KEY_FILE`, `AYATSURI_PEER_CLIENT_CA_FILE`)
 - Secret management with three providers: environment variables, files, and [HashiCorp Vault](https://www.vaultproject.io/)
 
 ## Observability
 
 ### Prometheus Metrics
 
-Dagu exposes Prometheus-compatible metrics:
+Ayatsuri exposes Prometheus-compatible metrics:
 
-- `dagu_info` — Build information (version, Go version)
-- `dagu_uptime_seconds` — Server uptime
-- `dagu_dag_runs_total` — Total DAG runs by status
-- `dagu_dag_runs_total_by_dag` — Per-DAG run counts
-- `dagu_dag_run_duration_seconds` — Histogram of run durations
-- `dagu_dag_runs_currently_running` — Active DAG runs
-- `dagu_dag_runs_queued_total` — Queued runs
+- `ayatsuri_info` — Build information (version, Go version)
+- `ayatsuri_uptime_seconds` — Server uptime
+- `ayatsuri_dag_runs_total` — Total DAG runs by status
+- `ayatsuri_dag_runs_total_by_dag` — Per-DAG run counts
+- `ayatsuri_dag_run_duration_seconds` — Histogram of run durations
+- `ayatsuri_dag_runs_currently_running` — Active DAG runs
+- `ayatsuri_dag_runs_queued_total` — Queued runs
 
 ### Structured Logging
 
-JSON or text format logging (`DAGU_LOG_FORMAT`). Logs are stored per-run with separate stdout/stderr capture per step.
+JSON or text format logging (`AYATSURI_LOG_FORMAT`). Logs are stored per-run with separate stdout/stderr capture per step.
 
 ### Notifications
 
@@ -389,141 +389,141 @@ The coordinator/worker architecture distributes DAG execution across multiple ma
 
 ```bash
 # Start coordinator
-dagu coord
+ayatsuri coord
 
 # Start workers (on separate machines)
-DAGU_WORKER_LABELS=gpu=true,memory=64G dagu worker
+AYATSURI_WORKER_LABELS=gpu=true,memory=64G ayatsuri worker
 ```
 
-See the [distributed execution documentation](https://docs.dagu.sh/server-admin/distributed/) for setup details.
+See the [distributed execution documentation](https://docs.ayatsuri.sh/server-admin/distributed/) for setup details.
 
 ## CLI Reference
 
 | Command | Description |
 |---------|-------------|
-| `dagu start <dag>` | Execute a DAG |
-| `dagu start-all` | Start HTTP server + scheduler |
-| `dagu server` | Start HTTP server only |
-| `dagu scheduler` | Start scheduler only |
-| `dagu coord` | Start coordinator (distributed mode) |
-| `dagu worker` | Start worker (distributed mode) |
-| `dagu stop <dag>` | Stop a running DAG |
-| `dagu restart <dag>` | Restart a DAG |
-| `dagu retry <dag> <run-id>` | Retry a failed run |
-| `dagu dry <dag>` | Dry run — show what would execute |
-| `dagu status <dag>` | Show DAG run status |
-| `dagu history <dag>` | Show execution history |
-| `dagu validate <dag>` | Validate DAG YAML |
-| `dagu enqueue <dag>` | Add DAG to the execution queue |
-| `dagu dequeue <dag>` | Remove DAG from the queue |
-| `dagu cleanup` | Clean up old run data |
-| `dagu migrate` | Run database migrations |
-| `dagu version` | Show version |
+| `ayatsuri start <dag>` | Execute a DAG |
+| `ayatsuri start-all` | Start HTTP server + scheduler |
+| `ayatsuri server` | Start HTTP server only |
+| `ayatsuri scheduler` | Start scheduler only |
+| `ayatsuri coord` | Start coordinator (distributed mode) |
+| `ayatsuri worker` | Start worker (distributed mode) |
+| `ayatsuri stop <dag>` | Stop a running DAG |
+| `ayatsuri restart <dag>` | Restart a DAG |
+| `ayatsuri retry <dag> <run-id>` | Retry a failed run |
+| `ayatsuri dry <dag>` | Dry run — show what would execute |
+| `ayatsuri status <dag>` | Show DAG run status |
+| `ayatsuri history <dag>` | Show execution history |
+| `ayatsuri validate <dag>` | Validate DAG YAML |
+| `ayatsuri enqueue <dag>` | Add DAG to the execution queue |
+| `ayatsuri dequeue <dag>` | Remove DAG from the queue |
+| `ayatsuri cleanup` | Clean up old run data |
+| `ayatsuri migrate` | Run database migrations |
+| `ayatsuri version` | Show version |
 
 ## Environment Variables
 
-**Precedence:** Command-line flags > Environment variables > Configuration file (`~/.config/dagu/config.yaml`)
+**Precedence:** Command-line flags > Environment variables > Configuration file (`~/.config/ayatsuri/config.yaml`)
 
 ### Server
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `DAGU_HOST` | `127.0.0.1` | Bind address |
-| `DAGU_PORT` | `8080` | HTTP port |
-| `DAGU_BASE_PATH` | — | Base path for reverse proxy |
-| `DAGU_HEADLESS` | `false` | Run without web UI |
-| `DAGU_TZ` | — | Timezone (e.g., `Asia/Tokyo`) |
-| `DAGU_LOG_FORMAT` | `text` | `text` or `json` |
-| `DAGU_CERT_FILE` | — | TLS certificate |
-| `DAGU_KEY_FILE` | — | TLS private key |
+| `AYATSURI_HOST` | `127.0.0.1` | Bind address |
+| `AYATSURI_PORT` | `8080` | HTTP port |
+| `AYATSURI_BASE_PATH` | — | Base path for reverse proxy |
+| `AYATSURI_HEADLESS` | `false` | Run without web UI |
+| `AYATSURI_TZ` | — | Timezone (e.g., `Asia/Tokyo`) |
+| `AYATSURI_LOG_FORMAT` | `text` | `text` or `json` |
+| `AYATSURI_CERT_FILE` | — | TLS certificate |
+| `AYATSURI_KEY_FILE` | — | TLS private key |
 
 ### Paths
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `DAGU_HOME` | — | Overrides all path defaults |
-| `DAGU_DAGS_DIR` | `~/.config/dagu/dags` | DAG definitions directory |
-| `DAGU_LOG_DIR` | `~/.local/share/dagu/logs` | Log files |
-| `DAGU_DATA_DIR` | `~/.local/share/dagu/data` | Application state |
+| `AYATSURI_HOME` | — | Overrides all path defaults |
+| `AYATSURI_DAGS_DIR` | `~/.config/ayatsuri/dags` | DAG definitions directory |
+| `AYATSURI_LOG_DIR` | `~/.local/share/ayatsuri/logs` | Log files |
+| `AYATSURI_DATA_DIR` | `~/.local/share/ayatsuri/data` | Application state |
 
 ### Authentication
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `DAGU_AUTH_MODE` | `builtin` | `none`, `basic`, `builtin`, or OIDC |
-| `DAGU_AUTH_BASIC_USERNAME` | — | Basic auth username |
-| `DAGU_AUTH_BASIC_PASSWORD` | — | Basic auth password |
-| `DAGU_AUTH_TOKEN_SECRET` | (auto) | JWT signing secret |
-| `DAGU_AUTH_TOKEN_TTL` | `24h` | JWT token lifetime |
+| `AYATSURI_AUTH_MODE` | `builtin` | `none`, `basic`, `builtin`, or OIDC |
+| `AYATSURI_AUTH_BASIC_USERNAME` | — | Basic auth username |
+| `AYATSURI_AUTH_BASIC_PASSWORD` | — | Basic auth password |
+| `AYATSURI_AUTH_TOKEN_SECRET` | (auto) | JWT signing secret |
+| `AYATSURI_AUTH_TOKEN_TTL` | `24h` | JWT token lifetime |
 
-OIDC variables: `DAGU_AUTH_OIDC_CLIENT_ID`, `DAGU_AUTH_OIDC_CLIENT_SECRET`, `DAGU_AUTH_OIDC_ISSUER`, `DAGU_AUTH_OIDC_SCOPES`, `DAGU_AUTH_OIDC_WHITELIST`, `DAGU_AUTH_OIDC_AUTO_SIGNUP`, `DAGU_AUTH_OIDC_DEFAULT_ROLE`, `DAGU_AUTH_OIDC_ALLOWED_DOMAINS`.
+OIDC variables: `AYATSURI_AUTH_OIDC_CLIENT_ID`, `AYATSURI_AUTH_OIDC_CLIENT_SECRET`, `AYATSURI_AUTH_OIDC_ISSUER`, `AYATSURI_AUTH_OIDC_SCOPES`, `AYATSURI_AUTH_OIDC_WHITELIST`, `AYATSURI_AUTH_OIDC_AUTO_SIGNUP`, `AYATSURI_AUTH_OIDC_DEFAULT_ROLE`, `AYATSURI_AUTH_OIDC_ALLOWED_DOMAINS`.
 
 ### Scheduler
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `DAGU_SCHEDULER_PORT` | `8090` | Health check port |
-| `DAGU_SCHEDULER_ZOMBIE_DETECTION_INTERVAL` | `45s` | Zombie run detection interval (`0` to disable) |
-| `DAGU_SCHEDULER_LOCK_STALE_THRESHOLD` | `30s` | HA lock stale threshold |
-| `DAGU_QUEUE_ENABLED` | `true` | Enable queue system |
+| `AYATSURI_SCHEDULER_PORT` | `8090` | Health check port |
+| `AYATSURI_SCHEDULER_ZOMBIE_DETECTION_INTERVAL` | `45s` | Zombie run detection interval (`0` to disable) |
+| `AYATSURI_SCHEDULER_LOCK_STALE_THRESHOLD` | `30s` | HA lock stale threshold |
+| `AYATSURI_QUEUE_ENABLED` | `true` | Enable queue system |
 
 ### Coordinator / Worker
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `DAGU_COORDINATOR_HOST` | `127.0.0.1` | Coordinator bind address |
-| `DAGU_COORDINATOR_PORT` | `50055` | Coordinator gRPC port |
-| `DAGU_COORDINATOR_HEALTH_PORT` | `8091` | Coordinator health check port |
-| `DAGU_WORKER_ID` | — | Worker instance ID |
-| `DAGU_WORKER_MAX_ACTIVE_RUNS` | `100` | Max concurrent runs per worker |
-| `DAGU_WORKER_HEALTH_PORT` | `8092` | Worker health check port |
-| `DAGU_WORKER_LABELS` | — | Worker labels (`key=value,key=value`) |
+| `AYATSURI_COORDINATOR_HOST` | `127.0.0.1` | Coordinator bind address |
+| `AYATSURI_COORDINATOR_PORT` | `50055` | Coordinator gRPC port |
+| `AYATSURI_COORDINATOR_HEALTH_PORT` | `8091` | Coordinator health check port |
+| `AYATSURI_WORKER_ID` | — | Worker instance ID |
+| `AYATSURI_WORKER_MAX_ACTIVE_RUNS` | `100` | Max concurrent runs per worker |
+| `AYATSURI_WORKER_HEALTH_PORT` | `8092` | Worker health check port |
+| `AYATSURI_WORKER_LABELS` | — | Worker labels (`key=value,key=value`) |
 
 ### Peer TLS (gRPC)
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `DAGU_PEER_CERT_FILE` | — | Peer TLS certificate |
-| `DAGU_PEER_KEY_FILE` | — | Peer TLS private key |
-| `DAGU_PEER_CLIENT_CA_FILE` | — | CA for client verification |
-| `DAGU_PEER_INSECURE` | `true` | Use h2c instead of TLS |
+| `AYATSURI_PEER_CERT_FILE` | — | Peer TLS certificate |
+| `AYATSURI_PEER_KEY_FILE` | — | Peer TLS private key |
+| `AYATSURI_PEER_CLIENT_CA_FILE` | — | CA for client verification |
+| `AYATSURI_PEER_INSECURE` | `true` | Use h2c instead of TLS |
 
 ### Git Sync
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `DAGU_GITSYNC_ENABLED` | `false` | Enable Git sync |
-| `DAGU_GITSYNC_REPOSITORY` | — | Repository URL |
-| `DAGU_GITSYNC_BRANCH` | `main` | Branch to sync |
-| `DAGU_GITSYNC_AUTH_TYPE` | `token` | `token` or `ssh` |
-| `DAGU_GITSYNC_AUTOSYNC_ENABLED` | `false` | Enable periodic auto-pull |
-| `DAGU_GITSYNC_AUTOSYNC_INTERVAL` | `300` | Sync interval in seconds |
+| `AYATSURI_GITSYNC_ENABLED` | `false` | Enable Git sync |
+| `AYATSURI_GITSYNC_REPOSITORY` | — | Repository URL |
+| `AYATSURI_GITSYNC_BRANCH` | `main` | Branch to sync |
+| `AYATSURI_GITSYNC_AUTH_TYPE` | `token` | `token` or `ssh` |
+| `AYATSURI_GITSYNC_AUTOSYNC_ENABLED` | `false` | Enable periodic auto-pull |
+| `AYATSURI_GITSYNC_AUTOSYNC_INTERVAL` | `300` | Sync interval in seconds |
 
-Full configuration reference: [docs.dagu.sh/server-admin/reference](https://docs.dagu.sh/server-admin/reference)
+Full configuration reference: [docs.ayatsuri.sh/server-admin/reference](https://docs.ayatsuri.sh/server-admin/reference)
 
 ## Documentation
 
-- [Getting Started](https://docs.dagu.sh/getting-started/installation) — Installation and first workflow
-- [Writing Workflows](https://docs.dagu.sh/writing-workflows/examples) — YAML syntax, scheduling, execution control
-- [Step Types](https://docs.dagu.sh/step-types/shell) — All 17 executor types
-- [Distributed Execution](https://docs.dagu.sh/server-admin/distributed/) — Coordinator/worker setup
-- [Authentication](https://docs.dagu.sh/server-admin/authentication/) — RBAC, OIDC, API keys
-- [Git Sync](https://docs.dagu.sh/server-admin/git-sync) — Version-controlled DAG definitions
-- [AI Agent](https://docs.dagu.sh/features/agent/) — AI-assisted workflow authoring
-- [Changelog](https://docs.dagu.sh/overview/changelog)
+- [Getting Started](https://docs.ayatsuri.sh/getting-started/installation) — Installation and first workflow
+- [Writing Workflows](https://docs.ayatsuri.sh/writing-workflows/examples) — YAML syntax, scheduling, execution control
+- [Step Types](https://docs.ayatsuri.sh/step-types/shell) — All 17 executor types
+- [Distributed Execution](https://docs.ayatsuri.sh/server-admin/distributed/) — Coordinator/worker setup
+- [Authentication](https://docs.ayatsuri.sh/server-admin/authentication/) — RBAC, OIDC, API keys
+- [Git Sync](https://docs.ayatsuri.sh/server-admin/git-sync) — Version-controlled DAG definitions
+- [AI Agent](https://docs.ayatsuri.sh/features/agent/) — AI-assisted workflow authoring
+- [Changelog](https://docs.ayatsuri.sh/overview/changelog)
 
 ## Community
 
 - [Discord](https://discord.gg/gpahPUjGRk) — Questions and discussion
-- [GitHub Issues](https://github.com/dagucloud/dagu/issues) — Bug reports and feature requests
-- [Bluesky](https://bsky.app/profile/dagu-org.bsky.social)
+- [GitHub Issues](https://github.com/ayatsuri-lab/ayatsuri/issues) — Bug reports and feature requests
+- [Bluesky](https://bsky.app/profile/ayatsuri-lab.bsky.social)
 
 ## Development
 
 **Prerequisites:** [Go 1.26+](https://go.dev/doc/install), [Node.js](https://nodejs.org/en/download/), [pnpm](https://pnpm.io/installation)
 
 ```bash
-git clone https://github.com/dagucloud/dagu.git && cd dagu
+git clone https://github.com/ayatsuri-lab/ayatsuri.git && cd ayatsuri
 make build    # Build frontend + Go binary
 make test     # Run tests with race detection
 make lint     # Run golangci-lint
@@ -558,7 +558,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for development workflow and code stand
 
   <br/><br/>
 
-  <a href="https://github.com/sponsors/dagu-org">
+  <a href="https://github.com/sponsors/ayatsuri-lab">
     <img src="https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86" width="150" alt="Sponsor">
   </a>
 </div>
@@ -567,8 +567,8 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for development workflow and code stand
 
 We welcome contributions of all kinds. See our [Contribution Guide](./CONTRIBUTING.md) for details.
 
-<a href="https://github.com/dagucloud/dagu/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=dagucloud/dagu" />
+<a href="https://github.com/ayatsuri-lab/ayatsuri/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ayatsuri-lab/ayatsuri" />
 </a>
 
 ## License

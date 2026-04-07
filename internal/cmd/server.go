@@ -12,15 +12,15 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/service/frontend"
-	"github.com/dagucloud/dagu/internal/service/resource"
-	daguslack "github.com/dagucloud/dagu/internal/service/slack"
-	"github.com/dagucloud/dagu/internal/service/telegram"
-	"github.com/dagucloud/dagu/internal/tunnel"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/frontend"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/resource"
+	ayatsurislack "github.com/ayatsuri-lab/ayatsuri/internal/service/slack"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/telegram"
+	"github.com/ayatsuri-lab/ayatsuri/internal/tunnel"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +29,7 @@ func Server() *cobra.Command {
 		&cobra.Command{
 			Use:   "server [flags]",
 			Short: "Start the web UI server for DAG management",
-			Long: `Launch the Dagu web server that provides a graphical interface for monitoring and managing DAGs.
+			Long: `Launch the Ayatsuri web server that provides a graphical interface for monitoring and managing DAGs.
 
 The web UI allows you to:
 - View and manage DAG definitions
@@ -44,7 +44,7 @@ Flags:
   --dags string    Path to the directory containing DAG definition files
 
 Example:
-  dagu server --host=0.0.0.0 --port=8080 --dags=/path/to/dags
+  ayatsuri server --host=0.0.0.0 --port=8080 --dags=/path/to/dags
 `,
 		}, serverFlags, runServer,
 	)
@@ -147,8 +147,8 @@ func runServer(ctx *Context, _ []string) error {
 			}
 
 		case config.BotProviderSlack:
-			slackBot, slackErr := daguslack.New(
-				daguslack.Config{
+			slackBot, slackErr := ayatsurislack.New(
+				ayatsurislack.Config{
 					BotToken:              ctx.Config.Bots.Slack.BotToken,
 					AppToken:              ctx.Config.Bots.Slack.AppToken,
 					AllowedChannelIDs:     ctx.Config.Bots.Slack.AllowedChannelIDs,

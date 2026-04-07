@@ -47,7 +47,7 @@ const useAgentAuthProvidersMock = vi.mocked(useAgentAuthProviders);
 const config: Config = {
   apiURL: '/api/v1',
   basePath: '/',
-  title: 'Dagu',
+  title: 'Ayatsuri',
   navbarColor: '',
   tz: 'UTC',
   tzOffsetInSec: 0,

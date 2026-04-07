@@ -11,12 +11,12 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/runtime/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/agent"
 	"github.com/spf13/cobra"
 )
 
@@ -32,8 +32,8 @@ Flags:
   --step string (optional) Retry only the specified step.
 
 Examples:
-  dagu retry --run-id=abc123 my_dag
-  dagu retry --run-id=abc123 my_dag.yaml
+  ayatsuri retry --run-id=abc123 my_dag
+  ayatsuri retry --run-id=abc123 my_dag.yaml
 `,
 			Args: cobra.ExactArgs(1),
 		}, retryFlags, runRetry,
@@ -146,7 +146,7 @@ func runRetry(ctx *Context, args []string) error {
 	// Block retry via CLI for DAGs with workerSelector, UNLESS this is a distributed worker execution
 	// (indicated by --worker-id being set to something other than "local")
 	if len(dag.WorkerSelector) > 0 && workerID == "local" {
-		return fmt.Errorf("cannot retry DAG %q with workerSelector via CLI; use 'dagu enqueue' for distributed execution", dag.Name)
+		return fmt.Errorf("cannot retry DAG %q with workerSelector via CLI; use 'ayatsuri enqueue' for distributed execution", dag.Name)
 	}
 
 	// For DAGs using a global queue: when invoked by the user, enqueue the retry

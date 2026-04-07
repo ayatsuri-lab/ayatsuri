@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmd"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmd"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 )
 
 func TestSchedulerCommand(t *testing.T) {
@@ -33,7 +33,7 @@ func TestSchedulerCommand(t *testing.T) {
 
 		th.RunCommand(t, cmd.Scheduler(), test.CmdTest{
 			Args:        []string{"scheduler", "--config", test.TestdataPath(t, "cli/config_test.yaml")},
-			ExpectedOut: []string{"dagu_test"},
+			ExpectedOut: []string{"ayatsuri_test"},
 		})
 	})
 }

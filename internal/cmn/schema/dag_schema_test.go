@@ -521,7 +521,7 @@ func TestDAGSchemaKubernetes(t *testing.T) {
 			spec: `
 kubernetes:
   namespace: batch
-  service_account: dagu-runner
+  service_account: ayatsuri-runner
 
 steps:
   - id: report
@@ -607,7 +607,7 @@ steps:
             - topology_key: kubernetes.io/hostname
               label_selector:
                 match_labels:
-                  app: dagu
+                  app: ayatsuri
       termination_grace_period_seconds: 30
       priority_class_name: batch-high
       pod_failure_policy:

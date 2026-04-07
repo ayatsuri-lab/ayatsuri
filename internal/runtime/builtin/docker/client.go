@@ -21,11 +21,11 @@ import (
 
 	"github.com/containerd/errdefs"
 	"github.com/containerd/platforms"
-	"github.com/dagucloud/dagu/internal/cmn/cmdutil"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/cmn/signal"
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/cmdutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/signal"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 	"github.com/moby/moby/api/pkg/stdcopy"
 	"github.com/moby/moby/api/types/container"
 	"github.com/moby/moby/client"
@@ -62,7 +62,7 @@ const (
 
 	// Keepalive settings
 	keepAliveSleepCmd   = "while true; do sleep 86400; done"
-	keepAliveTargetPath = "/__dagu_runner/keepalive"
+	keepAliveTargetPath = "/__ayatsuri_runner/keepalive"
 
 	// Log scanning buffer sizes
 	logScanInitialBuf = 64 * 1024

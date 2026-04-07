@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/spec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -77,7 +77,7 @@ func TestLoad(t *testing.T) {
 		t.Parallel()
 
 		testDAG := createTempYAMLFile(t, `
-log_dir: /var/log/dagu
+log_dir: /var/log/ayatsuri
 hist_retention_days: 90
 max_clean_up_time_sec: 60
 mail_on:

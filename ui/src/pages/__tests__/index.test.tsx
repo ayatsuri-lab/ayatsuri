@@ -36,7 +36,7 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
   return {
     apiURL: '/api/v1',
     basePath: '/',
-    title: 'Dagu',
+    title: 'Ayatsuri',
     navbarColor: '',
     tz: 'UTC',
     tzOffsetInSec: 0,

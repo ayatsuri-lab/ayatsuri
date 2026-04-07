@@ -78,84 +78,84 @@ func TestLoad_Env(t *testing.T) {
 	testPaths := filepath.Join(tempDir, "test")
 
 	testEnvs := map[string]string{
-		"DAGU_LOG_FORMAT":    "json",
-		"DAGU_BASE_PATH":     "/test/base",
-		"DAGU_API_BASE_URL":  "/test/api",
-		"DAGU_TZ":            "Europe/Berlin",
-		"DAGU_HOST":          "test.example.com",
-		"DAGU_PORT":          "9876",
-		"DAGU_DEBUG":         "true",
-		"DAGU_HEADLESS":      "true",
-		"DAGU_CHECK_UPDATES": "false",
+		"AYATSURI_LOG_FORMAT":    "json",
+		"AYATSURI_BASE_PATH":     "/test/base",
+		"AYATSURI_API_BASE_URL":  "/test/api",
+		"AYATSURI_TZ":            "Europe/Berlin",
+		"AYATSURI_HOST":          "test.example.com",
+		"AYATSURI_PORT":          "9876",
+		"AYATSURI_DEBUG":         "true",
+		"AYATSURI_HEADLESS":      "true",
+		"AYATSURI_CHECK_UPDATES": "false",
 
-		"DAGU_DEFAULT_SHELL":         "/bin/zsh",
-		"DAGU_SECRETS_VAULT_ADDRESS": "https://vault.example.com",
-		"DAGU_SECRETS_VAULT_TOKEN":   "vault-token",
+		"AYATSURI_DEFAULT_SHELL":         "/bin/zsh",
+		"AYATSURI_SECRETS_VAULT_ADDRESS": "https://vault.example.com",
+		"AYATSURI_SECRETS_VAULT_TOKEN":   "vault-token",
 
-		"DAGU_UI_MAX_DASHBOARD_PAGE_LIMIT": "250",
-		"DAGU_UI_LOG_ENCODING_CHARSET":     "iso-8859-1",
-		"DAGU_UI_NAVBAR_COLOR":             "#123456",
-		"DAGU_UI_NAVBAR_TITLE":             "Test Dagu",
+		"AYATSURI_UI_MAX_DASHBOARD_PAGE_LIMIT": "250",
+		"AYATSURI_UI_LOG_ENCODING_CHARSET":     "iso-8859-1",
+		"AYATSURI_UI_NAVBAR_COLOR":             "#123456",
+		"AYATSURI_UI_NAVBAR_TITLE":             "Test Ayatsuri",
 
-		"DAGU_AUTH_MODE":           "basic",
-		"DAGU_AUTH_BASIC_USERNAME": "testuser",
-		"DAGU_AUTH_BASIC_PASSWORD": "testpass",
+		"AYATSURI_AUTH_MODE":           "basic",
+		"AYATSURI_AUTH_BASIC_USERNAME": "testuser",
+		"AYATSURI_AUTH_BASIC_PASSWORD": "testpass",
 
-		"DAGU_CERT_FILE": filepath.Join(testPaths, "cert.pem"),
-		"DAGU_KEY_FILE":  filepath.Join(testPaths, "key.pem"),
+		"AYATSURI_CERT_FILE": filepath.Join(testPaths, "cert.pem"),
+		"AYATSURI_KEY_FILE":  filepath.Join(testPaths, "key.pem"),
 
-		"DAGU_DAGS_DIR":             filepath.Join(testPaths, "dags"),
-		"DAGU_EXECUTABLE":           filepath.Join(testPaths, "bin", "dagu"),
-		"DAGU_LOG_DIR":              filepath.Join(testPaths, "logs"),
-		"DAGU_DATA_DIR":             filepath.Join(testPaths, "data"),
-		"DAGU_SUSPEND_FLAGS_DIR":    filepath.Join(testPaths, "suspend"),
-		"DAGU_ADMIN_LOG_DIR":        filepath.Join(testPaths, "admin"),
-		"DAGU_BASE_CONFIG":          filepath.Join(testPaths, "base.yaml"),
-		"DAGU_DAG_RUNS_DIR":         filepath.Join(testPaths, "runs"),
-		"DAGU_PROC_DIR":             filepath.Join(testPaths, "proc"),
-		"DAGU_QUEUE_DIR":            filepath.Join(testPaths, "queue"),
-		"DAGU_SERVICE_REGISTRY_DIR": filepath.Join(testPaths, "service-registry"),
-		"DAGU_ALT_DAGS_DIR":         filepath.Join(testPaths, "alt-dags"),
+		"AYATSURI_DAGS_DIR":             filepath.Join(testPaths, "dags"),
+		"AYATSURI_EXECUTABLE":           filepath.Join(testPaths, "bin", "ayatsuri"),
+		"AYATSURI_LOG_DIR":              filepath.Join(testPaths, "logs"),
+		"AYATSURI_DATA_DIR":             filepath.Join(testPaths, "data"),
+		"AYATSURI_SUSPEND_FLAGS_DIR":    filepath.Join(testPaths, "suspend"),
+		"AYATSURI_ADMIN_LOG_DIR":        filepath.Join(testPaths, "admin"),
+		"AYATSURI_BASE_CONFIG":          filepath.Join(testPaths, "base.yaml"),
+		"AYATSURI_DAG_RUNS_DIR":         filepath.Join(testPaths, "runs"),
+		"AYATSURI_PROC_DIR":             filepath.Join(testPaths, "proc"),
+		"AYATSURI_QUEUE_DIR":            filepath.Join(testPaths, "queue"),
+		"AYATSURI_SERVICE_REGISTRY_DIR": filepath.Join(testPaths, "service-registry"),
+		"AYATSURI_ALT_DAGS_DIR":         filepath.Join(testPaths, "alt-dags"),
 
-		"DAGU_LATEST_STATUS_TODAY": "true",
+		"AYATSURI_LATEST_STATUS_TODAY": "true",
 
-		"DAGU_QUEUE_ENABLED": "false",
+		"AYATSURI_QUEUE_ENABLED": "false",
 
-		"DAGU_COORDINATOR_HOST":        "0.0.0.0",
-		"DAGU_COORDINATOR_ADVERTISE":   "dagu-coordinator",
-		"DAGU_COORDINATOR_PORT":        "50099",
-		"DAGU_COORDINATOR_HEALTH_PORT": "50101",
+		"AYATSURI_COORDINATOR_HOST":        "0.0.0.0",
+		"AYATSURI_COORDINATOR_ADVERTISE":   "ayatsuri-coordinator",
+		"AYATSURI_COORDINATOR_PORT":        "50099",
+		"AYATSURI_COORDINATOR_HEALTH_PORT": "50101",
 
-		"DAGU_WORKER_ID":              "test-worker-123",
-		"DAGU_WORKER_MAX_ACTIVE_RUNS": "200",
-		"DAGU_WORKER_HEALTH_PORT":     "50102",
+		"AYATSURI_WORKER_ID":              "test-worker-123",
+		"AYATSURI_WORKER_MAX_ACTIVE_RUNS": "200",
+		"AYATSURI_WORKER_HEALTH_PORT":     "50102",
 
-		"DAGU_SCHEDULER_PORT":                      "9999",
-		"DAGU_SCHEDULER_ZOMBIE_DETECTION_INTERVAL": "90s",
+		"AYATSURI_SCHEDULER_PORT":                      "9999",
+		"AYATSURI_SCHEDULER_ZOMBIE_DETECTION_INTERVAL": "90s",
 
-		"DAGU_AUTH_OIDC_CLIENT_ID":     "test-client-id",
-		"DAGU_AUTH_OIDC_CLIENT_SECRET": "test-secret",
-		"DAGU_AUTH_OIDC_ISSUER":        "https://auth.example.com",
-		"DAGU_AUTH_OIDC_SCOPES":        "openid,profile,email",
+		"AYATSURI_AUTH_OIDC_CLIENT_ID":     "test-client-id",
+		"AYATSURI_AUTH_OIDC_CLIENT_SECRET": "test-secret",
+		"AYATSURI_AUTH_OIDC_ISSUER":        "https://auth.example.com",
+		"AYATSURI_AUTH_OIDC_SCOPES":        "openid,profile,email",
 
-		"DAGU_UI_DAGS_SORT_FIELD": "status",
-		"DAGU_UI_DAGS_SORT_ORDER": "desc",
+		"AYATSURI_UI_DAGS_SORT_FIELD": "status",
+		"AYATSURI_UI_DAGS_SORT_ORDER": "desc",
 
-		"DAGU_TERMINAL_ENABLED": "true",
-		"DAGU_ACCESS_LOG_MODE":  "none",
+		"AYATSURI_TERMINAL_ENABLED": "true",
+		"AYATSURI_ACCESS_LOG_MODE":  "none",
 
-		"DAGU_AUDIT_ENABLED": "false",
+		"AYATSURI_AUDIT_ENABLED": "false",
 
-		"DAGU_TUNNEL_ENABLED":                              "true",
-		"DAGU_TUNNEL_TAILSCALE_AUTH_KEY":                   "tskey-test-123",
-		"DAGU_TUNNEL_TAILSCALE_HOSTNAME":                   "test-dagu",
-		"DAGU_TUNNEL_TAILSCALE_FUNNEL":                     "false",
-		"DAGU_TUNNEL_TAILSCALE_HTTPS":                      "true",
-		"DAGU_TUNNEL_ALLOW_TERMINAL":                       "true",
-		"DAGU_TUNNEL_RATE_LIMITING_ENABLED":                "true",
-		"DAGU_TUNNEL_RATE_LIMITING_LOGIN_ATTEMPTS":         "10",
-		"DAGU_TUNNEL_RATE_LIMITING_WINDOW_SECONDS":         "600",
-		"DAGU_TUNNEL_RATE_LIMITING_BLOCK_DURATION_SECONDS": "1800",
+		"AYATSURI_TUNNEL_ENABLED":                              "true",
+		"AYATSURI_TUNNEL_TAILSCALE_AUTH_KEY":                   "tskey-test-123",
+		"AYATSURI_TUNNEL_TAILSCALE_HOSTNAME":                   "test-ayatsuri",
+		"AYATSURI_TUNNEL_TAILSCALE_FUNNEL":                     "false",
+		"AYATSURI_TUNNEL_TAILSCALE_HTTPS":                      "true",
+		"AYATSURI_TUNNEL_ALLOW_TERMINAL":                       "true",
+		"AYATSURI_TUNNEL_RATE_LIMITING_ENABLED":                "true",
+		"AYATSURI_TUNNEL_RATE_LIMITING_LOGIN_ATTEMPTS":         "10",
+		"AYATSURI_TUNNEL_RATE_LIMITING_WINDOW_SECONDS":         "600",
+		"AYATSURI_TUNNEL_RATE_LIMITING_BLOCK_DURATION_SECONDS": "1800",
 	}
 
 	for key, val := range testEnvs {
@@ -235,7 +235,7 @@ func TestLoad_Env(t *testing.T) {
 			DAGsDir:            filepath.Join(testPaths, "dags"),
 			DocsDir:            filepath.Join(testPaths, "dags", "docs"),
 			AltDAGsDir:         filepath.Join(testPaths, "alt-dags"),
-			Executable:         filepath.Join(testPaths, "bin", "dagu"),
+			Executable:         filepath.Join(testPaths, "bin", "ayatsuri"),
 			LogDir:             filepath.Join(testPaths, "logs"),
 			DataDir:            filepath.Join(testPaths, "data"),
 			SuspendFlagsDir:    filepath.Join(testPaths, "suspend"),
@@ -263,7 +263,7 @@ func TestLoad_Env(t *testing.T) {
 		UI: UI{
 			LogEncodingCharset:    "iso-8859-1",
 			NavbarColor:           "#123456",
-			NavbarTitle:           "Test Dagu",
+			NavbarTitle:           "Test Ayatsuri",
 			MaxDashboardPageLimit: 250,
 			DAGs: DAGsConfig{
 				SortField: "status",
@@ -274,7 +274,7 @@ func TestLoad_Env(t *testing.T) {
 		Coordinator: Coordinator{
 			Enabled:    true,
 			Host:       "0.0.0.0",
-			Advertise:  "dagu-coordinator",
+			Advertise:  "ayatsuri-coordinator",
 			Port:       50099,
 			HealthPort: 50101,
 		},
@@ -311,7 +311,7 @@ func TestLoad_Env(t *testing.T) {
 			AllowTerminal: true,
 			Tailscale: TailscaleTunnelConfig{
 				AuthKey:  "tskey-test-123",
-				Hostname: "test-dagu",
+				Hostname: "test-ayatsuri",
 				Funnel:   false,
 				HTTPS:    true,
 			},
@@ -377,13 +377,13 @@ func TestLoad_WithAppHomeDir(t *testing.T) {
 	assert.Equal(t, filepath.Join(tempDir, "logs"), cfg.Paths.LogDir)
 
 	baseEnv := cfg.Core.BaseEnv.AsSlice()
-	require.Contains(t, baseEnv, fmt.Sprintf("DAGU_HOME=%s", tempDir))
+	require.Contains(t, baseEnv, fmt.Sprintf("AYATSURI_HOME=%s", tempDir))
 }
 
 func TestLoad_BaseEnvIncludesConfigDerivedOverrides(t *testing.T) {
 	tempDir := t.TempDir()
 	configFile := filepath.Join(tempDir, "config.yaml")
-	executablePath := filepath.Join(tempDir, "bin", "dagu")
+	executablePath := filepath.Join(tempDir, "bin", "ayatsuri")
 	preserveTZEnv(t)
 	require.NoError(t, os.Setenv("TZ", "America/Los_Angeles"))
 	err := os.WriteFile(configFile, fmt.Appendf(nil, `
@@ -397,9 +397,9 @@ paths:
 	cfg := testLoad(t, WithConfigFile(configFile), WithAppHomeDir(tempDir))
 	baseEnv := cfg.Core.BaseEnv.AsSlice()
 
-	require.Contains(t, baseEnv, fmt.Sprintf("DAGU_HOME=%s", tempDir))
-	require.Contains(t, baseEnv, fmt.Sprintf("DAGU_CONFIG=%s", configFile))
-	require.Contains(t, baseEnv, fmt.Sprintf("DAGU_EXECUTABLE=%s", executablePath))
+	require.Contains(t, baseEnv, fmt.Sprintf("AYATSURI_HOME=%s", tempDir))
+	require.Contains(t, baseEnv, fmt.Sprintf("AYATSURI_CONFIG=%s", configFile))
+	require.Contains(t, baseEnv, fmt.Sprintf("AYATSURI_EXECUTABLE=%s", executablePath))
 	require.Contains(t, baseEnv, "SHELL=/bin/sh")
 	require.Contains(t, baseEnv, "TZ=UTC")
 	require.NotContains(t, baseEnv, "TZ=America/Los_Angeles")
@@ -476,8 +476,8 @@ func TestLoad_BaseEnvIncludesConfiguredEnvPassthroughFromEnv(t *testing.T) {
 	t.Setenv("EXACT_FROM_ENV", "exact-value")
 	t.Setenv("PREFIX_FROM_ENV_TOKEN", "prefix-value")
 	t.Setenv("BLOCKED_FROM_ENV", "blocked-value")
-	t.Setenv("DAGU_ENV_PASSTHROUGH", " EXACT_FROM_ENV , EXACT_FROM_ENV ,,")
-	t.Setenv("DAGU_ENV_PASSTHROUGH_PREFIXES", " PREFIX_FROM_ENV_ , PREFIX_FROM_ENV_ ,,")
+	t.Setenv("AYATSURI_ENV_PASSTHROUGH", " EXACT_FROM_ENV , EXACT_FROM_ENV ,,")
+	t.Setenv("AYATSURI_ENV_PASSTHROUGH_PREFIXES", " PREFIX_FROM_ENV_ , PREFIX_FROM_ENV_ ,,")
 	require.NoError(t, os.WriteFile(configFile, []byte("# minimal config"), 0o600))
 
 	cfg := testLoad(t, WithConfigFile(configFile), WithAppHomeDir(tempDir))
@@ -498,7 +498,7 @@ permissions:
   write_dags: false
   run_dags: false
 debug: true
-base_path: "/dagu"
+base_path: "/ayatsuri"
 api_base_path: "/api/v1"
 tz: "UTC"
 log_format: "json"
@@ -508,15 +508,15 @@ latest_status_today: true
 default_shell: "/bin/bash"
 skip_examples: true
 paths:
-  dags_dir: "/var/dagu/dags"
-  log_dir: "/var/dagu/logs"
-  data_dir: "/var/dagu/data"
-  suspend_flags_dir: "/var/dagu/suspend"
-  admin_logs_dir: "/var/dagu/adminlogs"
-  base_config: "/var/dagu/base.yaml"
-  executable: "/usr/local/bin/dagu"
+  dags_dir: "/var/ayatsuri/dags"
+  log_dir: "/var/ayatsuri/logs"
+  data_dir: "/var/ayatsuri/data"
+  suspend_flags_dir: "/var/ayatsuri/suspend"
+  admin_logs_dir: "/var/ayatsuri/adminlogs"
+  base_config: "/var/ayatsuri/base.yaml"
+  executable: "/usr/local/bin/ayatsuri"
 ui:
-  navbar_title: "Test Dagu"
+  navbar_title: "Test Ayatsuri"
   navbar_color: "#ff5733"
   log_encoding_charset: "iso-8859-1"
   max_dashboard_page_limit: 50
@@ -609,7 +609,7 @@ scheduler:
 		Server: Server{
 			Host:              "0.0.0.0",
 			Port:              9090,
-			BasePath:          "/dagu",
+			BasePath:          "/ayatsuri",
 			APIBasePath:       "/api/v1",
 			Headless:          true,
 			CheckUpdates:      false,
@@ -676,31 +676,31 @@ scheduler:
 			RetentionDays: 1,
 		},
 		Paths: PathsConfig{
-			DAGsDir:            "/var/dagu/dags",
-			DocsDir:            "/var/dagu/dags/docs",
-			LogDir:             "/var/dagu/logs",
-			DataDir:            "/var/dagu/data",
-			SuspendFlagsDir:    "/var/dagu/suspend",
-			AdminLogsDir:       "/var/dagu/adminlogs",
+			DAGsDir:            "/var/ayatsuri/dags",
+			DocsDir:            "/var/ayatsuri/dags/docs",
+			LogDir:             "/var/ayatsuri/logs",
+			DataDir:            "/var/ayatsuri/data",
+			SuspendFlagsDir:    "/var/ayatsuri/suspend",
+			AdminLogsDir:       "/var/ayatsuri/adminlogs",
 			EventStoreDir:      cfg.Paths.EventStoreDir,
-			BaseConfig:         "/var/dagu/base.yaml",
-			Executable:         "/usr/local/bin/dagu",
-			DAGRunsDir:         "/var/dagu/data/dag-runs",
-			ProcDir:            "/var/dagu/data/proc",
-			QueueDir:           "/var/dagu/data/queue",
-			ServiceRegistryDir: "/var/dagu/data/service-registry",
-			UsersDir:           "/var/dagu/data/users",
-			APIKeysDir:         "/var/dagu/data/apikeys",
-			WebhooksDir:        "/var/dagu/data/webhooks",
-			SessionsDir:        "/var/dagu/data/agent/sessions",
-			ContextsDir:        "/var/dagu/data/contexts",
-			RemoteNodesDir:     "/var/dagu/data/remote-nodes",
-			WorkspacesDir:      "/var/dagu/data/workspaces",
+			BaseConfig:         "/var/ayatsuri/base.yaml",
+			Executable:         "/usr/local/bin/ayatsuri",
+			DAGRunsDir:         "/var/ayatsuri/data/dag-runs",
+			ProcDir:            "/var/ayatsuri/data/proc",
+			QueueDir:           "/var/ayatsuri/data/queue",
+			ServiceRegistryDir: "/var/ayatsuri/data/service-registry",
+			UsersDir:           "/var/ayatsuri/data/users",
+			APIKeysDir:         "/var/ayatsuri/data/apikeys",
+			WebhooksDir:        "/var/ayatsuri/data/webhooks",
+			SessionsDir:        "/var/ayatsuri/data/agent/sessions",
+			ContextsDir:        "/var/ayatsuri/data/contexts",
+			RemoteNodesDir:     "/var/ayatsuri/data/remote-nodes",
+			WorkspacesDir:      "/var/ayatsuri/data/workspaces",
 		},
 		UI: UI{
 			LogEncodingCharset:    "iso-8859-1",
 			NavbarColor:           "#ff5733",
-			NavbarTitle:           "Test Dagu",
+			NavbarTitle:           "Test Ayatsuri",
 			MaxDashboardPageLimit: 50,
 			DAGs: DAGsConfig{
 				SortField: "name",
@@ -799,7 +799,7 @@ worker:
 
 	t.Run("LabelsFromEnvironment", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_WORKER_LABELS": "instance-type=m5.xlarge,cpu-arch=amd64",
+			"AYATSURI_WORKER_LABELS": "instance-type=m5.xlarge,cpu-arch=amd64",
 		})
 		assert.Equal(t, map[string]string{
 			"instance-type": "m5.xlarge",
@@ -825,7 +825,7 @@ paths:
 
 func TestLoad_EdgeCases_ContextsDirFromEnv(t *testing.T) {
 	cfg := loadWithEnv(t, "# empty", map[string]string{
-		"DAGU_CONTEXTS_DIR": "/tmp/custom-contexts",
+		"AYATSURI_CONTEXTS_DIR": "/tmp/custom-contexts",
 	})
 
 	assert.Equal(t, "/tmp/custom-contexts", cfg.Paths.ContextsDir)
@@ -990,13 +990,13 @@ func TestLoad_LegacyEnv(t *testing.T) {
 	tempDir := t.TempDir()
 
 	cfg := loadWithEnv(t, "# empty", map[string]string{
-		"DAGU__ADMIN_PORT":         "1234",
-		"DAGU__ADMIN_HOST":         "0.0.0.0",
-		"DAGU__ADMIN_NAVBAR_TITLE": "LegacyTitle",
-		"DAGU__ADMIN_NAVBAR_COLOR": "#abc123",
-		"DAGU__DATA":               filepath.Join(tempDir, "legacy", "data"),
-		"DAGU__SUSPEND_FLAGS_DIR":  filepath.Join(tempDir, "legacy", "suspend"),
-		"DAGU__ADMIN_LOGS_DIR":     filepath.Join(tempDir, "legacy", "adminlogs"),
+		"AYATSURI__ADMIN_PORT":         "1234",
+		"AYATSURI__ADMIN_HOST":         "0.0.0.0",
+		"AYATSURI__ADMIN_NAVBAR_TITLE": "LegacyTitle",
+		"AYATSURI__ADMIN_NAVBAR_COLOR": "#abc123",
+		"AYATSURI__DATA":               filepath.Join(tempDir, "legacy", "data"),
+		"AYATSURI__SUSPEND_FLAGS_DIR":  filepath.Join(tempDir, "legacy", "suspend"),
+		"AYATSURI__ADMIN_LOGS_DIR":     filepath.Join(tempDir, "legacy", "adminlogs"),
 	})
 
 	assert.Equal(t, 1234, cfg.Server.Port)
@@ -1021,7 +1021,7 @@ func TestLoad_LoadLegacyFields(t *testing.T) {
 			APIBaseURL:            "/api/v1",
 			DAGs:                  filepath.Join(testPaths, "legacy", "dags"),
 			DAGsDir:               filepath.Join(testPaths, "new", "dags"), // Takes precedence over DAGs
-			Executable:            filepath.Join(testPaths, "bin", "dagu"),
+			Executable:            filepath.Join(testPaths, "bin", "ayatsuri"),
 			LogDir:                filepath.Join(testPaths, "logs"),
 			DataDir:               filepath.Join(testPaths, "data"),
 			SuspendFlagsDir:       filepath.Join(testPaths, "suspend"),
@@ -1042,7 +1042,7 @@ func TestLoad_LoadLegacyFields(t *testing.T) {
 
 		// Paths - DAGsDir should take precedence over DAGs
 		assert.Equal(t, filepath.Join(testPaths, "new", "dags"), cfg.Paths.DAGsDir)
-		assert.Equal(t, filepath.Join(testPaths, "bin", "dagu"), cfg.Paths.Executable)
+		assert.Equal(t, filepath.Join(testPaths, "bin", "ayatsuri"), cfg.Paths.Executable)
 		assert.Equal(t, filepath.Join(testPaths, "logs"), cfg.Paths.LogDir)
 		assert.Equal(t, filepath.Join(testPaths, "data"), cfg.Paths.DataDir)
 		assert.Equal(t, filepath.Join(testPaths, "suspend"), cfg.Paths.SuspendFlagsDir)
@@ -1174,7 +1174,7 @@ func TestBindEnv_AsPath(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			const envKey = "DAGU_DAGS_DIR"
+			const envKey = "AYATSURI_DAGS_DIR"
 			t.Setenv(envKey, tt.envValue)
 
 			loader := NewConfigLoader(viper.New())
@@ -1199,7 +1199,7 @@ bots:
       - dag.run.failed
       - dag.run.succeeded
 `, map[string]string{
-			"DAGU_BOTS_TELEGRAM_INTERESTED_EVENT_TYPES": "dag.run.running,dag.run.queued",
+			"AYATSURI_BOTS_TELEGRAM_INTERESTED_EVENT_TYPES": "dag.run.running,dag.run.queued",
 		})
 
 		assert.Equal(t, []string{"dag.run.running", "dag.run.queued"}, cfg.Bots.Telegram.InterestedEventTypes)
@@ -1213,7 +1213,7 @@ bots:
       - dag.run.failed
       - dag.run.succeeded
 `, map[string]string{
-			"DAGU_BOTS_SLACK_INTERESTED_EVENT_TYPES": "",
+			"AYATSURI_BOTS_SLACK_INTERESTED_EVENT_TYPES": "",
 		})
 
 		assert.Empty(t, cfg.Bots.Slack.InterestedEventTypes)
@@ -1233,8 +1233,8 @@ monitoring:
 
 	t.Run("FromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_MONITORING_RETENTION": "30m",
-			"DAGU_MONITORING_INTERVAL":  "15s",
+			"AYATSURI_MONITORING_RETENTION": "30m",
+			"AYATSURI_MONITORING_INTERVAL":  "15s",
 		})
 		assert.Equal(t, 30*time.Minute, cfg.Monitoring.Retention)
 		assert.Equal(t, 15*time.Second, cfg.Monitoring.Interval)
@@ -1262,8 +1262,8 @@ secrets:
 
 	t.Run("FromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_SECRETS_VAULT_ADDRESS": "https://vault.example.com",
-			"DAGU_SECRETS_VAULT_TOKEN":   "env-token",
+			"AYATSURI_SECRETS_VAULT_ADDRESS": "https://vault.example.com",
+			"AYATSURI_SECRETS_VAULT_TOKEN":   "env-token",
 		})
 
 		assert.Equal(t, "https://vault.example.com", cfg.Secrets.Vault.Address)
@@ -1274,8 +1274,8 @@ secrets:
 		cfg := loadWithEnv(t, "# empty", map[string]string{
 			"VAULT_ADDR":       "https://legacy.example.com",
 			"VAULT_TOKEN":      "legacy-token",
-			"DAGU_VAULT_ADDR":  "https://legacy-dagu.example.com",
-			"DAGU_VAULT_TOKEN": "legacy-dagu-token",
+			"AYATSURI_VAULT_ADDR":  "https://legacy-ayatsuri.example.com",
+			"AYATSURI_VAULT_TOKEN": "legacy-ayatsuri-token",
 		})
 
 		assert.Empty(t, cfg.Secrets.Vault.Address)
@@ -1315,10 +1315,10 @@ secrets:
 func TestLoad_ProcConfig(t *testing.T) {
 	t.Run("FromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_AUTH_MODE":                    "none",
-			"DAGU_PROC_HEARTBEAT_INTERVAL":      "6s",
-			"DAGU_PROC_HEARTBEAT_SYNC_INTERVAL": "9s",
-			"DAGU_PROC_STALE_THRESHOLD":         "75s",
+			"AYATSURI_AUTH_MODE":                    "none",
+			"AYATSURI_PROC_HEARTBEAT_INTERVAL":      "6s",
+			"AYATSURI_PROC_HEARTBEAT_SYNC_INTERVAL": "9s",
+			"AYATSURI_PROC_STALE_THRESHOLD":         "75s",
 		})
 		assert.Equal(t, 6*time.Second, cfg.Proc.HeartbeatInterval)
 		assert.Equal(t, 9*time.Second, cfg.Proc.HeartbeatSyncInterval)
@@ -1327,10 +1327,10 @@ func TestLoad_ProcConfig(t *testing.T) {
 
 	t.Run("LegacySchedulerEnvFallback", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_AUTH_MODE":                         "none",
-			"DAGU_SCHEDULER_HEARTBEAT_INTERVAL":      "8s",
-			"DAGU_SCHEDULER_HEARTBEAT_SYNC_INTERVAL": "12s",
-			"DAGU_SCHEDULER_STALE_THRESHOLD":         "100s",
+			"AYATSURI_AUTH_MODE":                         "none",
+			"AYATSURI_SCHEDULER_HEARTBEAT_INTERVAL":      "8s",
+			"AYATSURI_SCHEDULER_HEARTBEAT_SYNC_INTERVAL": "12s",
+			"AYATSURI_SCHEDULER_STALE_THRESHOLD":         "100s",
 		})
 		assert.Equal(t, 8*time.Second, cfg.Proc.HeartbeatInterval)
 		assert.Equal(t, 12*time.Second, cfg.Proc.HeartbeatSyncInterval)
@@ -1370,9 +1370,9 @@ auth:
 
 	t.Run("AuthModeFromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_AUTH_MODE":         "builtin",
-			"DAGU_AUTH_TOKEN_SECRET": "test-secret",
-			"DAGU_PATHS_USERS_DIR":   t.TempDir(),
+			"AYATSURI_AUTH_MODE":         "builtin",
+			"AYATSURI_AUTH_TOKEN_SECRET": "test-secret",
+			"AYATSURI_PATHS_USERS_DIR":   t.TempDir(),
 		})
 		require.Equal(t, AuthModeBuiltin, cfg.Server.Auth.Mode)
 	})
@@ -1411,9 +1411,9 @@ auth:
 
 	t.Run("FromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_AUTH_MODE":         "builtin",
-			"DAGU_AUTH_TOKEN_SECRET": "env-jwt-secret",
-			"DAGU_AUTH_TOKEN_TTL":    "48h",
+			"AYATSURI_AUTH_MODE":         "builtin",
+			"AYATSURI_AUTH_TOKEN_SECRET": "env-jwt-secret",
+			"AYATSURI_AUTH_TOKEN_TTL":    "48h",
 		})
 		assert.Equal(t, AuthModeBuiltin, cfg.Server.Auth.Mode)
 		assert.Equal(t, "env-jwt-secret", cfg.Server.Auth.Builtin.Token.Secret)
@@ -1452,10 +1452,10 @@ auth:
 
 	t.Run("FromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_AUTH_MODE":                           "builtin",
-			"DAGU_AUTH_TOKEN_SECRET":                   "env-jwt-secret",
-			"DAGU_AUTH_BUILTIN_INITIAL_ADMIN_USERNAME": "envadmin",
-			"DAGU_AUTH_BUILTIN_INITIAL_ADMIN_PASSWORD": "envpass12345",
+			"AYATSURI_AUTH_MODE":                           "builtin",
+			"AYATSURI_AUTH_TOKEN_SECRET":                   "env-jwt-secret",
+			"AYATSURI_AUTH_BUILTIN_INITIAL_ADMIN_USERNAME": "envadmin",
+			"AYATSURI_AUTH_BUILTIN_INITIAL_ADMIN_PASSWORD": "envpass12345",
 		})
 		assert.Equal(t, "envadmin", cfg.Server.Auth.Builtin.InitialAdmin.Username)
 		assert.Equal(t, "envpass12345", cfg.Server.Auth.Builtin.InitialAdmin.Password)
@@ -1521,7 +1521,7 @@ metrics: "private"
 
 	t.Run("MetricsAccessFromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_SERVER_METRICS": "public",
+			"AYATSURI_SERVER_METRICS": "public",
 		})
 		assert.Equal(t, MetricsAccessPublic, cfg.Server.Metrics)
 	})
@@ -1568,7 +1568,7 @@ access_log_mode: "none"
 
 	t.Run("AccessLogFromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_ACCESS_LOG_MODE": "non-public",
+			"AYATSURI_ACCESS_LOG_MODE": "non-public",
 		})
 		assert.Equal(t, AccessLogNonPublic, cfg.Server.AccessLog)
 	})
@@ -1626,7 +1626,7 @@ cache: invalid
 
 	t.Run("CacheModeFromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, ``, map[string]string{
-			"DAGU_CACHE": "low",
+			"AYATSURI_CACHE": "low",
 		})
 		assert.Equal(t, CacheModeLow, cfg.Cache)
 	})
@@ -1716,8 +1716,8 @@ terminal:
 
 	t.Run("TerminalEnabledFromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_TERMINAL_ENABLED":      "true",
-			"DAGU_TERMINAL_MAX_SESSIONS": "8",
+			"AYATSURI_TERMINAL_ENABLED":      "true",
+			"AYATSURI_TERMINAL_MAX_SESSIONS": "8",
 		})
 		assert.True(t, cfg.Server.Terminal.Enabled)
 		assert.Equal(t, 8, cfg.Server.Terminal.MaxSessions)
@@ -1725,7 +1725,7 @@ terminal:
 
 	t.Run("TerminalDisabledFromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_TERMINAL_ENABLED": "false",
+			"AYATSURI_TERMINAL_ENABLED": "false",
 		})
 		assert.False(t, cfg.Server.Terminal.Enabled)
 	})
@@ -1736,8 +1736,8 @@ terminal:
   enabled: false
   max_sessions: 3
 `, map[string]string{
-			"DAGU_TERMINAL_ENABLED":      "true",
-			"DAGU_TERMINAL_MAX_SESSIONS": "9",
+			"AYATSURI_TERMINAL_ENABLED":      "true",
+			"AYATSURI_TERMINAL_MAX_SESSIONS": "9",
 		})
 		assert.True(t, cfg.Server.Terminal.Enabled)
 		assert.Equal(t, 9, cfg.Server.Terminal.MaxSessions)
@@ -1766,7 +1766,7 @@ check_updates: true
 
 	t.Run("CheckUpdatesDisabledFromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_CHECK_UPDATES": "false",
+			"AYATSURI_CHECK_UPDATES": "false",
 		})
 		assert.False(t, cfg.Server.CheckUpdates)
 	})
@@ -1775,7 +1775,7 @@ check_updates: true
 		cfg := loadWithEnv(t, `
 check_updates: true
 `, map[string]string{
-			"DAGU_CHECK_UPDATES": "false",
+			"AYATSURI_CHECK_UPDATES": "false",
 		})
 		assert.False(t, cfg.Server.CheckUpdates)
 	})
@@ -1805,14 +1805,14 @@ audit:
 
 	t.Run("AuditEnabledFromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_AUDIT_ENABLED": "true",
+			"AYATSURI_AUDIT_ENABLED": "true",
 		})
 		assert.True(t, cfg.Server.Audit.Enabled)
 	})
 
 	t.Run("AuditDisabledFromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_AUDIT_ENABLED": "false",
+			"AYATSURI_AUDIT_ENABLED": "false",
 		})
 		assert.False(t, cfg.Server.Audit.Enabled)
 	})
@@ -1822,7 +1822,7 @@ audit:
 audit:
   enabled: true
 `, map[string]string{
-			"DAGU_AUDIT_ENABLED": "false",
+			"AYATSURI_AUDIT_ENABLED": "false",
 		})
 		assert.False(t, cfg.Server.Audit.Enabled)
 	})
@@ -1844,7 +1844,7 @@ coordinator:
 
 	t.Run("CoordinatorDisabledFromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_COORDINATOR_ENABLED": "false",
+			"AYATSURI_COORDINATOR_ENABLED": "false",
 		})
 		assert.False(t, cfg.Coordinator.Enabled)
 	})
@@ -1854,7 +1854,7 @@ coordinator:
 coordinator:
   enabled: true
 `, map[string]string{
-			"DAGU_COORDINATOR_ENABLED": "false",
+			"AYATSURI_COORDINATOR_ENABLED": "false",
 		})
 		assert.False(t, cfg.Coordinator.Enabled)
 	})
@@ -1876,10 +1876,10 @@ tunnel:
   enabled: true
   tailscale:
     auth_key: "tskey-yaml-test"
-    hostname: "yaml-dagu"
+    hostname: "yaml-ayatsuri"
     funnel: false
     https: true
-    state_dir: "/var/dagu/tailscale"
+    state_dir: "/var/ayatsuri/tailscale"
   allow_terminal: true
   allowed_ips:
     - "192.168.1.0/24"
@@ -1892,10 +1892,10 @@ tunnel:
 `)
 		assert.True(t, cfg.Tunnel.Enabled)
 		assert.Equal(t, "tskey-yaml-test", cfg.Tunnel.Tailscale.AuthKey)
-		assert.Equal(t, "yaml-dagu", cfg.Tunnel.Tailscale.Hostname)
+		assert.Equal(t, "yaml-ayatsuri", cfg.Tunnel.Tailscale.Hostname)
 		assert.False(t, cfg.Tunnel.Tailscale.Funnel)
 		assert.True(t, cfg.Tunnel.Tailscale.HTTPS)
-		assert.Equal(t, "/var/dagu/tailscale", cfg.Tunnel.Tailscale.StateDir)
+		assert.Equal(t, "/var/ayatsuri/tailscale", cfg.Tunnel.Tailscale.StateDir)
 		assert.True(t, cfg.Tunnel.AllowTerminal)
 		assert.Equal(t, []string{"192.168.1.0/24", "10.0.0.0/8"}, cfg.Tunnel.AllowedIPs)
 		assert.True(t, cfg.Tunnel.RateLimiting.Enabled)
@@ -1906,20 +1906,20 @@ tunnel:
 
 	t.Run("TunnelFromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_TUNNEL_ENABLED":                              "true",
-			"DAGU_TUNNEL_TAILSCALE_AUTH_KEY":                   "tskey-env-test",
-			"DAGU_TUNNEL_TAILSCALE_HOSTNAME":                   "env-dagu",
-			"DAGU_TUNNEL_TAILSCALE_FUNNEL":                     "false",
-			"DAGU_TUNNEL_TAILSCALE_HTTPS":                      "true",
-			"DAGU_TUNNEL_ALLOW_TERMINAL":                       "true",
-			"DAGU_TUNNEL_RATE_LIMITING_ENABLED":                "true",
-			"DAGU_TUNNEL_RATE_LIMITING_LOGIN_ATTEMPTS":         "10",
-			"DAGU_TUNNEL_RATE_LIMITING_WINDOW_SECONDS":         "600",
-			"DAGU_TUNNEL_RATE_LIMITING_BLOCK_DURATION_SECONDS": "1800",
+			"AYATSURI_TUNNEL_ENABLED":                              "true",
+			"AYATSURI_TUNNEL_TAILSCALE_AUTH_KEY":                   "tskey-env-test",
+			"AYATSURI_TUNNEL_TAILSCALE_HOSTNAME":                   "env-ayatsuri",
+			"AYATSURI_TUNNEL_TAILSCALE_FUNNEL":                     "false",
+			"AYATSURI_TUNNEL_TAILSCALE_HTTPS":                      "true",
+			"AYATSURI_TUNNEL_ALLOW_TERMINAL":                       "true",
+			"AYATSURI_TUNNEL_RATE_LIMITING_ENABLED":                "true",
+			"AYATSURI_TUNNEL_RATE_LIMITING_LOGIN_ATTEMPTS":         "10",
+			"AYATSURI_TUNNEL_RATE_LIMITING_WINDOW_SECONDS":         "600",
+			"AYATSURI_TUNNEL_RATE_LIMITING_BLOCK_DURATION_SECONDS": "1800",
 		})
 		assert.True(t, cfg.Tunnel.Enabled)
 		assert.Equal(t, "tskey-env-test", cfg.Tunnel.Tailscale.AuthKey)
-		assert.Equal(t, "env-dagu", cfg.Tunnel.Tailscale.Hostname)
+		assert.Equal(t, "env-ayatsuri", cfg.Tunnel.Tailscale.Hostname)
 		assert.False(t, cfg.Tunnel.Tailscale.Funnel)
 		assert.True(t, cfg.Tunnel.Tailscale.HTTPS)
 		assert.True(t, cfg.Tunnel.AllowTerminal)
@@ -1938,8 +1938,8 @@ tunnel:
     hostname: "yaml-host"
     https: false
 `, map[string]string{
-			"DAGU_TUNNEL_TAILSCALE_AUTH_KEY": "env-key",
-			"DAGU_TUNNEL_TAILSCALE_HTTPS":    "true",
+			"AYATSURI_TUNNEL_TAILSCALE_AUTH_KEY": "env-key",
+			"AYATSURI_TUNNEL_TAILSCALE_HTTPS":    "true",
 		})
 		assert.True(t, cfg.Tunnel.Enabled)
 		assert.Equal(t, "env-key", cfg.Tunnel.Tailscale.AuthKey)
@@ -1998,7 +1998,7 @@ default_execution_mode: local
 
 	t.Run("FromEnv", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"DAGU_DEFAULT_EXECUTION_MODE": "distributed",
+			"AYATSURI_DEFAULT_EXECUTION_MODE": "distributed",
 		})
 		assert.Equal(t, ExecutionModeDistributed, cfg.DefaultExecMode)
 	})

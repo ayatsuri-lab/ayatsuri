@@ -162,7 +162,7 @@ func TestGetKeepaliveFile(t *testing.T) {
 
 			// Check file is in temp directory
 			assert.True(t, strings.HasPrefix(path, os.TempDir()))
-			assert.Contains(t, path, "dagu-keepalive")
+			assert.Contains(t, path, "ayatsuri-keepalive")
 
 			// Run custom checks
 			if tt.fileCheck != nil {

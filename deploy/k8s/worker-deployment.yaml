@@ -1,30 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dagu-worker
-  namespace: dagu-dev
+  name: ayatsuri-worker
+  namespace: ayatsuri-dev
   labels:
-    app: dagu
+    app: ayatsuri
     component: worker
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: dagu
+      app: ayatsuri
       component: worker
   template:
     metadata:
       labels:
-        app: dagu
+        app: ayatsuri
         component: worker
     spec:
       containers:
-      - name: dagu
+      - name: ayatsuri
         # Use official latest image
-        image: ghcr.io/dagucloud/dagu:latest
+        image: ghcr.io/ayatsuri-lab/ayatsuri:latest
         imagePullPolicy: IfNotPresent
         command:
-          - dagu
+          - ayatsuri
           - worker
           - --worker.labels
           - environment=dev,region=local,cluster=k8s
@@ -35,18 +35,18 @@ spec:
           # - "50"
         envFrom:
         - configMapRef:
-            name: dagu-config
+            name: ayatsuri-config
         env:
         # Workers connect to coordinator via service DNS name
-        - name: DAGU_COORDINATOR_HOST
-          value: "dagu-server"
+        - name: AYATSURI_COORDINATOR_HOST
+          value: "ayatsuri-server"
         - name: WORKER_ID
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
         volumeMounts:
-        - name: dagu-data
-          mountPath: /var/lib/dagu
+        - name: ayatsuri-data
+          mountPath: /var/lib/ayatsuri
         resources:
           requests:
             memory: "128Mi"
@@ -55,6 +55,6 @@ spec:
             memory: "256Mi"
             cpu: "200m"
       volumes:
-      - name: dagu-data
+      - name: ayatsuri-data
         persistentVolumeClaim:
-          claimName: dagu-data
+          claimName: ayatsuri-data

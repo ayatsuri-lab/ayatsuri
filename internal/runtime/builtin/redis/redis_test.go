@@ -9,12 +9,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/runtime/executor"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/executor"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	redisexec "github.com/dagucloud/dagu/internal/runtime/builtin/redis"
+	redisexec "github.com/ayatsuri-lab/ayatsuri/internal/runtime/builtin/redis"
 )
 
 // Helper function to create an executor via the registry

@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/auth"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -38,7 +38,7 @@ func setupTestStoreWithCache(t *testing.T) (*Store, string, *fileutil.Cache[*aut
 
 func createTestAPIKey(t *testing.T, name string) *auth.APIKey {
 	t.Helper()
-	key, err := auth.NewAPIKey(name, "Test key", auth.RoleViewer, "hash", "dagu_xxx", "admin")
+	key, err := auth.NewAPIKey(name, "Test key", auth.RoleViewer, "hash", "ayatsuri_xxx", "admin")
 	require.NoError(t, err)
 	return key
 }
@@ -56,7 +56,7 @@ func TestStore_CRUD(t *testing.T) {
 	ctx := context.Background()
 
 	// Test Create
-	apiKey, err := auth.NewAPIKey("test-key", "Test API key", auth.RoleManager, "hashedsecret", "dagu_xxx", "admin-user-id")
+	apiKey, err := auth.NewAPIKey("test-key", "Test API key", auth.RoleManager, "hashedsecret", "ayatsuri_xxx", "admin-user-id")
 	require.NoError(t, err, "NewAPIKey() failed")
 	err = store.Create(ctx, apiKey)
 	require.NoError(t, err, "Create() failed")
@@ -110,13 +110,13 @@ func TestStore_DuplicateName(t *testing.T) {
 	ctx := context.Background()
 
 	// Create first key
-	key1, err := auth.NewAPIKey("test-key", "First key", auth.RoleViewer, "hash1", "dagu_111", "admin")
+	key1, err := auth.NewAPIKey("test-key", "First key", auth.RoleViewer, "hash1", "ayatsuri_111", "admin")
 	require.NoError(t, err, "NewAPIKey() failed")
 	err = store.Create(ctx, key1)
 	require.NoError(t, err, "Create() first key failed")
 
 	// Try to create second key with same name
-	key2, err := auth.NewAPIKey("test-key", "Second key", auth.RoleManager, "hash2", "dagu_222", "admin")
+	key2, err := auth.NewAPIKey("test-key", "Second key", auth.RoleManager, "hash2", "ayatsuri_222", "admin")
 	require.NoError(t, err, "NewAPIKey() failed")
 	err = store.Create(ctx, key2)
 	assert.ErrorIs(t, err, auth.ErrAPIKeyAlreadyExists)
@@ -141,7 +141,7 @@ func TestStore_NotFound(t *testing.T) {
 	assert.ErrorIs(t, err, auth.ErrAPIKeyNotFound)
 
 	// Test Update not found
-	key, err := auth.NewAPIKey("test", "desc", auth.RoleViewer, "hash", "dagu_xxx", "admin")
+	key, err := auth.NewAPIKey("test", "desc", auth.RoleViewer, "hash", "ayatsuri_xxx", "admin")
 	require.NoError(t, err, "NewAPIKey() failed")
 	err = store.Update(ctx, key)
 	assert.ErrorIs(t, err, auth.ErrAPIKeyNotFound)
@@ -161,7 +161,7 @@ func TestStore_RebuildIndex(t *testing.T) {
 	require.NoError(t, err, "failed to create store")
 
 	ctx := context.Background()
-	apiKey, err := auth.NewAPIKey("test-key", "Test key", auth.RoleAdmin, "hash", "dagu_xxx", "admin")
+	apiKey, err := auth.NewAPIKey("test-key", "Test key", auth.RoleAdmin, "hash", "ayatsuri_xxx", "admin")
 	require.NoError(t, err, "NewAPIKey() failed")
 	err = store1.Create(ctx, apiKey)
 	require.NoError(t, err, "Create() failed")
@@ -190,7 +190,7 @@ func TestStore_FileExists(t *testing.T) {
 	require.NoError(t, err, "failed to create store")
 
 	ctx := context.Background()
-	apiKey, err := auth.NewAPIKey("test-key", "Test key", auth.RoleViewer, "hash", "dagu_xxx", "admin")
+	apiKey, err := auth.NewAPIKey("test-key", "Test key", auth.RoleViewer, "hash", "ayatsuri_xxx", "admin")
 	require.NoError(t, err, "NewAPIKey() failed")
 	err = store.Create(ctx, apiKey)
 	require.NoError(t, err, "Create() failed")
@@ -218,9 +218,9 @@ func TestStore_UpdateName(t *testing.T) {
 	ctx := context.Background()
 
 	// Create two keys
-	key1, err := auth.NewAPIKey("key-one", "First key", auth.RoleViewer, "hash1", "dagu_111", "admin")
+	key1, err := auth.NewAPIKey("key-one", "First key", auth.RoleViewer, "hash1", "ayatsuri_111", "admin")
 	require.NoError(t, err, "NewAPIKey() failed")
-	key2, err := auth.NewAPIKey("key-two", "Second key", auth.RoleViewer, "hash2", "dagu_222", "admin")
+	key2, err := auth.NewAPIKey("key-two", "Second key", auth.RoleViewer, "hash2", "ayatsuri_222", "admin")
 	require.NoError(t, err, "NewAPIKey() failed")
 	err = store.Create(ctx, key1)
 	require.NoError(t, err, "Create() first key failed")
@@ -251,7 +251,7 @@ func TestStore_RebuildIndexWithCorruptedFile(t *testing.T) {
 	ctx := context.Background()
 
 	// Create a valid key
-	validKey, err := auth.NewAPIKey("valid-key", "Valid key", auth.RoleViewer, "hash123", "dagu_val", "admin")
+	validKey, err := auth.NewAPIKey("valid-key", "Valid key", auth.RoleViewer, "hash123", "ayatsuri_val", "admin")
 	require.NoError(t, err, "NewAPIKey() failed")
 	err = store.Create(ctx, validKey)
 	require.NoError(t, err)
@@ -298,7 +298,7 @@ func TestStore_ConcurrentOperations(t *testing.T) {
 				"Concurrent key",
 				auth.RoleViewer,
 				"hash"+string(rune('a'+idx)),
-				"dagu_"+string(rune('a'+idx)),
+				"ayatsuri_"+string(rune('a'+idx)),
 				"admin",
 			)
 			if err != nil {
@@ -576,7 +576,7 @@ func TestStore_FileCache(t *testing.T) {
   "description": "Externally modified",
   "role": "viewer",
   "key_hash": "hash",
-  "key_prefix": "dagu_xxx",
+  "key_prefix": "ayatsuri_xxx",
   "created_at": "2024-01-01T00:00:00Z",
   "updated_at": "2024-01-01T00:00:00Z",
   "created_by": "admin"
@@ -939,7 +939,7 @@ func TestStore_ListEdgeCases(t *testing.T) {
 				"Bulk key",
 				auth.RoleViewer,
 				"hash",
-				"dagu_",
+				"ayatsuri_",
 				"admin",
 			)
 			require.NoError(t, err)
@@ -964,7 +964,7 @@ func TestStore_UpdateLastUsedPreservesFields(t *testing.T) {
 		"Original description",
 		auth.RoleManager,
 		"original-hash",
-		"dagu_pre",
+		"ayatsuri_pre",
 		"creator-user",
 	)
 	require.NoError(t, err)

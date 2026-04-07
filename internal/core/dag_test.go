@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/robfig/cron/v3"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -24,7 +24,7 @@ func TestSockAddr(t *testing.T) {
 
 	t.Run("Location", func(t *testing.T) {
 		dag := &core.DAG{Location: "testdata/testDag.yml"}
-		require.Regexp(t, `^/tmp/@dagu_testdata_testDag_yml_[0-9a-f]+\.sock$`, dag.SockAddr(""))
+		require.Regexp(t, `^/tmp/@ayatsuri_testdata_testDag_yml_[0-9a-f]+\.sock$`, dag.SockAddr(""))
 	})
 	t.Run("MaxUnixSocketLength", func(t *testing.T) {
 		dag := &core.DAG{
@@ -35,7 +35,7 @@ func TestSockAddr(t *testing.T) {
 		require.LessOrEqual(t, 50, len(dag.SockAddr("")))
 		require.Equal(
 			t,
-			"/tmp/@dagu_testdata_testDagVeryLongNameThat_b92b71.sock",
+			"/tmp/@ayatsuri_testdata_testDagVeryLongNameThat_b92b71.sock",
 			dag.SockAddr(""),
 		)
 	})
@@ -44,7 +44,7 @@ func TestSockAddr(t *testing.T) {
 
 		addr := core.SockAddr("mydag", "run123")
 
-		require.True(t, strings.HasPrefix(addr, "/tmp/@dagu_"))
+		require.True(t, strings.HasPrefix(addr, "/tmp/@ayatsuri_"))
 		require.True(t, strings.HasSuffix(addr, ".sock"))
 		require.Contains(t, addr, "mydag")
 
@@ -88,14 +88,14 @@ func TestSockAddr(t *testing.T) {
 		socketName := strings.TrimPrefix(addr, "/tmp/")
 
 		require.LessOrEqual(t, len(socketName), 50)
-		require.True(t, strings.HasPrefix(socketName, "@dagu_"))
+		require.True(t, strings.HasPrefix(socketName, "@ayatsuri_"))
 		require.True(t, strings.HasSuffix(socketName, ".sock"))
 	})
 
 	t.Run("EdgeCaseTruncation", func(t *testing.T) {
 		t.Parallel()
 
-		// Format: @dagu_ (6) + name (?) + _ (1) + hash (6) + .sock (5) = 50
+		// Format: @ayatsuri_ (6) + name (?) + _ (1) + hash (6) + .sock (5) = 50
 		// Max name length = 50 - 6 - 1 - 6 - 5 = 32
 		name32 := strings.Repeat("x", 32)
 		name33 := strings.Repeat("x", 33)
@@ -119,7 +119,7 @@ func TestSockAddr(t *testing.T) {
 		}
 
 		for _, addr := range addrs {
-			require.True(t, strings.HasPrefix(addr, "/tmp/@dagu_"))
+			require.True(t, strings.HasPrefix(addr, "/tmp/@ayatsuri_"))
 			require.True(t, strings.HasSuffix(addr, ".sock"))
 		}
 	})

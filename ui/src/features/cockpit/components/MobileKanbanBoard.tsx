@@ -9,7 +9,7 @@ import type { KanbanColumns } from '../hooks/useDateKanbanData';
 
 type DAGRunSummary = components['schemas']['DAGRunSummary'];
 
-const STORAGE_KEY = 'dagu_cockpit_active_tab';
+const STORAGE_KEY = 'ayatsuri_cockpit_active_tab';
 
 const COLUMN_KEYS = ['queued', 'running', 'review', 'done', 'failed'] as const;
 type ColumnKey = (typeof COLUMN_KEYS)[number];

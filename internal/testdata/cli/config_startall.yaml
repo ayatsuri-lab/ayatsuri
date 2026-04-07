@@ -1,6 +1,6 @@
 port: 54322
 headless: true
-dags: /tmp/dagu_test
+dags: /tmp/ayatsuri_test
 auth:
   mode: none
 coordinator:

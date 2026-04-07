@@ -7,8 +7,8 @@ import (
 	"os/exec"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/stretchr/testify/require"
 )
 
@@ -27,7 +27,7 @@ steps:
     config:
       runner: node:25-bookworm
     params:
-      repository: dagucloud/dagu
+      repository: ayatsuricloud/ayatsuri
       sparse-checkout: README.md
 `)
 

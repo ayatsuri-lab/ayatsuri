@@ -13,8 +13,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
 )
 
 // Verify Store implements agent.MemoryStore at compile time.
@@ -52,7 +52,7 @@ func WithFileCache(cache *fileutil.Cache[string]) Option {
 }
 
 // New creates a new file-based agent memory store.
-// The dagsDir is the DAGs directory (e.g., ~/.config/dagu/dags).
+// The dagsDir is the DAGs directory (e.g., ~/.config/ayatsuri/dags).
 // The memory files will be stored under {dagsDir}/memory/.
 func New(dagsDir string, opts ...Option) (*Store, error) {
 	if dagsDir == "" {

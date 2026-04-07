@@ -6,11 +6,11 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/core/spec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec"
 	"github.com/spf13/cobra"
 )
 
@@ -35,7 +35,7 @@ Flags:
                                    DAG-run(s) for the given DAG definition name.
 
 Example:
-  dagu stop --run-id=abc123 my_dag
+  ayatsuri stop --run-id=abc123 my_dag
 `,
 			Args: cobra.ExactArgs(1),
 		}, stopFlags, runStop,

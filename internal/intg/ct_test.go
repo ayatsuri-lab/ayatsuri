@@ -15,15 +15,15 @@ import (
 	"github.com/moby/moby/client"
 	"github.com/stretchr/testify/require"
 
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	specs "github.com/opencontainers/image-spec/specs-go/v1"
 )
 
 const (
 	testImage       = "alpine:3"
 	nginxTestImage  = "nginx:alpine"
-	containerPrefix = "dagu-test"
+	containerPrefix = "ayatsuri-test"
 )
 
 type dockerExecutorTest struct {
@@ -80,7 +80,7 @@ steps:
     config:
       image: alpine:3
       auto_remove: true
-      container_name: dagu-autostart
+      container_name: ayatsuri-autostart
     command: echo "container started"
     output: DOCKER_EXEC_OUT1
 `,
@@ -286,7 +286,7 @@ steps:
 			},
 		},
 		{
-			// Test for: https://github.com/dagucloud/dagu/issues/1589
+			// Test for: https://github.com/ayatsuri-lab/ayatsuri/issues/1589
 			// Shell field allows DRY approach to wrapping commands with a shell
 			name: "ShellFieldBasic",
 			dagConfigFunc: func(_ string) string {
@@ -496,7 +496,7 @@ func TestDockerExecutor_ExecInExistingContainer(t *testing.T) {
 	require.NoError(t, err, "failed to create docker client")
 	defer func() { _ = dockerClient.Close() }()
 
-	containerName := fmt.Sprintf("dagu-existing-%d", time.Now().UnixNano())
+	containerName := fmt.Sprintf("ayatsuri-existing-%d", time.Now().UnixNano())
 	containerID := createLongRunningContainer(t, th, dockerClient, containerName)
 	defer removeContainer(t, th, dockerClient, containerID)
 
@@ -861,7 +861,7 @@ steps:
 			},
 		},
 		{
-			// Regression test for: https://github.com/dagucloud/dagu/issues/1565
+			// Regression test for: https://github.com/ayatsuri-lab/ayatsuri/issues/1565
 			// When container.command is specified without a top-level command,
 			// the container.command should be executed and output should be captured.
 			name: "ContainerCommandWithOutput",
@@ -882,7 +882,7 @@ steps:
 			},
 		},
 		{
-			// Regression test for: https://github.com/dagucloud/dagu/issues/1709
+			// Regression test for: https://github.com/ayatsuri-lab/ayatsuri/issues/1709
 			// Step-level container with shell field should execute commands
 			// through the shell, just like DAG-level container does.
 			// Uses arithmetic expansion which requires shell interpretation.
@@ -903,7 +903,7 @@ steps:
 			},
 		},
 		{
-			// Regression test for: https://github.com/dagucloud/dagu/issues/1709
+			// Regression test for: https://github.com/ayatsuri-lab/ayatsuri/issues/1709
 			// Step-level container with shell field should support pipe operators.
 			// Without shell wrapping, the pipe character is passed as a literal
 			// argument to echo instead of being interpreted as a pipe.
@@ -924,7 +924,7 @@ steps:
 			},
 		},
 		{
-			// Regression test for: https://github.com/dagucloud/dagu/issues/1709
+			// Regression test for: https://github.com/ayatsuri-lab/ayatsuri/issues/1709
 			// Step-level container with shell field should support && operators.
 			// Without shell wrapping, && is passed as a literal argument.
 			name: "StepContainerShellWithOperators",
@@ -944,7 +944,7 @@ steps:
 			},
 		},
 		{
-			// Regression test for: https://github.com/dagucloud/dagu/issues/1709
+			// Regression test for: https://github.com/ayatsuri-lab/ayatsuri/issues/1709
 			// Step-level container with shell field should support environment
 			// variable expansion via the shell.
 			name: "StepContainerShellVariableExpansion",
@@ -1081,7 +1081,7 @@ func TestContainerExecMode(t *testing.T) {
 	defer func() { _ = dockerClient.Close() }()
 
 	// Create a long-running container for exec tests
-	containerName := fmt.Sprintf("dagu-exec-mode-%d", time.Now().UnixNano())
+	containerName := fmt.Sprintf("ayatsuri-exec-mode-%d", time.Now().UnixNano())
 	containerID := createLongRunningContainer(t, th, dockerClient, containerName)
 	defer removeContainer(t, th, dockerClient, containerID)
 
@@ -1220,7 +1220,7 @@ steps:
 			},
 		},
 		{
-			// Test for: https://github.com/dagucloud/dagu/issues/1589
+			// Test for: https://github.com/ayatsuri-lab/ayatsuri/issues/1589
 			// Shell field should work in exec mode
 			name: "ShellField_ExecMode",
 			dagConfig: fmt.Sprintf(`
@@ -1258,7 +1258,7 @@ func TestContainerExecNotFound(t *testing.T) {
 	th := test.Setup(t)
 
 	// Use a container name that definitely doesn't exist
-	nonExistentContainer := fmt.Sprintf("dagu-nonexistent-%d", time.Now().UnixNano())
+	nonExistentContainer := fmt.Sprintf("ayatsuri-nonexistent-%d", time.Now().UnixNano())
 
 	dagConfig := fmt.Sprintf(`
 container: %s
@@ -1280,7 +1280,7 @@ func TestContainerExecNotRunning(t *testing.T) {
 	defer func() { _ = dockerClient.Close() }()
 
 	// Create a container but don't start it
-	containerName := fmt.Sprintf("dagu-exec-stopped-%d", time.Now().UnixNano())
+	containerName := fmt.Sprintf("ayatsuri-exec-stopped-%d", time.Now().UnixNano())
 
 	platform, err := currentDockerPlatform(th.Context, dockerClient)
 	require.NoError(t, err)
@@ -1392,7 +1392,7 @@ func TestContainerExecVariableExpansion(t *testing.T) {
 	defer func() { _ = dockerClient.Close() }()
 
 	// Create a long-running container for exec tests
-	containerName := fmt.Sprintf("dagu-exec-var-%d", time.Now().UnixNano())
+	containerName := fmt.Sprintf("ayatsuri-exec-var-%d", time.Now().UnixNano())
 	containerID := createLongRunningContainer(t, th, dockerClient, containerName)
 	defer removeContainer(t, th, dockerClient, containerID)
 

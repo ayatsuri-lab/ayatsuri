@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/service/audit"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/audit"
 )
 
 const (

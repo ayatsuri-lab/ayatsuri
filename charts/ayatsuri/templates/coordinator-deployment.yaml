@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ayatsuri.fullname" . }}-coordinator
+  labels:
+    {{- include "ayatsuri.labels" . | nindent 4 }}
+    app.kubernetes.io/component: coordinator
+spec:
+  replicas: {{ .Values.coordinator.replicas }}
+  selector:
+    matchLabels:
+      {{- include "ayatsuri.labels" . | nindent 6 }}
+      app.kubernetes.io/component: coordinator
+  template:
+    metadata:
+      labels:
+        {{- include "ayatsuri.labels" . | nindent 8 }}
+        app.kubernetes.io/component: coordinator
+    spec:
+      # Disable Kubernetes Service env var injection to avoid overriding
+      # ayatsuri config values (e.g., scheduler.port) with Service URLs
+      enableServiceLinks: false
+      containers:
+        - name: coordinator
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - ayatsuri
+            - coordinator
+            - --config
+            - /etc/ayatsuri/ayatsuri.yaml
+          env:
+            - name: AYATSURI_HOME
+              value: /data
+            - name: AYATSURI_COORDINATOR_HOST
+              value: "0.0.0.0"
+            - name: AYATSURI_COORDINATOR_ADVERTISE
+              value: "{{ include "ayatsuri.fullname" . }}-coordinator.{{ .Release.Namespace }}.svc.cluster.local"
+{{- with include "ayatsuri.extraEnv" . }}
+{{ . | nindent 12 }}
+{{- end }}
+          ports:
+            - name: grpc
+              containerPort: 50055
+              protocol: TCP
+            - name: health
+              containerPort: {{ .Values.coordinator.healthPort }}
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /etc/ayatsuri
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: health
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: health
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.coordinator.resources | nindent 12 }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "ayatsuri.fullname" . }}-data
+        - name: config
+          configMap:
+            name: {{ include "ayatsuri.fullname" . }}-config

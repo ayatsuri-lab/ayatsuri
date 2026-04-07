@@ -6,10 +6,10 @@ package intg_test
 import (
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/cmd"
-	"github.com/dagucloud/dagu/internal/core"
-	exec1 "github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmd"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	exec1 "github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -129,7 +129,7 @@ steps:
     command: echo "batch_size=$batch_size debug=$debug"
     output: VALUES
   - name: params-json
-    command: printenv DAGU_PARAMS_JSON
+    command: printenv AYATSURI_PARAMS_JSON
     output: PARAMS_JSON
 `)
 

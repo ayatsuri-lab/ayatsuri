@@ -10,11 +10,11 @@ import (
 	goruntime "runtime"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/eval"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/runtime"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/eval"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -243,7 +243,7 @@ func TestNewEnvForStep_WorkingDirectory(t *testing.T) {
 	// Create testdir in home for tilde tests
 	homeDir, err := os.UserHomeDir()
 	require.NoError(t, err)
-	homeTempDir := filepath.Join(homeDir, "dagu_test_workdir")
+	homeTempDir := filepath.Join(homeDir, "ayatsuri_test_workdir")
 	require.NoError(t, os.MkdirAll(homeTempDir, 0755))
 	t.Cleanup(func() { _ = os.RemoveAll(homeTempDir) })
 
@@ -284,7 +284,7 @@ func TestNewEnvForStep_WorkingDirectory(t *testing.T) {
 			name: "StepWithHomeDirectoryNotation",
 			step: core.Step{
 				Name: "test-step",
-				Dir:  "~/dagu_test_workdir",
+				Dir:  "~/ayatsuri_test_workdir",
 			},
 			dagWorkDir:  tempDir,
 			expectedDir: homeTempDir,
@@ -314,9 +314,9 @@ func TestNewEnvForStep_WorkingDirectory(t *testing.T) {
 				Name: "test-step",
 				Dir: func() string {
 					if goruntime.GOOS == "windows" {
-						return "$USERPROFILE\\dagu_test_workdir"
+						return "$USERPROFILE\\ayatsuri_test_workdir"
 					}
-					return "$HOME/dagu_test_workdir"
+					return "$HOME/ayatsuri_test_workdir"
 				}(),
 			},
 			dagWorkDir:  tempDir,
@@ -346,7 +346,7 @@ func TestNewEnvForStep_WorkingDirectory(t *testing.T) {
 				Name: "test-step",
 				Dir:  "", // Empty - should inherit DAG WorkingDir
 			},
-			dagWorkDir:  "~/dagu_test_workdir",
+			dagWorkDir:  "~/ayatsuri_test_workdir",
 			expectedDir: homeTempDir,
 		},
 		{
@@ -357,9 +357,9 @@ func TestNewEnvForStep_WorkingDirectory(t *testing.T) {
 			},
 			dagWorkDir: func() string {
 				if goruntime.GOOS == "windows" {
-					return "$USERPROFILE\\dagu_test_workdir"
+					return "$USERPROFILE\\ayatsuri_test_workdir"
 				}
-				return "$HOME/dagu_test_workdir"
+				return "$HOME/ayatsuri_test_workdir"
 			}(),
 			expectedDir: homeTempDir,
 		},

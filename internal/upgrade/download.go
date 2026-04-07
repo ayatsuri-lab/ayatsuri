@@ -12,7 +12,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/dagucloud/dagu/internal/cmn/backoff"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/backoff"
 	"github.com/go-resty/resty/v2"
 )
 
@@ -65,7 +65,7 @@ func Download(ctx context.Context, opts DownloadOptions) error {
 
 	return backoff.Retry(ctx, func(ctx context.Context) error {
 		// Fresh temp file per attempt
-		tempFile, err := os.CreateTemp(dir, "dagu-download-*.tmp")
+		tempFile, err := os.CreateTemp(dir, "ayatsuri-download-*.tmp")
 		if err != nil {
 			return &nonRetriableError{err: fmt.Errorf("failed to create temp file: %w", err)}
 		}

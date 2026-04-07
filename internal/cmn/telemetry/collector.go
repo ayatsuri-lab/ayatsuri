@@ -12,10 +12,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 )
 
 // Histogram bucket definitions
@@ -79,43 +79,43 @@ func NewCollector(
 
 		// Initialize metric descriptors
 		infoDesc: prometheus.NewDesc(
-			"dagu_info",
-			"Dagu build information",
+			"ayatsuri_info",
+			"Ayatsuri build information",
 			[]string{"version", "go_version"},
 			nil,
 		),
 		uptimeDesc: prometheus.NewDesc(
-			"dagu_uptime_seconds",
+			"ayatsuri_uptime_seconds",
 			"Time since server start",
 			nil,
 			nil,
 		),
 		dagRunsCurrentlyDesc: prometheus.NewDesc(
-			"dagu_dag_runs_currently_running",
+			"ayatsuri_dag_runs_currently_running",
 			"Number of currently running DAG runs",
 			nil,
 			nil,
 		),
 		dagRunsQueuedDesc: prometheus.NewDesc(
-			"dagu_dag_runs_queued_total",
+			"ayatsuri_dag_runs_queued_total",
 			"Total number of DAG runs in queue",
 			nil,
 			nil,
 		),
 		dagRunsTotalDesc: prometheus.NewDesc(
-			"dagu_dag_runs_total",
+			"ayatsuri_dag_runs_total",
 			"Total number of DAG runs by status (today)",
 			[]string{"status"},
 			nil,
 		),
 		dagsTotalDesc: prometheus.NewDesc(
-			"dagu_dags_total",
+			"ayatsuri_dags_total",
 			"Total number of DAGs",
 			nil,
 			nil,
 		),
 		schedulerRunningDesc: prometheus.NewDesc(
-			"dagu_scheduler_running",
+			"ayatsuri_scheduler_running",
 			"Whether the scheduler is running",
 			nil,
 			nil,
@@ -123,31 +123,31 @@ func NewCollector(
 
 		// Per-DAG metric descriptors
 		dagRunsCurrentlyByDAGDesc: prometheus.NewDesc(
-			"dagu_dag_runs_currently_running_by_dag",
+			"ayatsuri_dag_runs_currently_running_by_dag",
 			"Number of currently running DAG runs per DAG",
 			[]string{"dag"},
 			nil,
 		),
 		dagRunsQueuedByDAGDesc: prometheus.NewDesc(
-			"dagu_dag_runs_queued_by_dag",
+			"ayatsuri_dag_runs_queued_by_dag",
 			"Number of queued DAG runs per DAG",
 			[]string{"dag"},
 			nil,
 		),
 		dagRunsTotalByDAGDesc: prometheus.NewDesc(
-			"dagu_dag_runs_total_by_dag",
+			"ayatsuri_dag_runs_total_by_dag",
 			"Total number of DAG runs by DAG and status (today)",
 			[]string{"dag", "status"},
 			nil,
 		),
 		dagRunDurationDesc: prometheus.NewDesc(
-			"dagu_dag_run_duration_seconds",
+			"ayatsuri_dag_run_duration_seconds",
 			"Duration of completed DAG runs in seconds",
 			[]string{"dag"},
 			nil,
 		),
 		queueWaitTimeDesc: prometheus.NewDesc(
-			"dagu_queue_wait_seconds",
+			"ayatsuri_queue_wait_seconds",
 			"Time spent waiting in queue before execution starts",
 			[]string{"dag"},
 			nil,
@@ -155,7 +155,7 @@ func NewCollector(
 
 		// Cache metrics
 		cacheEntriesDesc: prometheus.NewDesc(
-			"dagu_cache_entries_total",
+			"ayatsuri_cache_entries_total",
 			"Number of entries in cache",
 			[]string{"cache"},
 			nil,
@@ -496,11 +496,11 @@ func emitHistogram(
 	)
 }
 
-// NewRegistry creates a new Prometheus registry with Dagu collectors
+// NewRegistry creates a new Prometheus registry with Ayatsuri collectors
 func NewRegistry(collector *Collector) *prometheus.Registry {
 	registry := prometheus.NewRegistry()
 
-	// Register custom Dagu collector
+	// Register custom Ayatsuri collector
 	registry.MustRegister(collector)
 
 	// Optionally register Go runtime metrics

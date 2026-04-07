@@ -10,8 +10,8 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/auth"
-	"github.com/dagucloud/dagu/internal/llm"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/llm"
 )
 
 // MessageType identifies the type of message in a session.
@@ -482,7 +482,7 @@ type AgentTool struct {
 	Audit *AuditInfo
 }
 
-// EnvironmentInfo contains Dagu environment paths for the system prompt.
+// EnvironmentInfo contains Ayatsuri environment paths for the system prompt.
 type EnvironmentInfo struct {
 	// DAGsDir is the directory containing DAG definition files.
 	DAGsDir string

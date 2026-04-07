@@ -199,12 +199,12 @@ defaults:
 container:
   image: python:3.13-slim
   volumes:
-    - /tmp/dagu-example:/work
+    - /tmp/ayatsuri-example:/work
 steps:
   - name: write-data
     command: python -c "
       with open('/work/data.txt', 'w') as f:
-        f.write('Hello from Dagu!')
+        f.write('Hello from Ayatsuri!')
       "
   - name: process
     command: python -c "
@@ -340,9 +340,9 @@ func Example() *cobra.Command {
 
 Run without arguments to list all available examples.
 Use a numeric ID to show a specific example.`,
-		Example: `  dagu example      List all available examples
-  dagu example 1    Show the parallel-steps example
-  dagu example 7    Show the http-requests example`,
+		Example: `  ayatsuri example      List all available examples
+  ayatsuri example 1    Show the parallel-steps example
+  ayatsuri example 7    Show the http-requests example`,
 		ValidArgs: func() []string {
 			args := make([]string, len(examples))
 			for i, e := range examples {
@@ -394,9 +394,9 @@ func listExamples(cmd *cobra.Command) error {
 	}
 
 	_, _ = fmt.Fprintln(w)
-	_, _ = fmt.Fprintln(w, "Usage: dagu example <id>")
+	_, _ = fmt.Fprintln(w, "Usage: ayatsuri example <id>")
 	_, _ = fmt.Fprintln(w)
-	_, _ = fmt.Fprintln(w, `Tip: Use "dagu schema dag" to explore all DAG fields and options.`)
+	_, _ = fmt.Fprintln(w, `Tip: Use "ayatsuri schema dag" to explore all DAG fields and options.`)
 
 	return nil
 }

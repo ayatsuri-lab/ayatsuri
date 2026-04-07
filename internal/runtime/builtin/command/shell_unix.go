@@ -9,7 +9,7 @@ import (
 	"os/exec"
 	"slices"
 
-	"github.com/dagucloud/dagu/internal/cmn/cmdutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/cmdutil"
 )
 
 // unixShell handles standard Unix shells (sh, bash, zsh, etc.).

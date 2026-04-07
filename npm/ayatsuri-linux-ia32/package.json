@@ -1,0 +1,10 @@
+{
+  "name": "@ayatsuri-lab/ayatsuri-linux-ia32",
+  "version": "0.0.0-development",
+  "description": "Ayatsuri binary for Linux 32-bit",
+  "repository": "github:ayatsuri-lab/ayatsuri",
+  "license": "GPL-3.0",
+  "os": ["linux"],
+  "cpu": ["ia32"],
+  "files": ["bin/ayatsuri"]
+}

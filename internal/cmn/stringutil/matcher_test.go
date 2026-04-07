@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
 )
 
 func TestMatchPattern(t *testing.T) {

@@ -8,7 +8,7 @@ type SearchStateContextValue = {
   resetState(pageKey: string, remoteKey?: string): void;
 };
 
-const STORAGE_KEY = 'dagu.searchState';
+const STORAGE_KEY = 'ayatsuri.searchState';
 
 const SearchStateContext = React.createContext<SearchStateContextValue | null>(
   null

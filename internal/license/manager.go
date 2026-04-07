@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
 )
 
 const heartbeatInterval = 24 * time.Hour
@@ -157,7 +157,7 @@ func (m *Manager) Stop() {
 // remove the env var instead) or if there is no active license to deactivate.
 func (m *Manager) Deactivate(_ context.Context) error {
 	if m.source.IsEnv() {
-		return fmt.Errorf("cannot deactivate: license is configured via environment variable; remove DAGU_LICENSE or DAGU_LICENSE_KEY instead")
+		return fmt.Errorf("cannot deactivate: license is configured via environment variable; remove AYATSURI_LICENSE or AYATSURI_LICENSE_KEY instead")
 	}
 	if m.state.IsCommunity() {
 		return fmt.Errorf("no active license to deactivate")

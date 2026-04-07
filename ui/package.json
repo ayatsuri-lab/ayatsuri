@@ -1,7 +1,7 @@
 {
-  "name": "dagu",
+  "name": "ayatsuri",
   "version": "1.0.0",
-  "description": "Web UI for Dagu",
+  "description": "Web UI for Ayatsuri",
   "private": true,
   "engines": {
     "node": ">=18.18.0"
@@ -19,14 +19,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dagucloud/dagu.git"
+    "url": "git+https://github.com/ayatsuri-lab/ayatsuri.git"
   },
   "author": "Yota Hamada",
   "license": "SEE LICENSE.md",
   "bugs": {
-    "url": "https://github.com/dagucloud/dagu/issues"
+    "url": "https://github.com/ayatsuri-lab/ayatsuri/issues"
   },
-  "homepage": "https://github.com/dagucloud/dagu#readme",
+  "homepage": "https://github.com/ayatsuri-lab/ayatsuri#readme",
   "devDependencies": {
     "@babel/core": "7.28.6",
     "@babel/preset-react": "7.27.1",

@@ -15,14 +15,14 @@ func Config() *cobra.Command {
 		&cobra.Command{
 			Use:   "config",
 			Short: "Display the resolved configuration paths",
-			Long: `Show all resolved file system paths used by Dagu.
+			Long: `Show all resolved file system paths used by Ayatsuri.
 
 This is useful for debugging workflows, inspecting stored data,
-or verifying which directories Dagu is using in the current environment.
+or verifying which directories Ayatsuri is using in the current environment.
 
 Example:
-  dagu config
-  dagu config --dagu-home /custom/path
+  ayatsuri config
+  ayatsuri config --ayatsuri-home /custom/path
 `,
 		}, nil, runConfig,
 	)

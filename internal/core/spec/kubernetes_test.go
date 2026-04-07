@@ -7,8 +7,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/core/spec"
-	_ "github.com/dagucloud/dagu/internal/runtime/builtin/kubernetes"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec"
+	_ "github.com/ayatsuri-lab/ayatsuri/internal/runtime/builtin/kubernetes"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

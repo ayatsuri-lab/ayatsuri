@@ -4,7 +4,7 @@ A minimal binary that keeps containers running by waiting for termination signal
 
 ## Purpose
 
-This program is used by Dagu to keep containers alive while DAGs are running. It's implemented in Zig for minimal binary size and cross-platform compatibility.
+This program is used by Ayatsuri to keep containers alive while DAGs are running. It's implemented in Zig for minimal binary size and cross-platform compatibility.
 
 ## Building
 

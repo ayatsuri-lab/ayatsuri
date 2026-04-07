@@ -241,7 +241,7 @@ func TestStaleDetection(t *testing.T) {
 
 	t.Run("CleanStaleLock", func(t *testing.T) {
 		// Create a stale lock manually
-		lockPath := filepath.Join(tmpDir, ".dagu_lock")
+		lockPath := filepath.Join(tmpDir, ".ayatsuri_lock")
 		err := os.Mkdir(lockPath, 0700)
 		require.NoError(t, err)
 
@@ -421,7 +421,7 @@ func TestHeartbeat(t *testing.T) {
 
 func TestFenceToken_LostOwnerDoesNotDeleteReplacementLock(t *testing.T) {
 	tmpDir := t.TempDir()
-	lockPath := filepath.Join(tmpDir, ".dagu_lock")
+	lockPath := filepath.Join(tmpDir, ".ayatsuri_lock")
 
 	lockA := New(tmpDir, nil)
 	require.NoError(t, lockA.TryLock())
@@ -455,7 +455,7 @@ func TestFenceToken_LostOwnerDoesNotDeleteReplacementLock(t *testing.T) {
 
 func TestFenceToken_UnlockDetectsTokenMismatch(t *testing.T) {
 	tmpDir := t.TempDir()
-	lockPath := filepath.Join(tmpDir, ".dagu_lock")
+	lockPath := filepath.Join(tmpDir, ".ayatsuri_lock")
 
 	lockA := New(tmpDir, nil)
 	require.NoError(t, lockA.TryLock())
@@ -478,7 +478,7 @@ func TestFenceToken_UnlockDetectsTokenMismatch(t *testing.T) {
 
 func TestFenceToken_UnlockDoesNotDeleteOwnerlessReplacementLock(t *testing.T) {
 	tmpDir := t.TempDir()
-	lockPath := filepath.Join(tmpDir, ".dagu_lock")
+	lockPath := filepath.Join(tmpDir, ".ayatsuri_lock")
 
 	lockA := New(tmpDir, nil)
 	require.NoError(t, lockA.TryLock())
@@ -497,7 +497,7 @@ func TestFenceToken_UnlockDoesNotDeleteOwnerlessReplacementLock(t *testing.T) {
 
 func TestFenceToken_IsHeldByMeDetectsStolenLock(t *testing.T) {
 	tmpDir := t.TempDir()
-	lockPath := filepath.Join(tmpDir, ".dagu_lock")
+	lockPath := filepath.Join(tmpDir, ".ayatsuri_lock")
 
 	lockA := New(tmpDir, nil)
 	require.NoError(t, lockA.TryLock())
@@ -516,7 +516,7 @@ func TestFenceToken_IsHeldByMeDetectsStolenLock(t *testing.T) {
 
 func TestIsLocked_NoLongerRemovesStaleLocks(t *testing.T) {
 	tmpDir := t.TempDir()
-	lockPath := filepath.Join(tmpDir, ".dagu_lock")
+	lockPath := filepath.Join(tmpDir, ".ayatsuri_lock")
 
 	lockA := New(tmpDir, &LockOptions{StaleThreshold: 1 * time.Second})
 	require.NoError(t, lockA.TryLock())
@@ -571,7 +571,7 @@ func TestEdgeCases(t *testing.T) {
 		info, err = lock.Info()
 		require.NoError(t, err)
 		require.NotNil(t, info)
-		require.Equal(t, ".dagu_lock", info.LockDirName)
+		require.Equal(t, ".ayatsuri_lock", info.LockDirName)
 		require.WithinDuration(t, time.Now(), info.AcquiredAt, 1*time.Second)
 
 		// Cleanup

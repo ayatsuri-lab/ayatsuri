@@ -12,14 +12,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/runtime"
-	runtimeexec "github.com/dagucloud/dagu/internal/runtime/executor"
-	"github.com/dagucloud/dagu/internal/test"
-	coordinatorv1 "github.com/dagucloud/dagu/proto/coordinator/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
+	runtimeexec "github.com/ayatsuri-lab/ayatsuri/internal/runtime/executor"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
+	coordinatorv1 "github.com/ayatsuri-lab/ayatsuri/proto/coordinator/v1"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -367,8 +367,8 @@ steps:
 	})
 
 	t.Run("HandleTaskStartPreservesConfiguredEnvPassthrough", func(t *testing.T) {
-		t.Setenv("DAGU_ENV_PASSTHROUGH", "WORKER_TASK_EXACT_ENV")
-		t.Setenv("DAGU_ENV_PASSTHROUGH_PREFIXES", "WORKER_TASK_PREFIX_")
+		t.Setenv("AYATSURI_ENV_PASSTHROUGH", "WORKER_TASK_EXACT_ENV")
+		t.Setenv("AYATSURI_ENV_PASSTHROUGH_PREFIXES", "WORKER_TASK_PREFIX_")
 		t.Setenv("WORKER_TASK_EXACT_ENV", "exact-value")
 		t.Setenv("WORKER_TASK_PREFIX_TOKEN", "prefix-value")
 		t.Setenv("WORKER_TASK_HOST_ONLY_ENV", "host-only")
@@ -400,8 +400,8 @@ steps:
 	})
 
 	t.Run("HandleTaskRetryPreservesConfiguredEnvPassthrough", func(t *testing.T) {
-		t.Setenv("DAGU_ENV_PASSTHROUGH", "WORKER_TASK_EXACT_ENV")
-		t.Setenv("DAGU_ENV_PASSTHROUGH_PREFIXES", "WORKER_TASK_PREFIX_")
+		t.Setenv("AYATSURI_ENV_PASSTHROUGH", "WORKER_TASK_EXACT_ENV")
+		t.Setenv("AYATSURI_ENV_PASSTHROUGH_PREFIXES", "WORKER_TASK_PREFIX_")
 		t.Setenv("WORKER_TASK_EXACT_ENV", "exact-value")
 		t.Setenv("WORKER_TASK_PREFIX_TOKEN", "prefix-value")
 		t.Setenv("WORKER_TASK_HOST_ONLY_ENV", "host-only")
@@ -464,7 +464,7 @@ func TestCreateTempDAGFile(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, "steps:\n  - name: example\n", string(data))
 
-	expectedDir := filepath.Join(os.TempDir(), "dagu", "worker-dags") + string(os.PathSeparator)
+	expectedDir := filepath.Join(os.TempDir(), "ayatsuri", "worker-dags") + string(os.PathSeparator)
 	require.True(t, strings.HasPrefix(path, expectedDir), "expected %q to start with %q", path, expectedDir)
 }
 
@@ -475,7 +475,7 @@ func TestTaskHandlerStartWithDefinition(t *testing.T) {
 
 	tmpDir := t.TempDir()
 	argsPath := filepath.Join(tmpDir, "args.txt")
-	fakeExec := filepath.Join(tmpDir, "fake-dagu.sh")
+	fakeExec := filepath.Join(tmpDir, "fake-ayatsuri.sh")
 
 	script := "#!/bin/sh\nprintf '%s\\n' \"$@\" > " + argsPath + "\n"
 	err := os.WriteFile(fakeExec, []byte(script), 0o700)

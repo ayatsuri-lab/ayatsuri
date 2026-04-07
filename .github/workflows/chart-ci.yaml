@@ -5,16 +5,16 @@ on:
     branches:
       - main
     paths:
-      - "charts/dagu/Chart.yaml"
-      - "charts/dagu/values.yaml"
-      - "charts/dagu/values.schema.json"
-      - "charts/dagu/.helmignore"
-      - "charts/dagu/README.md"
-      - "charts/dagu/RELEASE.md"
-      - "charts/dagu/LICENSE*"
-      - "charts/dagu/templates/**"
-      - "charts/dagu/charts/**"
-      - "charts/dagu/crds/**"
+      - "charts/ayatsuri/Chart.yaml"
+      - "charts/ayatsuri/values.yaml"
+      - "charts/ayatsuri/values.schema.json"
+      - "charts/ayatsuri/.helmignore"
+      - "charts/ayatsuri/README.md"
+      - "charts/ayatsuri/RELEASE.md"
+      - "charts/ayatsuri/LICENSE*"
+      - "charts/ayatsuri/templates/**"
+      - "charts/ayatsuri/charts/**"
+      - "charts/ayatsuri/crds/**"
       - ".github/workflows/chart-ci.yaml"
   pull_request:
     types:
@@ -23,16 +23,16 @@ on:
       - synchronize
       - ready_for_review
     paths:
-      - "charts/dagu/Chart.yaml"
-      - "charts/dagu/values.yaml"
-      - "charts/dagu/values.schema.json"
-      - "charts/dagu/.helmignore"
-      - "charts/dagu/README.md"
-      - "charts/dagu/RELEASE.md"
-      - "charts/dagu/LICENSE*"
-      - "charts/dagu/templates/**"
-      - "charts/dagu/charts/**"
-      - "charts/dagu/crds/**"
+      - "charts/ayatsuri/Chart.yaml"
+      - "charts/ayatsuri/values.yaml"
+      - "charts/ayatsuri/values.schema.json"
+      - "charts/ayatsuri/.helmignore"
+      - "charts/ayatsuri/README.md"
+      - "charts/ayatsuri/RELEASE.md"
+      - "charts/ayatsuri/LICENSE*"
+      - "charts/ayatsuri/templates/**"
+      - "charts/ayatsuri/charts/**"
+      - "charts/ayatsuri/crds/**"
       - ".github/workflows/chart-ci.yaml"
 
 jobs:
@@ -62,32 +62,32 @@ jobs:
           fi
 
           changed_files="$(git diff --name-only "${base_sha}" "${GITHUB_SHA}" -- \
-            charts/dagu/Chart.yaml \
-            charts/dagu/values.yaml \
-            charts/dagu/values.schema.json \
-            charts/dagu/.helmignore \
-            charts/dagu/README.md \
-            charts/dagu/RELEASE.md \
-            charts/dagu/LICENSE* \
-            charts/dagu/templates \
-            charts/dagu/charts \
-            charts/dagu/crds)"
+            charts/ayatsuri/Chart.yaml \
+            charts/ayatsuri/values.yaml \
+            charts/ayatsuri/values.schema.json \
+            charts/ayatsuri/.helmignore \
+            charts/ayatsuri/README.md \
+            charts/ayatsuri/RELEASE.md \
+            charts/ayatsuri/LICENSE* \
+            charts/ayatsuri/templates \
+            charts/ayatsuri/charts \
+            charts/ayatsuri/crds)"
 
           if [[ -z "${changed_files}" ]]; then
             echo "No packaged chart files changed."
             exit 0
           fi
 
-          old_version="$(git show "${base_sha}:charts/dagu/Chart.yaml" | awk -F': ' '$1=="version"{gsub(/"/,"",$2); print $2; exit}')"
-          new_version="$(awk -F': ' '$1=="version"{gsub(/"/,"",$2); print $2; exit}' charts/dagu/Chart.yaml)"
+          old_version="$(git show "${base_sha}:charts/ayatsuri/Chart.yaml" | awk -F': ' '$1=="version"{gsub(/"/,"",$2); print $2; exit}')"
+          new_version="$(awk -F': ' '$1=="version"{gsub(/"/,"",$2); print $2; exit}' charts/ayatsuri/Chart.yaml)"
 
           if [[ -z "${old_version}" || -z "${new_version}" ]]; then
-            echo "::error::Unable to read chart version from charts/dagu/Chart.yaml"
+            echo "::error::Unable to read chart version from charts/ayatsuri/Chart.yaml"
             exit 1
           fi
 
           if [[ "${old_version}" == "${new_version}" ]]; then
-            echo "::error::Packaged chart files changed without a chart version bump in charts/dagu/Chart.yaml"
+            echo "::error::Packaged chart files changed without a chart version bump in charts/ayatsuri/Chart.yaml"
             printf 'Changed packaged files:\n%s\n' "${changed_files}"
             exit 1
           fi
@@ -96,12 +96,12 @@ jobs:
         uses: azure/setup-helm@v5.0.0
 
       - name: Lint chart
-        run: helm lint ./charts/dagu
+        run: helm lint ./charts/ayatsuri
 
       - name: Render chart
-        run: helm template dagu ./charts/dagu --set persistence.storageClass=nfs-client >/dev/null
+        run: helm template ayatsuri ./charts/ayatsuri --set persistence.storageClass=nfs-client >/dev/null
 
       - name: Package chart
         run: |
-          mkdir -p /tmp/dagu-chart
-          helm package ./charts/dagu --destination /tmp/dagu-chart >/dev/null
+          mkdir -p /tmp/ayatsuri-chart
+          helm package ./charts/ayatsuri --destination /tmp/ayatsuri-chart >/dev/null

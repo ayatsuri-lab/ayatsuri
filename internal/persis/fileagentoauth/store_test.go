@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/agentoauth"
-	"github.com/dagucloud/dagu/internal/cmn/crypto"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agentoauth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/crypto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

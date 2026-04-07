@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	_ "github.com/dagucloud/dagu/internal/llm/allproviders"
-	"github.com/dagucloud/dagu/internal/service/eventstore"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	_ "github.com/ayatsuri-lab/ayatsuri/internal/llm/allproviders"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/eventstore"
 	"github.com/stretchr/testify/require"
 )
 

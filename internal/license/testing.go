@@ -24,7 +24,7 @@ func NewTestManager(features ...string) *Manager {
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			Issuer:    "dagu-test",
+			Issuer:    "ayatsuri-test",
 			Subject:   "test-license",
 		},
 		ClaimsVersion: 1,

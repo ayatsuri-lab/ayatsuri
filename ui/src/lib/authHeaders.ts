@@ -1,4 +1,4 @@
-const TOKEN_KEY = 'dagu_auth_token';
+const TOKEN_KEY = 'ayatsuri_auth_token';
 
 export function getAuthToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);

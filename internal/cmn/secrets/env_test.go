@@ -7,8 +7,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/cmn/eval"
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/eval"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -194,7 +194,7 @@ func TestEnvResolver_PresolvedPrefix(t *testing.T) {
 
 	t.Run("ResolveFromPresolved", func(t *testing.T) {
 		// The original var is NOT set, only the presolved transport var
-		t.Setenv("_DAGU_PRESOLVED_SECRET_SMTP_PASS", "from-parent")
+		t.Setenv("_AYATSURI_PRESOLVED_SECRET_SMTP_PASS", "from-parent")
 
 		ref := core.SecretRef{
 			Name:     "SMTP_PASSWORD",
@@ -208,7 +208,7 @@ func TestEnvResolver_PresolvedPrefix(t *testing.T) {
 	})
 
 	t.Run("CheckAccessibilityFromPresolved", func(t *testing.T) {
-		t.Setenv("_DAGU_PRESOLVED_SECRET_CHECK_VAR", "val")
+		t.Setenv("_AYATSURI_PRESOLVED_SECRET_CHECK_VAR", "val")
 
 		ref := core.SecretRef{
 			Name:     "SECRET",
@@ -222,7 +222,7 @@ func TestEnvResolver_PresolvedPrefix(t *testing.T) {
 
 	t.Run("ScopeWinsOverPresolved", func(t *testing.T) {
 		// If the scope has the value, it should take precedence
-		t.Setenv("_DAGU_PRESOLVED_SECRET_MY_KEY", "presolved-value")
+		t.Setenv("_AYATSURI_PRESOLVED_SECRET_MY_KEY", "presolved-value")
 
 		scope := eval.NewEnvScope(nil, false).WithEntry("MY_KEY", "scope-value", eval.EnvSourceDAGEnv)
 		scopeCtx := eval.WithEnvScope(ctx, scope)

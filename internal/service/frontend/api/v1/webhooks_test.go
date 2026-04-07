@@ -9,12 +9,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/api/v1"
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/license"
-	"github.com/dagucloud/dagu/internal/service/frontend"
-	apiimpl "github.com/dagucloud/dagu/internal/service/frontend/api/v1"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/license"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/frontend"
+	apiimpl "github.com/ayatsuri-lab/ayatsuri/internal/service/frontend/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -261,7 +261,7 @@ func TestWebhooks_CRUD(t *testing.T) {
 	assert.Equal(t, dagName, createResult.Webhook.DagName)
 	assert.True(t, createResult.Webhook.Enabled)
 	assert.NotEmpty(t, createResult.Webhook.TokenPrefix, "expected token prefix")
-	assert.Contains(t, createResult.Token, "dagu_wh_", "token should have webhook prefix")
+	assert.Contains(t, createResult.Token, "ayatsuri_wh_", "token should have webhook prefix")
 
 	webhookToken := createResult.Token
 
@@ -393,7 +393,7 @@ func TestWebhooks_RegenerateToken(t *testing.T) {
 	newToken := regenResult.Token
 
 	assert.NotEqual(t, oldToken, newToken, "new token should be different")
-	assert.Contains(t, newToken, "dagu_wh_", "new token should have webhook prefix")
+	assert.Contains(t, newToken, "ayatsuri_wh_", "new token should have webhook prefix")
 
 	// Old token should no longer work
 	server.Client().Post("/api/v1/webhooks/"+dagName, api.WebhookRequest{}).
@@ -538,7 +538,7 @@ func TestWebhooks_TriggerInvalidToken(t *testing.T) {
 
 	// Try with valid prefix but wrong token
 	server.Client().Post("/api/v1/webhooks/"+dagName, api.WebhookRequest{}).
-		WithBearerToken("dagu_wh_invalidtoken12345678901234567890").
+		WithBearerToken("ayatsuri_wh_invalidtoken12345678901234567890").
 		ExpectStatus(http.StatusUnauthorized).Send(t)
 }
 

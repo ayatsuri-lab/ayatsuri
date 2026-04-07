@@ -10,13 +10,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/persis/filedag"
-	"github.com/dagucloud/dagu/internal/persis/filedagrun"
-	"github.com/dagucloud/dagu/internal/persis/filememory"
-	"github.com/dagucloud/dagu/internal/persis/filesession"
-	"github.com/dagucloud/dagu/internal/service/eventstore"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedagrun"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filememory"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filesession"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/eventstore"
 	"github.com/stretchr/testify/require"
 )
 

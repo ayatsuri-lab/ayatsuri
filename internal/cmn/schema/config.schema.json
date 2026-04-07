@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "description": "Schema for Dagu configuration file (config.yaml). Configures server settings, authentication, paths, UI, services, and features.",
+  "description": "Schema for Ayatsuri configuration file (config.yaml). Configures server settings, authentication, paths, UI, services, and features.",
   "additionalProperties": false,
   "properties": {
     "host": {
@@ -16,7 +16,7 @@
     },
     "base_path": {
       "type": "string",
-      "description": "Base path for the web UI (e.g., '/dagu')."
+      "description": "Base path for the web UI (e.g., '/ayatsuri')."
     },
     "api_base_path": {
       "type": "string",
@@ -32,7 +32,7 @@
     },
     "check_updates": {
       "type": "boolean",
-      "description": "Enable automatic update checks for web UI notifications. Manual 'dagu upgrade' checks are unaffected.",
+      "description": "Enable automatic update checks for web UI notifications. Manual 'ayatsuri upgrade' checks are unaffected.",
       "default": true
     },
     "tls": {
@@ -63,14 +63,14 @@
     },
     "env_passthrough": {
       "type": "array",
-      "description": "Additional exact environment variable names to forward from the Dagu process environment to step execution.",
+      "description": "Additional exact environment variable names to forward from the Ayatsuri process environment to step execution.",
       "items": {
         "type": "string"
       }
     },
     "env_passthrough_prefixes": {
       "type": "array",
-      "description": "Additional environment variable prefixes to forward from the Dagu process environment to step execution.",
+      "description": "Additional environment variable prefixes to forward from the Ayatsuri process environment to step execution.",
       "items": {
         "type": "string"
       }
@@ -99,7 +99,7 @@
     },
     "executable": {
       "type": "string",
-      "description": "Path to the dagu executable."
+      "description": "Path to the ayatsuri executable."
     },
     "log_dir": {
       "type": "string",
@@ -341,7 +341,7 @@
     },
     "OIDCRoleMappingDef": {
       "type": "object",
-      "description": "Maps OIDC claims to Dagu roles.",
+      "description": "Maps OIDC claims to Ayatsuri roles.",
       "additionalProperties": false,
       "properties": {
         "default_role": {
@@ -354,7 +354,7 @@
         },
         "group_mappings": {
           "type": "object",
-          "description": "Mapping of IdP group names to Dagu role names.",
+          "description": "Mapping of IdP group names to Ayatsuri role names.",
           "additionalProperties": {
             "type": "string"
           }
@@ -424,7 +424,7 @@
         },
         "executable": {
           "type": "string",
-          "description": "Path to the dagu executable."
+          "description": "Path to the ayatsuri executable."
         },
         "log_dir": {
           "type": "string",
@@ -1034,11 +1034,11 @@
       "properties": {
         "author_name": {
           "type": "string",
-          "description": "Commit author name. Default: 'Dagu'."
+          "description": "Commit author name. Default: 'Ayatsuri'."
         },
         "author_email": {
           "type": "string",
-          "description": "Commit author email. Default: 'dagu@localhost'."
+          "description": "Commit author email. Default: 'ayatsuri@localhost'."
         }
       }
     },
@@ -1081,7 +1081,7 @@
         },
         "hostname": {
           "type": "string",
-          "description": "Tailscale hostname. Default: 'dagu'."
+          "description": "Tailscale hostname. Default: 'ayatsuri'."
         },
         "funnel": {
           "type": "boolean",
@@ -1093,7 +1093,7 @@
         },
         "state_dir": {
           "type": "string",
-          "description": "Tailscale state directory. Default: '$DAGU_HOME/tailscale'."
+          "description": "Tailscale state directory. Default: '$AYATSURI_HOME/tailscale'."
         }
       }
     },

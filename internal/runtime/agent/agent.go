@@ -24,32 +24,32 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/term"
 
-	agentpkg "github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/agentoauth"
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/eval"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/cmn/mailer"
-	"github.com/dagucloud/dagu/internal/cmn/masking"
-	"github.com/dagucloud/dagu/internal/cmn/secrets"
-	"github.com/dagucloud/dagu/internal/cmn/signal"
-	"github.com/dagucloud/dagu/internal/cmn/sock"
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
-	"github.com/dagucloud/dagu/internal/cmn/telemetry"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/output"
-	"github.com/dagucloud/dagu/internal/runtime"
-	"github.com/dagucloud/dagu/internal/runtime/builtin/docker"
-	"github.com/dagucloud/dagu/internal/runtime/builtin/s3"
-	"github.com/dagucloud/dagu/internal/runtime/builtin/ssh"
-	"github.com/dagucloud/dagu/internal/runtime/remote"
-	"github.com/dagucloud/dagu/internal/runtime/transform"
-	"github.com/dagucloud/dagu/internal/service/coordinator"
+	agentpkg "github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agentoauth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/eval"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/mailer"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/masking"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/secrets"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/signal"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/sock"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/telemetry"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/output"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/builtin/docker"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/builtin/s3"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/builtin/ssh"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/remote"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/transform"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/coordinator"
 
-	_ "github.com/dagucloud/dagu/internal/runtime/builtin"
+	_ "github.com/ayatsuri-lab/ayatsuri/internal/runtime/builtin"
 )
 
 // Agent is responsible for running the DAG and handling communication
@@ -449,7 +449,7 @@ func (a *Agent) Run(ctx context.Context) error {
 		a.workDir = attempt.WorkDir()
 		if a.workDir == "" {
 			// Shared-nothing mode: create a temp directory as fallback
-			a.workDir = filepath.Join(os.TempDir(), fmt.Sprintf("dagu_%s_%s", fileutil.SafeName(a.dag.Name), a.dagRunID))
+			a.workDir = filepath.Join(os.TempDir(), fmt.Sprintf("ayatsuri_%s_%s", fileutil.SafeName(a.dag.Name), a.dagRunID))
 			if err := os.MkdirAll(a.workDir, 0o750); err != nil {
 				return fmt.Errorf("failed to create work directory: %w", err)
 			}

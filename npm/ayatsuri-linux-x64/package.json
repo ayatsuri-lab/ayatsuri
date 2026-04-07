@@ -1,0 +1,24 @@
+{
+  "name": "@ayatsuri-lab/ayatsuri-linux-x64",
+  "version": "0.0.0-development",
+  "description": "Ayatsuri binary for Linux x64",
+  "keywords": ["ayatsuri", "workflow", "linux", "x64"],
+  "homepage": "https://github.com/ayatsuri-lab/ayatsuri",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayatsuri-lab/ayatsuri.git"
+  },
+  "license": "GPL-3.0",
+  "author": "Ayatsuri Contributors",
+  "os": ["linux"],
+  "cpu": ["x64"],
+  "bin": {
+    "ayatsuri": "./bin/ayatsuri"
+  },
+  "files": [
+    "bin/ayatsuri"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

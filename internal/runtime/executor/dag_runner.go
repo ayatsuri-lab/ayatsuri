@@ -15,16 +15,16 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/cmdutil"
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/cmn/telemetry"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/proto/convert"
-	coordinatorv1 "github.com/dagucloud/dagu/proto/coordinator/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/cmdutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/telemetry"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/proto/convert"
+	coordinatorv1 "github.com/ayatsuri-lab/ayatsuri/proto/coordinator/v1"
 )
 
 var (
@@ -830,12 +830,12 @@ func (e *SubDAGExecutor) Kill(sig os.Signal) error {
 	return errors.Join(errs...)
 }
 
-// executablePath returns the path to the dagu executable.
+// executablePath returns the path to the ayatsuri executable.
 func executablePath(ctx context.Context) (string, error) {
 	if cfg := config.GetConfig(ctx); cfg != nil && cfg.Paths.Executable != "" {
 		return cfg.Paths.Executable, nil
 	}
-	if path := os.Getenv("DAGU_EXECUTABLE"); path != "" {
+	if path := os.Getenv("AYATSURI_EXECUTABLE"); path != "" {
 		return path, nil
 	}
 	executable, err := os.Executable()

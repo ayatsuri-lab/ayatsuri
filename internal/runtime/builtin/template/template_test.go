@@ -400,13 +400,13 @@ func TestSlimSprig_Replace(t *testing.T) {
 	e := &templateExec{
 		stdout: &stdout,
 		stderr: os.Stderr,
-		script: `{{ "hello world" | replace "world" "dagu" }}`,
+		script: `{{ "hello world" | replace "world" "ayatsuri" }}`,
 		data:   map[string]any{},
 	}
 
 	err := e.Run(context.Background())
 	require.NoError(t, err)
-	assert.Equal(t, "hello dagu", stdout.String())
+	assert.Equal(t, "hello ayatsuri", stdout.String())
 }
 
 func TestSlimSprig_ListUniqSortAlpha(t *testing.T) {
@@ -781,7 +781,7 @@ func TestFuncMap_SnapshotAllowedFunctions(t *testing.T) {
 func TestSlimSprig_CrossLibraryPipeline(t *testing.T) {
 	t.Parallel()
 
-	// list (sprig) → join (Dagu override accepting []any)
+	// list (sprig) → join (Ayatsuri override accepting []any)
 	var stdout bytes.Buffer
 	e := &templateExec{
 		stdout: &stdout,

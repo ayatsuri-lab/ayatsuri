@@ -58,7 +58,7 @@ export default function APIDocsPage(): React.ReactElement {
           </div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">REST API Docs</h1>
           <p className="max-w-3xl text-sm text-muted-foreground">
-            The reference is loaded from the live authenticated OpenAPI document served by this Dagu instance.
+            The reference is loaded from the live authenticated OpenAPI document served by this Ayatsuri instance.
           </p>
         </div>
         <div className="flex items-center gap-2">

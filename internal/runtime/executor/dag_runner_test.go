@@ -10,11 +10,11 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/core"
-	exec1 "github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/proto/convert"
-	coordinatorv1 "github.com/dagucloud/dagu/proto/coordinator/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	exec1 "github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/proto/convert"
+	coordinatorv1 "github.com/ayatsuri-lab/ayatsuri/proto/coordinator/v1"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -465,20 +465,20 @@ func TestCleanup_NonExistentFile(t *testing.T) {
 func TestExecutablePath(t *testing.T) {
 	t.Run("UsesConfigExecutableBeforeEnv", func(t *testing.T) {
 		ctx := config.WithConfig(context.Background(), &config.Config{
-			Paths: config.PathsConfig{Executable: "/configured/path/to/dagu"},
+			Paths: config.PathsConfig{Executable: "/configured/path/to/ayatsuri"},
 		})
-		_ = os.Setenv("DAGU_EXECUTABLE", "/env/path/to/dagu")
-		defer func() { _ = os.Unsetenv("DAGU_EXECUTABLE") }()
+		_ = os.Setenv("AYATSURI_EXECUTABLE", "/env/path/to/ayatsuri")
+		defer func() { _ = os.Unsetenv("AYATSURI_EXECUTABLE") }()
 
 		path, err := executablePath(ctx)
 		assert.NoError(t, err)
-		assert.Equal(t, "/configured/path/to/dagu", path)
+		assert.Equal(t, "/configured/path/to/ayatsuri", path)
 	})
 
 	t.Run("FallsBackToEnv", func(t *testing.T) {
-		testPath := "/custom/path/to/dagu"
-		_ = os.Setenv("DAGU_EXECUTABLE", testPath)
-		defer func() { _ = os.Unsetenv("DAGU_EXECUTABLE") }()
+		testPath := "/custom/path/to/ayatsuri"
+		_ = os.Setenv("AYATSURI_EXECUTABLE", testPath)
+		defer func() { _ = os.Unsetenv("AYATSURI_EXECUTABLE") }()
 
 		path, err := executablePath(context.Background())
 		assert.NoError(t, err)
@@ -486,7 +486,7 @@ func TestExecutablePath(t *testing.T) {
 	})
 
 	t.Run("FallsBackToCurrentExecutable", func(t *testing.T) {
-		_ = os.Unsetenv("DAGU_EXECUTABLE")
+		_ = os.Unsetenv("AYATSURI_EXECUTABLE")
 		path, err := executablePath(context.Background())
 		assert.NoError(t, err)
 		assert.NotEmpty(t, path)

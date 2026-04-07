@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -127,7 +127,7 @@ func TestHTTPExecutor_WindowsSpecific(t *testing.T) {
 		server := httptest.NewServer(nethttp.HandlerFunc(func(w nethttp.ResponseWriter, r *nethttp.Request) {
 			// Verify custom headers
 			assert.Equal(t, "Bearer windows-token", r.Header.Get("Authorization"))
-			assert.Equal(t, "Dagu-Windows/1.0", r.Header.Get("User-Agent"))
+			assert.Equal(t, "Ayatsuri-Windows/1.0", r.Header.Get("User-Agent"))
 
 			// Verify query parameters
 			assert.Equal(t, "windows", r.URL.Query().Get("os"))
@@ -146,7 +146,7 @@ func TestHTTPExecutor_WindowsSpecific(t *testing.T) {
 				Config: map[string]any{
 					"headers": map[string]string{
 						"Authorization": "Bearer windows-token",
-						"User-Agent":    "Dagu-Windows/1.0",
+						"User-Agent":    "Ayatsuri-Windows/1.0",
 					},
 					"query": map[string]string{
 						"os":          "windows",

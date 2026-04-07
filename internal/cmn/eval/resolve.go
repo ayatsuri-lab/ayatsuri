@@ -88,7 +88,7 @@ func (r *resolver) resolveForReplace(name string) (string, bool) {
 
 // isNumericVar reports whether name consists entirely of digits (e.g., "1", "2").
 // These correspond to shell positional parameters ($1, $2, ...) which cannot
-// be set via environment variables, so they must always be expanded by Dagu.
+// be set via environment variables, so they must always be expanded by Ayatsuri.
 func isNumericVar(name string) bool {
 	if name == "" {
 		return false

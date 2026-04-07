@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/stretchr/testify/require"
 )
 
@@ -128,7 +128,7 @@ steps:
 
 		dag := th.DAG(t, `type: graph
 params:
-  NAME: "Dagu"
+  NAME: "Ayatsuri"
   AGE: 30
 
 steps:
@@ -143,8 +143,8 @@ steps:
 		agent := dag.Agent()
 		agent.RunSuccess(t)
 		dag.AssertOutputs(t, map[string]any{
-			"OUT1": "Dagu",
-			"OUT2": "Hello, Dagu",
+			"OUT1": "Ayatsuri",
+			"OUT2": "Hello, Ayatsuri",
 		})
 	})
 
@@ -152,7 +152,7 @@ steps:
 		t.Parallel()
 
 		dag := th.DAG(t, `params:
-  - NAME: "Dagu"
+  - NAME: "Ayatsuri"
   - AGE: 30
 
 steps:
@@ -164,8 +164,8 @@ steps:
 		agent := dag.Agent()
 		agent.RunSuccess(t)
 		dag.AssertOutputs(t, map[string]any{
-			"OUT1": "Dagu",
-			"OUT2": "Hello, Dagu",
+			"OUT1": "Ayatsuri",
+			"OUT2": "Hello, Ayatsuri",
 		})
 	})
 
@@ -267,7 +267,7 @@ steps:
 		t.Parallel()
 
 		dag := th.DAG(t, `env:
-  - DATA_DIR: /tmp/dagu_test_integration
+  - DATA_DIR: /tmp/ayatsuri_test_integration
   - PROCESS_DATE: "`+"`"+`date '+%Y%m%d_%H%M%S'`+"`"+`"
 
 steps:

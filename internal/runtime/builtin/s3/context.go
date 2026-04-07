@@ -6,7 +6,7 @@ package s3
 import (
 	"context"
 
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 )
 
 // s3ConfigCtxKey is the context key for DAG-level S3 configuration.

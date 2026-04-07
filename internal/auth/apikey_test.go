@@ -14,7 +14,7 @@ import (
 
 func TestNewAPIKey(t *testing.T) {
 	before := time.Now().UTC()
-	key, err := NewAPIKey("test-key", "Test description", RoleManager, "hash123", "dagu_tes", "creator-id")
+	key, err := NewAPIKey("test-key", "Test description", RoleManager, "hash123", "ayatsuri_tes", "creator-id")
 	after := time.Now().UTC()
 
 	require.NoError(t, err)
@@ -23,7 +23,7 @@ func TestNewAPIKey(t *testing.T) {
 	assert.Equal(t, "Test description", key.Description)
 	assert.Equal(t, RoleManager, key.Role)
 	assert.Equal(t, "hash123", key.KeyHash)
-	assert.Equal(t, "dagu_tes", key.KeyPrefix)
+	assert.Equal(t, "ayatsuri_tes", key.KeyPrefix)
 	assert.Equal(t, "creator-id", key.CreatedBy)
 	assert.Nil(t, key.LastUsedAt)
 
@@ -109,7 +109,7 @@ func TestAPIKey_ToStorage(t *testing.T) {
 		Description: "Test description",
 		Role:        RoleAdmin,
 		KeyHash:     "hash123",
-		KeyPrefix:   "dagu_tes",
+		KeyPrefix:   "ayatsuri_tes",
 		CreatedAt:   now,
 		UpdatedAt:   now,
 		CreatedBy:   "creator-id",
@@ -140,7 +140,7 @@ func TestAPIKeyForStorage_ToAPIKey(t *testing.T) {
 		Description: "Test description",
 		Role:        RoleViewer,
 		KeyHash:     "hash456",
-		KeyPrefix:   "dagu_xyz",
+		KeyPrefix:   "ayatsuri_xyz",
 		CreatedAt:   now,
 		UpdatedAt:   now,
 		CreatedBy:   "admin-user",
@@ -170,7 +170,7 @@ func TestAPIKey_ToStorage_ToAPIKey_Roundtrip(t *testing.T) {
 		Description: "Roundtrip test",
 		Role:        RoleOperator,
 		KeyHash:     "secret-hash",
-		KeyPrefix:   "dagu_rnd",
+		KeyPrefix:   "ayatsuri_rnd",
 		CreatedAt:   now,
 		UpdatedAt:   now,
 		CreatedBy:   "creator",
@@ -200,7 +200,7 @@ func TestAPIKey_JSONSerialization(t *testing.T) {
 		Description: "JSON test",
 		Role:        RoleAdmin,
 		KeyHash:     "should-be-excluded",
-		KeyPrefix:   "dagu_jsn",
+		KeyPrefix:   "ayatsuri_jsn",
 		CreatedAt:   now,
 		UpdatedAt:   now,
 		CreatedBy:   "creator",
@@ -236,7 +236,7 @@ func TestAPIKeyForStorage_JSONSerialization(t *testing.T) {
 		Description: "Storage test",
 		Role:        RoleManager,
 		KeyHash:     "included-hash",
-		KeyPrefix:   "dagu_str",
+		KeyPrefix:   "ayatsuri_str",
 		CreatedAt:   now,
 		UpdatedAt:   now,
 		CreatedBy:   "admin",
@@ -268,7 +268,7 @@ func TestAPIKey_NilLastUsedAt(t *testing.T) {
 		Name:      "nil-lastused",
 		Role:      RoleViewer,
 		KeyHash:   "hash",
-		KeyPrefix: "dagu_nil",
+		KeyPrefix: "ayatsuri_nil",
 		CreatedBy: "creator",
 	}
 

@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/dagucloud/dagu/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/api/v1"
 )
 
 func WriteErrorResponse(w http.ResponseWriter, err error) {

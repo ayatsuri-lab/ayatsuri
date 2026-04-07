@@ -4,7 +4,7 @@
 package cmd
 
 import (
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -27,13 +27,13 @@ var (
 	configFlag = commandLineFlag{
 		name:      "config",
 		shorthand: "c",
-		usage:     "Path to the configuration file (default: $HOME/.config/dagu/config.yaml)",
+		usage:     "Path to the configuration file (default: $HOME/.config/ayatsuri/config.yaml)",
 		bindViper: true,
 	}
 
-	daguHomeFlag = commandLineFlag{
-		name:  "dagu-home",
-		usage: "Override DAGU_HOME for this command",
+	ayatsuriHomeFlag = commandLineFlag{
+		name:  "ayatsuri-home",
+		usage: "Override AYATSURI_HOME for this command",
 	}
 
 	quietFlag = commandLineFlag{
@@ -55,7 +55,7 @@ var (
 	dagsFlag = commandLineFlag{
 		name:      "dags",
 		shorthand: "d",
-		usage:     "Directory containing DAG files (default: $HOME/.config/dagu/dags)",
+		usage:     "Directory containing DAG files (default: $HOME/.config/ayatsuri/dags)",
 		bindViper: true,
 	}
 
@@ -391,10 +391,10 @@ var (
 )
 
 // baseFlags are included in every command.
-var baseFlags = []commandLineFlag{configFlag, daguHomeFlag, quietFlag, cpuProfileFlag}
+var baseFlags = []commandLineFlag{configFlag, ayatsuriHomeFlag, quietFlag, cpuProfileFlag}
 
 // initFlags registers CLI flags on the provided Cobra command.
-// Base flags (config, dagu-home, quiet, cpu-profile) are always included.
+// Base flags (config, ayatsuri-home, quiet, cpu-profile) are always included.
 func initFlags(cmd *cobra.Command, additionalFlags ...commandLineFlag) {
 	allFlags := append(baseFlags, additionalFlags...)
 

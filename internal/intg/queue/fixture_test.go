@@ -12,16 +12,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmd"
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/core/spec"
-	"github.com/dagucloud/dagu/internal/persis/filewatermark"
-	"github.com/dagucloud/dagu/internal/runtime/transform"
-	"github.com/dagucloud/dagu/internal/service/scheduler"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmd"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filewatermark"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/transform"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/scheduler"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -207,7 +207,7 @@ func (f *fixture) StartScheduler(timeout time.Duration) *fixture {
 		th := f.th
 		th.Context = ctx
 		f.schedDone <- th.ExecuteCommand(cmd.Scheduler(), test.CmdTest{
-			Args:        []string{"scheduler", "--dagu-home", home},
+			Args:        []string{"scheduler", "--ayatsuri-home", home},
 			ExpectedOut: []string{"Scheduler started"},
 		})
 	}()

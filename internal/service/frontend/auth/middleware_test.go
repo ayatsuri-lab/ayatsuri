@@ -9,7 +9,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -74,7 +74,7 @@ func (h *testHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func TestMiddleware_APIKeyValidation(t *testing.T) {
 	apiKeyValidator := newMockAPIKeyValidator()
-	apiKeyValidator.AddKey("dagu_testkey123456789", &auth.APIKey{
+	apiKeyValidator.AddKey("ayatsuri_testkey123456789", &auth.APIKey{
 		ID:   "key-id-1",
 		Name: "test-key",
 		Role: auth.RoleManager,
@@ -92,7 +92,7 @@ func TestMiddleware_APIKeyValidation(t *testing.T) {
 	// Test with valid API key
 	req, err := http.NewRequest(http.MethodGet, server.URL+"/test", nil)
 	require.NoError(t, err)
-	req.Header.Set("Authorization", "Bearer dagu_testkey123456789")
+	req.Header.Set("Authorization", "Bearer ayatsuri_testkey123456789")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -123,7 +123,7 @@ func TestMiddleware_APIKeyValidation_InvalidKey(t *testing.T) {
 	// Test with invalid API key
 	req, err := http.NewRequest(http.MethodGet, server.URL+"/test", nil)
 	require.NoError(t, err)
-	req.Header.Set("Authorization", "Bearer dagu_invalidkey")
+	req.Header.Set("Authorization", "Bearer ayatsuri_invalidkey")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -135,7 +135,7 @@ func TestMiddleware_APIKeyValidation_InvalidKey(t *testing.T) {
 
 func TestMiddleware_APIKeyValidation_WrongPrefix(t *testing.T) {
 	apiKeyValidator := newMockAPIKeyValidator()
-	apiKeyValidator.AddKey("dagu_testkey123456789", &auth.APIKey{
+	apiKeyValidator.AddKey("ayatsuri_testkey123456789", &auth.APIKey{
 		ID:   "key-id-1",
 		Name: "test-key",
 		Role: auth.RoleViewer,
@@ -151,7 +151,7 @@ func TestMiddleware_APIKeyValidation_WrongPrefix(t *testing.T) {
 	server := httptest.NewServer(middleware(handler))
 	defer server.Close()
 
-	// Test with token that doesn't have dagu_ prefix (should not use API key validator)
+	// Test with token that doesn't have ayatsuri_ prefix (should not use API key validator)
 	req, err := http.NewRequest(http.MethodGet, server.URL+"/test", nil)
 	require.NoError(t, err)
 	req.Header.Set("Authorization", "Bearer some_other_token")
@@ -203,7 +203,7 @@ func TestMiddleware_APIKeyValidation_WithJWTFallback(t *testing.T) {
 
 func TestMiddleware_APIKeyValidation_BearerToken(t *testing.T) {
 	apiKeyValidator := newMockAPIKeyValidator()
-	apiKeyValidator.AddKey("dagu_testkey123456789", &auth.APIKey{
+	apiKeyValidator.AddKey("ayatsuri_testkey123456789", &auth.APIKey{
 		ID:   "key-id-1",
 		Name: "test-key",
 		Role: auth.RoleOperator,
@@ -220,7 +220,7 @@ func TestMiddleware_APIKeyValidation_BearerToken(t *testing.T) {
 
 	req, err := http.NewRequest(http.MethodGet, server.URL+"/test", nil)
 	require.NoError(t, err)
-	req.Header.Set("Authorization", "Bearer dagu_testkey123456789")
+	req.Header.Set("Authorization", "Bearer ayatsuri_testkey123456789")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -249,7 +249,7 @@ func TestMiddleware_APIKeyValidation_RolesPreserved(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			apiKeyValidator := newMockAPIKeyValidator()
-			apiKeyValidator.AddKey("dagu_testkey", &auth.APIKey{
+			apiKeyValidator.AddKey("ayatsuri_testkey", &auth.APIKey{
 				ID:   "key-id",
 				Name: "test-key",
 				Role: tt.role,
@@ -266,7 +266,7 @@ func TestMiddleware_APIKeyValidation_RolesPreserved(t *testing.T) {
 
 			req, err := http.NewRequest(http.MethodGet, server.URL+"/test", nil)
 			require.NoError(t, err)
-			req.Header.Set("Authorization", "Bearer dagu_testkey")
+			req.Header.Set("Authorization", "Bearer ayatsuri_testkey")
 
 			client := &http.Client{}
 			resp, err := client.Do(req)

@@ -160,15 +160,15 @@ func TestBuildMountedAPIPath(t *testing.T) {
 		},
 		{
 			name:        "nested base path",
-			basePath:    "/dagu",
+			basePath:    "/ayatsuri",
 			apiBasePath: "/api/v1",
-			want:        "/dagu/api/v1",
+			want:        "/ayatsuri/api/v1",
 		},
 		{
 			name:        "custom api path without leading slash",
-			basePath:    "/dagu",
+			basePath:    "/ayatsuri",
 			apiBasePath: "rest",
-			want:        "/dagu/rest",
+			want:        "/ayatsuri/rest",
 		},
 	}
 
@@ -197,10 +197,10 @@ func TestBuildMountedAPIEndpointPath(t *testing.T) {
 		},
 		{
 			name:        "nested base and custom api path",
-			basePath:    "/dagu",
+			basePath:    "/ayatsuri",
 			apiBasePath: "/rest",
 			suffix:      "/auth/login",
-			want:        "/dagu/rest/auth/login",
+			want:        "/ayatsuri/rest/auth/login",
 		},
 	}
 

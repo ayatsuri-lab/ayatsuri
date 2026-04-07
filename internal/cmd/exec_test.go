@@ -6,8 +6,8 @@ package cmd_test
 import (
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/cmd"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmd"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/stretchr/testify/require"
 )
 
@@ -43,7 +43,7 @@ func TestExecCommand(t *testing.T) {
 			name: "ExecWorkerLabelWithoutQueue",
 			args: []string{"exec", "--worker-label", "role=batch", "--", "sh", "-c", "echo hi"},
 			env: map[string]string{
-				"DAGU_QUEUE_ENABLED": "false",
+				"AYATSURI_QUEUE_ENABLED": "false",
 			},
 			expectErr: "worker selector requires queues",
 		},

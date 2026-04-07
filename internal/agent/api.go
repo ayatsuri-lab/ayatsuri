@@ -15,12 +15,12 @@ import (
 	"sync"
 	"time"
 
-	api "github.com/dagucloud/dagu/api/v1"
-	"github.com/dagucloud/dagu/internal/agentoauth"
-	"github.com/dagucloud/dagu/internal/auth"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/llm"
-	"github.com/dagucloud/dagu/internal/service/eventstore"
+	api "github.com/ayatsuri-lab/ayatsuri/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agentoauth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/llm"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/eventstore"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 )
@@ -46,7 +46,7 @@ const (
 	defaultBotContextWindow = 200_000
 	sessionCompactionRatio  = 0.80
 	sessionSummaryPrefix    = "Session handoff summary:\n"
-	compactionSummaryPrompt = "You are compressing a Dagu agent session into a continuation handoff. Write a concise markdown bullet summary for the next assistant turn. Include the user's goal, durable preferences or constraints, important DAG/file/runtime facts, recent decisions or outcomes, and unresolved next steps. Do not invent facts. Omit trivial chatter. Keep it under 12 bullets."
+	compactionSummaryPrompt = "You are compressing a Ayatsuri agent session into a continuation handoff. Write a concise markdown bullet summary for the next assistant turn. Include the user's goal, durable preferences or constraints, important DAG/file/runtime facts, recent decisions or outcomes, and unresolved next steps. Do not invent facts. Omit trivial chatter. Keep it under 12 bullets."
 )
 
 // getUserIDFromContext extracts the user ID from the request context.

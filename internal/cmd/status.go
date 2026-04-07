@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/output"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/output"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )
@@ -33,9 +33,9 @@ Flags:
                                  Use this to check the status of nested DAG executions.
 
 Example:
-  dagu status --run-id=abc123 my_dag
-  dagu status my_dag  # Shows status of the most recent DAG-run
-  dagu status --run-id=abc123 --sub-run-id=def456 my_dag  # Shows status of a sub DAG-run
+  ayatsuri status --run-id=abc123 my_dag
+  ayatsuri status my_dag  # Shows status of the most recent DAG-run
+  ayatsuri status --run-id=abc123 --sub-run-id=def456 my_dag  # Shows status of a sub DAG-run
 `,
 			Args: cobra.ExactArgs(1),
 		}, statusFlags, runStatus,

@@ -471,7 +471,7 @@ func sanitizeName(name string) string {
 	// Trim trailing hyphens
 	result = strings.TrimRight(result, "-")
 	if result == "" {
-		result = "dagu-k8s"
+		result = "ayatsuri-k8s"
 	}
 	// Kubernetes GenerateName adds a suffix, keep prefix short
 	const maxLen = 50

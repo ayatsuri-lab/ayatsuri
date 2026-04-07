@@ -1,6 +1,6 @@
-# NPM Packages for Dagu
+# NPM Packages for Ayatsuri
 
-This directory contains the npm package structure for distributing Dagu binaries via npm.
+This directory contains the npm package structure for distributing Ayatsuri binaries via npm.
 
 ## Important Note on Versions
 
@@ -17,11 +17,11 @@ These versions are automatically updated during the release process:
 
 ```
 npm/
-├── dagu/                # Main package (users install this)
-├── dagu-linux-x64/      # Platform-specific packages
-├── dagu-linux-arm64/    # (automatically installed as dependencies)
-├── dagu-darwin-x64/
-├── dagu-darwin-arm64/
+├── ayatsuri/                # Main package (users install this)
+├── ayatsuri-linux-x64/      # Platform-specific packages
+├── ayatsuri-linux-arm64/    # (automatically installed as dependencies)
+├── ayatsuri-darwin-x64/
+├── ayatsuri-darwin-arm64/
 └── ...
 ```
 

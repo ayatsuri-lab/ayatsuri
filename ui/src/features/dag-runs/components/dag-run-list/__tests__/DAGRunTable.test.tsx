@@ -19,7 +19,7 @@ vi.mock('../StepDetailsTooltip', () => ({
 const config = {
   apiURL: '',
   basePath: '',
-  title: 'Dagu',
+  title: 'Ayatsuri',
   navbarColor: '',
   tz: 'UTC',
   tzOffsetInSec: 0,

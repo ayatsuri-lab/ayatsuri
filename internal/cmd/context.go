@@ -18,46 +18,46 @@ import (
 
 	"golang.org/x/term"
 
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/agentoauth"
-	"github.com/dagucloud/dagu/internal/automata"
-	"github.com/dagucloud/dagu/internal/clicontext"
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/crypto"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/cmn/logger/tag"
-	"github.com/dagucloud/dagu/internal/cmn/logpath"
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
-	"github.com/dagucloud/dagu/internal/cmn/telemetry"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/license"
-	"github.com/dagucloud/dagu/internal/persis/fileagentconfig"
-	"github.com/dagucloud/dagu/internal/persis/fileagentmodel"
-	"github.com/dagucloud/dagu/internal/persis/fileagentoauth"
-	"github.com/dagucloud/dagu/internal/persis/fileagentskill"
-	"github.com/dagucloud/dagu/internal/persis/fileagentsoul"
-	"github.com/dagucloud/dagu/internal/persis/filebaseconfig"
-	"github.com/dagucloud/dagu/internal/persis/filedag"
-	"github.com/dagucloud/dagu/internal/persis/filedagrun"
-	"github.com/dagucloud/dagu/internal/persis/filedistributed"
-	"github.com/dagucloud/dagu/internal/persis/fileeventstore"
-	"github.com/dagucloud/dagu/internal/persis/filelicense"
-	"github.com/dagucloud/dagu/internal/persis/filememory"
-	"github.com/dagucloud/dagu/internal/persis/fileproc"
-	"github.com/dagucloud/dagu/internal/persis/filequeue"
-	"github.com/dagucloud/dagu/internal/persis/fileserviceregistry"
-	"github.com/dagucloud/dagu/internal/persis/filesession"
-	"github.com/dagucloud/dagu/internal/persis/filewatermark"
-	"github.com/dagucloud/dagu/internal/runtime"
-	"github.com/dagucloud/dagu/internal/runtime/transform"
-	"github.com/dagucloud/dagu/internal/service/coordinator"
-	"github.com/dagucloud/dagu/internal/service/eventstore"
-	"github.com/dagucloud/dagu/internal/service/frontend"
-	apiv1 "github.com/dagucloud/dagu/internal/service/frontend/api/v1"
-	"github.com/dagucloud/dagu/internal/service/resource"
-	"github.com/dagucloud/dagu/internal/service/scheduler"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agentoauth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/automata"
+	"github.com/ayatsuri-lab/ayatsuri/internal/clicontext"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/crypto"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logpath"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/telemetry"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/license"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileagentconfig"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileagentmodel"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileagentoauth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileagentskill"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileagentsoul"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filebaseconfig"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedagrun"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedistributed"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileeventstore"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filelicense"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filememory"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileproc"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filequeue"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileserviceregistry"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filesession"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filewatermark"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/transform"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/coordinator"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/eventstore"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/frontend"
+	apiv1 "github.com/ayatsuri-lab/ayatsuri/internal/service/frontend/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/resource"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/scheduler"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -171,14 +171,14 @@ func NewContext(cmd *cobra.Command, flags []commandLineFlag) (*Context, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to get quiet flag: %w", err)
 	}
-	daguHome, err := cmd.Flags().GetString("dagu-home")
+	ayatsuriHome, err := cmd.Flags().GetString("ayatsuri-home")
 	if err != nil {
-		return nil, fmt.Errorf("failed to get dagu-home flag: %w", err)
+		return nil, fmt.Errorf("failed to get ayatsuri-home flag: %w", err)
 	}
 
 	var configLoaderOpts []config.ConfigLoaderOption
-	if daguHome != "" {
-		if resolvedHome := fileutil.ResolvePathOrBlank(daguHome); resolvedHome != "" {
+	if ayatsuriHome != "" {
+		if resolvedHome := fileutil.ResolvePathOrBlank(ayatsuriHome); resolvedHome != "" {
 			configLoaderOpts = append(configLoaderOpts, config.WithAppHomeDir(resolvedHome))
 		}
 	}

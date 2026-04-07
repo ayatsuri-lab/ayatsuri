@@ -41,7 +41,7 @@ vi.mock('react-router-dom', () => ({
 const testConfig: Config = {
   apiURL: '/api/v1',
   basePath: '/',
-  title: 'Dagu',
+  title: 'Ayatsuri',
   navbarColor: '#000000',
   tz: 'UTC',
   tzOffsetInSec: 0,

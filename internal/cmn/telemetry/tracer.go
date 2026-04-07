@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dagucloud/dagu/internal/cmn/eval"
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/eval"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
@@ -27,7 +27,7 @@ import (
 
 const (
 	// TracerName is the name of the tracer
-	TracerName = "github.com/dagucloud/dagu"
+	TracerName = "github.com/ayatsuri-lab/ayatsuri"
 )
 
 // Tracer wraps OpenTelemetry tracer with DAG-specific configuration
@@ -139,7 +139,7 @@ func createGRPCExporter(ctx context.Context, config *core.OTelConfig) (sdktrace.
 // createResource creates the OpenTelemetry resource for the DAG
 func createResource(dag *core.DAG) (*resource.Resource, error) {
 	attrs := []attribute.KeyValue{
-		semconv.ServiceName("dagu"),
+		semconv.ServiceName("ayatsuri"),
 	}
 
 	// Add custom resource attributes from config

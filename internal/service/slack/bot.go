@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // Package slack provides a Slack bot service that bridges Slack
-// channels with the Dagu AI agent, allowing users to interact with the agent
+// channels with the Ayatsuri AI agent, allowing users to interact with the agent
 // via Slack messages using Socket Mode.
 package slack
 
@@ -14,10 +14,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/auth"
-	"github.com/dagucloud/dagu/internal/service/chatbridge"
-	"github.com/dagucloud/dagu/internal/service/eventstore"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/chatbridge"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/eventstore"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 	"github.com/slack-go/slack/socketmode"
@@ -65,7 +65,7 @@ type chatState struct {
 	thinkingMessage *messageRef // "Thinking..." message to delete on first response
 }
 
-// Bot is a Slack bot that forwards messages to the Dagu agent API.
+// Bot is a Slack bot that forwards messages to the Ayatsuri agent API.
 type Bot struct {
 	cfg                   Config
 	agentAPI              AgentService
@@ -83,13 +83,13 @@ type Bot struct {
 // New creates a new Slack bot instance.
 func New(cfg Config, agentAPI AgentService, logger *slog.Logger) (*Bot, error) {
 	if cfg.BotToken == "" {
-		return nil, fmt.Errorf("slack bot token is required (set DAGU_BOTS_SLACK_BOT_TOKEN)")
+		return nil, fmt.Errorf("slack bot token is required (set AYATSURI_BOTS_SLACK_BOT_TOKEN)")
 	}
 	if cfg.AppToken == "" {
-		return nil, fmt.Errorf("slack app-level token is required (set DAGU_BOTS_SLACK_APP_TOKEN)")
+		return nil, fmt.Errorf("slack app-level token is required (set AYATSURI_BOTS_SLACK_APP_TOKEN)")
 	}
 	if len(cfg.AllowedChannelIDs) == 0 {
-		return nil, fmt.Errorf("at least one allowed channel ID is required (set DAGU_BOTS_SLACK_ALLOWED_CHANNEL_IDS)")
+		return nil, fmt.Errorf("at least one allowed channel ID is required (set AYATSURI_BOTS_SLACK_ALLOWED_CHANNEL_IDS)")
 	}
 
 	slackClient := slack.New(
@@ -384,12 +384,12 @@ func (b *Bot) handleSlashCommand(ctx context.Context, cmd slack.SlashCommand) {
 	cs := b.getOrCreateChat(channelID, channelID, "")
 
 	switch cmd.Command {
-	case "/dagu-new":
+	case "/ayatsuri-new":
 		b.clearPendingMessages(cs)
 		b.resetChat(cs)
 		b.sendReply(cs, "Session cleared. Send a message to start a new conversation.")
 
-	case "/dagu-cancel":
+	case "/ayatsuri-cancel":
 		b.clearPendingMessages(cs)
 		b.clearPendingIndicators(cs)
 		sid, ownerUID := cs.ActiveSession()
@@ -406,7 +406,7 @@ func (b *Bot) handleSlashCommand(ctx context.Context, cmd slack.SlashCommand) {
 		b.sendReply(cs, "Session cancelled.")
 
 	default:
-		b.sendReply(cs, "Unknown command. Use /dagu-new, /dagu-cancel, or just send a message.")
+		b.sendReply(cs, "Unknown command. Use /ayatsuri-new, /ayatsuri-cancel, or just send a message.")
 	}
 }
 

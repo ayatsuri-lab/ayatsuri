@@ -12,17 +12,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/backoff"
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/stringutil"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/proto/convert"
-	"github.com/dagucloud/dagu/internal/runtime/remote"
-	"github.com/dagucloud/dagu/internal/runtime/transform"
-	"github.com/dagucloud/dagu/internal/service/coordinator"
-	"github.com/dagucloud/dagu/internal/test"
-	coordinatorv1 "github.com/dagucloud/dagu/proto/coordinator/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/backoff"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/proto/convert"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/remote"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/transform"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/coordinator"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
+	coordinatorv1 "github.com/ayatsuri-lab/ayatsuri/proto/coordinator/v1"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/metadata"
@@ -36,7 +36,7 @@ func TestSanitizeTaskLoadError(t *testing.T) {
 	t.Run("worker temp path is removed", func(t *testing.T) {
 		t.Parallel()
 
-		err := fmt.Errorf("failed to load DAG from /tmp/dagu-worker/task.yaml: parameter validation failed: region is required")
+		err := fmt.Errorf("failed to load DAG from /tmp/ayatsuri-worker/task.yaml: parameter validation failed: region is required")
 		assert.Equal(
 			t,
 			`failed to load DAG "child-dag": parameter validation failed: region is required`,
@@ -773,7 +773,7 @@ func TestCreateAgentEnv(t *testing.T) {
 		defer env.cleanup()
 
 		// Should contain the expected path structure
-		expectedPath := filepath.Join(os.TempDir(), "dagu", "worker-logs", "worker-nested", "run-nested")
+		expectedPath := filepath.Join(os.TempDir(), "ayatsuri", "worker-logs", "worker-nested", "run-nested")
 		assert.Equal(t, expectedPath, env.logDir)
 	})
 }

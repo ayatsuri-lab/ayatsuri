@@ -7,8 +7,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/dagucloud/dagu/api/v1"
-	"github.com/dagucloud/dagu/internal/service/audit"
+	"github.com/ayatsuri-lab/ayatsuri/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/audit"
 )
 
 // ListAuditLogs returns audit log entries matching the filter criteria.

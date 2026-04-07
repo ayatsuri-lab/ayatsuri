@@ -1,0 +1,24 @@
+{
+  "name": "@ayatsuri-lab/ayatsuri-darwin-arm64",
+  "version": "0.0.0-development",
+  "description": "Ayatsuri binary for macOS ARM64 (Apple Silicon)",
+  "keywords": ["ayatsuri", "workflow", "darwin", "macos", "arm64", "apple-silicon"],
+  "homepage": "https://github.com/ayatsuri-lab/ayatsuri",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayatsuri-lab/ayatsuri.git"
+  },
+  "license": "GPL-3.0",
+  "author": "Ayatsuri Contributors",
+  "os": ["darwin"],
+  "cpu": ["arm64"],
+  "bin": {
+    "ayatsuri": "./bin/ayatsuri"
+  },
+  "files": [
+    "bin/ayatsuri"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

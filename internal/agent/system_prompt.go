@@ -9,7 +9,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/dagucloud/dagu/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
 )
 
 //go:embed system_prompt.txt
@@ -127,5 +127,5 @@ func buildUserCapabilities(role auth.Role) *UserCapabilities {
 
 // fallbackPrompt returns a basic prompt when template execution fails.
 func fallbackPrompt(env EnvironmentInfo) string {
-	return "You are Dagu Assistant, an AI assistant for DAG workflows. DAGs Directory: " + env.DAGsDir
+	return "You are Ayatsuri Assistant, an AI assistant for DAG workflows. DAGs Directory: " + env.DAGsDir
 }

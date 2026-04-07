@@ -4,8 +4,8 @@
 package exec
 
 import (
-	"github.com/dagucloud/dagu/internal/cmn/collections"
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/collections"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 )
 
 // Node represents a DAG step with its execution state for persistence

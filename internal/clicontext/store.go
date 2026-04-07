@@ -15,8 +15,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/dagucloud/dagu/internal/cmn/crypto"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/crypto"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
 )
 
 const (
@@ -115,8 +115,8 @@ func (s *Store) ValidateContext(ctx *Context) error {
 	if strings.ContainsAny(name, `/\`) {
 		return errors.New("context name cannot contain path separators")
 	}
-	if !strings.HasPrefix(ctx.APIKey, "dagu_") {
-		return errors.New("api key must use the dagu_ prefix")
+	if !strings.HasPrefix(ctx.APIKey, "ayatsuri_") {
+		return errors.New("api key must use the ayatsuri_ prefix")
 	}
 	u, err := url.Parse(ctx.ServerURL)
 	if err != nil {

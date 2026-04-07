@@ -6,7 +6,7 @@ package cmd
 import (
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/clicontext"
+	"github.com/ayatsuri-lab/ayatsuri/internal/clicontext"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -57,7 +57,7 @@ func TestContextUpdate_CanClearDescriptionWithoutOverwritingOtherFields(t *testi
 	require.NoError(t, store.Create(t.Context(), &clicontext.Context{
 		Name:           "prod",
 		ServerURL:      "https://example.com",
-		APIKey:         "dagu_test_123",
+		APIKey:         "ayatsuri_test_123",
 		Description:    "original",
 		TimeoutSeconds: 30,
 	}))

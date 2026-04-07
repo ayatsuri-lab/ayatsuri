@@ -105,7 +105,7 @@ func New(directory string, opts *LockOptions) DirLock {
 
 	return &dirLock{
 		targetDir: directory,
-		lockPath:  filepath.Join(directory, ".dagu_lock"),
+		lockPath:  filepath.Join(directory, ".ayatsuri_lock"),
 		opts:      opts,
 	}
 }
@@ -310,13 +310,13 @@ func (l *dirLock) Info() (*LockInfo, error) {
 
 	return &LockInfo{
 		AcquiredAt:  info.ModTime(),
-		LockDirName: ".dagu_lock",
+		LockDirName: ".ayatsuri_lock",
 	}, nil
 }
 
 // ForceUnlock forcibly removes a lock (administrative operation)
 func ForceUnlock(directory string) error {
-	lockPath := filepath.Join(directory, ".dagu_lock")
+	lockPath := filepath.Join(directory, ".ayatsuri_lock")
 	if err := os.RemoveAll(lockPath); err != nil && !os.IsNotExist(err) {
 		return fmt.Errorf("failed to force unlock: %w", err)
 	}

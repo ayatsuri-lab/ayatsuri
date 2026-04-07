@@ -3,7 +3,7 @@
 
 package exec
 
-import "github.com/dagucloud/dagu/internal/core"
+import "github.com/ayatsuri-lab/ayatsuri/internal/core"
 
 // LLM message role constants - aliases for core package constants.
 const (

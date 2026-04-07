@@ -17,7 +17,7 @@ interface TabContextType {
   getActiveFileName: () => string | null;
 }
 
-const STORAGE_KEY = 'dagu_dag_tabs';
+const STORAGE_KEY = 'ayatsuri_dag_tabs';
 
 const TabContext = createContext<TabContextType | null>(null);
 

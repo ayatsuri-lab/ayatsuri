@@ -6,7 +6,7 @@ package intg_test
 import (
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 )
 
 // TestWebhookPayloadEnv tests that WEBHOOK_PAYLOAD environment variable
@@ -52,7 +52,7 @@ steps:
 name: webhook-json-test
 
 params:
-  - WEBHOOK_PAYLOAD: '{"event":"push","repository":"dagu"}'
+  - WEBHOOK_PAYLOAD: '{"event":"push","repository":"ayatsuri"}'
 
 steps:
   - name: check-payload-contains-event

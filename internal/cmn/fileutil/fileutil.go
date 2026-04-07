@@ -197,12 +197,12 @@ func ResolvePathOrBlank(path string) string {
 }
 
 // CreateTempDAGFile creates a temporary file with DAG YAML content.
-// The file is created in {os.TempDir()}/dagu/{subDir}/ with pattern {dagName}-*.yaml.
+// The file is created in {os.TempDir()}/ayatsuri/{subDir}/ with pattern {dagName}-*.yaml.
 // Additional YAML documents can be appended by providing extraDocs.
 // Returns the path to the created file or an error.
 func CreateTempDAGFile(subDir, dagName string, yamlData []byte, extraDocs ...[]byte) (string, error) {
 	// Create a temporary directory if it doesn't exist
-	tempDir := filepath.Join(os.TempDir(), "dagu", subDir)
+	tempDir := filepath.Join(os.TempDir(), "ayatsuri", subDir)
 	if err := os.MkdirAll(tempDir, 0750); err != nil {
 		return "", fmt.Errorf("failed to create temp directory: %w", err)
 	}

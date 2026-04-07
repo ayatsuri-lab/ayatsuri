@@ -153,9 +153,9 @@ func TestManager_Start_CommunityMode(t *testing.T) {
 	// Not parallel at the top level because subtests use t.Setenv.
 
 	t.Run("no env vars no config key no store data yields community mode", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		pub, _ := testKeyPair(t)
 		m := NewManager(ManagerConfig{LicenseDir: t.TempDir()}, pub, nil, slog.Default())
@@ -170,7 +170,7 @@ func TestManager_Start_CommunityMode(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// Start — inline JWT via DAGU_LICENSE env
+// Start — inline JWT via AYATSURI_LICENSE env
 // ---------------------------------------------------------------------------
 
 func TestManager_Start_EnvInlineJWT(t *testing.T) {
@@ -181,9 +181,9 @@ func TestManager_Start_EnvInlineJWT(t *testing.T) {
 		claims := validClaims()
 		token := signToken(t, priv, claims)
 
-		t.Setenv("DAGU_LICENSE", token)
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", token)
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{LicenseDir: t.TempDir()}, pub, nil, slog.Default())
 
@@ -201,9 +201,9 @@ func TestManager_Start_EnvInlineJWT(t *testing.T) {
 	t.Run("garbage token gracefully degrades to community mode", func(t *testing.T) {
 		pub, _ := testKeyPair(t)
 
-		t.Setenv("DAGU_LICENSE", "this.is.not.a.valid.jwt")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "this.is.not.a.valid.jwt")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{LicenseDir: t.TempDir()}, pub, nil, slog.Default())
 
@@ -218,9 +218,9 @@ func TestManager_Start_EnvInlineJWT(t *testing.T) {
 		claims := expiredInGraceClaims()
 		token := signToken(t, priv, claims)
 
-		t.Setenv("DAGU_LICENSE", token)
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", token)
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{LicenseDir: t.TempDir()}, pub, nil, slog.Default())
 
@@ -235,7 +235,7 @@ func TestManager_Start_EnvInlineJWT(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// Start — license key via DAGU_LICENSE_KEY env
+// Start — license key via AYATSURI_LICENSE_KEY env
 // ---------------------------------------------------------------------------
 
 func TestManager_Start_EnvLicenseKey(t *testing.T) {
@@ -250,9 +250,9 @@ func TestManager_Start_EnvLicenseKey(t *testing.T) {
 			activateHandler: activateHandlerFn(token, "hb-secret"),
 		})
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "test-license-key-123")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "test-license-key-123")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{
 			LicenseDir: t.TempDir(),
@@ -277,9 +277,9 @@ func TestManager_Start_EnvLicenseKey(t *testing.T) {
 			activateHandler: errorHandlerFn(http.StatusInternalServerError, "server error"),
 		})
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "bad-license-key")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "bad-license-key")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{
 			LicenseDir: t.TempDir(),
@@ -316,9 +316,9 @@ func TestManager_Start_OfflineFallback(t *testing.T) {
 			ServerID:        "server-001",
 		}}
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "my-license-key")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "my-license-key")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{
 			LicenseDir: t.TempDir(),
@@ -344,9 +344,9 @@ func TestManager_Start_OfflineFallback(t *testing.T) {
 
 		store := &mockActivationStore{data: nil}
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "my-license-key")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "my-license-key")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{
 			LicenseDir: t.TempDir(),
@@ -374,9 +374,9 @@ func TestManager_Start_OfflineFallback(t *testing.T) {
 			ServerID:        "server-001",
 		}}
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "my-license-key")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "my-license-key")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{
 			LicenseDir: t.TempDir(),
@@ -398,9 +398,9 @@ func TestManager_Start_OfflineFallback(t *testing.T) {
 
 		store := &mockActivationStore{loadErr: errors.New("disk read failure")}
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "my-license-key")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "my-license-key")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{
 			LicenseDir: t.TempDir(),
@@ -434,9 +434,9 @@ func TestManager_Start_ActivationFile(t *testing.T) {
 		}
 		store := &mockActivationStore{data: ad}
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		// Cloud URL is unreachable; the immediate heartbeat fails gracefully and state stays cached.
 		m := NewManager(ManagerConfig{
@@ -472,9 +472,9 @@ func TestManager_Start_FileJWT(t *testing.T) {
 		jwtPath := filepath.Join(dir, "license.jwt")
 		require.NoError(t, os.WriteFile(jwtPath, []byte(token), 0600))
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{LicenseDir: dir}, pub, nil, slog.Default())
 
@@ -500,9 +500,9 @@ func TestManager_Start_DiscoveryError(t *testing.T) {
 	t.Run("store load error gracefully degrades to community mode", func(t *testing.T) {
 		pub, _ := testKeyPair(t)
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		store := &mockActivationStore{loadErr: errors.New("disk read failure")}
 		m := NewManager(ManagerConfig{LicenseDir: t.TempDir()}, pub, store, slog.Default())
@@ -520,9 +520,9 @@ func TestManager_Start_DiscoveryError(t *testing.T) {
 
 func TestManager_Stop(t *testing.T) {
 	t.Run("Stop without heartbeat does not hang", func(t *testing.T) {
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		pub, _ := testKeyPair(t)
 		m := NewManager(ManagerConfig{LicenseDir: t.TempDir()}, pub, nil, slog.Default())
@@ -539,9 +539,9 @@ func TestManager_Stop(t *testing.T) {
 			activateHandler: activateHandlerFn(token, "hb-secret"),
 		})
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "lic-key-for-stop-test")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "lic-key-for-stop-test")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{
 			LicenseDir: t.TempDir(),
@@ -1011,13 +1011,13 @@ func TestManager_activate_StoreEdgeCases(t *testing.T) {
 // ---------------------------------------------------------------------------
 
 func TestManager_Source(t *testing.T) {
-	t.Run("returns SourceEnvInline after Start with DAGU_LICENSE", func(t *testing.T) {
+	t.Run("returns SourceEnvInline after Start with AYATSURI_LICENSE", func(t *testing.T) {
 		pub, priv := testKeyPair(t)
 		token := signToken(t, priv, validClaims())
 
-		t.Setenv("DAGU_LICENSE", token)
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", token)
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{LicenseDir: t.TempDir()}, pub, nil, slog.Default())
 		require.NoError(t, m.Start(context.Background()))
@@ -1036,9 +1036,9 @@ func TestManager_Source(t *testing.T) {
 			ServerID:        "srv",
 		}}
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{
 			LicenseDir: t.TempDir(),
@@ -1054,9 +1054,9 @@ func TestManager_Source(t *testing.T) {
 	t.Run("returns SourceNone when no license configured", func(t *testing.T) {
 		pub, _ := testKeyPair(t)
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{LicenseDir: t.TempDir()}, pub, nil, slog.Default())
 		require.NoError(t, m.Start(context.Background()))
@@ -1102,9 +1102,9 @@ func TestManager_Deactivate(t *testing.T) {
 			ServerID:        "srv",
 		}}
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{
 			LicenseDir: t.TempDir(),
@@ -1126,9 +1126,9 @@ func TestManager_Deactivate(t *testing.T) {
 		pub, priv := testKeyPair(t)
 		token := signToken(t, priv, validClaims())
 
-		t.Setenv("DAGU_LICENSE", token)
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", token)
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{LicenseDir: t.TempDir()}, pub, nil, slog.Default())
 		require.NoError(t, m.Start(context.Background()))
@@ -1144,9 +1144,9 @@ func TestManager_Deactivate(t *testing.T) {
 	t.Run("error when no active license", func(t *testing.T) {
 		pub, _ := testKeyPair(t)
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{LicenseDir: t.TempDir()}, pub, nil, slog.Default())
 		require.NoError(t, m.Start(context.Background()))
@@ -1167,9 +1167,9 @@ func TestManager_Deactivate(t *testing.T) {
 			ServerID:        "srv",
 		}}
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		m := NewManager(ManagerConfig{
 			LicenseDir: t.TempDir(),
@@ -1190,9 +1190,9 @@ func TestManager_Deactivate(t *testing.T) {
 		pub, priv := testKeyPair(t)
 		token := signToken(t, priv, validClaims())
 
-		t.Setenv("DAGU_LICENSE", "")
-		t.Setenv("DAGU_LICENSE_KEY", "")
-		t.Setenv("DAGU_LICENSE_FILE", "")
+		t.Setenv("AYATSURI_LICENSE", "")
+		t.Setenv("AYATSURI_LICENSE_KEY", "")
+		t.Setenv("AYATSURI_LICENSE_FILE", "")
 
 		dir := t.TempDir()
 		jwtPath := filepath.Join(dir, "license.jwt")

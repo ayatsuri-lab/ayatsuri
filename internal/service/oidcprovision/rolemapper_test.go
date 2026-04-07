@@ -6,7 +6,7 @@ package oidcprovision
 import (
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -111,13 +111,13 @@ func TestRoleMapper_GroupMappings(t *testing.T) {
 			config: RoleMapperConfig{
 				GroupsClaim: "realm_access.roles",
 				GroupMappings: map[string]string{
-					"dagu_admin": "admin",
+					"ayatsuri_admin": "admin",
 				},
 				DefaultRole: auth.RoleViewer,
 			},
 			claims: map[string]any{
 				"realm_access": map[string]any{
-					"roles": []any{"dagu_admin", "other_role"},
+					"roles": []any{"ayatsuri_admin", "other_role"},
 				},
 			},
 			expectedRole: auth.RoleAdmin,
@@ -226,7 +226,7 @@ func TestRoleMapper_JqExpression(t *testing.T) {
 		{
 			name: "jq_returns_invalid_role_fallback",
 			config: RoleMapperConfig{
-				RoleAttributePath: `"superuser"`, // not a valid Dagu role
+				RoleAttributePath: `"superuser"`, // not a valid Ayatsuri role
 				DefaultRole:       auth.RoleViewer,
 			},
 			claims:       map[string]any{},

@@ -40,7 +40,7 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
   return {
     apiURL: '/api/v1',
     basePath: '/',
-    title: 'Dagu',
+    title: 'Ayatsuri',
     navbarColor: '',
     tz: 'UTC',
     tzOffsetInSec: 0,
@@ -257,7 +257,7 @@ describe('EventLogsPage', () => {
 
   it('sanitizes incompatible persisted search-state filters', async () => {
     sessionStorage.setItem(
-      'dagu.searchState',
+      'ayatsuri.searchState',
       JSON.stringify({
         'eventLogs:remote-a': {
           kind: 'automata',

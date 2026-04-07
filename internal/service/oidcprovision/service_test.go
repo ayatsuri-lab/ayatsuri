@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/auth"
-	authservice "github.com/dagucloud/dagu/internal/service/auth"
+	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
+	authservice "github.com/ayatsuri-lab/ayatsuri/internal/service/auth"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

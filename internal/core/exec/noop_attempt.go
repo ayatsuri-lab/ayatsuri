@@ -7,7 +7,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 )
 
 // ErrNoopAttemptNotSupported is returned when an operation is not supported in shared-nothing mode.

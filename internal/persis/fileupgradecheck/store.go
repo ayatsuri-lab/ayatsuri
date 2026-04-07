@@ -11,8 +11,8 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/upgrade"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/upgrade"
 )
 
 const (
@@ -33,7 +33,7 @@ type store struct {
 }
 
 // New creates a new file-based upgrade check store.
-// The dataDir is the base data directory (e.g., DAGU_HOME/data).
+// The dataDir is the base data directory (e.g., AYATSURI_HOME/data).
 // The cache will be stored at {dataDir}/upgrade/upgrade-check.json.
 func New(dataDir string) (upgrade.CacheStore, error) {
 	if dataDir == "" {

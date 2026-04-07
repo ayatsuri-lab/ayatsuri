@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -131,7 +131,7 @@ func TestNewTracer(t *testing.T) {
 				Enabled:  true,
 				Endpoint: "localhost:4317",
 				Resource: map[string]any{
-					"service.name":           "dagu-test",
+					"service.name":           "ayatsuri-test",
 					"service.version":        "1.0.0",
 					"deployment.environment": "test",
 					"custom.int":             42,

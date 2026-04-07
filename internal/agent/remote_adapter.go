@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/clicontext"
+	"github.com/ayatsuri-lab/ayatsuri/internal/clicontext"
 )
 
 // RemoteContextResolverAdapter adapts the CLI context store to RemoteContextResolver.

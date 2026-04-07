@@ -11,7 +11,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -180,7 +180,7 @@ func TestHTTPExecutor_CrossPlatform(t *testing.T) {
 				method: "GET",
 				config: map[string]any{
 					"headers": map[string]string{
-						"User-Agent":    "Dagu-Test/1.0",
+						"User-Agent":    "Ayatsuri-Test/1.0",
 						"Accept":        "application/json",
 						"Custom-Header": "cross-platform-test",
 					},

@@ -1,22 +1,22 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: dagu-config
-  namespace: dagu-dev
+  name: ayatsuri-config
+  namespace: ayatsuri-dev
 data:
   # Coordinator gRPC port (host configured per-deployment)
-  DAGU_COORDINATOR_PORT: "50055"
+  AYATSURI_COORDINATOR_PORT: "50055"
 
   # Server configuration
-  DAGU_HOST: "0.0.0.0"
-  DAGU_PORT: "8080"
+  AYATSURI_HOST: "0.0.0.0"
+  AYATSURI_PORT: "8080"
 
   # Data directories
-  DAGU_DAGS_DIR: "/var/lib/dagu/dags"
-  DAGU_HOME: "/var/lib/dagu"
+  AYATSURI_DAGS_DIR: "/var/lib/ayatsuri/dags"
+  AYATSURI_HOME: "/var/lib/ayatsuri"
 
   # Peer configuration (insecure for local testing)
-  DAGU_PEER_INSECURE: "true"
+  AYATSURI_PEER_INSECURE: "true"
 
   # Optional: Timezone
-  DAGU_TZ: "UTC"
+  AYATSURI_TZ: "UTC"

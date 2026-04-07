@@ -131,8 +131,8 @@ func TestResolvePath(t *testing.T) {
 		},
 		{
 			name:        "RelativePath",
-			path:        "projects/dagu",
-			expected:    filepath.Join(cwd, "projects/dagu"),
+			path:        "projects/ayatsuri",
+			expected:    filepath.Join(cwd, "projects/ayatsuri"),
 			expectError: false,
 		},
 	}
@@ -256,7 +256,7 @@ func TestCreateTempDAGFile(t *testing.T) {
 		// Verify path contains expected components
 		assert.Contains(t, path, "test-dag")
 		assert.Contains(t, path, ".yaml")
-		assert.Contains(t, path, filepath.Join("dagu", "test-subdir"))
+		assert.Contains(t, path, filepath.Join("ayatsuri", "test-subdir"))
 	})
 
 	t.Run("WithExtraDocs", func(t *testing.T) {

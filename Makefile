@@ -13,7 +13,7 @@ TEST_TARGET?=./...
 SCRIPT_DIR=$(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 # Remote repository for the project
-REMOTE_REPO_URL=https://github.com/dagucloud/dagu
+REMOTE_REPO_URL=https://github.com/ayatsuri-lab/ayatsuri
 
 # Directories for miscellaneous files for the local environment
 LOCAL_DIR=$(SCRIPT_DIR)/.local
@@ -28,7 +28,7 @@ BUILD_VERSION=$(shell git describe --tags)
 LDFLAGS=-X 'main.version=$(BUILD_VERSION)'
 
 # Application name
-APP_NAME=dagu
+APP_NAME=ayatsuri
 
 # Docker image build configuration
 DOCKER_CMD := docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8 --builder container --build-arg LDFLAGS="$(LDFLAGS)" --push --no-cache
@@ -73,7 +73,7 @@ PKG_protoc_gen_go_grpc=google.golang.org/grpc/cmd/protoc-gen-go-grpc
 
 CERTS_DIR=${LOCAL_DIR}/certs
 
-DEV_CERT_SUBJ_CA="/C=TR/ST=ASIA/L=TOKYO/O=DEV/OU=DAGU/CN=*.dagu.dev/emailAddress=ca@dev.com"
+DEV_CERT_SUBJ_CA="/C=TR/ST=ASIA/L=TOKYO/O=DEV/OU=AYATSURI/CN=*.ayatsuri.dev/emailAddress=ca@dev.com"
 DEV_CERT_SUBJ_SERVER="/C=TR/ST=ASIA/L=TOKYO/O=DEV/OU=SERVER/CN=*.server.dev/emailAddress=server@dev.com"
 DEV_CERT_SUBJ_CLIENT="/C=TR/ST=ASIA/L=TOKYO/O=DEV/OU=CLIENT/CN=*.client.dev/emailAddress=client@dev.com"
 DEV_CERT_SUBJ_ALT="subjectAltName=DNS:localhost"
@@ -119,7 +119,7 @@ PB_RELEASE_NAME=protoc-${PB_VERSION}-${OS}-${ARCH}
 .PHONY: run
 run: ${FE_BUNDLE_JS}
 	@printf '%b\n' "${COLOR_GREEN}Starting the frontend server and the scheduler...${COLOR_RESET}"
-	@DAGU_DEBUG=1 go run ./cmd start-all
+	@AYATSURI_DEBUG=1 go run ./cmd start-all
 
 # server build the binary and start the server.
 .PHONY: run-server
@@ -142,9 +142,9 @@ ${FE_BUNDLE_JS}:
 .PHONY: run-server-https
 run-server-https: ${SERVER_CERT_FILE} ${SERVER_KEY_FILE}
 	@printf '%b\n' "${COLOR_GREEN}Starting the server with HTTPS...${COLOR_RESET}"
-	@DAGU_DEBUG=1 \
-		DAGU_CERT_FILE=${SERVER_CERT_FILE} \
-		DAGU_KEY_FILE=${SERVER_KEY_FILE} \
+	@AYATSURI_DEBUG=1 \
+		AYATSURI_CERT_FILE=${SERVER_CERT_FILE} \
+		AYATSURI_KEY_FILE=${SERVER_KEY_FILE} \
 		go run ./cmd start-all
 
 # test runs all tests.
@@ -241,14 +241,14 @@ build-image-version:
 		exit 1; \
 	fi
 	@printf '%b\n' "${COLOR_GREEN}Building the docker image with the version $(VERSION)...${COLOR_RESET}"
-	@$(DOCKER_CMD) -t ghcr.io/dagucloud/${APP_NAME}:$(VERSION) .
+	@$(DOCKER_CMD) -t ghcr.io/ayatsuricloud/${APP_NAME}:$(VERSION) .
 
 # build-image-latest build the docker image with the latest tag and push to 
 # the registry.
 .PHONY: build-image-latest
 build-image-latest:
 	@printf '%b\n' "${COLOR_GREEN}Building the docker image...${COLOR_RESET}"
-	@$(DOCKER_CMD) -t ghcr.io/dagucloud/${APP_NAME}:latest .
+	@$(DOCKER_CMD) -t ghcr.io/ayatsuricloud/${APP_NAME}:latest .
 
 ${LOCAL_DIR}/merged:
 	@mkdir -p ${LOCAL_DIR}/merged

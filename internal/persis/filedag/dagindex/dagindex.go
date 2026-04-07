@@ -13,10 +13,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/core"
-	"github.com/dagucloud/dagu/internal/core/spec"
-	indexv1 "github.com/dagucloud/dagu/proto/index/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec"
+	indexv1 "github.com/ayatsuri-lab/ayatsuri/proto/index/v1"
 	"google.golang.org/protobuf/proto"
 )
 

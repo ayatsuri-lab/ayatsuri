@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	openapi "github.com/dagucloud/dagu/api/v1"
-	localapi "github.com/dagucloud/dagu/internal/service/frontend/api/v1"
-	"github.com/dagucloud/dagu/internal/service/scheduler"
-	"github.com/dagucloud/dagu/internal/test"
+	openapi "github.com/ayatsuri-lab/ayatsuri/api/v1"
+	localapi "github.com/ayatsuri-lab/ayatsuri/internal/service/frontend/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/scheduler"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/stretchr/testify/require"
 )
 

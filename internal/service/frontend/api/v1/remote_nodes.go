@@ -12,9 +12,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dagucloud/dagu/api/v1"
-	"github.com/dagucloud/dagu/internal/remotenode"
-	"github.com/dagucloud/dagu/internal/service/audit"
+	"github.com/ayatsuri-lab/ayatsuri/api/v1"
+	"github.com/ayatsuri-lab/ayatsuri/internal/remotenode"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/audit"
 )
 
 // ListRemoteNodes returns all remote nodes from both config and store sources.

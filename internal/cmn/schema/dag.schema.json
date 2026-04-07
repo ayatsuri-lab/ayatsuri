@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "description": "Schema for Dagu DAG YAML format. Dagu uses YAML files to define Directed Acyclic Graphs (DAGs) for workflow orchestration.",
+  "description": "Schema for Ayatsuri DAG YAML format. Ayatsuri uses YAML files to define Directed Acyclic Graphs (DAGs) for workflow orchestration.",
   "additionalProperties": false,
   "properties": {
     "name": {
@@ -273,7 +273,7 @@
     },
     "skip_if_successful": {
       "type": "boolean",
-      "description": "When true, Dagu checks if this DAG has already succeeded since the last scheduled time. If it has, Dagu will skip the current scheduled run. This is useful for resource-intensive tasks or data processing jobs that shouldn't run twice. Note: Manual triggers always run regardless of this setting."
+      "description": "When true, Ayatsuri checks if this DAG has already succeeded since the last scheduled time. If it has, Ayatsuri will skip the current scheduled run. This is useful for resource-intensive tasks or data processing jobs that shouldn't run twice. Note: Manual triggers always run regardless of this setting."
     },
     "catchup_window": {
       "type": "string",
@@ -1093,7 +1093,7 @@
           "description": "Provider-specific configuration options. Values must be strings to support serialization."
         }
       },
-      "description": "Reference to an external secret that Dagu resolves at runtime. The resolved value is injected as an environment variable and masked in logs/output."
+      "description": "Reference to an external secret that Ayatsuri resolves at runtime. The resolved value is injected as an environment variable and masked in logs/output."
     },
     "stepItem": {
       "oneOf": [
@@ -1127,7 +1127,7 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "Unique identifier for the step within this DAG. If omitted, Dagu will automatically generate a name."
+          "description": "Unique identifier for the step within this DAG. If omitted, Ayatsuri will automatically generate a name."
         },
         "id": {
           "type": "string",
@@ -1826,7 +1826,7 @@
           "properties": {
             "service.name": {
               "type": "string",
-              "description": "Service name for the traces. Defaults to 'dagu' if not specified. Can use variables like ${DAG_NAME}."
+              "description": "Service name for the traces. Defaults to 'ayatsuri' if not specified. Can use variables like ${DAG_NAME}."
             },
             "service.version": {
               "type": "string",
@@ -1846,7 +1846,7 @@
       "oneOf": [
         {
           "type": "string",
-          "description": "Name of an existing running container to exec into. Dagu waits up to 120 seconds for the container to be in running state; fails if not running within timeout."
+          "description": "Name of an existing running container to exec into. Ayatsuri waits up to 120 seconds for the container to be in running state; fails if not running within timeout."
         },
         {
           "$ref": "#/definitions/containerConfig"
@@ -1884,7 +1884,7 @@
       "properties": {
         "exec": {
           "type": "string",
-          "description": "Name of an existing running container to exec into. Dagu waits up to 120 seconds for the container to be running; fails if not running within timeout. Mutually exclusive with 'image'. When used, only 'user', 'working_dir', and 'env' are applicable."
+          "description": "Name of an existing running container to exec into. Ayatsuri waits up to 120 seconds for the container to be running; fails if not running within timeout. Mutually exclusive with 'image'. When used, only 'user', 'working_dir', and 'env' are applicable."
         },
         "name": {
           "type": "string",

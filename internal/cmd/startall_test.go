@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dagucloud/dagu/internal/cmd"
-	"github.com/dagucloud/dagu/internal/test"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmd"
+	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 )
 
 func TestStartAllCommand(t *testing.T) {
@@ -42,7 +42,7 @@ func TestStartAllCommand(t *testing.T) {
 				"--config", test.TestdataPath(t, "cli/config_startall.yaml"),
 				fmt.Sprintf("--coordinator.port=%s", findPort(t)),
 			},
-			ExpectedOut: []string{"54322", "dagu_test", "Coordinator initialization"},
+			ExpectedOut: []string{"54322", "ayatsuri_test", "Coordinator initialization"},
 		})
 	})
 }

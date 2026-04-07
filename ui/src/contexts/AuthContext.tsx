@@ -29,7 +29,7 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export const TOKEN_KEY = 'dagu_auth_token';
+export const TOKEN_KEY = 'ayatsuri_auth_token';
 
 const ROLE_HIERARCHY: Record<UserRole, number> = {
   admin: 5,

@@ -15,9 +15,9 @@ import (
 const devFallbackPubKeyB64 = "yILP+havpFnWixwOYuXODueHTQ5CDD7DfRxVhc/A9/Q="
 
 // PublicKey returns the Ed25519 public key for license verification.
-// In dev builds, it reads DAGU_LICENSE_PUBKEY_B64 env var with fallback to the production key.
+// In dev builds, it reads AYATSURI_LICENSE_PUBKEY_B64 env var with fallback to the production key.
 func PublicKey() (ed25519.PublicKey, error) {
-	keyB64 := os.Getenv("DAGU_LICENSE_PUBKEY_B64")
+	keyB64 := os.Getenv("AYATSURI_LICENSE_PUBKEY_B64")
 	if keyB64 == "" {
 		keyB64 = devFallbackPubKeyB64
 	}

@@ -121,7 +121,7 @@ container:
 steps:
   # write data to a file
   - |
-    python -c "with open('/data/output.txt', 'w') as f: f.write('Hello from Dagu!')"
+    python -c "with open('/data/output.txt', 'w') as f: f.write('Hello from Ayatsuri!')"
 
   # read data from the file
   - |

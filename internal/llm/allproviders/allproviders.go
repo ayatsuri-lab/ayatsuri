@@ -4,15 +4,15 @@
 // Package allproviders imports all LLM providers to register them.
 // Import this package if you want all providers to be available:
 //
-//	import _ "github.com/dagucloud/dagu/internal/llm/allproviders"
+//	import _ "github.com/ayatsuri-lab/ayatsuri/internal/llm/allproviders"
 package allproviders
 
 import (
-	_ "github.com/dagucloud/dagu/internal/llm/providers/anthropic"
-	_ "github.com/dagucloud/dagu/internal/llm/providers/gemini"
-	_ "github.com/dagucloud/dagu/internal/llm/providers/local"
-	_ "github.com/dagucloud/dagu/internal/llm/providers/openai"
-	_ "github.com/dagucloud/dagu/internal/llm/providers/openaicodex"
-	_ "github.com/dagucloud/dagu/internal/llm/providers/openrouter"
-	_ "github.com/dagucloud/dagu/internal/llm/providers/zai"
+	_ "github.com/ayatsuri-lab/ayatsuri/internal/llm/providers/anthropic"
+	_ "github.com/ayatsuri-lab/ayatsuri/internal/llm/providers/gemini"
+	_ "github.com/ayatsuri-lab/ayatsuri/internal/llm/providers/local"
+	_ "github.com/ayatsuri-lab/ayatsuri/internal/llm/providers/openai"
+	_ "github.com/ayatsuri-lab/ayatsuri/internal/llm/providers/openaicodex"
+	_ "github.com/ayatsuri-lab/ayatsuri/internal/llm/providers/openrouter"
+	_ "github.com/ayatsuri-lab/ayatsuri/internal/llm/providers/zai"
 )

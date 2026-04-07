@@ -89,9 +89,9 @@ A new built-in executor `type: template` that renders `script:` as a Go template
 ## Design principles
 
 1. **The content IS the step.** The template reads like the final output, not like code that produces output.
-2. **No log scraping.** Data comes in via `config.data`, fully resolved by Dagu before the executor runs. The executor never reads log files or step stdout paths directly.
+2. **No log scraping.** Data comes in via `config.data`, fully resolved by Ayatsuri before the executor runs. The executor never reads log files or step stdout paths directly.
 3. **Fits existing patterns.** Just another executor like `jq`, `http`, or `mail`. Uses `script:` for inline content (same as `jq`). No new top-level YAML fields.
-4. **Go templates.** Already in stdlib, zero new dependencies, Dagu authors already know Go.
+4. **Go templates.** Already in stdlib, zero new dependencies, Ayatsuri authors already know Go.
 
 ## Behavior
 
@@ -180,7 +180,7 @@ The `template` executor renders text. It does not:
 - Query APIs or databases
 - Access step stdout/stderr file paths
 
-All data enters through `config.data`, fully resolved by Dagu's variable system before the executor is invoked. This preserves the existing separation between captured output (`output:`) and log files (`stdout:`/`stderr:`).
+All data enters through `config.data`, fully resolved by Ayatsuri's variable system before the executor is invoked. This preserves the existing separation between captured output (`output:`) and log files (`stdout:`/`stderr:`).
 
 ## Implementation notes
 

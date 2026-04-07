@@ -13,8 +13,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/dagucloud/dagu/internal/agent"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
 )
 
 // Verify Store implements agent.ConfigStore at compile time.
@@ -29,7 +29,7 @@ const (
 
 // Environment variable names for agent configuration overrides.
 const (
-	envAgentEnabled = "DAGU_AGENT_ENABLED"
+	envAgentEnabled = "AYATSURI_AGENT_ENABLED"
 )
 
 // Store implements a file-based singleton store for agent configuration.
@@ -52,7 +52,7 @@ func WithConfigCache(cache *fileutil.Cache[*agent.Config]) Option {
 }
 
 // New creates a new file-based agent config store.
-// The dataDir is the base data directory (e.g., DAGU_HOME/data).
+// The dataDir is the base data directory (e.g., AYATSURI_HOME/data).
 // The config will be stored at {dataDir}/agent/config.json.
 func New(dataDir string, opts ...Option) (*Store, error) {
 	if dataDir == "" {

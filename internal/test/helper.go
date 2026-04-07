@@ -22,20 +22,20 @@ import (
 
 	"github.com/spf13/viper"
 
-	"github.com/dagucloud/dagu/internal/cmn/config"
-	"github.com/dagucloud/dagu/internal/cmn/fileutil"
-	"github.com/dagucloud/dagu/internal/cmn/logger"
-	"github.com/dagucloud/dagu/internal/core"
-	exec1 "github.com/dagucloud/dagu/internal/core/exec"
-	"github.com/dagucloud/dagu/internal/core/spec"
-	"github.com/dagucloud/dagu/internal/persis/filedag"
-	"github.com/dagucloud/dagu/internal/persis/filedagrun"
-	"github.com/dagucloud/dagu/internal/persis/filedistributed"
-	"github.com/dagucloud/dagu/internal/persis/filequeue"
-	"github.com/dagucloud/dagu/internal/persis/fileserviceregistry"
-	runtimepkg "github.com/dagucloud/dagu/internal/runtime"
-	"github.com/dagucloud/dagu/internal/runtime/agent"
-	"github.com/dagucloud/dagu/internal/service/frontend"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/fileutil"
+	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core"
+	exec1 "github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/core/spec"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedag"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedagrun"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedistributed"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filequeue"
+	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileserviceregistry"
+	runtimepkg "github.com/ayatsuri-lab/ayatsuri/internal/runtime"
+	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/agent"
+	"github.com/ayatsuri-lab/ayatsuri/internal/service/frontend"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -147,7 +147,7 @@ func WithBuiltExecutable() HelperOption {
 
 // Setup creates and returns a Helper preconfigured for tests.
 //
-// Setup prepares an isolated test environment: it creates a temporary DAGU_HOME, writes a minimal config file, initializes stores and a runtime manager, sets key environment variables (e.g. DEBUG, CI, TZ, DAGU_EXECUTABLE, DAGU_CONFIG, SHELL), installs a cancellable context, and registers cleanup to restore the working directory and remove the temp directory. Use the returned Helper to interact with the test runtime and stores.
+// Setup prepares an isolated test environment: it creates a temporary AYATSURI_HOME, writes a minimal config file, initializes stores and a runtime manager, sets key environment variables (e.g. DEBUG, CI, TZ, AYATSURI_EXECUTABLE, AYATSURI_CONFIG, SHELL), installs a cancellable context, and registers cleanup to restore the working directory and remove the temp directory. Use the returned Helper to interact with the test runtime and stores.
 func Setup(t *testing.T, opts ...HelperOption) Helper {
 	setupLock.Lock()
 	defer setupLock.Unlock()
@@ -172,11 +172,11 @@ func Setup(t *testing.T, opts ...HelperOption) Helper {
 	_ = os.Setenv("TZ", "UTC")
 
 	random := uuid.New().String()
-	tmpDir := fileutil.MustTempDir(fmt.Sprintf("dagu-test-%s", random))
+	tmpDir := fileutil.MustTempDir(fmt.Sprintf("ayatsuri-test-%s", random))
 	shellPath := testShellPath(t)
 
 	root := getProjectRoot(t)
-	executablePath := filepath.Join(root, ".local", "bin", "dagu")
+	executablePath := filepath.Join(root, ".local", "bin", "ayatsuri")
 	if runtime.GOOS == "windows" {
 		executablePath += ".exe"
 	}
@@ -875,13 +875,13 @@ func testShellPath(t *testing.T) string {
 	return shPath
 }
 
-func buildHelperChildEnv(base []string, daguHome, configFile, executablePath, shellPath string) []string {
+func buildHelperChildEnv(base []string, ayatsuriHome, configFile, executablePath, shellPath string) []string {
 	env := append([]string{}, base...)
 	return withEnvOverrides(
 		env,
-		fmt.Sprintf("DAGU_HOME=%s", daguHome),
-		fmt.Sprintf("DAGU_CONFIG=%s", configFile),
-		fmt.Sprintf("DAGU_EXECUTABLE=%s", executablePath),
+		fmt.Sprintf("AYATSURI_HOME=%s", ayatsuriHome),
+		fmt.Sprintf("AYATSURI_CONFIG=%s", configFile),
+		fmt.Sprintf("AYATSURI_EXECUTABLE=%s", executablePath),
 		fmt.Sprintf("SHELL=%s", shellPath),
 		"DEBUG=true",
 		"CI=true",
@@ -958,13 +958,13 @@ func buildCurrentExecutable(t *testing.T, root string) string {
 	t.Helper()
 
 	builtExecutableOnce.Do(func() {
-		tmpDir, err := os.MkdirTemp("", "dagu-test-bin-*")
+		tmpDir, err := os.MkdirTemp("", "ayatsuri-test-bin-*")
 		if err != nil {
 			builtExecutableErr = fmt.Errorf("failed to create temp dir for test executable: %w", err)
 			return
 		}
 
-		path := filepath.Join(tmpDir, "dagu")
+		path := filepath.Join(tmpDir, "ayatsuri")
 		if runtime.GOOS == "windows" {
 			path += ".exe"
 		}
@@ -978,7 +978,7 @@ func buildCurrentExecutable(t *testing.T, root string) string {
 		cmd.Stderr = &output
 
 		if err := cmd.Run(); err != nil {
-			builtExecutableErr = fmt.Errorf("failed to build current dagu executable: %w: %s", err, strings.TrimSpace(output.String()))
+			builtExecutableErr = fmt.Errorf("failed to build current ayatsuri executable: %w: %s", err, strings.TrimSpace(output.String()))
 			return
 		}
 

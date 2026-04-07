@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/dagucloud/dagu/internal/clicontext"
+	"github.com/ayatsuri-lab/ayatsuri/internal/clicontext"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -26,7 +26,7 @@ func TestNewContext_StaticCommandIgnoresBrokenContextStore(t *testing.T) {
 	initFlags(command)
 	command.Flags().String("context", "", "")
 	command.SetContext(context.Background())
-	require.NoError(t, command.Flags().Set("dagu-home", home))
+	require.NoError(t, command.Flags().Set("ayatsuri-home", home))
 	require.NoError(t, command.Flags().Set("config", configPath))
 
 	ctx, err := NewContext(command, nil)
@@ -43,7 +43,7 @@ func TestNewContext_CommandWithoutContextFlagDefaultsToLocal(t *testing.T) {
 	command := &cobra.Command{Use: "status"}
 	initFlags(command)
 	command.SetContext(context.Background())
-	require.NoError(t, command.Flags().Set("dagu-home", home))
+	require.NoError(t, command.Flags().Set("ayatsuri-home", home))
 
 	ctx, err := NewContext(command, nil)
 	require.NoError(t, err)
@@ -60,7 +60,7 @@ func TestNewContext_ContextSubcommandInitializesContextStore(t *testing.T) {
 	parent.AddCommand(command)
 	initFlags(command)
 	command.SetContext(context.Background())
-	require.NoError(t, command.Flags().Set("dagu-home", home))
+	require.NoError(t, command.Flags().Set("ayatsuri-home", home))
 
 	ctx, err := NewContext(command, nil)
 	require.NoError(t, err)
@@ -80,7 +80,7 @@ func TestNewContext_FallsBackToLocalWhenCurrentContextCannotResolve(t *testing.T
 	initFlags(command)
 	command.Flags().String("context", "", "")
 	command.SetContext(context.Background())
-	require.NoError(t, command.Flags().Set("dagu-home", home))
+	require.NoError(t, command.Flags().Set("ayatsuri-home", home))
 
 	ctx, err := NewContext(command, nil)
 	require.NoError(t, err)
@@ -99,7 +99,7 @@ func TestNewContext_LocalExplicitSurvivesBrokenContextStore(t *testing.T) {
 	initFlags(command)
 	command.Flags().String("context", "", "")
 	command.SetContext(context.Background())
-	require.NoError(t, command.Flags().Set("dagu-home", home))
+	require.NoError(t, command.Flags().Set("ayatsuri-home", home))
 	require.NoError(t, command.Flags().Set("config", configPath))
 	require.NoError(t, command.Flags().Set("context", "local"))
 
@@ -120,7 +120,7 @@ func TestNewContext_RemoteExplicitFailsWhenContextStoreUnavailable(t *testing.T)
 	initFlags(command)
 	command.Flags().String("context", "", "")
 	command.SetContext(context.Background())
-	require.NoError(t, command.Flags().Set("dagu-home", home))
+	require.NoError(t, command.Flags().Set("ayatsuri-home", home))
 	require.NoError(t, command.Flags().Set("config", configPath))
 	require.NoError(t, command.Flags().Set("context", "prod"))
 
