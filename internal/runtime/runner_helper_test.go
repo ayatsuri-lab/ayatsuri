@@ -16,7 +16,6 @@ import (
 	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
 	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/builtin/agentstep"
-	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/builtin/chat"
 	"github.com/ayatsuri-lab/ayatsuri/internal/test"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
@@ -402,15 +401,10 @@ func withExecutorType(t string) stepOption {
 	}
 }
 
-func chatStep(name string, depends ...string) core.Step {
-	return newStep(name, withDepends(depends...), withExecutorType(core.ExecutorTypeChat))
-}
-
 func agentStep(name string, depends ...string) core.Step {
 	return newStep(name, withDepends(depends...), withExecutorType(core.ExecutorTypeAgent))
 }
 
 func init() {
-	chat.RegisterMockExecutors()
 	agentstep.RegisterMockExecutors()
 }

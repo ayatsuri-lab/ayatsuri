@@ -211,27 +211,12 @@ type DAG struct {
 	Container *Container `json:"container,omitempty"`
 	// RunConfig contains configuration for controlling user interactions during DAG runs.
 	RunConfig *RunConfig `json:"runConfig,omitempty"`
-	// RegistryAuths maps registry hostnames to authentication configs.
-	// Optional: If not specified, falls back to DOCKER_AUTH_CONFIG or docker config.
-	// Credentials are evaluated at runtime. Excluded from JSON: may contain passwords.
-	RegistryAuths map[string]*AuthConfig `json:"-"`
 	// SSH contains the default SSH configuration for the DAG.
 	// Excluded from JSON: may contain password.
 	SSH *SSHConfig `json:"-"`
-	// S3 contains the default S3 configuration for the DAG.
-	// Excluded from JSON: may contain credentials.
-	S3 *S3Config `json:"-"`
 	// LLM contains the default LLM configuration for the DAG.
 	// Steps with type: chat inherit this configuration if they don't specify their own llm field.
 	LLM *LLMConfig `json:"llm,omitempty"`
-	// Redis contains the default Redis configuration for the DAG.
-	// Steps with type: redis inherit this configuration.
-	// Excluded from JSON: may contain password.
-	Redis *RedisConfig `json:"-"`
-	// Kubernetes contains the default Kubernetes executor configuration for the DAG.
-	// Steps with type: k8s or type: kubernetes inherit this configuration.
-	// Excluded from JSON: may contain secret references.
-	Kubernetes KubernetesConfig `json:"-"`
 	// Secrets contains references to external secrets to be resolved at runtime.
 	Secrets []SecretRef `json:"secrets,omitempty"`
 	// dotenvOnce ensures LoadDotEnv is called only once, even with concurrent calls.
@@ -307,9 +292,6 @@ func (d *DAG) Clone() *DAG {
 	clone.dotenvOnce = sync.Once{}
 	if d.PresolvedBuildEnv != nil {
 		clone.PresolvedBuildEnv = maps.Clone(d.PresolvedBuildEnv)
-	}
-	if d.Kubernetes != nil {
-		clone.Kubernetes = cloneKubernetesConfig(d.Kubernetes)
 	}
 	return &clone
 }
@@ -570,19 +552,6 @@ func (d *DAG) FileName() string {
 	return fileutil.TrimYAMLFileExtension(filepath.Base(d.Location))
 }
 
-// AuthConfig represents Docker registry authentication configuration.
-// This is a simplified structure for user convenience that will be
-// converted to Docker's registry.AuthConfig format when needed.
-type AuthConfig struct {
-	// Username for registry authentication
-	Username string `json:"username,omitempty"`
-	// Password for registry authentication
-	Password string `json:"password,omitempty"`
-	// Auth can be used instead of username/password for pre-encoded credentials
-	// This should be base64(username:password)
-	Auth string `json:"auth,omitempty"`
-}
-
 // RunConfig contains configuration for controlling user interactions during DAG runs.
 type RunConfig struct {
 	// DisableParamEdit when set to true, prevents users from editing parameters when starting a DAG.
@@ -632,103 +601,6 @@ type BastionConfig struct {
 	Password string `json:"password,omitempty"`
 }
 
-// S3Config contains the default S3 configuration for the DAG.
-// This allows steps to inherit S3 settings without specifying them individually.
-type S3Config struct {
-	// Region is the AWS region (e.g., us-east-1).
-	Region string `json:"region,omitempty"`
-	// Endpoint is a custom S3-compatible endpoint URL.
-	// Use this for S3-compatible services like MinIO, LocalStack, etc.
-	Endpoint string `json:"endpoint,omitempty"`
-	// AccessKeyID is the AWS access key ID.
-	AccessKeyID string `json:"accessKeyId,omitempty"`
-	// SecretAccessKey is the AWS secret access key.
-	SecretAccessKey string `json:"secretAccessKey,omitempty"`
-	// SessionToken is the AWS session token (for temporary credentials).
-	SessionToken string `json:"sessionToken,omitempty"`
-	// Profile is the AWS credentials profile name.
-	Profile string `json:"profile,omitempty"`
-	// ForcePathStyle enables path-style addressing (required for S3-compatible services).
-	ForcePathStyle bool `json:"forcePathStyle,omitempty"`
-	// DisableSSL disables SSL for the connection (for local testing only).
-	DisableSSL bool `json:"disableSSL,omitempty"`
-	// Bucket is the default S3 bucket name.
-	// Can be overridden at the step level.
-	Bucket string `json:"bucket,omitempty"`
-}
-
-// RedisConfig contains the default Redis configuration for the DAG.
-// Steps with type: redis inherit this configuration.
-type RedisConfig struct {
-	// URL is the Redis connection URL (redis://user:pass@host:port/db).
-	URL string `json:"url,omitempty"`
-	// Host is the Redis host (alternative to URL).
-	Host string `json:"host,omitempty"`
-	// Port is the Redis port (default: 6379).
-	Port int `json:"port,omitempty"`
-	// Password is the authentication password.
-	Password string `json:"password,omitempty"`
-	// Username is the ACL username (Redis 6+).
-	Username string `json:"username,omitempty"`
-	// DB is the database number (0-15).
-	DB int `json:"db,omitempty"`
-	// TLS enables TLS connection.
-	TLS bool `json:"tls,omitempty"`
-	// TLSSkipVerify skips TLS certificate verification.
-	TLSSkipVerify bool `json:"tlsSkipVerify,omitempty"`
-	// Mode is the connection mode (standalone, sentinel, cluster).
-	Mode string `json:"mode,omitempty"`
-	// SentinelMaster is the sentinel master name.
-	SentinelMaster string `json:"sentinelMaster,omitempty"`
-	// SentinelAddrs is the list of sentinel addresses.
-	SentinelAddrs []string `json:"sentinelAddrs,omitempty"`
-	// ClusterAddrs is the list of cluster node addresses.
-	ClusterAddrs []string `json:"clusterAddrs,omitempty"`
-	// MaxRetries is the maximum number of retries.
-	MaxRetries int `json:"maxRetries,omitempty"`
-}
-
-// KubernetesConfig contains default Kubernetes executor configuration for the DAG.
-// It stores the raw executor config map so step-level overrides can be merged
-// using executor-specific semantics during DAG build.
-type KubernetesConfig map[string]any
-
-func cloneKubernetesConfig(cfg KubernetesConfig) KubernetesConfig {
-	if cfg == nil {
-		return nil
-	}
-
-	cloned := make(KubernetesConfig, len(cfg))
-	for key, value := range cfg {
-		cloned[key] = cloneKubernetesValue(value)
-	}
-	return cloned
-}
-
-func cloneKubernetesValue(value any) any {
-	switch v := value.(type) {
-	case KubernetesConfig:
-		return cloneKubernetesConfig(v)
-	case map[string]any:
-		return map[string]any(cloneKubernetesConfig(v))
-	case []any:
-		cloned := make([]any, len(v))
-		for i := range v {
-			cloned[i] = cloneKubernetesValue(v[i])
-		}
-		return cloned
-	case []string:
-		return append([]string(nil), v...)
-	case []map[string]any:
-		cloned := make([]map[string]any, len(v))
-		for i := range v {
-			cloned[i] = map[string]any(cloneKubernetesConfig(v[i]))
-		}
-		return cloned
-	default:
-		return value
-	}
-}
 
 // Schedule contains the cron expression and the parsed cron schedule.
 type Schedule struct {

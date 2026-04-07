@@ -25,15 +25,9 @@ func TestDAGJSONSecuritySensitiveFieldsExcluded(t *testing.T) {
 		Shell:      "${MY_SHELL}", // Now stores template, not expanded value
 		ShellArgs:  []string{"${ARG}"},
 		WorkingDir: "${WORK_DIR}", // Now stores template, not expanded value
-		RegistryAuths: map[string]*AuthConfig{
-			"docker.io": {
-				Username: "user",
-				Password: "docker_secret_password",
-			},
-		},
-		SMTP:     &SMTPConfig{Password: "smtp_secret"},
-		SSH:      &SSHConfig{Password: "ssh_secret"},
-		YamlData: []byte("name: test-dag"),
+		SMTP:       &SMTPConfig{Password: "smtp_secret"},
+		SSH:        &SSHConfig{Password: "ssh_secret"},
+		YamlData:   []byte("name: test-dag"),
 	}
 
 	data, err := json.MarshalIndent(dag, "", "  ")
@@ -43,12 +37,11 @@ func TestDAGJSONSecuritySensitiveFieldsExcluded(t *testing.T) {
 
 	// Verify sensitive fields with secrets are NOT in JSON
 	sensitiveFields := map[string]string{
-		"Env":           "super_secret_value",
-		"Params":        "mypassword",
-		"ParamsJSON":    `"password"`,
-		"RegistryAuths": "docker_secret_password",
-		"SMTP":          "smtp_secret",
-		"SSH":           "ssh_secret",
+		"Env":        "super_secret_value",
+		"Params":     "mypassword",
+		"ParamsJSON": `"password"`,
+		"SMTP":       "smtp_secret",
+		"SSH":        "ssh_secret",
 	}
 
 	for field, secret := range sensitiveFields {
@@ -99,12 +92,9 @@ func TestDAGRoundTripMissingFields(t *testing.T) {
 		Shell:      "${MY_SHELL}",
 		ShellArgs:  []string{"${ARG}"},
 		WorkingDir: "${WORK_DIR}",
-		RegistryAuths: map[string]*AuthConfig{
-			"docker.io": {Password: "secret"},
-		},
-		SMTP:     &SMTPConfig{Password: "smtp_secret"},
-		SSH:      &SSHConfig{Password: "ssh_secret"},
-		YamlData: []byte("name: test-dag\nenv:\n  SECRET_KEY: value"),
+		SMTP:       &SMTPConfig{Password: "smtp_secret"},
+		SSH:        &SSHConfig{Password: "ssh_secret"},
+		YamlData:   []byte("name: test-dag\nenv:\n  SECRET_KEY: value"),
 	}
 
 	// Serialize to JSON
@@ -120,7 +110,6 @@ func TestDAGRoundTripMissingFields(t *testing.T) {
 	assert.Empty(t, loaded.Env, "Env should be empty after JSON round-trip")
 	assert.Empty(t, loaded.Params, "Params should be empty after JSON round-trip")
 	assert.Empty(t, loaded.ParamsJSON, "ParamsJSON should be empty after JSON round-trip")
-	assert.Nil(t, loaded.RegistryAuths, "RegistryAuths should be nil after JSON round-trip")
 	assert.Nil(t, loaded.SMTP, "SMTP should be nil after JSON round-trip")
 	assert.Nil(t, loaded.SSH, "SSH should be nil after JSON round-trip")
 
@@ -138,15 +127,14 @@ func TestDAGRoundTripMissingFields(t *testing.T) {
 // Note: Shell, ShellArgs, and WorkingDir are now serialized (they contain templates).
 func TestJSONFieldTagsPresent(t *testing.T) {
 	dag := &DAG{
-		Env:           []string{"test"},
-		Params:        []string{"test"},
-		ParamsJSON:    "test",
-		Shell:         "test",
-		ShellArgs:     []string{"test"},
-		WorkingDir:    "test",
-		RegistryAuths: map[string]*AuthConfig{"test": {}},
-		SMTP:          &SMTPConfig{Password: "test"},
-		SSH:           &SSHConfig{Password: "test"},
+		Env:        []string{"test"},
+		Params:     []string{"test"},
+		ParamsJSON: "test",
+		Shell:      "test",
+		ShellArgs:  []string{"test"},
+		WorkingDir: "test",
+		SMTP:       &SMTPConfig{Password: "test"},
+		SSH:        &SSHConfig{Password: "test"},
 	}
 
 	data, err := json.Marshal(dag)
@@ -159,7 +147,6 @@ func TestJSONFieldTagsPresent(t *testing.T) {
 		`"env"`,
 		`"params"`,
 		`"paramsJSON"`,
-		`"registryAuths"`,
 		`"smtp"`,
 		`"ssh"`,
 	}

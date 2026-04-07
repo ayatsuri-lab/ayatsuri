@@ -1666,9 +1666,6 @@ steps:
     config:
       url: https://example.com
   - call: sub-dag
-  - type: docker
-    config:
-      image: alpine
   - type: ssh
     config:
       host: example.com
@@ -1677,13 +1674,12 @@ steps:
 		require.NoError(t, err)
 		th := DAG{t: t, DAG: dag}
 
-		require.Len(t, th.Steps, 6)
+		require.Len(t, th.Steps, 5)
 		assert.Equal(t, "cmd_1", th.Steps[0].Name)
 		assert.Equal(t, "script_2", th.Steps[1].Name)
 		assert.Equal(t, "http_3", th.Steps[2].Name)
 		assert.Equal(t, "dag_4", th.Steps[3].Name)
-		assert.Equal(t, "docker_5", th.Steps[4].Name)
-		assert.Equal(t, "ssh_6", th.Steps[5].Name)
+		assert.Equal(t, "ssh_5", th.Steps[4].Name)
 	})
 
 	t.Run("BackwardCompatibility", func(t *testing.T) {
@@ -2470,41 +2466,6 @@ steps:
 		assert.True(t, dag.Container.IsExecMode())
 	})
 
-	t.Run("StepContainerStringForm", func(t *testing.T) {
-		t.Parallel()
-		yaml := `
-steps:
-  - name: step1
-    container: my-step-container
-    command: echo test
-`
-		dag, err := spec.LoadYAML(context.Background(), []byte(yaml))
-		require.NoError(t, err)
-		require.NotNil(t, dag.Steps[0].Container)
-		assert.Equal(t, "my-step-container", dag.Steps[0].Container.Exec)
-		assert.True(t, dag.Steps[0].Container.IsExecMode())
-	})
-
-	t.Run("StepContainerObjectExecForm", func(t *testing.T) {
-		t.Parallel()
-		yaml := `
-steps:
-  - name: step1
-    container:
-      exec: my-step-container
-      user: nobody
-      working_dir: /tmp
-    command: echo test
-`
-		dag, err := spec.LoadYAML(context.Background(), []byte(yaml))
-		require.NoError(t, err)
-		require.NotNil(t, dag.Steps[0].Container)
-		assert.Equal(t, "my-step-container", dag.Steps[0].Container.Exec)
-		assert.Equal(t, "nobody", dag.Steps[0].Container.User)
-		assert.Equal(t, "/tmp", dag.Steps[0].Container.WorkingDir)
-		assert.True(t, dag.Steps[0].Container.IsExecMode())
-	})
-
 	// Error tests
 	errorTests := []struct {
 		name        string
@@ -2724,27 +2685,6 @@ steps:
 		assert.Equal(t, "", dag.Steps[0].ExecutorConfig.Type)
 	})
 
-	t.Run("StepWithDockerExecutorConfig", func(t *testing.T) {
-		yaml := `
-container:
-  image: node:18-alpine
-steps:
-  - name: step1
-    command: node app.js
-    type: docker
-    config:
-      image: python:3.11
-`
-		ctx := context.Background()
-		dag, err := spec.LoadYAML(ctx, []byte(yaml))
-		require.NoError(t, err)
-		require.Len(t, dag.Steps, 1)
-
-		// Step-level docker config should override DAG container
-		assert.Equal(t, "docker", dag.Steps[0].ExecutorConfig.Type)
-		assert.Equal(t, "python:3.11", dag.Steps[0].ExecutorConfig.Config["image"])
-	})
-
 	t.Run("MultipleStepsWithContainer", func(t *testing.T) {
 		yaml := `
 container:
@@ -2823,120 +2763,6 @@ steps:
 		// Step 2 should use command executor
 		step2 := dag.Steps[1]
 		assert.Equal(t, "command", step2.ExecutorConfig.Type)
-	})
-}
-
-func TestRedisInheritance(t *testing.T) {
-	t.Run("StepInheritsRedisFromDAG", func(t *testing.T) {
-		yaml := `
-redis:
-  url: redis://localhost:6379
-  password: secret
-steps:
-  - name: step1
-    type: redis
-    config:
-      command: PING
-  - name: step2
-    type: redis
-    config:
-      command: GET
-      key: mykey
-`
-		ctx := context.Background()
-		dag, err := spec.LoadYAML(ctx, []byte(yaml))
-		require.NoError(t, err)
-		require.Len(t, dag.Steps, 2)
-
-		// Both steps should inherit Redis config
-		for _, step := range dag.Steps {
-			assert.Equal(t, "redis", step.ExecutorConfig.Type)
-			assert.Equal(t, "redis://localhost:6379", step.ExecutorConfig.Config["url"])
-			assert.Equal(t, "secret", step.ExecutorConfig.Config["password"])
-		}
-
-		// Step 1 should have PING command
-		assert.Equal(t, "PING", dag.Steps[0].ExecutorConfig.Config["command"])
-
-		// Step 2 should have GET command with key
-		assert.Equal(t, "GET", dag.Steps[1].ExecutorConfig.Config["command"])
-		assert.Equal(t, "mykey", dag.Steps[1].ExecutorConfig.Config["key"])
-	})
-
-	t.Run("StepOverridesRedisConfig", func(t *testing.T) {
-		yaml := `
-redis:
-  url: redis://default:6379
-  db: 0
-steps:
-  - name: step1
-    type: redis
-    config:
-      db: 1
-      command: PING
-  - name: step2
-    type: redis
-    config:
-      command: GET
-      key: mykey
-`
-		ctx := context.Background()
-		dag, err := spec.LoadYAML(ctx, []byte(yaml))
-		require.NoError(t, err)
-		require.Len(t, dag.Steps, 2)
-
-		// Step 1 should override db but inherit url
-		step1 := dag.Steps[0]
-		assert.Equal(t, "redis", step1.ExecutorConfig.Type)
-		assert.Equal(t, "redis://default:6379", step1.ExecutorConfig.Config["url"])
-		// YAML may parse the db as different int types, so compare using interface conversion
-		assert.EqualValues(t, 1, step1.ExecutorConfig.Config["db"]) // Overridden
-
-		// Step 2 should inherit all from DAG
-		step2 := dag.Steps[1]
-		assert.Equal(t, "redis", step2.ExecutorConfig.Type)
-		assert.Equal(t, "redis://default:6379", step2.ExecutorConfig.Config["url"])
-		// db should NOT be set because it's 0 (zero value) at DAG level
-	})
-
-	t.Run("RedisTypeInferenceFromDAG", func(t *testing.T) {
-		yaml := `
-redis:
-  host: localhost
-  port: 6379
-steps:
-  - name: step1
-    config:
-      command: PING
-`
-		ctx := context.Background()
-		dag, err := spec.LoadYAML(ctx, []byte(yaml))
-		require.NoError(t, err)
-		require.Len(t, dag.Steps, 1)
-
-		// Type should be inferred as redis from DAG-level config
-		assert.Equal(t, "redis", dag.Steps[0].ExecutorConfig.Type)
-		assert.Equal(t, "localhost", dag.Steps[0].ExecutorConfig.Config["host"])
-		assert.Equal(t, 6379, dag.Steps[0].ExecutorConfig.Config["port"])
-	})
-
-	t.Run("ExplicitTypeOverridesDAGRedis", func(t *testing.T) {
-		yaml := `
-redis:
-  host: localhost
-  port: 6379
-steps:
-  - name: step1
-    type: command
-    command: echo hello
-`
-		ctx := context.Background()
-		dag, err := spec.LoadYAML(ctx, []byte(yaml))
-		require.NoError(t, err)
-		require.Len(t, dag.Steps, 1)
-
-		// Explicit type should override DAG-level redis inference
-		assert.Equal(t, "command", dag.Steps[0].ExecutorConfig.Type)
 	})
 }
 

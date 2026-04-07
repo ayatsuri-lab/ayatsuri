@@ -42,8 +42,6 @@ import (
 	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 	"github.com/ayatsuri-lab/ayatsuri/internal/output"
 	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
-	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/builtin/docker"
-	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/builtin/s3"
 	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/builtin/ssh"
 	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/remote"
 	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/transform"
@@ -200,9 +198,7 @@ type Agent struct {
 	evaluatedErrorMail     *core.MailConfig
 	evaluatedInfoMail      *core.MailConfig
 	evaluatedWaitMail      *core.MailConfig
-	evaluatedRegistryAuths map[string]*core.AuthConfig
-	evaluatedWorkingDir    string
-	evaluatedS3            *core.S3Config
+	evaluatedWorkingDir string
 }
 
 // StatusPusher is an interface for pushing status updates remotely.
@@ -558,18 +554,8 @@ func (a *Agent) Run(ctx context.Context) error {
 		return err
 	}
 
-	// Evaluate registry auth credentials with environment variables and secrets.
-	if err := a.evaluateRegistryAuths(ctx); err != nil {
-		return err
-	}
-
 	// Evaluate working directory with environment variables.
 	if err := a.evaluateWorkingDir(ctx); err != nil {
-		return err
-	}
-
-	// Evaluate S3 configuration with environment variables and secrets.
-	if err := a.evaluateS3Config(ctx); err != nil {
 		return err
 	}
 
@@ -622,46 +608,6 @@ func (a *Agent) Run(ctx context.Context) error {
 	if err := os.Chdir(a.evaluatedWorkingDir); err != nil {
 		initErr = fmt.Errorf("failed to change working directory: %w", err)
 		return initErr
-	}
-
-	// Create a new container if the DAG has a container configuration.
-	if a.dag.Container != nil {
-		// Expand environment variables in container fields
-		expandedContainer, err := docker.EvalContainerFields(ctx, *a.dag.Container)
-		if err != nil {
-			initErr = fmt.Errorf("failed to evaluate container config: %w", err)
-			return initErr
-		}
-		// Use pre-evaluated registry auth credentials
-		ctCfg, err := docker.LoadConfig(a.evaluatedWorkingDir, expandedContainer, a.evaluatedRegistryAuths)
-		if err != nil {
-			initErr = fmt.Errorf("failed to load container config: %w", err)
-			return initErr
-		}
-		ctCli, err := docker.InitializeClient(ctx, ctCfg)
-		if err != nil {
-			initErr = fmt.Errorf("failed to initialize container client: %w", err)
-			return initErr
-		}
-		// In exec mode, we use an existing container - don't create a new one
-		isExecMode := expandedContainer.IsExecMode()
-		if !isExecMode {
-			if err := ctCli.CreateContainerKeepAlive(ctx); err != nil {
-				initErr = fmt.Errorf("failed to create keepalive container: %w", err)
-				return initErr
-			}
-		}
-
-		// Set the container client in the context for the execution.
-		ctx = docker.WithContainerClient(ctx, ctCli)
-
-		defer func() {
-			// Only stop the container if we created it (non-exec mode)
-			if !isExecMode {
-				ctCli.StopContainerKeepAlive(ctx)
-			}
-			ctCli.Close(ctx)
-		}()
 	}
 
 	// Create SSH Client if the DAG has SSH configuration.
@@ -798,16 +744,6 @@ func (a *Agent) Run(ctx context.Context) error {
 	go execWithRecovery(ctx, func() {
 		a.watchCancelRequested(ctx, attempt)
 	})
-
-	// Add registry authentication to context for docker executors
-	if len(a.evaluatedRegistryAuths) > 0 {
-		ctx = docker.WithRegistryAuth(ctx, a.evaluatedRegistryAuths)
-	}
-
-	// Add S3 configuration to context for S3 executors
-	if a.evaluatedS3 != nil {
-		ctx = s3.WithS3Config(ctx, a.evaluatedS3)
-	}
 
 	lastErr := a.runner.Run(ctx, a.plan, progressCh)
 
@@ -1429,28 +1365,6 @@ func (a *Agent) evaluateMailConfigs(ctx context.Context) error {
 	return nil
 }
 
-// evaluateRegistryAuths evaluates registry authentication credentials with
-// environment variables and secrets. Results are stored in agent fields to
-// avoid mutating the original DAG struct.
-func (a *Agent) evaluateRegistryAuths(ctx context.Context) error {
-	if len(a.dag.RegistryAuths) == 0 {
-		return nil
-	}
-
-	vars := runtime.GetEnv(ctx).UserEnvsMap()
-	a.evaluatedRegistryAuths = make(map[string]*core.AuthConfig)
-
-	for registry, auth := range a.dag.RegistryAuths {
-		evaluatedAuth, err := eval.Object(ctx, *auth, vars)
-		if err != nil {
-			return fmt.Errorf("failed to evaluate registry auth for %s: %w", registry, err)
-		}
-		a.evaluatedRegistryAuths[registry] = &evaluatedAuth
-	}
-
-	return nil
-}
-
 // evaluateWorkingDir evaluates the working directory with environment variables.
 // The result is stored in evaluatedWorkingDir to avoid mutating the original DAG.
 func (a *Agent) evaluateWorkingDir(ctx context.Context) error {
@@ -1483,22 +1397,6 @@ func (a *Agent) evaluateWorkingDir(ctx context.Context) error {
 		a.evaluatedWorkingDir = filepath.Join(homeDir, a.evaluatedWorkingDir[1:])
 	}
 
-	return nil
-}
-
-// evaluateS3Config evaluates S3 configuration with environment variables and secrets.
-// Results are stored in agent fields to avoid mutating the original DAG struct.
-func (a *Agent) evaluateS3Config(ctx context.Context) error {
-	if a.dag.S3 == nil {
-		return nil
-	}
-
-	vars := runtime.GetEnv(ctx).UserEnvsMap()
-	evaluated, err := eval.Object(ctx, *a.dag.S3, vars)
-	if err != nil {
-		return fmt.Errorf("failed to evaluate s3 config: %w", err)
-	}
-	a.evaluatedS3 = &evaluated
 	return nil
 }
 

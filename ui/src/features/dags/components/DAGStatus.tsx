@@ -10,7 +10,6 @@ import {
   FileCode,
   GanttChart,
   GripHorizontal,
-  MessageSquare,
   MousePointerClick,
   Package,
   ShieldCheck,
@@ -28,7 +27,6 @@ import { DAGRunOutputs } from '../../dag-runs/components/dag-run-details';
 import { DAGContext } from '../contexts/DAGContext';
 import { getEventHandlers } from '../lib/getEventHandlers';
 import { ApprovalTab } from './approval';
-import { ChatHistoryTab } from './chat-history';
 import { DAGStatusOverview, NodeStatusTable } from './dag-details';
 import { DAGSpecReadOnly } from './dag-editor';
 import {
@@ -43,7 +41,7 @@ type Props = {
   fileName: string;
 };
 
-type StatusTab = 'status' | 'timeline' | 'outputs' | 'chat' | 'spec' | 'approval';
+type StatusTab = 'status' | 'timeline' | 'outputs' | 'spec' | 'approval';
 
 /** Check if the current DAG run is a sub DAG-run (has a different root) */
 function isSubDAGRun(dagRun: components['schemas']['DAGRunDetails']): boolean {
@@ -305,11 +303,6 @@ function DAGStatus({ dagRun, fileName }: Props) {
   // Check if timeline should be shown (any status except not started)
   const showTimeline = dagRun.status !== Status.NotStarted;
 
-  // Check if there are any chat steps
-  const hasChatSteps = !!dagRun.nodes?.some(
-    (node) => node.step.executorConfig?.type === 'chat'
-  );
-
   // Check if there are any steps awaiting approval
   const waitingStepCount = dagRun.nodes?.filter(
     (node) => node.status === NodeStatus.Waiting
@@ -321,13 +314,10 @@ function DAGStatus({ dagRun, fileName }: Props) {
     if (activeTab === 'timeline' && !showTimeline) {
       setActiveTab('status');
     }
-    if (activeTab === 'chat' && !hasChatSteps) {
-      setActiveTab('status');
-    }
     if (activeTab === 'approval' && !hasWaitingSteps) {
       setActiveTab('status');
     }
-  }, [showTimeline, hasChatSteps, hasWaitingSteps, activeTab]);
+  }, [showTimeline, hasWaitingSteps, activeTab]);
 
   // Auto-switch to approval tab when steps enter waiting state
   useEffect(() => {
@@ -379,16 +369,6 @@ function DAGStatus({ dagRun, fileName }: Props) {
           <Package className="h-4 w-4" />
           Outputs
         </Tab>
-        {hasChatSteps && (
-          <Tab
-            isActive={activeTab === 'chat'}
-            onClick={() => setActiveTab('chat')}
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            <MessageSquare className="h-4 w-4" />
-            Chat
-          </Tab>
-        )}
         <Tab
           isActive={activeTab === 'spec'}
           onClick={() => setActiveTab('spec')}
@@ -511,9 +491,6 @@ function DAGStatus({ dagRun, fileName }: Props) {
       {activeTab === 'outputs' && (
         <DAGRunOutputs dagName={dagRun.name} dagRunId={dagRun.dagRunId} />
       )}
-
-      {/* Chat Tab Content */}
-      {activeTab === 'chat' && <ChatHistoryTab dagRun={dagRun} />}
 
       {/* Spec Tab Content */}
       {activeTab === 'spec' && (

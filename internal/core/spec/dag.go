@@ -117,23 +117,11 @@ type dag struct {
 	Container any `yaml:"container,omitempty"`
 	// RunConfig contains configuration for controlling user interactions during DAG runs.
 	RunConfig *runConfig `yaml:"run_config,omitempty"`
-	// RegistryAuths maps registry hostnames to authentication configs.
-	// Can be either a JSON string or a map of registry to auth config.
-	RegistryAuths any `yaml:"registry_auths,omitempty"`
 	// SSH is the default SSH configuration for the DAG.
 	SSH *ssh `yaml:"ssh,omitempty"`
-	// S3 is the default S3 configuration for the DAG.
-	// Steps can inherit these settings without specifying them individually.
-	S3 *s3Config `yaml:"s3,omitempty"`
 	// LLM is the default LLM configuration for all chat steps in this DAG.
 	// Steps can override this configuration by specifying their own llm field.
 	LLM *llmConfig `yaml:"llm,omitempty"`
-	// Redis is the default Redis configuration for all redis steps in this DAG.
-	// Steps can override this configuration by specifying their own config fields.
-	Redis *redisConfig `yaml:"redis,omitempty"`
-	// Kubernetes is the default Kubernetes configuration for explicit k8s steps in this DAG.
-	// Steps can override this configuration by specifying their own config fields.
-	Kubernetes map[string]any `yaml:"kubernetes,omitempty"`
 	// Secrets contains references to external secrets.
 	Secrets []secretRef `yaml:"secrets,omitempty"`
 	// Defaults defines default values for step configuration fields.
@@ -147,16 +135,6 @@ type dagRetryPolicy struct {
 	IntervalSec    any `yaml:"interval_sec,omitempty"`
 	Backoff        any `yaml:"backoff,omitempty"`
 	MaxIntervalSec any `yaml:"max_interval_sec,omitempty"`
-}
-
-// handlerOn defines the steps to be executed on different events.
-type handlerOn struct {
-	Init    *step `yaml:"init,omitempty"`    // Step to execute before steps (after preconditions pass)
-	Failure *step `yaml:"failure,omitempty"` // Step to execute on failure
-	Success *step `yaml:"success,omitempty"` // Step to execute on success
-	Abort   *step `yaml:"abort,omitempty"`   // Step to execute on abort
-	Exit    *step `yaml:"exit,omitempty"`    // Step to execute on exit
-	Wait    *step `yaml:"wait,omitempty"`    // Step to execute when DAG enters wait status (approval)
 }
 
 // smtpConfig defines the SMTP configuration.
@@ -190,6 +168,16 @@ type mailOn struct {
 	Failure bool `yaml:"failure,omitempty"` // Send mail on failure
 	Success bool `yaml:"success,omitempty"` // Send mail on success
 	Wait    bool `yaml:"wait,omitempty"`    // Send mail on wait status
+}
+
+// handlerOn defines the steps to be executed on different events.
+type handlerOn struct {
+	Init    *step `yaml:"init,omitempty"`    // Step to execute before steps (after preconditions pass)
+	Failure *step `yaml:"failure,omitempty"` // Step to execute on failure
+	Success *step `yaml:"success,omitempty"` // Step to execute on success
+	Abort   *step `yaml:"abort,omitempty"`   // Step to execute on abort
+	Exit    *step `yaml:"exit,omitempty"`    // Step to execute on exit
+	Wait    *step `yaml:"wait,omitempty"`    // Step to execute when DAG enters wait status (approval)
 }
 
 // container defines the container configuration for the DAG.
@@ -296,62 +284,6 @@ type bastion struct {
 	Password string `yaml:"password,omitempty"`
 }
 
-// s3Config defines the default S3 configuration for the DAG.
-// This allows steps to inherit S3 settings without specifying them individually.
-type s3Config struct {
-	// Region is the AWS region (e.g., us-east-1).
-	Region string `yaml:"region,omitempty"`
-	// Endpoint is a custom S3-compatible endpoint URL.
-	// Use this for S3-compatible services like MinIO, LocalStack, etc.
-	Endpoint string `yaml:"endpoint,omitempty"`
-	// AccessKeyID is the AWS access key ID.
-	AccessKeyID string `yaml:"access_key_id,omitempty"`
-	// SecretAccessKey is the AWS secret access key.
-	SecretAccessKey string `yaml:"secret_access_key,omitempty"`
-	// SessionToken is the AWS session token (for temporary credentials).
-	SessionToken string `yaml:"session_token,omitempty"`
-	// Profile is the AWS credentials profile name.
-	Profile string `yaml:"profile,omitempty"`
-	// ForcePathStyle enables path-style addressing (required for S3-compatible services).
-	ForcePathStyle bool `yaml:"force_path_style,omitempty"`
-	// DisableSSL disables SSL for the connection (for local testing only).
-	DisableSSL bool `yaml:"disable_ssl,omitempty"`
-	// Bucket is the default S3 bucket name.
-	// Can be overridden at the step level.
-	Bucket string `yaml:"bucket,omitempty"`
-}
-
-// redisConfig defines the default Redis configuration for all redis steps in the DAG.
-// Steps can override these settings by specifying their own config fields.
-type redisConfig struct {
-	// URL is the Redis connection URL (redis://user:pass@host:port/db).
-	URL string `yaml:"url,omitempty"`
-	// Host is the Redis host (alternative to URL).
-	Host string `yaml:"host,omitempty"`
-	// Port is the Redis port (default: 6379).
-	Port int `yaml:"port,omitempty"`
-	// Password is the authentication password.
-	Password string `yaml:"password,omitempty"`
-	// Username is the ACL username (Redis 6+).
-	Username string `yaml:"username,omitempty"`
-	// DB is the database number (0-15).
-	DB int `yaml:"db,omitempty"`
-	// TLS enables TLS connection.
-	TLS bool `yaml:"tls,omitempty"`
-	// TLSSkipVerify skips TLS certificate verification.
-	TLSSkipVerify bool `yaml:"tls_skip_verify,omitempty"`
-	// Mode is the connection mode (standalone, sentinel, cluster).
-	Mode string `yaml:"mode,omitempty"`
-	// SentinelMaster is the sentinel master name.
-	SentinelMaster string `yaml:"sentinel_master,omitempty"`
-	// SentinelAddrs is the list of sentinel addresses.
-	SentinelAddrs []string `yaml:"sentinel_addrs,omitempty"`
-	// ClusterAddrs is the list of cluster node addresses.
-	ClusterAddrs []string `yaml:"cluster_addrs,omitempty"`
-	// MaxRetries is the maximum number of retries.
-	MaxRetries int `yaml:"max_retries,omitempty"`
-}
-
 // secretRef defines a reference to an external secret.
 type secretRef struct {
 	// Name is the environment variable name (required).
@@ -446,12 +378,8 @@ var fullTransformers = []transform{
 	{"shell_args", newTransformer("ShellArgs", buildShellArgs)},
 	{"working_dir", newTransformer("WorkingDir", buildWorkingDir)},
 	{"container", newTransformer("Container", buildContainer)},
-	{"registry_auths", newTransformer("RegistryAuths", buildRegistryAuths)},
 	{"ssh", newTransformer("SSH", buildSSH)},
-	{"s3", newTransformer("S3", buildS3)},
 	{"llm", newTransformer("LLM", buildLLM)},
-	{"redis", newTransformer("Redis", buildRedis)},
-	{"kubernetes", newTransformer("Kubernetes", buildKubernetes)},
 	{"secrets", newTransformer("Secrets", buildSecrets)},
 	{"dotenv", newTransformer("Dotenv", buildDotenv)},
 	{"smtp", newTransformer("SMTP", buildSMTPConfig)},
@@ -749,17 +677,6 @@ func buildLogOutput(_ BuildContext, d *dag) (core.LogOutputMode, error) {
 		return "", nil
 	}
 	return d.LogOutput.Mode(), nil
-}
-
-func buildMailOn(_ BuildContext, d *dag) (*core.MailOn, error) {
-	if d.MailOn == nil {
-		return nil, nil
-	}
-	return &core.MailOn{
-		Failure: d.MailOn.Failure,
-		Success: d.MailOn.Success,
-		Wait:    d.MailOn.Wait,
-	}, nil
 }
 
 func buildRunConfig(_ BuildContext, d *dag) (*core.RunConfig, error) {
@@ -1444,74 +1361,6 @@ func parseHealthcheck(h *healthcheck) (*core.Healthcheck, error) {
 	return hc, nil
 }
 
-func buildRegistryAuths(_ BuildContext, d *dag) (map[string]*core.AuthConfig, error) {
-	if d.RegistryAuths == nil {
-		return nil, nil
-	}
-
-	// No expansion at build time - credentials are evaluated at runtime.
-	// See runtime/agent/agent.go where RegistryAuths are evaluated before use.
-
-	// parseAuthConfig parses auth config from a map with string keys.
-	parseAuthConfig := func(m map[string]any) *core.AuthConfig {
-		cfg := &core.AuthConfig{}
-		if v, ok := m["username"].(string); ok {
-			cfg.Username = v
-		}
-		if v, ok := m["password"].(string); ok {
-			cfg.Password = v
-		}
-		if v, ok := m["auth"].(string); ok {
-			cfg.Auth = v
-		}
-		return cfg
-	}
-
-	// parseAuthData parses auth data which can be a string or a map.
-	parseAuthData := func(authData any) *core.AuthConfig {
-		switch auth := authData.(type) {
-		case string:
-			return &core.AuthConfig{Auth: auth}
-		case map[string]any:
-			return parseAuthConfig(auth)
-		case map[any]any:
-			// Convert map[any]any to map[string]any
-			m := make(map[string]any)
-			for k, v := range auth {
-				if ks, ok := k.(string); ok {
-					m[ks] = v
-				}
-			}
-			return parseAuthConfig(m)
-		default:
-			return &core.AuthConfig{}
-		}
-	}
-
-	registryAuths := make(map[string]*core.AuthConfig)
-
-	switch v := d.RegistryAuths.(type) {
-	case string:
-		registryAuths["_json"] = &core.AuthConfig{Auth: v}
-
-	case map[string]any:
-		for registry, authData := range v {
-			registryAuths[registry] = parseAuthData(authData)
-		}
-
-	case map[any]any:
-		for registryKey, authData := range v {
-			if registry, ok := registryKey.(string); ok {
-				registryAuths[registry] = parseAuthData(authData)
-			}
-		}
-
-	default:
-		return nil, core.NewValidationError("registry_auths", d.RegistryAuths, fmt.Errorf("invalid type: %T", d.RegistryAuths))
-	}
-
-	return registryAuths, nil
-}
 
 func buildSSH(_ BuildContext, d *dag) (*core.SSHConfig, error) {
 	if d.SSH == nil {
@@ -1580,24 +1429,6 @@ func defaultPort(port, defaultVal string) string {
 		return defaultVal
 	}
 	return port
-}
-
-func buildS3(_ BuildContext, d *dag) (*core.S3Config, error) {
-	if d.S3 == nil {
-		return nil, nil
-	}
-
-	return &core.S3Config{
-		Region:          d.S3.Region,
-		Endpoint:        d.S3.Endpoint,
-		AccessKeyID:     d.S3.AccessKeyID,
-		SecretAccessKey: d.S3.SecretAccessKey,
-		SessionToken:    d.S3.SessionToken,
-		Profile:         d.S3.Profile,
-		ForcePathStyle:  d.S3.ForcePathStyle,
-		DisableSSL:      d.S3.DisableSSL,
-		Bucket:          d.S3.Bucket,
-	}, nil
 }
 
 func buildLLM(_ BuildContext, d *dag) (*core.LLMConfig, error) {
@@ -1681,28 +1512,6 @@ func buildLLM(_ BuildContext, d *dag) (*core.LLMConfig, error) {
 	}, nil
 }
 
-func buildRedis(_ BuildContext, d *dag) (*core.RedisConfig, error) {
-	if d.Redis == nil {
-		return nil, nil
-	}
-
-	return &core.RedisConfig{
-		URL:            d.Redis.URL,
-		Host:           d.Redis.Host,
-		Port:           d.Redis.Port,
-		Password:       d.Redis.Password,
-		Username:       d.Redis.Username,
-		DB:             d.Redis.DB,
-		TLS:            d.Redis.TLS,
-		TLSSkipVerify:  d.Redis.TLSSkipVerify,
-		Mode:           d.Redis.Mode,
-		SentinelMaster: d.Redis.SentinelMaster,
-		SentinelAddrs:  d.Redis.SentinelAddrs,
-		ClusterAddrs:   d.Redis.ClusterAddrs,
-		MaxRetries:     d.Redis.MaxRetries,
-	}, nil
-}
-
 func buildSecrets(_ BuildContext, d *dag) ([]core.SecretRef, error) {
 	if len(d.Secrets) == 0 {
 		return nil, nil
@@ -1758,6 +1567,17 @@ func buildHandlers(ctx BuildContext, d *dag, result *core.DAG) (core.HandlerOn, 
 	}
 
 	return handlerOn, nil
+}
+
+func buildMailOn(_ BuildContext, d *dag) (*core.MailOn, error) {
+	if d.MailOn == nil {
+		return nil, nil
+	}
+	return &core.MailOn{
+		Failure: d.MailOn.Failure,
+		Success: d.MailOn.Success,
+		Wait:    d.MailOn.Wait,
+	}, nil
 }
 
 func buildSMTPConfig(_ BuildContext, d *dag) (*core.SMTPConfig, error) {

@@ -224,5 +224,3 @@ type WebSearchUserLocation struct {
 	Timezone string `json:"timezone,omitempty"`
 }
 
-// ExecutorTypeChat is the executor type for chat steps.
-const ExecutorTypeChat = "chat"

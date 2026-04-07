@@ -18,7 +18,6 @@ import (
 	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
 	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger/tag"
 	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
-	"github.com/ayatsuri-lab/ayatsuri/internal/runtime/builtin/sql"
 	"github.com/ayatsuri-lab/ayatsuri/internal/service/coordinator"
 	"github.com/ayatsuri-lab/ayatsuri/internal/service/healthcheck"
 	coordinatorv1 "github.com/ayatsuri-lab/ayatsuri/proto/coordinator/v1"
@@ -46,8 +45,6 @@ type Worker struct {
 	stopCancel context.CancelFunc // Cancels the worker's internal context
 	stopDone   chan struct{}      // Signals when all goroutines have stopped
 
-	// For global PostgreSQL connection pool (shared-nothing mode)
-	poolManager  *sql.GlobalPoolManager
 	healthServer *healthcheck.Server
 
 	afterTaskAckHook func(context.Context, *coordinatorv1.Task) bool
@@ -117,21 +114,6 @@ func (w *Worker) Start(ctx context.Context) (err error) {
 	w.stopCancel = cancel
 	w.stopDone = make(chan struct{})
 
-	// Initialize global PostgreSQL pool manager if in shared-nothing mode
-	if w.isSharedNothingMode() {
-		w.poolManager = sql.NewGlobalPoolManager(sql.GlobalPoolConfig{
-			MaxOpenConns:    w.cfg.Worker.PostgresPool.MaxOpenConns,
-			MaxIdleConns:    w.cfg.Worker.PostgresPool.MaxIdleConns,
-			ConnMaxLifetime: time.Duration(w.cfg.Worker.PostgresPool.ConnMaxLifetime) * time.Second,
-			ConnMaxIdleTime: time.Duration(w.cfg.Worker.PostgresPool.ConnMaxIdleTime) * time.Second,
-		})
-		internalCtx = sql.WithPoolManager(internalCtx, w.poolManager)
-		logger.Info(ctx, "Global PostgreSQL pool manager initialized",
-			tag.WorkerID(w.id),
-			slog.Int("maxOpenConns", w.cfg.Worker.PostgresPool.MaxOpenConns),
-			slog.Int("maxIdleConns", w.cfg.Worker.PostgresPool.MaxIdleConns))
-	}
-
 	defer func() {
 		if err == nil {
 			return
@@ -142,10 +124,6 @@ func (w *Worker) Start(ctx context.Context) (err error) {
 
 		if w.healthServer != nil {
 			_ = w.healthServer.Stop(cleanupCtx)
-		}
-		if w.poolManager != nil {
-			_ = w.poolManager.Close()
-			w.poolManager = nil
 		}
 	}()
 
@@ -213,20 +191,6 @@ func (w *Worker) Stop(ctx context.Context) error {
 			case <-ctx.Done():
 				logger.Warn(ctx, "Worker stop timed out waiting for goroutines",
 					tag.WorkerID(w.id))
-			}
-		}
-
-		// Close the global PostgreSQL pool manager if initialized
-		if w.poolManager != nil {
-			if poolErr := w.poolManager.Close(); poolErr != nil {
-				logger.Error(ctx, "Failed to close PostgreSQL pool manager",
-					tag.WorkerID(w.id),
-					tag.Error(poolErr))
-				if err == nil {
-					err = fmt.Errorf("failed to close PostgreSQL pool manager: %w", poolErr)
-				}
-			} else {
-				logger.Info(ctx, "PostgreSQL pool manager closed", tag.WorkerID(w.id))
 			}
 		}
 
@@ -579,9 +543,3 @@ func (w *Worker) processCancellations(ctx context.Context, cancelledRuns []*coor
 	}
 }
 
-// isSharedNothingMode returns true if the worker is running in shared-nothing mode.
-// Shared-nothing mode is detected when static coordinator addresses are configured.
-// In shared-nothing mode, global PostgreSQL pool management is automatically enabled.
-func (w *Worker) isSharedNothingMode() bool {
-	return w.cfg != nil && len(w.cfg.Worker.Coordinators) > 0
-}
