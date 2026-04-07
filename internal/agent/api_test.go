@@ -1020,6 +1020,51 @@ func TestAPI_CreateSession_PassesPricing(t *testing.T) {
 	})
 }
 
+func TestAPI_CreateSession_ReturnsActionableDefaultModelError(t *testing.T) {
+	t.Parallel()
+
+	configStore := newMockConfigStore(true)
+	configStore.config.DefaultModelID = "missing-model"
+
+	api := NewAPI(APIConfig{
+		ConfigStore: configStore,
+		ModelStore:  newMockModelStore(),
+		WorkingDir:  t.TempDir(),
+	})
+
+	_, _, err := api.CreateSession(context.Background(), UserIdentity{
+		UserID:   defaultUserID,
+		Username: defaultUserID,
+		Role:     defaultUserRole,
+	}, ChatRequest{Message: "hello"})
+	require.Error(t, err)
+	require.ErrorIs(t, err, ErrAgentNotConfigured)
+	assert.Contains(t, err.Error(), `failed to resolve model "missing-model"`)
+	assert.Contains(t, err.Error(), "model not found")
+}
+
+func TestAPI_CreateEmptySessionWithRuntime_UsesRuntimeModel(t *testing.T) {
+	t.Parallel()
+
+	defaultModel := testModelConfig("default-model")
+	runtimeModel := testModelConfig("runtime-model")
+	runtimeModel.Model = "claude-sonnet-4-6"
+
+	api, _ := testAPIWithModels(t, defaultModel, runtimeModel)
+
+	sessionID, err := api.CreateEmptySessionWithRuntime(context.Background(), UserIdentity{
+		UserID:   defaultUserID,
+		Username: defaultUserID,
+		Role:     defaultUserRole,
+	}, "", false, &SessionRuntimeOptions{Model: "runtime-model"})
+	require.NoError(t, err)
+
+	mgrVal, ok := api.sessions.Load(sessionID)
+	require.True(t, ok)
+	mgr := mgrVal.(*SessionManager)
+	assert.Equal(t, "runtime-model", mgr.GetModel())
+}
+
 func TestAPI_SendMessage_UpdatesPricing(t *testing.T) {
 	t.Parallel()
 
@@ -1166,6 +1211,42 @@ func TestAPI_GenerateAssistantMessage_UsesSessionDAGMemory(t *testing.T) {
 	require.Len(t, req.Messages, 2)
 	assert.Equal(t, llm.RoleSystem, req.Messages[0].Role)
 	assert.Contains(t, req.Messages[0].Content, "Remember the DAG-specific state")
+}
+
+func TestAPI_GenerateAssistantMessage_UsesSessionAutomataMemory(t *testing.T) {
+	t.Parallel()
+
+	model := testModelConfig("automata-memory-model")
+	reqCh := make(chan *llm.ChatRequest, 1)
+	memoryStore := newMockMemoryStore()
+	require.NoError(t, memoryStore.SaveAutomataMemory(context.Background(), "queue_worker", "Remember the service operating rules"))
+
+	configStore := newMockConfigStore(true)
+	configStore.config.DefaultModelID = model.ID
+
+	api := NewAPI(APIConfig{
+		ConfigStore: configStore,
+		ModelStore:  newMockModelStore().addModel(model),
+		WorkingDir:  t.TempDir(),
+		MemoryStore: memoryStore,
+	})
+	api.providers.Set(model.ToLLMConfig(), newCapturingProvider(reqCh, simpleStopResponse("ok")))
+
+	user := UserIdentity{UserID: "telegram:123", Username: "telegram", Role: auth.RoleAdmin}
+	sessionID, err := api.CreateEmptySessionWithRuntime(context.Background(), user, "", false, &SessionRuntimeOptions{
+		AutomataName: "queue_worker",
+	})
+	require.NoError(t, err)
+
+	msg, err := api.GenerateAssistantMessage(context.Background(), sessionID, user, "", "summarize the automata state")
+	require.NoError(t, err)
+	assert.Equal(t, "ok", msg.Content)
+
+	req := <-reqCh
+	require.Len(t, req.Messages, 2)
+	assert.Equal(t, llm.RoleSystem, req.Messages[0].Role)
+	assert.Contains(t, req.Messages[0].Content, "Remember the service operating rules")
+	assert.Contains(t, req.Messages[0].Content, "/tmp/mock-memory/automata/queue_worker/MEMORY.md")
 }
 
 func TestAPI_GenerateAssistantMessage_RetriesTransientFailure(t *testing.T) {

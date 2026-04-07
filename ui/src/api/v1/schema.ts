@@ -2286,6 +2286,326 @@ export interface paths {
         patch: operations["updateAgentSoul"];
         trace?: never;
     };
+    "/automata": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List automata
+         * @description Returns all Automata definitions with current lifecycle and display state.
+         */
+        get: operations["listAutomata"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automata/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get automata detail
+         * @description Returns Automata detail including definition, runtime state, transcript, and recent runs.
+         */
+        get: operations["getAutomata"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete automata
+         * @description Deletes an Automata definition and its runtime state.
+         */
+        delete: operations["deleteAutomata"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automata/{name}/spec": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get automata raw spec
+         * @description Returns the raw YAML specification for an Automata.
+         */
+        get: operations["getAutomataSpec"];
+        /**
+         * Create or update automata spec
+         * @description Creates or updates an Automata definition from a raw YAML spec.
+         */
+        put: operations["putAutomataSpec"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automata/{name}/memory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get automata memory
+         * @description Returns the Automata-specific MEMORY.md content and resolved path.
+         */
+        get: operations["getAutomataMemory"];
+        /**
+         * Update automata memory
+         * @description Creates or updates the Automata-specific MEMORY.md content.
+         */
+        put: operations["updateAutomataMemory"];
+        post?: never;
+        /**
+         * Clear automata memory
+         * @description Deletes the Automata-specific MEMORY.md file.
+         */
+        delete: operations["deleteAutomataMemory"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automata/{name}/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start automata task
+         * @description Starts a workflow Automata task or activates a service Automata.
+         */
+        post: operations["startAutomata"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automata/{name}/pause": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Pause automata
+         * @description Pauses Automata orchestration without deleting the active task.
+         */
+        post: operations["pauseAutomata"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automata/{name}/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Resume automata
+         * @description Resumes a paused Automata.
+         */
+        post: operations["resumeAutomata"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automata/{name}/message": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send operator message to automata
+         * @description Adds an operator message to the current Automata task.
+         */
+        post: operations["messageAutomata"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automata/{name}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create automata task
+         * @description Creates a new persistent task template for an Automata.
+         */
+        post: operations["createAutomataTask"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automata/{name}/tasks/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reorder automata tasks
+         * @description Reorders the persistent task templates for an Automata.
+         */
+        post: operations["reorderAutomataTasks"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automata/{name}/tasks/{taskId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete automata task
+         * @description Deletes a persistent task template from an Automata.
+         */
+        delete: operations["deleteAutomataTask"];
+        options?: never;
+        head?: never;
+        /**
+         * Update automata task
+         * @description Updates an Automata task template description and, when requested, the current cycle task state.
+         */
+        patch: operations["updateAutomataTask"];
+        trace?: never;
+    };
+    "/automata/{name}/response": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Respond to automata prompt
+         * @description Submits a human response for an Automata prompt.
+         */
+        post: operations["respondAutomata"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automata/{name}/rename": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Rename automata
+         * @description Renames an Automata definition and preserves its runtime transcript.
+         */
+        post: operations["renameAutomata"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automata/{name}/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Duplicate automata
+         * @description Creates a new Automata definition by copying an existing one.
+         */
+        post: operations["duplicateAutomata"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automata/{name}/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reset automata state
+         * @description Resets Automata runtime state back to idle while keeping the definition.
+         */
+        post: operations["resetAutomata"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/agent/sessions": {
         parameters: {
             query?: never;
@@ -2702,9 +3022,9 @@ export interface components {
              * @description When the event was recorded by the producer
              */
             recordedAt: string;
-            /** @description High-level event kind (e.g., dag_run, llm_usage) */
+            /** @description High-level event kind (e.g., dag_run, automata, llm_usage) */
             kind: string;
-            /** @description Specific event type (e.g., dag.run.failed) */
+            /** @description Specific event type (e.g., dag.run.failed, automata.error) */
             type: string;
             /** @description Service that produced the event */
             sourceService: string;
@@ -2716,6 +3036,12 @@ export interface components {
             dagRunId?: string;
             /** @description Attempt ID for DAG-run events */
             attemptId?: string;
+            /** @description Automata name for automata events */
+            automataName?: string;
+            /** @description Automata kind for automata events */
+            automataKind?: string;
+            /** @description Automata cycle ID for automata events */
+            automataCycleId?: string;
             /** @description Session ID for LLM usage events */
             sessionId?: string;
             /** @description User ID associated with the event */
@@ -3103,13 +3429,22 @@ export interface components {
             instanceId: string;
             /** @description Hostname where scheduler is running */
             host: string;
+            /** @description Scheduler health port (0 when not exposed) */
+            port: number;
             /**
              * @description Scheduler status (active = holds lock and scheduling)
              * @enum {string}
              */
             status: SchedulerInstanceStatus;
+            automataController?: components["schemas"]["AutomataControllerStatus"];
             /** @description RFC3339 timestamp when scheduler started */
             startedAt: string;
+        };
+        /** @description Scheduler-owned Automata controller readiness */
+        AutomataControllerStatus: {
+            /** @enum {string} */
+            state: AutomataControllerStatusState;
+            message?: string;
         };
         /** @description Response containing status of all coordinator instances */
         CoordinatorStatusResponse: {
@@ -4449,6 +4784,12 @@ export interface components {
             dagName: components["schemas"]["DAGName"];
             content: string;
         };
+        /** @description Automata-specific memory content */
+        AutomataMemoryResponse: {
+            name: string;
+            content: string;
+            path: string;
+        };
         /** @description Request to update memory content */
         UpdateAgentMemoryRequest: {
             /** @description New memory content (markdown) */
@@ -4620,6 +4961,246 @@ export interface components {
         AgentStatusResponse: {
             status: string;
         };
+        /**
+         * @description Automata lifecycle state
+         * @enum {string}
+         */
+        AutomataLifecycleState: AutomataLifecycleState;
+        /**
+         * @description Automata kind
+         * @enum {string}
+         */
+        AutomataKind: AutomataKind;
+        /**
+         * @description User-facing Automata status
+         * @enum {string}
+         */
+        AutomataDisplayStatus: AutomataDisplayStatus;
+        /**
+         * @description Why an Automata is waiting
+         * @enum {string}
+         */
+        AutomataWaitingReason: AutomataWaitingReason;
+        /** @description Allowlisted DAG names and tags */
+        AutomataAllowedDAGs: {
+            names?: string[];
+            tags?: string[];
+        };
+        /**
+         * @description Checklist task state
+         * @enum {string}
+         */
+        AutomataTaskState: AutomataTaskState;
+        /** @description Runtime current-cycle task for an Automata */
+        AutomataTask: {
+            id: string;
+            description: string;
+            state: components["schemas"]["AutomataTaskState"];
+            /** Format: date-time */
+            createdAt?: string;
+            createdBy?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            updatedBy?: string;
+            /** Format: date-time */
+            doneAt?: string;
+            doneBy?: string;
+        };
+        /** @description Persistent task template for an Automata */
+        AutomataTaskTemplate: {
+            id: string;
+            description: string;
+            /** Format: date-time */
+            createdAt?: string;
+            createdBy?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            updatedBy?: string;
+        };
+        /** @description Agent runtime configuration for an Automata definition */
+        AutomataAgentConfig: {
+            model?: string;
+            soul?: string;
+            enabledSkills?: string[];
+            safeMode?: boolean;
+        };
+        /** @description Automata definition */
+        AutomataDefinition: {
+            name: string;
+            kind: components["schemas"]["AutomataKind"];
+            nickname?: string;
+            iconUrl?: string;
+            description?: string;
+            goal?: string;
+            standingInstruction?: string;
+            schedule?: string[];
+            tags?: string[];
+            allowedDAGs?: components["schemas"]["AutomataAllowedDAGs"];
+            agent?: components["schemas"]["AutomataAgentConfig"];
+            disabled?: boolean;
+        };
+        /** @description Pending human prompt for an Automata */
+        AutomataPrompt: {
+            id: string;
+            question: string;
+            options?: components["schemas"]["AgentUserPromptOption"][];
+            allowFreeText?: boolean;
+            freeTextPlaceholder?: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        /** @description Recorded human response for an Automata prompt */
+        AutomataPromptResponse: {
+            promptId: string;
+            selectedOptionIds?: string[];
+            freeTextResponse?: string;
+            /** Format: date-time */
+            respondedAt: string;
+        };
+        /** @description Queued message to be delivered on the next Automata turn */
+        AutomataPendingTurnMessage: {
+            id: string;
+            kind: string;
+            message: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        /** @description Reference to a tracked child DAG run */
+        AutomataRunRef: {
+            name: string;
+            id: string;
+        };
+        /** @description Summary of a child DAG run launched by an Automata */
+        AutomataRunSummary: {
+            name: string;
+            dagRunId: string;
+            status: components["schemas"]["StatusLabel"];
+            triggerType?: components["schemas"]["TriggerType"];
+            startedAt?: string;
+            finishedAt?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            error?: string;
+        };
+        /** @description Resolved DAG allowed in the current Automata */
+        AutomataAllowedDAGInfo: {
+            name: string;
+            description?: string;
+            tags?: string[];
+        };
+        /** @description Current runtime state for an Automata */
+        AutomataState: {
+            state: components["schemas"]["AutomataLifecycleState"];
+            displayStatus?: components["schemas"]["AutomataDisplayStatus"];
+            busy?: boolean;
+            needsInput?: boolean;
+            instruction?: string;
+            /** Format: date-time */
+            instructionUpdatedAt?: string;
+            instructionUpdatedBy?: string;
+            /** Format: date-time */
+            activatedAt?: string;
+            activatedBy?: string;
+            tasks?: components["schemas"]["AutomataTask"][];
+            sessionId?: string;
+            currentRunRef?: components["schemas"]["AutomataRunRef"];
+            lastRunRef?: components["schemas"]["AutomataRunRef"];
+            currentCycleId?: string;
+            waitingReason?: components["schemas"]["AutomataWaitingReason"];
+            pendingPrompt?: components["schemas"]["AutomataPrompt"];
+            pendingResponse?: components["schemas"]["AutomataPromptResponse"];
+            pendingTurnMessages?: components["schemas"]["AutomataPendingTurnMessage"][];
+            /** Format: date-time */
+            startRequestedAt?: string;
+            /** Format: date-time */
+            lastTriggeredAt?: string;
+            /** Format: date-time */
+            lastScheduleMinute?: string;
+            /** Format: date-time */
+            lastUpdatedAt?: string;
+            /** Format: date-time */
+            pausedAt?: string;
+            pausedBy?: string;
+            /** Format: date-time */
+            finishedAt?: string;
+            lastSummary?: string;
+            lastError?: string;
+        };
+        /** @description Summary row for an Automata */
+        AutomataSummary: {
+            name: string;
+            kind: components["schemas"]["AutomataKind"];
+            nickname?: string;
+            iconUrl?: string;
+            description?: string;
+            goal?: string;
+            tags?: string[];
+            instruction?: string;
+            state: components["schemas"]["AutomataLifecycleState"];
+            displayStatus?: components["schemas"]["AutomataDisplayStatus"];
+            busy?: boolean;
+            needsInput?: boolean;
+            disabled?: boolean;
+            currentRun?: components["schemas"]["AutomataRunSummary"];
+            openTaskCount?: number;
+            doneTaskCount?: number;
+            nextTaskDescription?: string;
+            /** Format: date-time */
+            lastUpdatedAt?: string;
+            automataController?: components["schemas"]["AutomataControllerStatus"];
+        };
+        /** @description List of Automata */
+        AutomataListResponse: {
+            automata: components["schemas"]["AutomataSummary"][];
+        };
+        /** @description Automata detail response */
+        AutomataDetailResponse: {
+            definition: components["schemas"]["AutomataDefinition"];
+            state: components["schemas"]["AutomataState"];
+            allowedDags: components["schemas"]["AutomataAllowedDAGInfo"][];
+            taskTemplates?: components["schemas"]["AutomataTaskTemplate"][];
+            currentRun?: components["schemas"]["AutomataRunSummary"];
+            recentRuns?: components["schemas"]["AutomataRunSummary"][];
+            messages?: components["schemas"]["AgentMessage"][];
+            automataController?: components["schemas"]["AutomataControllerStatus"];
+        };
+        /** @description Raw Automata YAML spec */
+        AutomataSpecResponse: {
+            spec: string;
+        };
+        /** @description Request body for creating or updating an Automata from raw YAML */
+        AutomataSpecUpsertRequest: {
+            spec: string;
+        };
+        /** @description Request body for starting an Automata task */
+        AutomataStartRequest: {
+            instruction?: string;
+        };
+        /** @description Request body for creating an Automata checklist task */
+        AutomataTaskCreateRequest: {
+            description: string;
+        };
+        /** @description Request body for updating an Automata checklist task */
+        AutomataTaskUpdateRequest: {
+            description?: string;
+            done?: boolean;
+        };
+        /** @description Request body for reordering Automata checklist tasks */
+        AutomataTaskReorderRequest: {
+            taskIds: string[];
+        };
+        /** @description Request body for an operator message */
+        AutomataOperatorMessageRequest: {
+            message: string;
+        };
+        /** @description Request body for renaming an Automata */
+        AutomataRenameRequest: {
+            newName: string;
+        };
+        /** @description Request body for duplicating an Automata */
+        AutomataDuplicateRequest: {
+            newName: string;
+        };
         CreateRemoteNodeRequest: {
             /** @description Display name for the remote node */
             name: string;
@@ -4779,6 +5360,8 @@ export interface components {
         SoulId: string;
         /** @description The unique identifier of the remote node */
         RemoteNodeId: string;
+        /** @description The Automata name */
+        AutomataName: string;
     };
     requestBodies: never;
     headers: never;
@@ -9312,9 +9895,9 @@ export interface operations {
             query?: {
                 /** @description name of the remote node */
                 remoteNode?: components["parameters"]["RemoteNode"];
-                /** @description Filter by event kind (e.g., dag_run, llm_usage) */
+                /** @description Filter by event kind (e.g., dag_run, automata, llm_usage) */
                 kind?: string;
-                /** @description Filter by event type (e.g., dag.run.failed, llm.usage.recorded) */
+                /** @description Filter by event type (e.g., dag.run.failed, automata.needs_input, llm.usage.recorded) */
                 type?: string;
                 /** @description Filter by DAG name */
                 dagName?: string;
@@ -9322,6 +9905,8 @@ export interface operations {
                 dagRunId?: string;
                 /** @description Filter by attempt ID */
                 attemptId?: string;
+                /** @description Filter by automata name */
+                automataName?: string;
                 /** @description Filter by session ID */
                 sessionId?: string;
                 /** @description Filter by user ID */
@@ -12040,6 +12625,1244 @@ export interface operations {
             };
         };
     };
+    listAutomata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of automata */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomataListResponse"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getAutomata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Automata detail */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomataDetailResponse"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    deleteAutomata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Automata deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getAutomataSpec: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Automata raw spec */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomataSpecResponse"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    putAutomataSpec: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomataSpecUpsertRequest"];
+            };
+        };
+        responses: {
+            /** @description Automata spec saved */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata controller is not ready */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getAutomataMemory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Automata memory */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomataMemoryResponse"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    updateAutomataMemory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAgentMemoryRequest"];
+            };
+        };
+        responses: {
+            /** @description Automata memory saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomataMemoryResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    deleteAutomataMemory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Automata memory cleared */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    startAutomata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomataStartRequest"];
+            };
+        };
+        responses: {
+            /** @description Automata started */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata controller is not ready */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    pauseAutomata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Automata paused */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata controller is not ready */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    resumeAutomata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Automata resumed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata controller is not ready */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    messageAutomata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomataOperatorMessageRequest"];
+            };
+        };
+        responses: {
+            /** @description Operator message accepted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata controller is not ready */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    createAutomataTask: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomataTaskCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Automata task created */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomataTask"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    reorderAutomataTasks: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomataTaskReorderRequest"];
+            };
+        };
+        responses: {
+            /** @description Automata tasks reordered */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    deleteAutomataTask: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+                taskId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Automata task deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    updateAutomataTask: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+                taskId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomataTaskUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Automata task updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomataTask"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    respondAutomata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AgentUserPromptResponse"];
+            };
+        };
+        responses: {
+            /** @description Response accepted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    renameAutomata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomataRenameRequest"];
+            };
+        };
+        responses: {
+            /** @description Automata renamed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata controller is not ready */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    duplicateAutomata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomataDuplicateRequest"];
+            };
+        };
+        responses: {
+            /** @description Automata duplicated */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    resetAutomata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Automata state reset */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     listAgentSessions: {
         parameters: {
             query?: {
@@ -13391,6 +15214,7 @@ export enum StatusLabel {
     rejected = "rejected"
 }
 export enum TriggerType {
+    automata = "automata",
     unknown = "unknown",
     scheduler = "scheduler",
     manual = "manual",
@@ -13426,6 +15250,12 @@ export enum NodeStatusLabel {
 export enum SchedulerInstanceStatus {
     active = "active",
     inactive = "inactive",
+    unknown = "unknown"
+}
+export enum AutomataControllerStatusState {
+    ready = "ready",
+    disabled = "disabled",
+    unavailable = "unavailable",
     unknown = "unknown"
 }
 export enum CoordinatorInstanceStatus {
@@ -13592,6 +15422,31 @@ export enum AgentMessageType {
 export enum AgentDelegateSnapshotStatus {
     running = "running",
     completed = "completed"
+}
+export enum AutomataLifecycleState {
+    idle = "idle",
+    running = "running",
+    waiting = "waiting",
+    paused = "paused",
+    finished = "finished"
+}
+export enum AutomataKind {
+    workflow = "workflow",
+    service = "service"
+}
+export enum AutomataDisplayStatus {
+    idle = "idle",
+    running = "running",
+    paused = "paused",
+    finished = "finished"
+}
+export enum AutomataWaitingReason {
+    human_input = "human_input",
+    dag_wait = "dag_wait"
+}
+export enum AutomataTaskState {
+    open = "open",
+    done = "done"
 }
 export enum CreateRemoteNodeRequestAuthType {
     none = "none",

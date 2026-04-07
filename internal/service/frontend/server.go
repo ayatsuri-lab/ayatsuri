@@ -34,6 +34,7 @@ import (
 	"github.com/dagucloud/dagu/internal/agentoauth"
 	authmodel "github.com/dagucloud/dagu/internal/auth"
 	"github.com/dagucloud/dagu/internal/auth/tokensecret"
+	"github.com/dagucloud/dagu/internal/automata"
 	"github.com/dagucloud/dagu/internal/cmn/backoff"
 	"github.com/dagucloud/dagu/internal/cmn/config"
 	"github.com/dagucloud/dagu/internal/cmn/crypto"
@@ -401,6 +402,25 @@ func NewServer(ctx context.Context, cfg *config.Config, dr exec.DAGStore, drs ex
 		}
 	}
 
+	automataSessionStore, err := filesession.New(cfg.Paths.SessionsDir, filesession.WithMaxPerUser(cfg.Server.Session.MaxPerUser))
+	if err != nil {
+		logger.Warn(ctx, "Failed to create automata session store", tag.Error(err))
+	}
+	automataService := automata.New(
+		cfg,
+		dr,
+		drs,
+		automata.WithDAGRunController(&drm),
+		automata.WithCoordinatorClient(cc),
+		automata.WithSessionStore(automataSessionStore),
+		automata.WithMemoryStore(memoryStore),
+		automata.WithEventService(eventSvc),
+		automata.WithEventSource(eventstore.Source{
+			Service: eventstore.SourceServiceServer,
+		}),
+		automata.WithLogger(slog.Default()),
+	)
+
 	// Note: SSO/OIDC gating is applied after opts are processed (see below)
 
 	srv := &Server{
@@ -486,6 +506,7 @@ func NewServer(ctx context.Context, cfg *config.Config, dr exec.DAGStore, drs ex
 	}
 
 	allAPIOptions := append(apiOpts, srv.tunnelAPIOpts...)
+	allAPIOptions = append(allAPIOptions, apiv1.WithAutomataService(automataService))
 	if srv.agentConfigStore != nil {
 		allAPIOptions = append(allAPIOptions, apiv1.WithAgentConfigStore(srv.agentConfigStore))
 	}

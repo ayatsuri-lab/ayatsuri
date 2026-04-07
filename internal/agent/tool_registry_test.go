@@ -22,6 +22,36 @@ func (r *testRemoteContextResolver) ListRemoteContexts(_ context.Context) ([]Rem
 	return nil, nil
 }
 
+type testAutomataRuntime struct{}
+
+func (r *testAutomataRuntime) ListTasks(_ context.Context) ([]AutomataTask, error) {
+	return []AutomataTask{{ID: "task-1", Description: "Investigate failure", State: "open"}}, nil
+}
+
+func (r *testAutomataRuntime) ListAllowedDAGs(_ context.Context) ([]AutomataAllowedDAG, error) {
+	return []AutomataAllowedDAG{{Name: "example"}}, nil
+}
+
+func (r *testAutomataRuntime) RunAllowedDAG(_ context.Context, input AutomataRunDAGInput) (AutomataRunDAGResult, error) {
+	return AutomataRunDAGResult{DAGName: input.DAGName, DAGRunID: "run-1"}, nil
+}
+
+func (r *testAutomataRuntime) RetryCurrentRun(_ context.Context) (AutomataRunDAGResult, error) {
+	return AutomataRunDAGResult{DAGName: "example", DAGRunID: "run-2"}, nil
+}
+
+func (r *testAutomataRuntime) SetTaskDone(_ context.Context, _ string, _ bool) error {
+	return nil
+}
+
+func (r *testAutomataRuntime) RequestHumanInput(_ context.Context, _ AutomataHumanPrompt) error {
+	return nil
+}
+
+func (r *testAutomataRuntime) Finish(_ context.Context, _ string) error {
+	return nil
+}
+
 func TestRegisteredTools_ContainsAllExpected(t *testing.T) {
 	t.Parallel()
 
@@ -30,6 +60,9 @@ func TestRegisteredTools_ContainsAllExpected(t *testing.T) {
 		"navigate", "ask_user",
 		"delegate", "use_skill", "search_skills",
 		"remote_agent", "list_contexts",
+		"list_automata_tasks",
+		"list_allowed_dags", "run_allowed_dag", "retry_automata_run",
+		"set_automata_task_done", "request_human_input", "finish_automata",
 	}
 
 	regs := RegisteredTools()
@@ -83,7 +116,12 @@ func TestRegisteredTools_HaveMetadata(t *testing.T) {
 func TestRegisteredTools_FactoriesProduceValidTools(t *testing.T) {
 	t.Parallel()
 
-	cfg := ToolConfig{DAGsDir: "/tmp/test-dags", SkillStore: &testSkillStore{}, RemoteContextResolver: &testRemoteContextResolver{}}
+	cfg := ToolConfig{
+		DAGsDir:               "/tmp/test-dags",
+		SkillStore:            &testSkillStore{},
+		RemoteContextResolver: &testRemoteContextResolver{},
+		AutomataRuntime:       &testAutomataRuntime{},
+	}
 	for _, reg := range RegisteredTools() {
 		t.Run(reg.Name, func(t *testing.T) {
 			t.Parallel()
@@ -101,7 +139,12 @@ func TestRegisteredTools_FactoriesProduceValidTools(t *testing.T) {
 func TestCreateTools_UsesRegistry(t *testing.T) {
 	t.Parallel()
 
-	tools := CreateTools(ToolConfig{DAGsDir: "/tmp/dags", SkillStore: &testSkillStore{}, RemoteContextResolver: &testRemoteContextResolver{}})
+	tools := CreateTools(ToolConfig{
+		DAGsDir:               "/tmp/dags",
+		SkillStore:            &testSkillStore{},
+		RemoteContextResolver: &testRemoteContextResolver{},
+		AutomataRuntime:       &testAutomataRuntime{},
+	})
 	regs := RegisteredTools()
 
 	assert.Len(t, tools, len(regs), "CreateTools should produce one tool per registration")

@@ -20,6 +20,7 @@ import (
 
 	"github.com/dagucloud/dagu/internal/agent"
 	"github.com/dagucloud/dagu/internal/agentoauth"
+	"github.com/dagucloud/dagu/internal/automata"
 	"github.com/dagucloud/dagu/internal/clicontext"
 	"github.com/dagucloud/dagu/internal/cmn/config"
 	"github.com/dagucloud/dagu/internal/cmn/crypto"
@@ -47,6 +48,7 @@ import (
 	"github.com/dagucloud/dagu/internal/persis/fileproc"
 	"github.com/dagucloud/dagu/internal/persis/filequeue"
 	"github.com/dagucloud/dagu/internal/persis/fileserviceregistry"
+	"github.com/dagucloud/dagu/internal/persis/filesession"
 	"github.com/dagucloud/dagu/internal/persis/filewatermark"
 	"github.com/dagucloud/dagu/internal/runtime"
 	"github.com/dagucloud/dagu/internal/runtime/transform"
@@ -673,8 +675,141 @@ func (c *Context) NewScheduler() (*scheduler.Scheduler, error) {
 		}
 	}
 	sched.SetDAGRunLeaseStore(c.DAGRunLeaseStore)
+	automataEnabled, err := c.automataEnabled()
+	if err != nil {
+		return nil, fmt.Errorf("failed to determine automata enablement: %w", err)
+	}
+	if automataEnabled {
+		automataService, err := c.newSchedulerAutomataService(dr, schedulerRunStore, schedulerRunMgr, coordinatorCli)
+		if err != nil {
+			return nil, fmt.Errorf("failed to initialize automata service for scheduler: %w", err)
+		}
+		if err := automataService.ValidateController(); err != nil {
+			return nil, fmt.Errorf("invalid automata controller configuration: %w", err)
+		}
+		sched.SetAutomataService(automataService)
+		sched.SetAutomataController(&exec.AutomataControllerInfo{
+			State: exec.AutomataControllerStateReady,
+		})
+	} else {
+		sched.SetAutomataController(&exec.AutomataControllerInfo{
+			State:   exec.AutomataControllerStateDisabled,
+			Message: "Automata is disabled in agent settings",
+		})
+	}
 	sched.SetDispatchTaskStore(c.DispatchTaskStore)
 	return sched, nil
+}
+
+func (c *Context) automataEnabled() (bool, error) {
+	store, err := fileagentconfig.New(c.Config.Paths.DataDir)
+	if err != nil {
+		return false, err
+	}
+	return store.IsEnabled(c.Context), nil
+}
+
+func (c *Context) newSchedulerAutomataService(
+	dagStore exec.DAGStore,
+	dagRunStore exec.DAGRunStore,
+	dagRunMgr runtime.Manager,
+	coordinatorCli coordinator.Client,
+) (*automata.Service, error) {
+	agentConfigStore, err := fileagentconfig.New(c.Config.Paths.DataDir)
+	if err != nil {
+		return nil, err
+	}
+	modelStore, err := fileagentmodel.New(filepath.Join(c.Config.Paths.DataDir, "agent", "models"))
+	if err != nil {
+		return nil, err
+	}
+	skillStore, err := fileagentskill.New(filepath.Join(c.Config.Paths.DAGsDir, "skills"))
+	if err != nil {
+		return nil, err
+	}
+	soulStore, err := fileagentsoul.New(c.Context, filepath.Join(c.Config.Paths.DAGsDir, "souls"))
+	if err != nil {
+		return nil, err
+	}
+	sessionStore, err := filesession.New(c.Config.Paths.SessionsDir, filesession.WithMaxPerUser(c.Config.Server.Session.MaxPerUser))
+	if err != nil {
+		return nil, err
+	}
+	memoryStore, err := filememory.New(c.Config.Paths.DAGsDir)
+	if err != nil {
+		return nil, err
+	}
+	oauthManager, err := fileagentoauth.NewManager(c.Config.Paths.DataDir)
+	if err != nil {
+		return nil, err
+	}
+	agentAPI := c.newSchedulerAgentAPI(
+		dagStore,
+		agentConfigStore,
+		modelStore,
+		skillStore,
+		soulStore,
+		sessionStore,
+		memoryStore,
+		oauthManager,
+	)
+	return automata.New(
+		c.Config,
+		dagStore,
+		dagRunStore,
+		automata.WithSessionStore(sessionStore),
+		automata.WithMemoryStore(memoryStore),
+		automata.WithDAGRunController(&dagRunMgr),
+		automata.WithAgentAPI(agentAPI),
+		automata.WithSoulStore(soulStore),
+		automata.WithCoordinatorClient(coordinatorCli),
+		automata.WithSubCmdBuilder(runtime.NewSubCmdBuilder(c.Config)),
+		automata.WithEventService(c.EventService),
+		automata.WithEventSource(eventstore.Source{
+			Service:  eventstore.SourceServiceScheduler,
+			Instance: c.EventSourceInstance,
+		}),
+		automata.WithLogger(slog.Default()),
+	), nil
+}
+
+func (c *Context) newSchedulerAgentAPI(
+	dagStore exec.DAGStore,
+	configStore agent.ConfigStore,
+	modelStore agent.ModelStore,
+	skillStore agent.SkillStore,
+	soulStore agent.SoulStore,
+	sessionStore agent.SessionStore,
+	memoryStore agent.MemoryStore,
+	oauthManager *agentoauth.Manager,
+) *agent.API {
+	referencesDir := fileagentskill.SeedReferences(
+		filepath.Join(c.Config.Paths.DataDir, "agent", "references"),
+	)
+	agentAPI := agent.NewAPI(agent.APIConfig{
+		ConfigStore:  configStore,
+		ModelStore:   modelStore,
+		SkillStore:   skillStore,
+		SoulStore:    soulStore,
+		WorkingDir:   c.Config.Paths.DAGsDir,
+		Logger:       slog.Default(),
+		SessionStore: sessionStore,
+		DAGStore:     dagStore,
+		MemoryStore:  memoryStore,
+		OAuthManager: oauthManager,
+		Environment: agent.EnvironmentInfo{
+			DAGsDir:        c.Config.Paths.DAGsDir,
+			DocsDir:        c.Config.Paths.DocsDir,
+			LogDir:         c.Config.Paths.LogDir,
+			DataDir:        c.Config.Paths.DataDir,
+			ConfigFile:     c.Config.Paths.ConfigFileUsed,
+			WorkingDir:     c.Config.Paths.DAGsDir,
+			BaseConfigFile: c.Config.Paths.BaseConfig,
+			ReferencesDir:  referencesDir,
+		},
+	})
+	agentAPI.StartCleanup(c.Context)
+	return agentAPI
 }
 
 // StringParam retrieves a string parameter from the command line flags.

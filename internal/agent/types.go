@@ -150,6 +150,8 @@ type Session struct {
 	UserID string `json:"user_id,omitempty"`
 	// DAGName stores the primary DAG context for this session's memory scope.
 	DAGName string `json:"dag_name,omitempty"`
+	// AutomataName stores the primary Automata context for this session's memory scope.
+	AutomataName string `json:"automata_name,omitempty"`
 	// Title is a human-readable name for the session.
 	Title string `json:"title,omitempty"`
 	// CreatedAt is when this session was created.
@@ -298,12 +300,60 @@ type ToolOut struct {
 	Content string
 	// IsError indicates whether the tool execution failed.
 	IsError bool
+	// InterruptTurn stops the current assistant turn after recording the tool result.
+	// This is used by Automata tools that hand control back to the scheduler.
+	InterruptTurn bool
 	// DelegateIDs references the sub-sessions created by the delegate tool.
 	DelegateIDs []string
 	// AuditDetails contains extra audit details set by the tool at runtime.
 	// These are merged with DetailExtractor output in the audit hook;
 	// AuditDetails takes precedence on key collisions.
 	AuditDetails map[string]any
+}
+
+// AutomataAllowedDAG describes a DAG that an Automata session is allowed to run.
+type AutomataAllowedDAG struct {
+	Name        string   `json:"name"`
+	Description string   `json:"description,omitempty"`
+	Tags        []string `json:"tags,omitempty"`
+}
+
+// AutomataTask describes a single checklist item in an Automata runtime.
+type AutomataTask struct {
+	ID          string `json:"id"`
+	Description string `json:"description"`
+	State       string `json:"state"`
+}
+
+// AutomataRunDAGInput contains the arguments for launching an allowed DAG.
+type AutomataRunDAGInput struct {
+	DAGName string `json:"dag_name"`
+	Params  string `json:"params,omitempty"`
+}
+
+// AutomataRunDAGResult is returned after an Automata launches a DAG.
+type AutomataRunDAGResult struct {
+	DAGName  string `json:"dag_name"`
+	DAGRunID string `json:"dag_run_id"`
+}
+
+// AutomataHumanPrompt describes a persisted human-input request owned by Automata.
+type AutomataHumanPrompt struct {
+	Question            string             `json:"question"`
+	Options             []UserPromptOption `json:"options,omitempty"`
+	AllowFreeText       bool               `json:"allow_free_text,omitempty"`
+	FreeTextPlaceholder string             `json:"free_text_placeholder,omitempty"`
+}
+
+// AutomataRuntime exposes scheduler-owned workflow controls to restricted Automata sessions.
+type AutomataRuntime interface {
+	ListTasks(ctx context.Context) ([]AutomataTask, error)
+	ListAllowedDAGs(ctx context.Context) ([]AutomataAllowedDAG, error)
+	RunAllowedDAG(ctx context.Context, input AutomataRunDAGInput) (AutomataRunDAGResult, error)
+	RetryCurrentRun(ctx context.Context) (AutomataRunDAGResult, error)
+	SetTaskDone(ctx context.Context, taskID string, done bool) error
+	RequestHumanInput(ctx context.Context, prompt AutomataHumanPrompt) error
+	Finish(ctx context.Context, summary string) error
 }
 
 // ToolFunc is the function signature for tool execution.
@@ -393,6 +443,8 @@ type ToolContext struct {
 	Role auth.Role
 	// Delegate provides sub-agent spawning capability. Nil when not available.
 	Delegate *DelegateContext
+	// AutomataRuntime exposes workflow controls for restricted Automata sessions.
+	AutomataRuntime AutomataRuntime
 }
 
 // AuditInfo configures how a tool's executions appear in audit logs.

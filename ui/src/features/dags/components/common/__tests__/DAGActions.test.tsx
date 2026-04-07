@@ -87,7 +87,16 @@ describe('DAGActions', () => {
   it('disables retry when there is no DAG run id', () => {
     const view = render(
       <DAGActions
-        status={undefined}
+        status={{
+          name: 'finished-dag',
+          dagRunId: '',
+          status: Status.Failed,
+          statusLabel: StatusLabel.failed,
+          autoRetryCount: 3,
+          autoRetryLimit: 3,
+          startedAt: '',
+          finishedAt: '',
+        }}
         fileName="finished-dag.yaml"
         dag={{ name: 'finished-dag' }}
         displayMode="full"

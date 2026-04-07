@@ -6,6 +6,7 @@ package chatbridge
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -14,7 +15,7 @@ import (
 	"github.com/dagucloud/dagu/internal/service/eventstore"
 )
 
-const notificationMonitorStateVersion = 1
+const notificationMonitorStateVersion = 2
 
 type notificationStateLoadResult struct {
 	State           notificationMonitorState
@@ -36,6 +37,14 @@ type notificationDestinationState struct {
 	Delivered map[string]time.Time         `json:"delivered,omitempty"`
 }
 
+type unsupportedNotificationStateVersionError struct {
+	Version int
+}
+
+func (e unsupportedNotificationStateVersionError) Error() string {
+	return fmt.Sprintf("unsupported notification state version %d", e.Version)
+}
+
 func newNotificationMonitorState() notificationMonitorState {
 	return notificationMonitorState{
 		Version:      notificationMonitorStateVersion,
@@ -45,7 +54,7 @@ func newNotificationMonitorState() notificationMonitorState {
 }
 
 func (s *notificationMonitorState) normalize() {
-	if s.Version == 0 {
+	if s.Version != notificationMonitorStateVersion {
 		s.Version = notificationMonitorStateVersion
 	}
 	s.SourceCursor = s.SourceCursor.Normalize()
@@ -95,16 +104,14 @@ func (s *notificationStateStore) Load(_ context.Context) notificationStateLoadRe
 	}
 
 	state := newNotificationMonitorState()
-	if err := json.Unmarshal(data, &state); err != nil {
+	if err := unmarshalNotificationState(data, &state); err != nil {
+		if unsupportedVersionError(err) {
+			result.Recovered = true
+			result.QuarantinedPath, result.Warning = s.recoverUnreadableState(err)
+			return result
+		}
 		result.Recovered = true
 		result.QuarantinedPath, result.Warning = s.recoverUnreadableState(fmt.Errorf("decode notification state: %w", err))
-		return result
-	}
-	switch state.Version {
-	case 0, notificationMonitorStateVersion:
-	default:
-		result.Recovered = true
-		result.QuarantinedPath, result.Warning = s.recoverUnreadableState(fmt.Errorf("unsupported notification state version %d", state.Version))
 		return result
 	}
 
@@ -180,4 +187,25 @@ func (s *notificationStateStore) recoverUnreadableState(err error) (string, erro
 		return "", fmt.Errorf("%w (quarantine failed: %v)", err, quarantineErr)
 	}
 	return quarantinedPath, err
+}
+
+func unmarshalNotificationState(data []byte, state *notificationMonitorState) error {
+	if state == nil {
+		return errors.New("notification state target is nil")
+	}
+	var versionProbe struct {
+		Version int `json:"version"`
+	}
+	if err := json.Unmarshal(data, &versionProbe); err != nil {
+		return err
+	}
+	if versionProbe.Version != notificationMonitorStateVersion {
+		return unsupportedNotificationStateVersionError{Version: versionProbe.Version}
+	}
+	return json.Unmarshal(data, state)
+}
+
+func unsupportedVersionError(err error) bool {
+	var target unsupportedNotificationStateVersionError
+	return errors.As(err, &target)
 }

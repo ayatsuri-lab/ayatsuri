@@ -4,7 +4,7 @@
 import { Theme } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import React from 'react';
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom';
 import { SWRConfig, mutate as globalMutate } from 'swr';
 
 import { Shield } from 'lucide-react';
@@ -40,6 +40,7 @@ import SkillEditorPage from './pages/agent-skills/SkillEditorPage';
 import AgentSoulsPage from './pages/agent-souls';
 import SoulEditorPage from './pages/agent-souls/SoulEditorPage';
 import APIKeysPage from './pages/api-keys';
+import AutomataPage from './pages/automata';
 import APIDocsPage from './pages/api-docs';
 import AuditLogsPage from './pages/audit-logs';
 import BaseConfigPage from './pages/base-config';
@@ -212,6 +213,10 @@ function AppInner({ config: initialConfig }: Props): React.ReactElement {
     document.documentElement.style.backgroundColor = 'var(--background)';
   }, [theme]);
 
+  const automataRouteElement = config.agentEnabled
+    ? <AutomataPage />
+    : <Navigate to="/dags" replace />;
+
   return (
     <Theme
       appearance={theme}
@@ -300,6 +305,14 @@ function AppInner({ config: initialConfig }: Props): React.ReactElement {
                                           <Route
                                             path="/queues/:name"
                                             element={<QueueDetailsPage />}
+                                          />
+                                          <Route
+                                            path="/automata"
+                                            element={automataRouteElement}
+                                          />
+                                          <Route
+                                            path="/automata/:name"
+                                            element={automataRouteElement}
                                           />
                                           <Route
                                             path="/dag-runs"
@@ -465,9 +478,7 @@ function AppInner({ config: initialConfig }: Props): React.ReactElement {
                                           />
                                         </Routes>
                                       </Layout>
-                                      {config.agentEnabled && (
-                                        <AgentChatModal />
-                                      )}
+                                      {config.agentEnabled && <AgentChatModal />}
                                     </PageContextProvider>
                                   </AgentChatProvider>
                                 </ProtectedRoute>

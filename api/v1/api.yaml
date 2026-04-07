@@ -49,6 +49,8 @@ tags:
     description: "Git synchronization operations for DAGs"
   - name: "agent"
     description: "AI Agent configuration operations (admin only)"
+  - name: "automata"
+    description: "Automata workflow management operations"
   - name: "docs"
     description: "Document management operations"
   - name: "remote-nodes"
@@ -3670,13 +3672,13 @@ paths:
         - $ref: "#/components/parameters/RemoteNode"
         - name: kind
           in: query
-          description: "Filter by event kind (e.g., dag_run, llm_usage)"
+          description: "Filter by event kind (e.g., dag_run, automata, llm_usage)"
           required: false
           schema:
             type: string
         - name: type
           in: query
-          description: "Filter by event type (e.g., dag.run.failed, llm.usage.recorded)"
+          description: "Filter by event type (e.g., dag.run.failed, automata.needs_input, llm.usage.recorded)"
           required: false
           schema:
             type: string
@@ -3695,6 +3697,12 @@ paths:
         - name: attemptId
           in: query
           description: "Filter by attempt ID"
+          required: false
+          schema:
+            type: string
+        - name: automataName
+          in: query
+          description: "Filter by automata name"
           required: false
           schema:
             type: string
@@ -5760,6 +5768,862 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /automata:
+    get:
+      summary: "List automata"
+      description: "Returns all Automata definitions with current lifecycle and display state."
+      operationId: "listAutomata"
+      tags:
+        - "automata"
+      responses:
+        "200":
+          description: "List of automata"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutomataListResponse"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automata/{name}:
+    get:
+      summary: "Get automata detail"
+      description: "Returns Automata detail including definition, runtime state, transcript, and recent runs."
+      operationId: "getAutomata"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      responses:
+        "200":
+          description: "Automata detail"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutomataDetailResponse"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: "Automata not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: "Delete automata"
+      description: "Deletes an Automata definition and its runtime state."
+      operationId: "deleteAutomata"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      responses:
+        "204":
+          description: "Automata deleted"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: "Automata not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automata/{name}/spec:
+    get:
+      summary: "Get automata raw spec"
+      description: "Returns the raw YAML specification for an Automata."
+      operationId: "getAutomataSpec"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      responses:
+        "200":
+          description: "Automata raw spec"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutomataSpecResponse"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: "Automata not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: "Create or update automata spec"
+      description: "Creates or updates an Automata definition from a raw YAML spec."
+      operationId: "putAutomataSpec"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AutomataSpecUpsertRequest"
+      responses:
+        "204":
+          description: "Automata spec saved"
+        "400":
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: "Automata controller is not ready"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automata/{name}/memory:
+    get:
+      summary: "Get automata memory"
+      description: "Returns the Automata-specific MEMORY.md content and resolved path."
+      operationId: "getAutomataMemory"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      responses:
+        "200":
+          description: "Automata memory"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutomataMemoryResponse"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: "Automata not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: "Update automata memory"
+      description: "Creates or updates the Automata-specific MEMORY.md content."
+      operationId: "updateAutomataMemory"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAgentMemoryRequest"
+      responses:
+        "200":
+          description: "Automata memory saved"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutomataMemoryResponse"
+        "400":
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: "Automata not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: "Clear automata memory"
+      description: "Deletes the Automata-specific MEMORY.md file."
+      operationId: "deleteAutomataMemory"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      responses:
+        "204":
+          description: "Automata memory cleared"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: "Automata not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automata/{name}/start:
+    post:
+      summary: "Start automata task"
+      description: "Starts a workflow Automata task or activates a service Automata."
+      operationId: "startAutomata"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AutomataStartRequest"
+      responses:
+        "204":
+          description: "Automata started"
+        "400":
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: "Automata controller is not ready"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automata/{name}/pause:
+    post:
+      summary: "Pause automata"
+      description: "Pauses Automata orchestration without deleting the active task."
+      operationId: "pauseAutomata"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      responses:
+        "204":
+          description: "Automata paused"
+        "400":
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: "Automata controller is not ready"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automata/{name}/resume:
+    post:
+      summary: "Resume automata"
+      description: "Resumes a paused Automata."
+      operationId: "resumeAutomata"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      responses:
+        "204":
+          description: "Automata resumed"
+        "400":
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: "Automata controller is not ready"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automata/{name}/message:
+    post:
+      summary: "Send operator message to automata"
+      description: "Adds an operator message to the current Automata task."
+      operationId: "messageAutomata"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AutomataOperatorMessageRequest"
+      responses:
+        "204":
+          description: "Operator message accepted"
+        "400":
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: "Automata controller is not ready"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automata/{name}/tasks:
+    post:
+      summary: "Create automata task"
+      description: "Creates a new persistent task template for an Automata."
+      operationId: "createAutomataTask"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AutomataTaskCreateRequest"
+      responses:
+        "200":
+          description: "Automata task created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutomataTask"
+        "400":
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automata/{name}/tasks/reorder:
+    post:
+      summary: "Reorder automata tasks"
+      description: "Reorders the persistent task templates for an Automata."
+      operationId: "reorderAutomataTasks"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AutomataTaskReorderRequest"
+      responses:
+        "204":
+          description: "Automata tasks reordered"
+        "400":
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automata/{name}/tasks/{taskId}:
+    patch:
+      summary: "Update automata task"
+      description: "Updates an Automata task template description and, when requested, the current cycle task state."
+      operationId: "updateAutomataTask"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+        - name: "taskId"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AutomataTaskUpdateRequest"
+      responses:
+        "200":
+          description: "Automata task updated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutomataTask"
+        "400":
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: "Delete automata task"
+      description: "Deletes a persistent task template from an Automata."
+      operationId: "deleteAutomataTask"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+        - name: "taskId"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: "Automata task deleted"
+        "400":
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automata/{name}/response:
+    post:
+      summary: "Respond to automata prompt"
+      description: "Submits a human response for an Automata prompt."
+      operationId: "respondAutomata"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentUserPromptResponse"
+      responses:
+        "204":
+          description: "Response accepted"
+        "400":
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automata/{name}/rename:
+    post:
+      summary: "Rename automata"
+      description: "Renames an Automata definition and preserves its runtime transcript."
+      operationId: "renameAutomata"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AutomataRenameRequest"
+      responses:
+        "204":
+          description: "Automata renamed"
+        "400":
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: "Automata not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: "Automata controller is not ready"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automata/{name}/duplicate:
+    post:
+      summary: "Duplicate automata"
+      description: "Creates a new Automata definition by copying an existing one."
+      operationId: "duplicateAutomata"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AutomataDuplicateRequest"
+      responses:
+        "204":
+          description: "Automata duplicated"
+        "400":
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: "Automata not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automata/{name}/reset:
+    post:
+      summary: "Reset automata state"
+      description: "Resets Automata runtime state back to idle while keeping the definition."
+      operationId: "resetAutomata"
+      tags:
+        - "automata"
+      parameters:
+        - $ref: "#/components/parameters/AutomataName"
+      responses:
+        "204":
+          description: "Automata state reset"
+        "400":
+          description: "Invalid request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Forbidden"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: "Automata not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /agent/sessions:
     post:
       summary: "Create agent session"
@@ -7072,6 +7936,15 @@ components:
       schema:
         type: string
 
+    AutomataName:
+      name: name
+      in: path
+      required: true
+      description: "The Automata name"
+      schema:
+        type: string
+        minLength: 1
+
   schemas:
     Tags:
       type: array
@@ -7152,10 +8025,10 @@ components:
           description: "When the event was recorded by the producer"
         kind:
           type: string
-          description: "High-level event kind (e.g., dag_run, llm_usage)"
+          description: "High-level event kind (e.g., dag_run, automata, llm_usage)"
         type:
           type: string
-          description: "Specific event type (e.g., dag.run.failed)"
+          description: "Specific event type (e.g., dag.run.failed, automata.error)"
         sourceService:
           type: string
           description: "Service that produced the event"
@@ -7171,6 +8044,15 @@ components:
         attemptId:
           type: string
           description: "Attempt ID for DAG-run events"
+        automataName:
+          type: string
+          description: "Automata name for automata events"
+        automataKind:
+          type: string
+          description: "Automata kind for automata events"
+        automataCycleId:
+          type: string
+          description: "Automata cycle ID for automata events"
         sessionId:
           type: string
           description: "Session ID for LLM usage events"
@@ -7813,6 +8695,7 @@ components:
       type: string
       description: "How the DAG-run was initiated"
       enum:
+        - "automata"
         - "unknown"
         - "scheduler"
         - "manual"
@@ -7885,18 +8768,36 @@ components:
         host:
           type: string
           description: "Hostname where scheduler is running"
+        port:
+          type: integer
+          description: "Scheduler health port (0 when not exposed)"
         status:
           type: string
           enum: ["active", "inactive", "unknown"]
           description: "Scheduler status (active = holds lock and scheduling)"
+        automataController:
+          $ref: "#/components/schemas/AutomataControllerStatus"
         startedAt:
           type: string
           description: "RFC3339 timestamp when scheduler started"
       required:
         - instanceId
         - host
+        - port
         - status
         - startedAt
+
+    AutomataControllerStatus:
+      type: object
+      description: "Scheduler-owned Automata controller readiness"
+      required:
+        - state
+      properties:
+        state:
+          type: string
+          enum: ["ready", "disabled", "unavailable", "unknown"]
+        message:
+          type: string
 
     CoordinatorStatusResponse:
       type: object
@@ -10523,6 +11424,21 @@ components:
         content:
           type: string
 
+    AutomataMemoryResponse:
+      type: object
+      required:
+        - name
+        - content
+        - path
+      description: "Automata-specific memory content"
+      properties:
+        name:
+          type: string
+        content:
+          type: string
+        path:
+          type: string
+
     UpdateAgentMemoryRequest:
       type: object
       required:
@@ -10918,6 +11834,525 @@ components:
         - status
       properties:
         status:
+          type: string
+
+    AutomataLifecycleState:
+      type: string
+      description: "Automata lifecycle state"
+      enum:
+        - idle
+        - running
+        - waiting
+        - paused
+        - finished
+
+    AutomataKind:
+      type: string
+      description: "Automata kind"
+      enum:
+        - workflow
+        - service
+
+    AutomataDisplayStatus:
+      type: string
+      description: "User-facing Automata status"
+      enum:
+        - idle
+        - running
+        - paused
+        - finished
+
+    AutomataWaitingReason:
+      type: string
+      description: "Why an Automata is waiting"
+      enum:
+        - human_input
+        - dag_wait
+
+    AutomataAllowedDAGs:
+      type: object
+      description: "Allowlisted DAG names and tags"
+      properties:
+        names:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+
+    AutomataTaskState:
+      type: string
+      description: "Checklist task state"
+      enum:
+        - open
+        - done
+
+    AutomataTask:
+      type: object
+      description: "Runtime current-cycle task for an Automata"
+      required:
+        - id
+        - description
+        - state
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        state:
+          $ref: "#/components/schemas/AutomataTaskState"
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+        updatedBy:
+          type: string
+        doneAt:
+          type: string
+          format: date-time
+        doneBy:
+          type: string
+
+    AutomataTaskTemplate:
+      type: object
+      description: "Persistent task template for an Automata"
+      required:
+        - id
+        - description
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+        updatedBy:
+          type: string
+
+    AutomataAgentConfig:
+      type: object
+      description: "Agent runtime configuration for an Automata definition"
+      properties:
+        model:
+          type: string
+        soul:
+          type: string
+        enabledSkills:
+          type: array
+          items:
+            type: string
+        safeMode:
+          type: boolean
+
+    AutomataDefinition:
+      type: object
+      description: "Automata definition"
+      required:
+        - name
+        - kind
+      properties:
+        name:
+          type: string
+        kind:
+          $ref: "#/components/schemas/AutomataKind"
+        nickname:
+          type: string
+        iconUrl:
+          type: string
+        description:
+          type: string
+        goal:
+          type: string
+        standingInstruction:
+          type: string
+        schedule:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        allowedDAGs:
+          $ref: "#/components/schemas/AutomataAllowedDAGs"
+        agent:
+          $ref: "#/components/schemas/AutomataAgentConfig"
+        disabled:
+          type: boolean
+
+    AutomataPrompt:
+      type: object
+      description: "Pending human prompt for an Automata"
+      required:
+        - id
+        - question
+        - createdAt
+      properties:
+        id:
+          type: string
+        question:
+          type: string
+        options:
+          type: array
+          items:
+            $ref: "#/components/schemas/AgentUserPromptOption"
+        allowFreeText:
+          type: boolean
+        freeTextPlaceholder:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    AutomataPromptResponse:
+      type: object
+      description: "Recorded human response for an Automata prompt"
+      required:
+        - promptId
+        - respondedAt
+      properties:
+        promptId:
+          type: string
+        selectedOptionIds:
+          type: array
+          items:
+            type: string
+        freeTextResponse:
+          type: string
+        respondedAt:
+          type: string
+          format: date-time
+
+    AutomataPendingTurnMessage:
+      type: object
+      description: "Queued message to be delivered on the next Automata turn"
+      required:
+        - id
+        - kind
+        - message
+        - createdAt
+      properties:
+        id:
+          type: string
+        kind:
+          type: string
+        message:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    AutomataRunRef:
+      type: object
+      description: "Reference to a tracked child DAG run"
+      required:
+        - name
+        - id
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+
+    AutomataRunSummary:
+      type: object
+      description: "Summary of a child DAG run launched by an Automata"
+      required:
+        - name
+        - dagRunId
+        - status
+      properties:
+        name:
+          type: string
+        dagRunId:
+          type: string
+        status:
+          $ref: "#/components/schemas/StatusLabel"
+        triggerType:
+          $ref: "#/components/schemas/TriggerType"
+        startedAt:
+          type: string
+        finishedAt:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        error:
+          type: string
+
+    AutomataAllowedDAGInfo:
+      type: object
+      description: "Resolved DAG allowed in the current Automata"
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+
+    AutomataState:
+      type: object
+      description: "Current runtime state for an Automata"
+      required:
+        - state
+      properties:
+        state:
+          $ref: "#/components/schemas/AutomataLifecycleState"
+        displayStatus:
+          $ref: "#/components/schemas/AutomataDisplayStatus"
+        busy:
+          type: boolean
+        needsInput:
+          type: boolean
+        instruction:
+          type: string
+        instructionUpdatedAt:
+          type: string
+          format: date-time
+        instructionUpdatedBy:
+          type: string
+        activatedAt:
+          type: string
+          format: date-time
+        activatedBy:
+          type: string
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/AutomataTask"
+        sessionId:
+          type: string
+        currentRunRef:
+          $ref: "#/components/schemas/AutomataRunRef"
+        lastRunRef:
+          $ref: "#/components/schemas/AutomataRunRef"
+        currentCycleId:
+          type: string
+        waitingReason:
+          $ref: "#/components/schemas/AutomataWaitingReason"
+        pendingPrompt:
+          $ref: "#/components/schemas/AutomataPrompt"
+        pendingResponse:
+          $ref: "#/components/schemas/AutomataPromptResponse"
+        pendingTurnMessages:
+          type: array
+          items:
+            $ref: "#/components/schemas/AutomataPendingTurnMessage"
+        startRequestedAt:
+          type: string
+          format: date-time
+        lastTriggeredAt:
+          type: string
+          format: date-time
+        lastScheduleMinute:
+          type: string
+          format: date-time
+        lastUpdatedAt:
+          type: string
+          format: date-time
+        pausedAt:
+          type: string
+          format: date-time
+        pausedBy:
+          type: string
+        finishedAt:
+          type: string
+          format: date-time
+        lastSummary:
+          type: string
+        lastError:
+          type: string
+
+    AutomataSummary:
+      type: object
+      description: "Summary row for an Automata"
+      required:
+        - name
+        - kind
+        - state
+      properties:
+        name:
+          type: string
+        kind:
+          $ref: "#/components/schemas/AutomataKind"
+        nickname:
+          type: string
+        iconUrl:
+          type: string
+        description:
+          type: string
+        goal:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        instruction:
+          type: string
+        state:
+          $ref: "#/components/schemas/AutomataLifecycleState"
+        displayStatus:
+          $ref: "#/components/schemas/AutomataDisplayStatus"
+        busy:
+          type: boolean
+        needsInput:
+          type: boolean
+        disabled:
+          type: boolean
+        currentRun:
+          $ref: "#/components/schemas/AutomataRunSummary"
+        openTaskCount:
+          type: integer
+        doneTaskCount:
+          type: integer
+        nextTaskDescription:
+          type: string
+        lastUpdatedAt:
+          type: string
+          format: date-time
+        automataController:
+          $ref: "#/components/schemas/AutomataControllerStatus"
+
+    AutomataListResponse:
+      type: object
+      description: "List of Automata"
+      required:
+        - automata
+      properties:
+        automata:
+          type: array
+          items:
+            $ref: "#/components/schemas/AutomataSummary"
+
+    AutomataDetailResponse:
+      type: object
+      description: "Automata detail response"
+      required:
+        - definition
+        - state
+        - allowedDags
+      properties:
+        definition:
+          $ref: "#/components/schemas/AutomataDefinition"
+        state:
+          $ref: "#/components/schemas/AutomataState"
+        allowedDags:
+          type: array
+          items:
+            $ref: "#/components/schemas/AutomataAllowedDAGInfo"
+        taskTemplates:
+          type: array
+          items:
+            $ref: "#/components/schemas/AutomataTaskTemplate"
+        currentRun:
+          $ref: "#/components/schemas/AutomataRunSummary"
+        recentRuns:
+          type: array
+          items:
+            $ref: "#/components/schemas/AutomataRunSummary"
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/AgentMessage"
+        automataController:
+          $ref: "#/components/schemas/AutomataControllerStatus"
+
+    AutomataSpecResponse:
+      type: object
+      description: "Raw Automata YAML spec"
+      required:
+        - spec
+      properties:
+        spec:
+          type: string
+
+    AutomataSpecUpsertRequest:
+      type: object
+      description: "Request body for creating or updating an Automata from raw YAML"
+      required:
+        - spec
+      properties:
+        spec:
+          type: string
+
+    AutomataStartRequest:
+      type: object
+      description: "Request body for starting an Automata task"
+      properties:
+        instruction:
+          type: string
+
+    AutomataTaskCreateRequest:
+      type: object
+      description: "Request body for creating an Automata checklist task"
+      required:
+        - description
+      properties:
+        description:
+          type: string
+
+    AutomataTaskUpdateRequest:
+      type: object
+      description: "Request body for updating an Automata checklist task"
+      properties:
+        description:
+          type: string
+        done:
+          type: boolean
+
+    AutomataTaskReorderRequest:
+      type: object
+      description: "Request body for reordering Automata checklist tasks"
+      required:
+        - taskIds
+      properties:
+        taskIds:
+          type: array
+          items:
+            type: string
+
+    AutomataOperatorMessageRequest:
+      type: object
+      description: "Request body for an operator message"
+      required:
+        - message
+      properties:
+        message:
+          type: string
+
+    AutomataRenameRequest:
+      type: object
+      description: "Request body for renaming an Automata"
+      required:
+        - newName
+      properties:
+        newName:
+          type: string
+
+    AutomataDuplicateRequest:
+      type: object
+      description: "Request body for duplicating an Automata"
+      required:
+        - newName
+      properties:
+        newName:
           type: string
 
     CreateRemoteNodeRequest:

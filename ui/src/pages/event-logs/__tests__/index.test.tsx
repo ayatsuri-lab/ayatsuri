@@ -173,7 +173,7 @@ describe('EventLogsPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('queries event logs with a fixed dag_run kind and the selected remote node', async () => {
+  it('queries event logs with the selected remote node and cursor pagination defaults', async () => {
     const calls: QueryCall[] = [];
     useQueryMock.mockImplementation((path, init) => {
       calls.push({ path, init });
@@ -190,7 +190,6 @@ describe('EventLogsPage', () => {
           params: {
             query: expect.objectContaining({
               remoteNode: 'remote-a',
-              kind: 'dag_run',
               paginationMode: 'cursor',
               limit: 50,
             }),
@@ -224,6 +223,72 @@ describe('EventLogsPage', () => {
           },
         })
       );
+    });
+  });
+
+  it('sanitizes incompatible event types from the URL', async () => {
+    const calls: QueryCall[] = [];
+    useQueryMock.mockImplementation((path, init) => {
+      calls.push({ path, init });
+      return mockQueryResult();
+    });
+
+    renderPage({
+      initialEntry: '/event-logs?kind=automata&type=dag.run.failed',
+    });
+
+    await waitFor(() => {
+      const call = latestEventLogsCall(calls);
+      expect(call?.init).toEqual(
+        expect.objectContaining({
+          params: {
+            query: expect.objectContaining({
+              kind: 'automata',
+            }),
+          },
+        })
+      );
+      expect(
+        (call?.init as { params: { query: Record<string, unknown> } }).params
+          .query.type
+      ).toBeUndefined();
+    });
+  });
+
+  it('sanitizes incompatible persisted search-state filters', async () => {
+    sessionStorage.setItem(
+      'dagu.searchState',
+      JSON.stringify({
+        'eventLogs:remote-a': {
+          kind: 'automata',
+          type: 'dag.run.failed',
+        },
+      })
+    );
+
+    const calls: QueryCall[] = [];
+    useQueryMock.mockImplementation((path, init) => {
+      calls.push({ path, init });
+      return mockQueryResult();
+    });
+
+    renderPage();
+
+    await waitFor(() => {
+      const call = latestEventLogsCall(calls);
+      expect(call?.init).toEqual(
+        expect.objectContaining({
+          params: {
+            query: expect.objectContaining({
+              kind: 'automata',
+            }),
+          },
+        })
+      );
+      expect(
+        (call?.init as { params: { query: Record<string, unknown> } }).params
+          .query.type
+      ).toBeUndefined();
     });
   });
 
@@ -425,7 +490,6 @@ describe('EventLogsPage', () => {
         params: {
           query: expect.objectContaining({
             remoteNode: 'remote-a',
-            kind: 'dag_run',
             limit: 50,
             paginationMode: 'cursor',
             cursor: 'cursor-1',
@@ -434,6 +498,6 @@ describe('EventLogsPage', () => {
       });
     });
 
-    expect(await screen.findByText('run-2')).toBeInTheDocument();
+    expect(await screen.findByText('run-2 / attempt-2')).toBeInTheDocument();
   });
 });

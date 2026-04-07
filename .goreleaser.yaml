@@ -77,7 +77,7 @@ brews:
       owner: dagu-org
       name: homebrew-brew
     directory: Formula
-    homepage: "https://github.com/dagu-org/dagu"
+    homepage: "https://github.com/dagucloud/dagu"
     description: "A compact, portable, and language-agnostic workflow engine"
     license: "GNU General Public License v3.0"
     custom_block: |
@@ -95,7 +95,7 @@ brews:
       owner: yohamta
       name: homebrew-tap
     directory: Formula
-    homepage: "https://github.com/dagu-org/dagu"
+    homepage: "https://github.com/dagucloud/dagu"
     description: "A compact, portable, and language-agnostic workflow engine"
     license: "GNU General Public License v3.0"
     custom_block: |

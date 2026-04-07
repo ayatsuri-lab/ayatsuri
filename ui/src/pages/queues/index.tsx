@@ -1,6 +1,7 @@
 // Copyright (C) 2026 Yota Hamada
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import { components } from '@/api/v1/schema';
 import { Layers, Search } from 'lucide-react';
 import React from 'react';
 import { Input } from '../../components/ui/input';

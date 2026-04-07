@@ -33,6 +33,7 @@ type SessionForStorage struct {
 	ID              string          `json:"id"`
 	UserID          string          `json:"user_id"`
 	DAGName         string          `json:"dag_name,omitempty"`
+	AutomataName    string          `json:"automata_name,omitempty"`
 	Title           string          `json:"title,omitempty"`
 	Model           string          `json:"model,omitempty"`
 	CreatedAt       time.Time       `json:"created_at"`
@@ -48,6 +49,7 @@ func (c *SessionForStorage) ToSession() *agent.Session {
 		ID:              c.ID,
 		UserID:          c.UserID,
 		DAGName:         c.DAGName,
+		AutomataName:    c.AutomataName,
 		Title:           c.Title,
 		Model:           c.Model,
 		CreatedAt:       c.CreatedAt,
@@ -63,6 +65,7 @@ func FromSession(sess *agent.Session, messages []agent.Message) *SessionForStora
 		ID:              sess.ID,
 		UserID:          sess.UserID,
 		DAGName:         sess.DAGName,
+		AutomataName:    sess.AutomataName,
 		Title:           sess.Title,
 		Model:           sess.Model,
 		CreatedAt:       sess.CreatedAt,
@@ -371,6 +374,58 @@ func (s *Store) UpdateSession(_ context.Context, sess *agent.Session) error {
 	return nil
 }
 
+// ReassignSessionUser moves a stored session under a different user ID while
+// preserving the session ID and message history.
+func (s *Store) ReassignSessionUser(_ context.Context, sessionID, newUserID string) error {
+	if sessionID == "" {
+		return agent.ErrInvalidSessionID
+	}
+	if newUserID == "" {
+		return agent.ErrInvalidUserID
+	}
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	filePath, exists := s.byID[sessionID]
+	if !exists {
+		return agent.ErrSessionNotFound
+	}
+
+	stored, err := s.loadSessionFromFile(filePath)
+	if err != nil {
+		return fmt.Errorf("filesession: failed to load existing session: %w", err)
+	}
+	if stored.UserID == newUserID {
+		return nil
+	}
+
+	newUserDir := s.userDirPath(newUserID)
+	if err := os.MkdirAll(newUserDir, sessionDirPermissions); err != nil {
+		return fmt.Errorf("filesession: failed to create user directory %s: %w", newUserDir, err)
+	}
+
+	oldUserID := stored.UserID
+	oldFilePath := filePath
+	newFilePath := s.sessionFilePath(newUserID, sessionID)
+	stored.UserID = newUserID
+
+	if err := s.writeSessionToFile(newFilePath, stored); err != nil {
+		return err
+	}
+	if err := os.Remove(oldFilePath); err != nil && !errors.Is(err, os.ErrNotExist) {
+		return fmt.Errorf("filesession: failed to delete old session file: %w", err)
+	}
+
+	s.byID[sessionID] = newFilePath
+	s.removeSessionFromUserIndex(sessionID, oldUserID)
+	s.byUser[newUserID] = append(s.byUser[newUserID], sessionID)
+	s.sortUserSessions(oldUserID)
+	s.sortUserSessions(newUserID)
+
+	return nil
+}
+
 // DeleteSession removes a session and all its messages.
 func (s *Store) DeleteSession(_ context.Context, id string) error {
 	if id == "" {
@@ -593,18 +648,107 @@ func (s *Store) loadSessionByID(id string) (*SessionForStorage, error) {
 	s.mu.RUnlock()
 
 	if !exists {
-		return nil, agent.ErrSessionNotFound
+		discovered, err := s.discoverSessionOnDisk(id)
+		if err != nil {
+			return nil, err
+		}
+		if !discovered {
+			return nil, agent.ErrSessionNotFound
+		}
+		s.mu.RLock()
+		filePath, exists = s.byID[id]
+		s.mu.RUnlock()
+		if !exists {
+			return nil, agent.ErrSessionNotFound
+		}
 	}
 
 	stored, err := s.loadSessionFromFile(filePath)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
+			s.mu.Lock()
+			s.removeSessionIndexLocked(id)
+			s.mu.Unlock()
 			return nil, agent.ErrSessionNotFound
 		}
 		return nil, fmt.Errorf("filesession: failed to load session: %w", err)
 	}
 
 	return stored, nil
+}
+
+func (s *Store) discoverSessionOnDisk(id string) (bool, error) {
+	matches, err := filepath.Glob(filepath.Join(s.baseDir, "*", id+sessionFileExtension))
+	if err != nil {
+		return false, fmt.Errorf("filesession: failed to search session %s on disk: %w", id, err)
+	}
+	if len(matches) == 0 {
+		return false, nil
+	}
+
+	stored, err := s.loadSessionFromFile(matches[0])
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return false, nil
+		}
+		return false, fmt.Errorf("filesession: failed to load discovered session %s: %w", id, err)
+	}
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.indexSessionLocked(stored, matches[0])
+	return true, nil
+}
+
+func (s *Store) indexSessionLocked(sess *SessionForStorage, filePath string) {
+	if sess == nil {
+		return
+	}
+	s.removeSessionIndexLocked(sess.ID)
+	s.byID[sess.ID] = filePath
+	s.byUser[sess.UserID] = append(s.byUser[sess.UserID], sess.ID)
+	s.updatedAt[sess.ID] = sess.UpdatedAt
+	if sess.ParentSessionID != "" {
+		s.byParent[sess.ParentSessionID] = append(s.byParent[sess.ParentSessionID], sess.ID)
+	}
+	s.sortUserSessions(sess.UserID)
+}
+
+func (s *Store) removeSessionIndexLocked(id string) {
+	if id == "" {
+		return
+	}
+	delete(s.byID, id)
+	delete(s.updatedAt, id)
+	for userID, sessionIDs := range s.byUser {
+		filtered := slicesDelete(sessionIDs, id)
+		if len(filtered) == 0 {
+			delete(s.byUser, userID)
+			continue
+		}
+		s.byUser[userID] = filtered
+	}
+	for parentID, sessionIDs := range s.byParent {
+		filtered := slicesDelete(sessionIDs, id)
+		if len(filtered) == 0 {
+			delete(s.byParent, parentID)
+			continue
+		}
+		s.byParent[parentID] = filtered
+	}
+}
+
+func slicesDelete(values []string, target string) []string {
+	if len(values) == 0 {
+		return nil
+	}
+	filtered := values[:0]
+	for _, value := range values {
+		if value != target {
+			filtered = append(filtered, value)
+		}
+	}
+	return filtered
 }
 
 // ListSubSessions returns all sub-sessions for a parent session.

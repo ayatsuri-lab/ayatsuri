@@ -134,6 +134,7 @@ type sessionRuntimeConfig struct {
 	resolvedModel   string
 	modelCfg        *ModelConfig
 	dagName         string
+	automataName    string
 	title           string
 	safeMode        bool
 	enabledSkills   []string
@@ -142,6 +143,19 @@ type sessionRuntimeConfig struct {
 	thinkingEffort  llm.ThinkingEffort
 	inputCostPer1M  float64
 	outputCostPer1M float64
+}
+
+// SessionRuntimeOptions applies runtime-scoped overrides when a session is
+// created or reactivated for a specific workflow controller.
+type SessionRuntimeOptions struct {
+	Model             string
+	AllowedTools      []string
+	SystemPromptExtra string
+	EnabledSkills     []string
+	Soul              *Soul
+	AllowClearSoul    bool
+	AutomataName      string
+	AutomataRuntime   AutomataRuntime
 }
 
 // NewAPI creates a new API instance.
@@ -425,17 +439,18 @@ func (a *API) lookupSessionEventMetadata(id string) (model string, userID string
 }
 
 // persistNewSession saves a new session to the store if configured.
-func (a *API) persistNewSession(ctx context.Context, id, userID, dagName, model string, now time.Time) {
+func (a *API) persistNewSession(ctx context.Context, id, userID, dagName, automataName, model string, now time.Time) {
 	if a.store == nil {
 		return
 	}
 	sess := &Session{
-		ID:        id,
-		UserID:    userID,
-		DAGName:   dagName,
-		Model:     model,
-		CreatedAt: now,
-		UpdatedAt: now,
+		ID:           id,
+		UserID:       userID,
+		DAGName:      dagName,
+		AutomataName: automataName,
+		Model:        model,
+		CreatedAt:    now,
+		UpdatedAt:    now,
 	}
 	if err := a.store.CreateSession(ctx, sess); err != nil {
 		a.logger.Warn("Failed to persist session", "error", err)
@@ -460,7 +475,7 @@ func (a *API) persistSessionModel(ctx context.Context, mgr *SessionManager, mode
 	}
 }
 
-func (a *API) loadMemoryContent(ctx context.Context, dagName string) MemoryContent {
+func (a *API) loadMemoryContent(ctx context.Context, dagName, automataName string) MemoryContent {
 	if a.memoryStore == nil {
 		return MemoryContent{}
 	}
@@ -475,11 +490,20 @@ func (a *API) loadMemoryContent(ctx context.Context, dagName string) MemoryConte
 			a.logger.Debug("failed to load DAG memory", "error", err, "dag_name", dagName)
 		}
 	}
+	var automataMemory string
+	if automataName != "" {
+		automataMemory, err = a.memoryStore.LoadAutomataMemory(ctx, automataName)
+		if err != nil {
+			a.logger.Debug("failed to load automata memory", "error", err, "automata_name", automataName)
+		}
+	}
 	return MemoryContent{
-		GlobalMemory: global,
-		DAGMemory:    dagMemory,
-		DAGName:      dagName,
-		MemoryDir:    a.memoryStore.MemoryDir(),
+		GlobalMemory:   global,
+		DAGMemory:      dagMemory,
+		DAGName:        dagName,
+		AutomataMemory: automataMemory,
+		AutomataName:   automataName,
+		MemoryDir:      a.memoryStore.MemoryDir(),
 	}
 }
 
@@ -519,14 +543,24 @@ func modelThinkingEffort(modelCfg *ModelConfig) llm.ThinkingEffort {
 	return effort
 }
 
-func (a *API) defaultSessionRuntime(ctx context.Context, dagName string, safeMode bool) (sessionRuntimeConfig, error) {
-	modelID := a.getDefaultModelID(ctx)
+func (a *API) defaultSessionRuntime(ctx context.Context, dagName string, safeMode bool, runtimeOpts *SessionRuntimeOptions) (sessionRuntimeConfig, error) {
+	modelID := ""
+	if runtimeOpts != nil {
+		modelID = strings.TrimSpace(runtimeOpts.Model)
+	}
 	if modelID == "" {
-		return sessionRuntimeConfig{}, ErrAgentNotConfigured
+		modelID = a.getDefaultModelID(ctx)
+	}
+	if modelID == "" {
+		return sessionRuntimeConfig{}, wrapAgentConfigError("agent is not configured properly: no default model configured", nil)
 	}
 	_, modelCfg, err := a.resolveProvider(ctx, modelID)
 	if err != nil {
-		return sessionRuntimeConfig{}, ErrAgentNotConfigured
+		label := "default model"
+		if runtimeOpts != nil && strings.TrimSpace(runtimeOpts.Model) != "" {
+			label = "model"
+		}
+		return sessionRuntimeConfig{}, wrapAgentConfigError(fmt.Sprintf("agent is not configured properly: failed to resolve %s %q", label, modelID), err)
 	}
 	enabledSkills := append([]string(nil), a.loadEnabledSkills(ctx)...)
 	return sessionRuntimeConfig{
@@ -534,6 +568,7 @@ func (a *API) defaultSessionRuntime(ctx context.Context, dagName string, safeMod
 		resolvedModel:   modelCfg.Model,
 		modelCfg:        modelCfg,
 		dagName:         dagName,
+		automataName:    "",
 		safeMode:        safeMode,
 		enabledSkills:   enabledSkills,
 		soul:            a.loadSelectedSoul(ctx),
@@ -547,11 +582,11 @@ func (a *API) defaultSessionRuntime(ctx context.Context, dagName string, safeMod
 func (a *API) runtimeConfigForSession(ctx context.Context, mgr *SessionManager, overrideDAGName string) (sessionRuntimeConfig, error) {
 	modelID := selectModel("", mgr.GetModel(), a.getDefaultModelID(ctx))
 	if modelID == "" {
-		return sessionRuntimeConfig{}, ErrAgentNotConfigured
+		return sessionRuntimeConfig{}, wrapAgentConfigError("agent is not configured properly: no model configured for session", nil)
 	}
 	_, modelCfg, err := a.resolveProvider(ctx, modelID)
 	if err != nil {
-		return sessionRuntimeConfig{}, ErrAgentNotConfigured
+		return sessionRuntimeConfig{}, wrapAgentConfigError(fmt.Sprintf("agent is not configured properly: failed to resolve session model %q", modelID), err)
 	}
 	enabledSkills := append([]string(nil), mgr.enabledSkills...)
 	return sessionRuntimeConfig{
@@ -559,6 +594,7 @@ func (a *API) runtimeConfigForSession(ctx context.Context, mgr *SessionManager, 
 		resolvedModel:   modelCfg.Model,
 		modelCfg:        modelCfg,
 		dagName:         cmp.Or(overrideDAGName, mgr.dagName),
+		automataName:    mgr.automataName,
 		title:           mgr.title,
 		safeMode:        mgr.safeMode,
 		enabledSkills:   enabledSkills,
@@ -588,6 +624,7 @@ func (a *API) buildSessionManagerConfig(id string, user UserIdentity, cfg sessio
 		SkillStore:            a.skillStore,
 		EnabledSkills:         cfg.enabledSkills,
 		DAGName:               cfg.dagName,
+		AutomataName:          cfg.automataName,
 		SessionStore:          a.store,
 		Soul:                  cfg.soul,
 		WebSearch:             cfg.webSearch,
@@ -600,7 +637,7 @@ func (a *API) newManagedSession(ctx context.Context, id string, user UserIdentit
 	mgr := NewSessionManager(a.buildSessionManagerConfig(id, user, cfg))
 	mgr.registry = &sessionRegistry{sessions: &a.sessions, parent: mgr}
 
-	a.persistNewSession(ctx, id, user.UserID, cfg.dagName, cfg.modelID, now)
+	a.persistNewSession(ctx, id, user.UserID, cfg.dagName, cfg.automataName, cfg.modelID, now)
 	a.sessions.Store(id, mgr)
 
 	return mgr
@@ -616,10 +653,10 @@ func (a *API) ensureSessionLoop(mgr *SessionManager, provider llm.Provider, cfg 
 	return mgr.ensureLoop(provider, cfg.modelID, cfg.resolvedModel)
 }
 
-func (a *API) buildSystemPrompt(ctx context.Context, role auth.Role, dagName string, enabledSkills []string, soul *Soul) string {
+func (a *API) buildSystemPrompt(ctx context.Context, role auth.Role, dagName, automataName string, enabledSkills []string, soul *Soul) string {
 	return GenerateSystemPrompt(SystemPromptParams{
 		Env:             a.environment,
-		Memory:          a.loadMemoryContent(ctx, dagName),
+		Memory:          a.loadMemoryContent(ctx, dagName, automataName),
 		Role:            role,
 		AvailableSkills: a.loadSkillSummaries(ctx, enabledSkills),
 		SkillCount:      len(enabledSkills),
@@ -882,17 +919,23 @@ func (a *API) getStoredSession(ctx context.Context, id, userID string) (*Session
 
 // getOrReactivateSession retrieves an active session or reactivates it from storage.
 func (a *API) getOrReactivateSession(ctx context.Context, id string, user UserIdentity) (*SessionManager, bool) {
+	return a.getOrReactivateSessionWithRuntime(ctx, id, user, nil)
+}
+
+func (a *API) getOrReactivateSessionWithRuntime(ctx context.Context, id string, user UserIdentity, runtimeOpts *SessionRuntimeOptions) (*SessionManager, bool) {
 	// Check active sessions first
 	if mgr, ok := a.getActiveSession(id, user.UserID); ok {
+		mgr.UpdateUserContext(user)
+		mgr.ApplyRuntimeOptions(runtimeOpts)
 		return mgr, true
 	}
 
 	// Try to reactivate from store
-	return a.reactivateSession(ctx, id, user)
+	return a.reactivateSession(ctx, id, user, runtimeOpts)
 }
 
 // reactivateSession restores a session from storage and makes it active.
-func (a *API) reactivateSession(ctx context.Context, id string, user UserIdentity) (*SessionManager, bool) {
+func (a *API) reactivateSession(ctx context.Context, id string, user UserIdentity, runtimeOpts *SessionRuntimeOptions) (*SessionManager, bool) {
 	if a.store == nil {
 		return nil, false
 	}
@@ -936,13 +979,36 @@ func (a *API) reactivateSession(ctx context.Context, id string, user UserIdentit
 		}
 	}
 
+	enabledSkills := a.loadEnabledSkills(ctx)
+	if runtimeOpts != nil && runtimeOpts.EnabledSkills != nil {
+		enabledSkills = append([]string(nil), runtimeOpts.EnabledSkills...)
+	}
+	soul := a.loadSelectedSoul(ctx)
+	if runtimeOpts != nil && (runtimeOpts.Soul != nil || runtimeOpts.AllowClearSoul) {
+		soul = runtimeOpts.Soul
+	}
+	var allowedTools []string
+	var systemPromptExtra string
+	var automataRuntime AutomataRuntime
+	if runtimeOpts != nil {
+		allowedTools = append([]string(nil), runtimeOpts.AllowedTools...)
+		systemPromptExtra = runtimeOpts.SystemPromptExtra
+		automataRuntime = runtimeOpts.AutomataRuntime
+	}
+
 	cfg := a.buildSessionManagerConfig(id, user, sessionRuntimeConfig{
-		modelID:         modelID,
-		title:           sess.Title,
-		dagName:         sess.DAGName,
+		modelID: modelID,
+		title:   sess.Title,
+		dagName: sess.DAGName,
+		automataName: cmp.Or(func() string {
+			if runtimeOpts == nil {
+				return ""
+			}
+			return runtimeOpts.AutomataName
+		}(), sess.AutomataName),
 		safeMode:        true, // Default to safe mode for reactivated sessions
-		enabledSkills:   a.loadEnabledSkills(ctx),
-		soul:            a.loadSelectedSoul(ctx),
+		enabledSkills:   enabledSkills,
+		soul:            soul,
 		webSearch:       a.loadWebSearch(ctx),
 		thinkingEffort:  thinkingEffort,
 		inputCostPer1M:  inputCost,
@@ -953,8 +1019,14 @@ func (a *API) reactivateSession(ctx context.Context, id string, user UserIdentit
 	cfg.History = messages
 	cfg.SequenceID = seqID
 	cfg.Delegates = delegates
+	cfg.AllowedTools = allowedTools
+	cfg.SystemPromptExtra = systemPromptExtra
+	cfg.AutomataRuntime = automataRuntime
 
 	mgr := NewSessionManager(cfg)
+	if runtimeOpts != nil {
+		mgr.ApplyRuntimeOptions(runtimeOpts)
+	}
 	mgr.registry = &sessionRegistry{sessions: &a.sessions, parent: mgr}
 	a.sessions.Store(id, mgr)
 
@@ -1127,7 +1199,7 @@ func (a *API) CreateSession(ctx context.Context, user UserIdentity, req ChatRequ
 	provider, modelCfg, err := a.resolveProvider(ctx, model)
 	if err != nil {
 		a.logger.Error("Failed to get LLM provider", "error", err)
-		return "", "", ErrAgentNotConfigured
+		return "", "", wrapAgentConfigError(fmt.Sprintf("agent is not configured properly: failed to resolve model %q", model), err)
 	}
 
 	now := time.Now()
@@ -1159,7 +1231,7 @@ func (a *API) CreateSession(ctx context.Context, user UserIdentity, req ChatRequ
 
 	// Persist session before accepting the first message so that
 	// the onMessage callback (store.AddMessage) can find the session.
-	a.persistNewSession(ctx, id, user.UserID, dagName, model, now)
+	a.persistNewSession(ctx, id, user.UserID, dagName, "", model, now)
 	a.sessions.Store(id, mgr)
 
 	if err := mgr.AcceptUserMessage(ctx, provider, model, modelCfg.Model, messageWithContext); err != nil {
@@ -1175,13 +1247,37 @@ func (a *API) CreateSession(ctx context.Context, user UserIdentity, req ChatRequ
 // This is used by chat bridges that need a conversation container before the
 // next live user message, such as notification-seeded bot sessions.
 func (a *API) CreateEmptySession(ctx context.Context, user UserIdentity, dagName string, safeMode bool) (string, error) {
-	cfg, err := a.defaultSessionRuntime(ctx, dagName, safeMode)
+	return a.CreateEmptySessionWithRuntime(ctx, user, dagName, safeMode, nil)
+}
+
+// CreateEmptySessionWithRuntime creates a durable session with runtime-scoped
+// overrides such as tool restrictions and extra system prompt content.
+func (a *API) CreateEmptySessionWithRuntime(
+	ctx context.Context,
+	user UserIdentity,
+	dagName string,
+	safeMode bool,
+	runtimeOpts *SessionRuntimeOptions,
+) (string, error) {
+	cfg, err := a.defaultSessionRuntime(ctx, dagName, safeMode, runtimeOpts)
 	if err != nil {
 		return "", err
 	}
+	if runtimeOpts != nil {
+		if runtimeOpts.EnabledSkills != nil {
+			cfg.enabledSkills = append([]string(nil), runtimeOpts.EnabledSkills...)
+		}
+		if runtimeOpts.Soul != nil || runtimeOpts.AllowClearSoul {
+			cfg.soul = runtimeOpts.Soul
+		}
+		if runtimeOpts.AutomataName != "" {
+			cfg.automataName = runtimeOpts.AutomataName
+		}
+	}
 
 	id := uuid.New().String()
-	a.newManagedSession(ctx, id, user, cfg, time.Now())
+	mgr := a.newManagedSession(ctx, id, user, cfg, time.Now())
+	mgr.ApplyRuntimeOptions(runtimeOpts)
 	return id, nil
 }
 
@@ -1213,7 +1309,7 @@ func (a *API) GenerateAssistantMessage(ctx context.Context, sessionID string, us
 			return Message{}, err
 		}
 	} else {
-		runtimeCfg, err = a.defaultSessionRuntime(ctx, dagName, false)
+		runtimeCfg, err = a.defaultSessionRuntime(ctx, dagName, false, nil)
 		if err != nil {
 			return Message{}, err
 		}
@@ -1223,7 +1319,7 @@ func (a *API) GenerateAssistantMessage(ctx context.Context, sessionID string, us
 		}
 	}
 
-	systemPrompt := a.buildSystemPrompt(ctx, user.Role, runtimeCfg.dagName, runtimeCfg.enabledSkills, runtimeCfg.soul)
+	systemPrompt := a.buildSystemPrompt(ctx, user.Role, runtimeCfg.dagName, runtimeCfg.automataName, runtimeCfg.enabledSkills, runtimeCfg.soul)
 	resp, err := a.runOneShotPrompt(ctx, provider, runtimeCfg.resolvedModel, systemPrompt, prompt)
 	if err != nil {
 		return Message{}, err
@@ -1369,7 +1465,7 @@ func (a *API) prepareSessionRuntime(ctx context.Context, mgr *SessionManager, us
 	provider, modelCfg, err := a.resolveProvider(ctx, model)
 	if err != nil {
 		a.logger.Error("Failed to get LLM provider", "error", err)
-		return nil, "", "", ErrAgentNotConfigured
+		return nil, "", "", wrapAgentConfigError(fmt.Sprintf("agent is not configured properly: failed to resolve model %q", model), err)
 	}
 
 	mgr.SetSafeMode(req.SafeMode)
@@ -1384,11 +1480,24 @@ func (a *API) prepareSessionRuntime(ctx context.Context, mgr *SessionManager, us
 // start immediately, while working sessions merge the text into a queued
 // safe-boundary interrupt turn.
 func (a *API) EnqueueChatMessage(ctx context.Context, sessionID string, user UserIdentity, req ChatRequest) (ChatQueueResult, error) {
-	mgr, ok := a.getOrReactivateSession(ctx, sessionID, user)
+	return a.EnqueueChatMessageWithRuntime(ctx, sessionID, user, req, nil)
+}
+
+// EnqueueChatMessageWithRuntime accepts bot chat input and applies runtime-scoped
+// overrides before starting or reactivating the session loop.
+func (a *API) EnqueueChatMessageWithRuntime(
+	ctx context.Context,
+	sessionID string,
+	user UserIdentity,
+	req ChatRequest,
+	runtimeOpts *SessionRuntimeOptions,
+) (ChatQueueResult, error) {
+	mgr, ok := a.getOrReactivateSessionWithRuntime(ctx, sessionID, user, runtimeOpts)
 	if !ok {
 		return ChatQueueResult{}, ErrSessionNotFound
 	}
 
+	mgr.ApplyRuntimeOptions(runtimeOpts)
 	provider, model, resolvedModel, err := a.prepareSessionRuntime(ctx, mgr, user, req)
 	if err != nil {
 		return ChatQueueResult{}, err
@@ -1407,10 +1516,11 @@ func (a *API) EnqueueChatMessage(ctx context.Context, sessionID string, user Use
 	if err != nil {
 		return ChatQueueResult{}, err
 	}
-	targetMgr, ok := a.getOrReactivateSession(ctx, targetSessionID, user)
+	targetMgr, ok := a.getOrReactivateSessionWithRuntime(ctx, targetSessionID, user, runtimeOpts)
 	if !ok {
 		return ChatQueueResult{}, ErrSessionNotFound
 	}
+	targetMgr.ApplyRuntimeOptions(runtimeOpts)
 	provider, model, resolvedModel, err = a.prepareSessionRuntime(ctx, targetMgr, user, req)
 	if err != nil {
 		return ChatQueueResult{}, err

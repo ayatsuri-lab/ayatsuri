@@ -16,6 +16,7 @@ import {
 } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import { useHasFeature } from '@/hooks/useLicense';
+import { AutomataSwarmIcon } from '@/components/icons/AutomataSwarmIcon';
 import { cn } from '@/lib/utils';
 import { getResponsiveTitleClass } from '@/lib/text-utils';
 import {
@@ -511,7 +512,7 @@ export const mainListItems = React.forwardRef<
           </div>
 
           <div className="space-y-0.5">
-            <SectionLabel label="Workflows" isOpen={isOpen} customColor={customColor} />
+            <SectionLabel label="Definitions" isOpen={isOpen} customColor={customColor} />
             <NavItem
               to="/dags"
               text="Definitions"
@@ -520,6 +521,20 @@ export const mainListItems = React.forwardRef<
               onClick={onNavItemClick}
               customColor={customColor}
             />
+            {config.agentEnabled && (
+              <NavItem
+                to="/automata"
+                text="Automata"
+                icon={<AutomataSwarmIcon size={18} />}
+                isOpen={isOpen}
+                onClick={onNavItemClick}
+                customColor={customColor}
+              />
+            )}
+          </div>
+
+          <div className="space-y-0.5">
+            <SectionLabel label="Workflows" isOpen={isOpen} customColor={customColor} />
             <NavItem
               to="/dag-runs"
               text="Runs"

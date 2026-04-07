@@ -17,6 +17,7 @@ import (
 	"github.com/dagucloud/dagu/internal/agent"
 	"github.com/dagucloud/dagu/internal/agentoauth"
 	"github.com/dagucloud/dagu/internal/auth"
+	"github.com/dagucloud/dagu/internal/automata"
 	"github.com/dagucloud/dagu/internal/cmn/config"
 	"github.com/dagucloud/dagu/internal/cmn/eval"
 	"github.com/dagucloud/dagu/internal/cmn/logger"
@@ -81,6 +82,7 @@ type API struct {
 	licenseManager      *license.Manager
 	workspaceStore      workspace.Store
 	leaseStaleThreshold time.Duration
+	automataService     *automata.Service
 	schedulerStateStore scheduler.WatermarkStore
 }
 
@@ -267,6 +269,13 @@ func WithLeaseStaleThreshold(threshold time.Duration) APIOption {
 func WithAgentAPI(a *agent.API) APIOption {
 	return func(api *API) {
 		api.agentAPI = a
+	}
+}
+
+// WithAutomataService returns an APIOption that sets the Automata service instance.
+func WithAutomataService(service *automata.Service) APIOption {
+	return func(api *API) {
+		api.automataService = service
 	}
 }
 
