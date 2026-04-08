@@ -187,9 +187,9 @@ export function ProviderAuthCard({
         )}
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+          <div className="min-w-0 space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <ShieldCheck className="h-4 w-4 shrink-0 text-muted-foreground" />
               <p className="text-sm font-medium">{provider.name}</p>
               <Badge variant={statusMeta.variant}>{statusMeta.label}</Badge>
             </div>
@@ -201,7 +201,7 @@ export function ProviderAuthCard({
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex shrink-0 flex-wrap gap-2">
             <Button
               type="button"
               size="sm"
@@ -299,7 +299,7 @@ export function ProviderAuthCard({
           <DialogHeader>
             <DialogTitle>Connect {provider.name}</DialogTitle>
             <DialogDescription className="text-sm text-muted-foreground">
-              Authenticate in your browser, then paste the failed localhost redirect URL or the raw authorization code here.
+              Link your ChatGPT Plus or Pro subscription to use OpenAI Codex models.
             </DialogDescription>
           </DialogHeader>
 
@@ -310,14 +310,25 @@ export function ProviderAuthCard({
               </div>
             )}
 
-            <div className="rounded-md border border-border/60 bg-muted/30 p-3 text-sm">
-              <div className="flex items-start gap-2">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 text-muted-foreground" />
-                <div className="space-y-1">
-                  <p>1. Open the login page in your browser and finish the ChatGPT sign-in flow.</p>
-                  <p>2. When the browser redirects to `http://localhost:1455/auth/callback`, copy the full URL from the address bar.</p>
-                  <p>3. Paste that URL below. If you only have the code value, paste it into the authorization code field instead.</p>
+            <div className="rounded-md border border-border/60 bg-muted/30 p-3 text-sm space-y-3">
+              <div className="flex items-start gap-2.5">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">1</span>
+                <p>A ChatGPT login page should have opened in your browser. If not, click the link below or copy the authorization URL manually.</p>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">2</span>
+                <p>Sign in with your ChatGPT account and approve access.</p>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">3</span>
+                <div>
+                  <p>After sign-in, the browser will redirect to a page that <strong>won&apos;t load</strong> &mdash; this is expected.</p>
+                  <p className="mt-1 text-muted-foreground">Copy the <strong>entire URL</strong> from your browser&apos;s address bar (it starts with <code className="rounded bg-muted px-1 py-0.5 text-xs">http://localhost:1455/auth/callback?code=...</code>).</p>
                 </div>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">4</span>
+                <p>Paste that URL into the <strong>Redirect URL</strong> field below and click <strong>Complete Connection</strong>.</p>
               </div>
             </div>
 
@@ -337,6 +348,7 @@ export function ProviderAuthCard({
                   className="h-9 shrink-0"
                   onClick={() => loginFlow && handleCopy(loginFlow.authUrl, 'Authorization URL copied')}
                   disabled={!loginFlow}
+                  title="Copy URL"
                 >
                   <Copy className="h-4 w-4" />
                 </Button>
@@ -347,13 +359,11 @@ export function ProviderAuthCard({
                   className="h-9 shrink-0"
                   onClick={() => loginFlow && window.open(loginFlow.authUrl, '_blank', 'noopener,noreferrer')}
                   disabled={!loginFlow}
+                  title="Open in browser"
                 >
                   <ExternalLink className="h-4 w-4" />
                 </Button>
               </div>
-              {loginFlow?.instructions && (
-                <p className="text-xs text-muted-foreground">{loginFlow.instructions}</p>
-              )}
             </div>
 
             <div className="space-y-1.5">
@@ -362,21 +372,27 @@ export function ProviderAuthCard({
                 id="provider-redirect-url"
                 value={redirectUrl}
                 onChange={(event) => setRedirectUrl(event.target.value)}
-                placeholder="http://localhost:1455/auth/callback?code=...&state=..."
-                className="min-h-24 font-mono text-xs"
+                placeholder="Paste the full URL from your browser address bar here"
+                className="min-h-20 font-mono text-xs"
               />
+              <p className="text-xs text-muted-foreground">
+                The URL looks like: http://localhost:1455/auth/callback?code=...&amp;state=...
+              </p>
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="provider-auth-code" className="text-sm">Authorization Code</Label>
-              <Input
-                id="provider-auth-code"
-                value={code}
-                onChange={(event) => setCode(event.target.value)}
-                placeholder="Paste only the code if you do not have the full redirect URL"
-                className="font-mono text-xs"
-              />
-            </div>
+            <details className="text-xs text-muted-foreground">
+              <summary className="cursor-pointer hover:text-foreground">Have only the authorization code?</summary>
+              <div className="mt-2 space-y-1.5">
+                <Label htmlFor="provider-auth-code" className="text-sm">Authorization Code</Label>
+                <Input
+                  id="provider-auth-code"
+                  value={code}
+                  onChange={(event) => setCode(event.target.value)}
+                  placeholder="Paste the code value only"
+                  className="font-mono text-xs"
+                />
+              </div>
+            </details>
           </div>
 
           <DialogFooter>
