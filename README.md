@@ -509,7 +509,6 @@ Full configuration reference: [docs.ayatsuri.sh/server-admin/reference](https://
 - [Step Types](https://docs.ayatsuri.sh/step-types/shell) — All 17 executor types
 - [Distributed Execution](https://docs.ayatsuri.sh/server-admin/distributed/) — Coordinator/worker setup
 - [Authentication](https://docs.ayatsuri.sh/server-admin/authentication/) — RBAC, OIDC, API keys
-- [Git Sync](https://docs.ayatsuri.sh/server-admin/git-sync) — Version-controlled DAG definitions
 - [AI Agent](https://docs.ayatsuri.sh/features/agent/) — AI-assisted workflow authoring
 - [Changelog](https://docs.ayatsuri.sh/overview/changelog)
 

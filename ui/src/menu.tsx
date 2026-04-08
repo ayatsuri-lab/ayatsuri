@@ -31,7 +31,6 @@ import {
   Ghost,
   Shield,
   Sparkles,
-  GitBranch,
   Globe,
   History,
   Inbox,
@@ -564,16 +563,6 @@ export const mainListItems = React.forwardRef<
                 to="/base-config"
                 text="Base Config"
                 icon={<FileCog size={18} />}
-                isOpen={isOpen}
-                onClick={onNavItemClick}
-                customColor={customColor}
-              />
-            )}
-            {canWrite && config.gitSyncEnabled && (
-              <NavItem
-                to="/git-sync"
-                text="Git Sync"
-                icon={<GitBranch size={18} />}
                 isOpen={isOpen}
                 onClick={onNavItemClick}
                 customColor={customColor}

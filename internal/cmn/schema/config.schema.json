@@ -209,9 +209,6 @@
     "sse": {
       "$ref": "#/definitions/SSEDef"
     },
-    "git_sync": {
-      "$ref": "#/definitions/GitSyncDef"
-    },
     "default_execution_mode": {
       "type": "string",
       "description": "Default execution mode for DAGs. 'local' runs DAGs on the server process, 'distributed' dispatches to workers.",
@@ -945,100 +942,6 @@
           "type": "string",
           "description": "Timeout before disconnecting a slow client. Default: '30s'.",
           "default": "30s"
-        }
-      }
-    },
-    "GitSyncDef": {
-      "type": "object",
-      "description": "Git synchronization configuration for DAG definitions.",
-      "additionalProperties": false,
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "description": "Enable Git sync. Default: false."
-        },
-        "repository": {
-          "type": "string",
-          "description": "Git repository URL."
-        },
-        "branch": {
-          "type": "string",
-          "description": "Git branch to sync. Default: 'main'."
-        },
-        "path": {
-          "type": "string",
-          "description": "Subdirectory within the repository. Empty for root."
-        },
-        "auth": {
-          "$ref": "#/definitions/GitSyncAuthDef"
-        },
-        "auto_sync": {
-          "$ref": "#/definitions/GitSyncAutoSyncDef"
-        },
-        "push_enabled": {
-          "type": "boolean",
-          "description": "Enable pushing changes back to the repository. Default: true."
-        },
-        "commit": {
-          "$ref": "#/definitions/GitSyncCommitDef"
-        }
-      }
-    },
-    "GitSyncAuthDef": {
-      "type": "object",
-      "description": "Git authentication configuration.",
-      "additionalProperties": false,
-      "properties": {
-        "type": {
-          "type": "string",
-          "description": "Authentication type.",
-          "enum": ["token", "ssh"]
-        },
-        "token": {
-          "type": "string",
-          "description": "Git access token."
-        },
-        "ssh_key_path": {
-          "type": "string",
-          "description": "Path to SSH private key file."
-        },
-        "ssh_passphrase": {
-          "type": "string",
-          "description": "Passphrase for the SSH key."
-        }
-      }
-    },
-    "GitSyncAutoSyncDef": {
-      "type": "object",
-      "description": "Automatic Git synchronization configuration.",
-      "additionalProperties": false,
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "description": "Enable automatic sync. Default: false."
-        },
-        "on_startup": {
-          "type": "boolean",
-          "description": "Sync on application startup. Default: true."
-        },
-        "interval": {
-          "type": "integer",
-          "description": "Sync interval in seconds. Default: 300."
-        }
-      }
-    },
-    "GitSyncCommitDef": {
-      "type": "object",
-      "description": "Git commit metadata configuration.",
-      "additionalProperties": false,
-      "properties": {
-        "author_name": {
-          "type": "string",
-          "description": "Commit author name. Default: 'Ayatsuri'."
-        },
-        "author_email": {
-          "type": "string",
-          "description": "Commit author email. Default: 'ayatsuri@localhost'."
         }
       }
     },

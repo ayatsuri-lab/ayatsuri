@@ -129,9 +129,8 @@ type funcsConfig struct {
 	AuthMode              config.AuthMode
 	OIDCEnabled           bool
 	OIDCButtonLabel       string
-	TerminalEnabled       bool
-	GitSyncEnabled        bool
-	WorkspaceStore        workspacepkg.Store
+	TerminalEnabled bool
+	WorkspaceStore  workspacepkg.Store
 
 	SetupRequiredChecker SetupRequiredChecker
 	UpdateChecker        UpdateChecker
@@ -199,7 +198,6 @@ func defaultFunctions(cfg *funcsConfig) template.FuncMap {
 		// Feature toggle functions
 		"oidcEnabled":     func() string { return boolStr(cfg.OIDCEnabled) },
 		"terminalEnabled": func() string { return boolStr(cfg.TerminalEnabled) },
-		"gitSyncEnabled":  func() string { return boolStr(cfg.GitSyncEnabled) },
 		"agentEnabled": func() string {
 			if cfg.AgentEnabledChecker == nil {
 				return "false"
@@ -313,9 +311,8 @@ func defaultFunctions(cfg *funcsConfig) template.FuncMap {
 		"pathQueueDir":           func() string { return cfg.Paths.QueueDir },
 		"pathProcDir":            func() string { return cfg.Paths.ProcDir },
 		"pathServiceRegistryDir": func() string { return cfg.Paths.ServiceRegistryDir },
-		"pathConfigFileUsed":     func() string { return cfg.Paths.ConfigFileUsed },
-		"pathUsersDir":           func() string { return cfg.Paths.UsersDir },
-		"pathGitSyncDir":         func() string { return path.Join(cfg.Paths.DataDir, "gitsync") },
-		"pathAuditLogsDir":       func() string { return path.Join(cfg.Paths.AdminLogsDir, "audit") },
+		"pathConfigFileUsed": func() string { return cfg.Paths.ConfigFileUsed },
+		"pathUsersDir":       func() string { return cfg.Paths.UsersDir },
+		"pathAuditLogsDir":   func() string { return path.Join(cfg.Paths.AdminLogsDir, "audit") },
 	}
 }

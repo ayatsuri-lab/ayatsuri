@@ -35,7 +35,7 @@ func TestSockAddr(t *testing.T) {
 		require.LessOrEqual(t, 50, len(dag.SockAddr("")))
 		require.Equal(
 			t,
-			"/tmp/@ayatsuri_testdata_testDagVeryLongNameThat_b92b71.sock",
+			"/tmp/@ayatsuri_testdata_testDagVeryLongName_b92b71.sock",
 			dag.SockAddr(""),
 		)
 	})
@@ -95,10 +95,10 @@ func TestSockAddr(t *testing.T) {
 	t.Run("EdgeCaseTruncation", func(t *testing.T) {
 		t.Parallel()
 
-		// Format: @ayatsuri_ (6) + name (?) + _ (1) + hash (6) + .sock (5) = 50
-		// Max name length = 50 - 6 - 1 - 6 - 5 = 32
-		name32 := strings.Repeat("x", 32)
-		name33 := strings.Repeat("x", 33)
+		// Format: @ayatsuri_ (10) + name (?) + _ (1) + hash (6) + .sock (5) = 50
+		// Max name length = 50 - 10 - 1 - 6 - 5 = 28
+		name32 := strings.Repeat("x", 28)
+		name33 := strings.Repeat("x", 29)
 
 		socketName32 := strings.TrimPrefix(core.SockAddr(name32, "run123"), "/tmp/")
 		socketName33 := strings.TrimPrefix(core.SockAddr(name33, "run123"), "/tmp/")

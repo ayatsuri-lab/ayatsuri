@@ -45,6 +45,14 @@ func (e Error) Error() string {
 	return fmt.Sprintf("%s: %s", e.Code, e.Message)
 }
 
+func internalError(err error) *Error {
+	return &Error{
+		Code:       api.ErrorCodeInternalError,
+		Message:    err.Error(),
+		HTTPStatus: http.StatusInternalServerError,
+	}
+}
+
 func NewAPIError(httpCode int, code api.ErrorCode, err error) *Error {
 	apiErr := &Error{
 		Code:       code,

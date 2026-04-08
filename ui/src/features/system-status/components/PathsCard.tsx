@@ -4,7 +4,6 @@ import {
   Database,
   FileText,
   FolderOpen,
-  GitBranch,
   ScrollText,
   Settings,
 } from 'lucide-react';
@@ -146,14 +145,6 @@ function PathsCard() {
                 <PathRow label="Audit" path={paths.auditLogsDir} />
               </PathGroup>
 
-              {config.gitSyncEnabled && (
-                <PathGroup
-                  icon={<GitBranch className="h-3.5 w-3.5" />}
-                  title="Git Sync"
-                >
-                  <PathRow label="Sync Dir" path={paths.gitSyncDir} />
-                </PathGroup>
-              )}
             </div>
           ) : (
             <div className="px-6 py-8 text-center">

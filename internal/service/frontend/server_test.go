@@ -311,10 +311,6 @@ func TestRunShutdownSequence_OrderAndBudgets(t *testing.T) {
 	auditErr := errors.New("audit close failed")
 
 	err := runShutdownSequence(shutdownCtx, shutdownActions{
-		stopSync: func() error {
-			calls = append(calls, "sync")
-			return errors.New("ignored sync stop failure")
-		},
 		shutdownSSEMultiplexer: func() {
 			calls = append(calls, "sse_multiplexer")
 		},
@@ -349,7 +345,6 @@ func TestRunShutdownSequence_OrderAndBudgets(t *testing.T) {
 	require.ErrorIs(t, err, terminalErr)
 	assert.NotErrorIs(t, err, auditErr)
 	assert.Equal(t, []string{
-		"sync",
 		"sse_multiplexer",
 		"http_prepare",
 		"keepalives_off",

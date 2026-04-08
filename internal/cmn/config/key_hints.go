@@ -41,8 +41,6 @@ var legacyToSnakeCaseKey = map[string]string{
 	"remotenodes":            "remote_nodes",
 	"defaultexecutionmode":   "default_execution_mode",
 	"skipexamples":           "skip_examples",
-	"gitsync":                "git_sync",
-
 	// TLS
 	"tls.certfile": "tls.cert_file",
 	"tls.keyfile":  "tls.key_file",
@@ -143,16 +141,6 @@ var legacyToSnakeCaseKey = map[string]string{
 	"eventstore":               "event_store",
 	"eventstore.enabled":       "event_store.enabled",
 	"eventstore.retentiondays": "event_store.retention_days",
-
-	// GitSync
-	"gitsync.enabled":            "git_sync.enabled",
-	"gitsync.pushenabled":        "git_sync.push_enabled",
-	"gitsync.autosync":           "git_sync.auto_sync",
-	"gitsync.autosync.onstartup": "git_sync.auto_sync.on_startup",
-	"gitsync.auth.sshkeypath":    "git_sync.auth.ssh_key_path",
-	"gitsync.auth.sshpassphrase": "git_sync.auth.ssh_passphrase",
-	"gitsync.commit.authorname":  "git_sync.commit.author_name",
-	"gitsync.commit.authoremail": "git_sync.commit.author_email",
 
 	// Tunnel
 	"tunnel.allowterminal":                     "tunnel.allow_terminal",

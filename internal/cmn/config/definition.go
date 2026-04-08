@@ -85,8 +85,7 @@ type Definition struct {
 	EventStore *EventStoreDef `mapstructure:"event_store"`
 	Session    *SessionDef    `mapstructure:"session"`
 	SSE        *SSEDef        `mapstructure:"sse"`
-	GitSync    *GitSyncDef    `mapstructure:"git_sync"`
-	Tunnel     *TunnelDef     `mapstructure:"tunnel"`
+	Tunnel *TunnelDef `mapstructure:"tunnel"`
 	Bots       *BotsDef       `mapstructure:"bots"`
 	License    *LicenseDef    `mapstructure:"license"`
 }
@@ -369,43 +368,6 @@ type SSEDef struct {
 	HeartbeatInterval      *string `mapstructure:"heartbeat_interval"`
 	WriteBufferSize        *int    `mapstructure:"write_buffer_size"`
 	SlowClientTimeout      *string `mapstructure:"slow_client_timeout"`
-}
-
-// -----------------------------------------------------------------------------
-// Git Sync Configuration
-// -----------------------------------------------------------------------------
-
-// GitSyncDef configures Git synchronization.
-type GitSyncDef struct {
-	Enabled     *bool               `mapstructure:"enabled"` // Default: false
-	Repository  string              `mapstructure:"repository"`
-	Branch      string              `mapstructure:"branch"` // Default: main
-	Path        string              `mapstructure:"path"`   // Subdirectory, empty for root
-	Auth        *GitSyncAuthDef     `mapstructure:"auth"`
-	AutoSync    *GitSyncAutoSyncDef `mapstructure:"auto_sync"`
-	PushEnabled *bool               `mapstructure:"push_enabled"` // Default: true
-	Commit      *GitSyncCommitDef   `mapstructure:"commit"`
-}
-
-// GitSyncAuthDef configures Git authentication.
-type GitSyncAuthDef struct {
-	Type          string `mapstructure:"type"` // "token" or "ssh", default: token
-	Token         string `mapstructure:"token"`
-	SSHKeyPath    string `mapstructure:"ssh_key_path"`
-	SSHPassphrase string `mapstructure:"ssh_passphrase"`
-}
-
-// GitSyncAutoSyncDef configures automatic synchronization.
-type GitSyncAutoSyncDef struct {
-	Enabled   *bool `mapstructure:"enabled"`    // Default: false
-	OnStartup *bool `mapstructure:"on_startup"` // Default: true
-	Interval  int   `mapstructure:"interval"`   // Seconds, default: 300
-}
-
-// GitSyncCommitDef configures Git commit metadata.
-type GitSyncCommitDef struct {
-	AuthorName  string `mapstructure:"author_name"`  // Default: Ayatsuri
-	AuthorEmail string `mapstructure:"author_email"` // Default: ayatsuri@localhost
 }
 
 // -----------------------------------------------------------------------------

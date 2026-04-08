@@ -33,13 +33,12 @@ const navigateDescription = "Navigate the user to a specific page in the Ayatsur
 	"'/dag-runs/<dag-name>/<run-id>' for specific run details, '/queues' for queues, " +
 	"'/docs' for the documents page, '/docs/<doc-id>' for a specific document, " +
 	"'/system-status', '/webhooks', and '/audit-logs'. " +
-	"Admin-only pages: '/users', '/api-keys', '/terminal', '/git-sync', '/agent-settings'."
+	"Admin-only pages: '/users', '/api-keys', '/terminal', '/agent-settings'."
 
 var adminOnlyNavigatePaths = []string{
 	"/users",
 	"/api-keys",
 	"/terminal",
-	"/git-sync",
 	"/agent-settings",
 }
 

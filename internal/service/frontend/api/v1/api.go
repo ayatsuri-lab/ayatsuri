@@ -66,10 +66,8 @@ type API struct {
 	authService         AuthService
 	auditService        *audit.Service
 	eventService        *eventstore.Service
-	syncService         SyncService
-	tunnelService       *tunnel.Service
-	defaultExecMode     config.ExecutionMode
-	dagWritesDisabled   bool // True when git sync read-only mode is active
+	tunnelService   *tunnel.Service
+	defaultExecMode config.ExecutionMode
 	agentConfigStore    agent.ConfigStore
 	agentModelStore     agent.ModelStore
 	agentMemoryStore    agent.MemoryStore
@@ -142,13 +140,6 @@ func WithAuditService(as *audit.Service) APIOption {
 func WithEventService(es *eventstore.Service) APIOption {
 	return func(a *API) {
 		a.eventService = es
-	}
-}
-
-// WithSyncService returns an APIOption that sets the API's SyncService.
-func WithSyncService(ss SyncService) APIOption {
-	return func(a *API) {
-		a.syncService = ss
 	}
 }
 
@@ -316,10 +307,6 @@ func New(
 	for _, opt := range opts {
 		opt(a)
 	}
-
-	// Set read-only mode flag based on git sync config
-	// When enabled with push disabled, DAG write operations are blocked
-	a.dagWritesDisabled = cfg.GitSync.Enabled && !cfg.GitSync.PushEnabled
 
 	return a
 }
@@ -594,11 +581,6 @@ func (a *API) requireDeveloperOrAbove(ctx context.Context) error {
 
 // Predefined errors for common authorization failures.
 var (
-	errDAGWritesDisabled = &Error{
-		HTTPStatus: http.StatusForbidden,
-		Code:       api.ErrorCodeForbidden,
-		Message:    "DAG modifications disabled: Git sync is in read-only mode (pushEnabled: false)",
-	}
 	errAuthRequired = &Error{
 		HTTPStatus: http.StatusUnauthorized,
 		Code:       api.ErrorCodeUnauthorized,
@@ -634,7 +616,6 @@ var (
 // requireDAGWrite checks all permissions for DAG write operations:
 // 1. Server-level permission (PermissionWriteDAGs)
 // 2. User role permission (CanWrite)
-// 3. Git sync read-only mode (dagWritesDisabled)
 func (a *API) requireDAGWrite(ctx context.Context) error {
 	if !a.config.Server.Permissions[config.PermissionWriteDAGs] {
 		return errPermissionDenied
@@ -647,9 +628,6 @@ func (a *API) requireDAGWrite(ctx context.Context) error {
 		if !user.Role.CanWrite() {
 			return errInsufficientPermissions
 		}
-	}
-	if a.dagWritesDisabled {
-		return errDAGWritesDisabled
 	}
 	return nil
 }

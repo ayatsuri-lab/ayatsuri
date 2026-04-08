@@ -23,7 +23,6 @@ const testConfig: Config = {
   oidcEnabled: false,
   oidcButtonLabel: '',
   terminalEnabled: false,
-  gitSyncEnabled: false,
   agentEnabled: false,
   updateAvailable: false,
   latestVersion: '',
@@ -52,7 +51,6 @@ const testConfig: Config = {
     procDir: '',
     serviceRegistryDir: '',
     configFileUsed: '',
-    gitSyncDir: '',
     auditLogsDir: '',
   },
 };

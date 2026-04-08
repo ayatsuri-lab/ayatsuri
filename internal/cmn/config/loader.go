@@ -104,20 +104,19 @@ const (
 	SectionUI                                    // 32
 	SectionQueues                                // 64
 	SectionMonitoring                            // 128
-	SectionGitSync                               // 256
-	SectionTunnel                                // 512
+	SectionTunnel // 256
 	SectionLicense                               // 1024
 	SectionProc                                  // 2048
 	SectionBots                                  // 4096
 
 	// SectionAll combines all sections (useful for ServiceNone/CLI)
-	SectionAll = SectionServer | SectionScheduler | SectionWorker | SectionCoordinator | SectionUI | SectionQueues | SectionMonitoring | SectionGitSync | SectionTunnel | SectionLicense | SectionProc | SectionBots
+	SectionAll = SectionServer | SectionScheduler | SectionWorker | SectionCoordinator | SectionUI | SectionQueues | SectionMonitoring | SectionTunnel | SectionLicense | SectionProc | SectionBots
 )
 
 // serviceRequirements maps services to their required config sections using bitwise OR.
 var serviceRequirements = map[Service]ConfigSection{
 	ServiceNone:        SectionAll,
-	ServiceServer:      SectionServer | SectionCoordinator | SectionUI | SectionQueues | SectionMonitoring | SectionGitSync | SectionTunnel | SectionLicense | SectionProc,
+	ServiceServer:      SectionServer | SectionCoordinator | SectionUI | SectionQueues | SectionMonitoring | SectionTunnel | SectionLicense | SectionProc,
 	ServiceScheduler:   SectionScheduler | SectionCoordinator | SectionQueues | SectionProc,
 	ServiceWorker:      SectionWorker | SectionCoordinator | SectionProc,
 	ServiceCoordinator: SectionCoordinator | SectionProc,
@@ -268,7 +267,6 @@ func (l *ConfigLoader) buildConfig(def Definition) (*Config, error) {
 		{SectionProc, func() { l.loadProcConfig(&cfg, def) }},
 		{SectionScheduler, func() { l.loadSchedulerConfig(&cfg, def) }},
 		{SectionMonitoring, func() { l.loadMonitoringConfig(&cfg, def) }},
-		{SectionGitSync, func() { l.loadGitSyncConfig(&cfg, def) }},
 		{SectionTunnel, func() { l.loadTunnelConfig(&cfg, def) }},
 		{SectionBots, func() { l.loadBotsConfig(&cfg, def) }},
 		{SectionLicense, func() { l.loadLicenseConfig(&cfg, def) }},
@@ -1014,64 +1012,6 @@ func (l *ConfigLoader) loadMonitoringConfig(cfg *Config, def Definition) {
 	}
 }
 
-func (l *ConfigLoader) loadGitSyncConfig(cfg *Config, def Definition) {
-	if def.GitSync == nil {
-		return
-	}
-
-	cfg.GitSync.Enabled = def.GitSync.Enabled != nil && *def.GitSync.Enabled
-	if !cfg.GitSync.Enabled {
-		return
-	}
-
-	l.setGitSyncDefaults(cfg)
-	l.applyGitSyncDefinition(cfg, def.GitSync)
-}
-
-func (l *ConfigLoader) setGitSyncDefaults(cfg *Config) {
-	cfg.GitSync.Branch = "main"
-	cfg.GitSync.PushEnabled = true
-	cfg.GitSync.Auth.Type = "token"
-	cfg.GitSync.AutoSync.OnStartup = true
-	cfg.GitSync.AutoSync.Interval = 300
-	cfg.GitSync.Commit.AuthorName = "Ayatsuri"
-	cfg.GitSync.Commit.AuthorEmail = "ayatsuri@localhost"
-}
-
-func (l *ConfigLoader) applyGitSyncDefinition(cfg *Config, def *GitSyncDef) {
-	setIfNotEmpty(&cfg.GitSync.Repository, def.Repository)
-	setIfNotEmpty(&cfg.GitSync.Branch, def.Branch)
-	setIfNotEmpty(&cfg.GitSync.Path, def.Path)
-
-	if def.PushEnabled != nil {
-		cfg.GitSync.PushEnabled = *def.PushEnabled
-	}
-
-	if def.Auth != nil {
-		setIfNotEmpty(&cfg.GitSync.Auth.Type, def.Auth.Type)
-		setIfNotEmpty(&cfg.GitSync.Auth.Token, def.Auth.Token)
-		setIfNotEmpty(&cfg.GitSync.Auth.SSHKeyPath, def.Auth.SSHKeyPath)
-		setIfNotEmpty(&cfg.GitSync.Auth.SSHPassphrase, def.Auth.SSHPassphrase)
-	}
-
-	if def.AutoSync != nil {
-		if def.AutoSync.Enabled != nil {
-			cfg.GitSync.AutoSync.Enabled = *def.AutoSync.Enabled
-		}
-		if def.AutoSync.OnStartup != nil {
-			cfg.GitSync.AutoSync.OnStartup = *def.AutoSync.OnStartup
-		}
-		if l.v.IsSet("git_sync.auto_sync.interval") {
-			cfg.GitSync.AutoSync.Interval = def.AutoSync.Interval
-		}
-	}
-
-	if def.Commit != nil {
-		setIfNotEmpty(&cfg.GitSync.Commit.AuthorName, def.Commit.AuthorName)
-		setIfNotEmpty(&cfg.GitSync.Commit.AuthorEmail, def.Commit.AuthorEmail)
-	}
-}
-
 func setIfNotEmpty(target *string, value string) {
 	if value != "" {
 		*target = value
@@ -1756,21 +1696,6 @@ var envBindings = []envBinding{
 	{key: "license.key", env: "LICENSE_KEY"},
 	{key: "license.cloud_url", env: "LICENSE_CLOUD_URL"},
 
-	// GitSync
-	{key: "git_sync.enabled", env: "GITSYNC_ENABLED"},
-	{key: "git_sync.repository", env: "GITSYNC_REPOSITORY"},
-	{key: "git_sync.branch", env: "GITSYNC_BRANCH"},
-	{key: "git_sync.path", env: "GITSYNC_PATH"},
-	{key: "git_sync.push_enabled", env: "GITSYNC_PUSH_ENABLED"},
-	{key: "git_sync.auth.type", env: "GITSYNC_AUTH_TYPE"},
-	{key: "git_sync.auth.token", env: "GITSYNC_AUTH_TOKEN"},
-	{key: "git_sync.auth.ssh_key_path", env: "GITSYNC_AUTH_SSH_KEY_PATH", isPath: true},
-	{key: "git_sync.auth.ssh_passphrase", env: "GITSYNC_AUTH_SSH_PASSPHRASE"},
-	{key: "git_sync.auto_sync.enabled", env: "GITSYNC_AUTOSYNC_ENABLED"},
-	{key: "git_sync.auto_sync.on_startup", env: "GITSYNC_AUTOSYNC_ON_STARTUP"},
-	{key: "git_sync.auto_sync.interval", env: "GITSYNC_AUTOSYNC_INTERVAL"},
-	{key: "git_sync.commit.author_name", env: "GITSYNC_COMMIT_AUTHOR_NAME"},
-	{key: "git_sync.commit.author_email", env: "GITSYNC_COMMIT_AUTHOR_EMAIL"},
 }
 
 func (l *ConfigLoader) bindEnvironmentVariables() {

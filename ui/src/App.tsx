@@ -50,7 +50,6 @@ import DAGs from './pages/dags';
 import DAGDetails from './pages/dags/dag';
 import DocsPage from './pages/docs';
 import EventLogsPage from './pages/event-logs';
-import GitSyncPage from './pages/git-sync';
 import LicensePage from './pages/license';
 import LoginPage from './pages/login';
 import Queues from './pages/queues';
@@ -404,15 +403,7 @@ function AppInner({ config: initialConfig }: Props): React.ReactElement {
                                               </AdminElement>
                                             }
                                           />
-                                          <Route
-                                            path="/git-sync"
-                                            element={
-                                              <AdminElement>
-                                                <GitSyncPage />
-                                              </AdminElement>
-                                            }
-                                          />
-                                          <Route
+                                            <Route
                                             path="/agent-settings"
                                             element={
                                               <AdminElement>

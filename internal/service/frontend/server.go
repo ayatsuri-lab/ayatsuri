@@ -46,7 +46,6 @@ import (
 	cmnschema "github.com/ayatsuri-lab/ayatsuri/internal/cmn/schema"
 	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/telemetry"
 	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
-	"github.com/ayatsuri-lab/ayatsuri/internal/gitsync"
 	"github.com/ayatsuri-lab/ayatsuri/internal/license"
 	_ "github.com/ayatsuri-lab/ayatsuri/internal/llm/allproviders" // Register LLM providers
 	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileagentconfig"
@@ -91,7 +90,6 @@ const (
 )
 
 type shutdownActions struct {
-	stopSync               func() error
 	shutdownSSEMultiplexer func()
 	beforeHTTPShutdown     func()
 	disableHTTPKeepAlives  func()
@@ -113,8 +111,7 @@ type Server struct {
 	auditService       *audit.Service
 	auditStore         *fileaudit.Store
 	eventService       *eventstore.Service
-	syncService        gitsync.Service
-	listener           net.Listener
+	listener net.Listener
 	appStream          *sse.AppStreamService
 	sseMultiplexer     *sse.Multiplexer
 	terminalManager    *terminal.Manager
@@ -203,11 +200,6 @@ func NewServer(ctx context.Context, cfg *config.Config, dr exec.DAGStore, drs ex
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize event service: %w", err)
 	}
-	syncSvc := initSyncService(ctx, cfg)
-	if syncSvc != nil {
-		apiOpts = append(apiOpts, apiv1.WithSyncService(syncSvc))
-	}
-
 	if cfg.Paths.BaseConfig != "" {
 		baseConfigStore, bcErr := filebaseconfig.New(cfg.Paths.BaseConfig)
 		if bcErr != nil {
@@ -230,7 +222,7 @@ func NewServer(ctx context.Context, cfg *config.Config, dr exec.DAGStore, drs ex
 		}
 	}
 
-	// Seed built-in knowledge references to data dir (not git-synced).
+	// Seed built-in knowledge references to data dir.
 	referencesDir := fileagentskill.SeedReferences(
 		filepath.Join(cfg.Paths.DataDir, "agent", "references"),
 	)
@@ -432,8 +424,7 @@ func NewServer(ctx context.Context, cfg *config.Config, dr exec.DAGStore, drs ex
 		auditService:       auditSvc,
 		auditStore:         auditStore,
 		eventService:       eventSvc,
-		syncService:        syncSvc,
-		metricsRegistry:    mr,
+		metricsRegistry: mr,
 		dagStore:           dr,
 		remoteNodeResolver: remoteNodeResolver,
 		upgradeStore:       upgradeStore,
@@ -452,8 +443,7 @@ func NewServer(ctx context.Context, cfg *config.Config, dr exec.DAGStore, drs ex
 			OIDCEnabled:           oidcEnabled,
 			OIDCButtonLabel:       oidcButtonLabel,
 			TerminalEnabled:       cfg.Server.Terminal.Enabled && authSvc != nil,
-			GitSyncEnabled:        cfg.GitSync.Enabled,
-			WorkspaceStore:        wsStore,
+			WorkspaceStore: wsStore,
 			SetupRequiredChecker:  &setupChecker{authSvc: authSvc, fallback: setupRequired},
 			UpdateChecker:         updateInfoChecker,
 			AgentEnabledChecker:   agentConfigStore,
@@ -732,33 +722,6 @@ func initAuditService(cfg *config.Config) (*audit.Service, *fileaudit.Store, err
 	}
 
 	return audit.New(store), store, nil
-}
-
-// initSyncService creates and returns a Git sync service if enabled.
-func initSyncService(ctx context.Context, cfg *config.Config) gitsync.Service {
-	if !cfg.GitSync.Enabled {
-		return nil
-	}
-
-	syncCfg := gitsync.NewConfigFromGlobal(cfg.GitSync)
-	svc := gitsync.NewService(syncCfg, cfg.Paths.DAGsDir, cfg.Paths.DataDir)
-
-	if syncCfg.AutoSync.Enabled {
-		if err := svc.Start(ctx); err != nil {
-			logger.Error(ctx, "Failed to start git sync auto-sync", tag.Error(err))
-		} else {
-			logger.Info(ctx, "Git sync auto-sync started",
-				slog.String("repository", syncCfg.Repository),
-				slog.String("branch", syncCfg.Branch),
-				slog.Int("interval", syncCfg.AutoSync.Interval))
-		}
-	}
-
-	logger.Info(ctx, "Git sync service initialized",
-		slog.String("repository", syncCfg.Repository),
-		slog.String("branch", syncCfg.Branch))
-
-	return svc
 }
 
 // autoEnableExampleSkills adds example skill IDs to the agent config's enabled list.
@@ -1492,15 +1455,6 @@ func newShutdownPhaseContext(parent context.Context, budget time.Duration) (cont
 func (srv *Server) shutdownActions(ctx context.Context) shutdownActions {
 	actions := shutdownActions{}
 
-	if srv.syncService != nil {
-		actions.stopSync = func() error {
-			if err := srv.syncService.Stop(); err != nil {
-				logger.Warn(ctx, "Failed to stop git sync service", tag.Error(err))
-				return err
-			}
-			return nil
-		}
-	}
 	if srv.appStream != nil && srv.sseMultiplexer == nil {
 		actions.shutdownSSEMultiplexer = func() {
 			srv.appStream.Shutdown()
@@ -1554,9 +1508,6 @@ func (srv *Server) shutdownActions(ctx context.Context) shutdownActions {
 func runShutdownSequence(shutdownCtx context.Context, actions shutdownActions) error {
 	var shutdownErr error
 
-	if actions.stopSync != nil {
-		_ = actions.stopSync()
-	}
 	if actions.shutdownSSEMultiplexer != nil {
 		actions.shutdownSSEMultiplexer()
 	}

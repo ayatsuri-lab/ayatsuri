@@ -26,8 +26,7 @@ type Config struct {
 	Monitoring      MonitoringConfig
 	DefaultExecMode ExecutionMode
 	Cache           CacheMode
-	GitSync         GitSyncConfig
-	Tunnel          TunnelConfig
+	Tunnel TunnelConfig
 	Bots            BotsConfig
 	License         LicenseConfig
 	Notices         []string
@@ -73,39 +72,6 @@ type SlackBotConfig struct {
 	AllowedChannelIDs    []string
 	InterestedEventTypes []string
 	RespondToAll         bool // respond to all channel messages, not just @mentions
-}
-
-// GitSyncConfig holds the configuration for Git sync functionality.
-type GitSyncConfig struct {
-	Enabled     bool
-	Repository  string // Format: github.com/org/repo or https://github.com/org/repo.git
-	Branch      string
-	Path        string // Subdirectory to sync (empty = root)
-	Auth        GitSyncAuthConfig
-	AutoSync    GitSyncAutoSyncConfig
-	PushEnabled bool
-	Commit      GitSyncCommitConfig
-}
-
-// GitSyncAuthConfig holds authentication configuration for Git operations.
-type GitSyncAuthConfig struct {
-	Type          string // "token" or "ssh"
-	Token         string // Personal access token for HTTPS
-	SSHKeyPath    string
-	SSHPassphrase string
-}
-
-// GitSyncAutoSyncConfig holds configuration for automatic synchronization.
-type GitSyncAutoSyncConfig struct {
-	Enabled   bool
-	OnStartup bool
-	Interval  int // Seconds; 0 disables periodic sync
-}
-
-// GitSyncCommitConfig holds configuration for Git commits.
-type GitSyncCommitConfig struct {
-	AuthorName  string // Default: "Ayatsuri"
-	AuthorEmail string // Default: "ayatsuri@localhost"
 }
 
 // TunnelConfig holds the configuration for tunnel services.
@@ -511,9 +477,6 @@ func (c *Config) Validate() error {
 	if err := c.validateExecutionMode(); err != nil {
 		return err
 	}
-	if err := c.validateGitSync(); err != nil {
-		return err
-	}
 	if err := c.validateTunnel(); err != nil {
 		return err
 	}
@@ -755,34 +718,6 @@ func (c *Config) validateExecutionMode() error {
 	default:
 		return fmt.Errorf("invalid default_execution_mode: %q (must be one of: local, distributed)", c.DefaultExecMode)
 	}
-}
-
-// validateGitSync validates the Git sync configuration.
-func (c *Config) validateGitSync() error {
-	if !c.GitSync.Enabled {
-		return nil
-	}
-	if c.GitSync.Repository == "" {
-		return fmt.Errorf("git sync requires repository to be set (git_sync.repository)")
-	}
-	if c.GitSync.Branch == "" {
-		return fmt.Errorf("git sync requires branch to be set (git_sync.branch)")
-	}
-
-	switch c.GitSync.Auth.Type {
-	case "", "token", "ssh":
-		// Valid (empty defaults to token)
-	default:
-		return fmt.Errorf("git sync auth type must be 'token' or 'ssh' (got: %q)", c.GitSync.Auth.Type)
-	}
-
-	if c.GitSync.Auth.Type == "ssh" && c.GitSync.Auth.SSHKeyPath == "" {
-		return fmt.Errorf("git sync SSH auth requires ssh_key_path to be set")
-	}
-	if c.GitSync.AutoSync.Interval < 0 {
-		return fmt.Errorf("git sync auto_sync.interval must be non-negative (got: %d)", c.GitSync.AutoSync.Interval)
-	}
-	return nil
 }
 
 // validateTunnel validates the tunnel configuration.
