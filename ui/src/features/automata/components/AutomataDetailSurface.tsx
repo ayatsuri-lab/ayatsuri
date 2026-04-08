@@ -14,6 +14,7 @@ import { Tab, Tabs } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AutomataAvatar } from '@/features/automata/components/AutomataAvatar';
+import { CronScheduleInput } from '@/features/automata/components/CronScheduleInput';
 import { AutomataMemorySection } from '@/features/automata/components/AutomataMemorySection';
 import type { AutomataDetailController } from '@/features/automata/hooks/useAutomataDetail';
 import {
@@ -818,23 +819,18 @@ function ConfigTab({
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="automata-detail-schedule">
-                    Schedule
-                  </Label>
-                  <Textarea
-                    id="automata-detail-schedule"
+                  <Label>Schedule</Label>
+                  <CronScheduleInput
                     value={controller.scheduleDraft}
-                    onChange={(event) => {
-                      controller.setScheduleDraft(event.target.value);
+                    onChange={(v) => {
+                      controller.setScheduleDraft(v);
                       controller.setIsEditingMetadata(true);
                     }}
-                    placeholder={'0 * * * *\n30 9 * * 1-5'}
                     disabled={metadataFieldDisabled}
-                    rows={3}
                   />
                   <div className="text-xs text-muted-foreground">
-                    Optional. Use one cron expression per line. Due ticks start
-                    a fresh cycle by reopening the Config task template.
+                    Optional. Scheduled ticks start a fresh cycle by reopening
+                    the Config task template.
                   </div>
                 </div>
               </>
