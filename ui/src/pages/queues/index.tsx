@@ -13,14 +13,13 @@ import { useQuery } from '../../hooks/api';
 import { useQueuesListSSE } from '../../hooks/useQueuesListSSE';
 import {
   sseFallbackOptions,
-  useSSECacheSync,
-} from '../../hooks/useSSECacheSync';
+  useSSECacheSync} from '../../hooks/useSSECacheSync';
 import Title from '../../ui/Title';
 
 function Queues() {
   const appBarContext = React.useContext(AppBarContext);
   const searchState = useSearchState();
-  const remoteKey = appBarContext.selectedRemoteNode || 'local';
+  const remoteKey = 'local';
 
   type QueueFilters = {
     searchText: string;
@@ -32,8 +31,7 @@ function Queues() {
 
   const defaultFilters = React.useMemo<QueueFilters>(
     () => ({
-      searchText: '',
-    }),
+      searchText: ''}),
     []
   );
 
@@ -41,8 +39,7 @@ function Queues() {
 
   const currentFilters = React.useMemo<QueueFilters>(
     () => ({
-      searchText,
-    }),
+      searchText}),
     [searchText]
   );
 
@@ -57,8 +54,7 @@ function Queues() {
     const stored = searchState.readState<QueueFilters>('queues', remoteKey);
     const next = stored
       ? {
-          searchText: stored.searchText ?? defaultFilters.searchText,
-        }
+          searchText: stored.searchText ?? defaultFilters.searchText}
       : defaultFilters;
 
     const current = currentFiltersRef.current;
@@ -92,13 +88,7 @@ function Queues() {
 
   const { data, error, isLoading, mutate } = useQuery(
     '/queues',
-    {
-      params: {
-        query: {
-          remoteNode: appBarContext.selectedRemoteNode || 'local',
-        },
-      },
-    },
+    undefined,
     sseFallbackOptions(queuesSSE, 3000)
   );
   useSSECacheSync(queuesSSE, mutate);

@@ -58,7 +58,6 @@ const ANSI_CODES_REGEX = [
  * Fetches log data from the API and refreshes every 30 seconds
  */
 function ExecutionLog({ name, dagRunId, dagRun }: Props) {
-  const appBarContext = React.useContext(AppBarContext);
   const config = useConfig();
   const { preferences, updatePreference } = useUserPreferences();
   const [viewMode, setViewMode] = useState<'tail' | 'head' | 'page'>('tail');
@@ -100,7 +99,6 @@ function ExecutionLog({ name, dagRunId, dagRun }: Props) {
   const usePolling = !useSSE || sseResult.shouldUseFallback || !sseResult.isConnected;
 
   // Build query params based on view mode
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const tail = viewMode === 'tail' ? pageSize : undefined;
   const head = viewMode === 'head' ? pageSize : undefined;
   const offset = viewMode === 'page' ? (currentPage - 1) * pageSize + 1 : undefined;
@@ -112,8 +110,7 @@ function ExecutionLog({ name, dagRunId, dagRun }: Props) {
       refreshInterval: usePolling && isLiveMode ? 2000 : 0,
       keepPreviousData: true,
       revalidateOnFocus: false,
-      dedupingInterval: 1000,
-    }),
+      dedupingInterval: 1000}),
     [isLiveMode, usePolling]
   );
 
@@ -122,20 +119,14 @@ function ExecutionLog({ name, dagRunId, dagRun }: Props) {
     '/dag-runs/{name}/{dagRunId}/sub-dag-runs/{subDAGRunId}/log',
     whenEnabled(!!isSubDAGRun, {
       params: {
-        query: {
-          remoteNode,
-          tail,
+        query: { tail,
           head,
           offset,
-          limit,
-        },
+          limit},
         path: {
           name: dagRun?.rootDAGRunName as string,
           dagRunId: dagRun?.rootDAGRunId as string,
-          subDAGRunId: dagRun?.dagRunId as string,
-        },
-      },
-    }),
+          subDAGRunId: dagRun?.dagRunId as string}}}),
     swrOptions
   );
 
@@ -144,19 +135,13 @@ function ExecutionLog({ name, dagRunId, dagRun }: Props) {
     '/dag-runs/{name}/{dagRunId}/log',
     whenEnabled(!isSubDAGRun, {
       params: {
-        query: {
-          remoteNode,
-          tail,
+        query: { tail,
           head,
           offset,
-          limit,
-        },
+          limit},
         path: {
           name,
-          dagRunId,
-        },
-      },
-    }),
+          dagRunId}}}),
     swrOptions
   );
 
@@ -266,12 +251,10 @@ function ExecutionLog({ name, dagRunId, dagRun }: Props) {
       : `${config.apiURL}/dag-runs/${name}/${dagRunId}/log/download`;
 
     const url = new URL(endpoint, window.location.origin);
-    url.searchParams.set('remoteNode', remoteNode);
 
     try {
       const response = await fetch(url.toString(), {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
+        headers: token ? { Authorization: `Bearer ${token}` } : {}});
 
       if (!response.ok) {
         throw new Error(`Download failed: ${response.statusText}`);
@@ -292,7 +275,7 @@ function ExecutionLog({ name, dagRunId, dagRun }: Props) {
     } catch (err) {
       console.error('Download failed:', err);
     }
-  }, [config.apiURL, name, dagRunId, dagRun, isSubDAGRun, remoteNode]);
+  }, [config.apiURL, name, dagRunId, dagRun, isSubDAGRun]);
 
   // Show loading indicator only on initial load
   if (isLoading && !cachedData && isInitialLoad.current) {

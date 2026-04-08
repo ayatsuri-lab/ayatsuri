@@ -93,7 +93,6 @@ func runDry(ctx *Context, args []string) error {
 			AgentSkillStore:            as.SkillStore,
 			AgentSoulStore:             as.SoulStore,
 			AgentOAuthManager:          as.OAuthManager,
-			AgentRemoteContextResolver: as.ContextResolver,
 		},
 	)
 

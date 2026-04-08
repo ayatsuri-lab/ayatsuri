@@ -11,7 +11,6 @@ import { useClient } from '../../../../hooks/api';
  * and redirects to the DAG specification page after creation
  */
 function CreateDAGModal() {
-  const appBarContext = useContext(AppBarContext);
   const client = useClient();
   const config = useConfig();
   const [error, setError] = useState<string | null>(null);
@@ -34,14 +33,9 @@ function CreateDAGModal() {
     try {
       const { error } = await client.POST('/dags', {
         params: {
-          query: {
-            remoteNode: appBarContext.selectedRemoteNode || 'local',
-          },
         },
         body: {
-          name,
-        },
-      });
+          name}});
 
       if (error) {
         setError(error.message || 'An error occurred');

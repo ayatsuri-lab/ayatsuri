@@ -175,7 +175,6 @@ func executeDAGWithRunID(ctx *Context, cli runtime.Manager, dag *core.DAG, dagRu
 			AgentSkillStore:            as.SkillStore,
 			AgentSoulStore:             as.SoulStore,
 			AgentOAuthManager:          as.OAuthManager,
-			AgentRemoteContextResolver: as.ContextResolver,
 			ScheduleTime:               scheduleTime,
 		})
 

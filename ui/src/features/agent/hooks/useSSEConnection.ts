@@ -26,7 +26,6 @@ export interface AgentSSEStatus {
 export function useSSEConnection(
   _sessionId: string | null,
   _apiURL: string,
-  _remoteNode: string,
   _callbacks: SSECallbacks
 ): AgentSSEStatus {
   return { isSessionLive: false };

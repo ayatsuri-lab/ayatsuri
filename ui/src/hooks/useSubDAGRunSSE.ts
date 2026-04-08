@@ -14,13 +14,12 @@ export function useSubDAGRunSSE(
   name: string,
   dagRunId: string,
   subDAGRunId: string,
-  enabled: boolean = true,
-  remoteNode?: string
+  enabled: boolean = true
 ): SSEState<SubDAGRunSSEResponse> {
   const endpoint =
     `/events/dag-runs/${encodeURIComponent(name)}/${encodeURIComponent(dagRunId)}` +
     `/sub-dag-runs/${encodeURIComponent(subDAGRunId)}`;
-  return useSSE<SubDAGRunSSEResponse>(endpoint, enabled, remoteNode);
+  return useSSE<SubDAGRunSSEResponse>(endpoint, enabled);
 }
 
 export type { SubDAGRunSSEResponse };

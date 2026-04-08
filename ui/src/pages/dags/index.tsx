@@ -3,8 +3,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   PathsDagsGetParametersQueryOrder,
-  PathsDagsGetParametersQuerySort,
-} from '../../api/v1/schema';
+  PathsDagsGetParametersQuerySort} from '../../api/v1/schema';
 import SplitLayout from '../../components/SplitLayout';
 import { TabBar } from '../../components/TabBar';
 import { AppBarContext } from '../../contexts/AppBarContext';
@@ -19,8 +18,7 @@ import { useQuery } from '../../hooks/api';
 import { useDAGsListSSE } from '../../hooks/useDAGsListSSE';
 import {
   sseFallbackOptions,
-  useSSECacheSync,
-} from '../../hooks/useSSECacheSync';
+  useSSECacheSync} from '../../hooks/useSSECacheSync';
 import LoadingIndicator from '../../ui/LoadingIndicator';
 
 type DAGDefinitionsFilters = {
@@ -57,7 +55,6 @@ function DAGsContent() {
   const group = query.get('group') || '';
   const appBarContext = React.useContext(AppBarContext);
   const searchState = useSearchState();
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const { preferences, updatePreference } = useUserPreferences();
   const { tabs, activeTabId, selectDAG, addTab, closeTab, getActiveFileName } =
     useTabContext();
@@ -68,8 +65,7 @@ function DAGsContent() {
       searchTags: [],
       page: 1,
       sortField: 'name',
-      sortOrder: 'asc',
-    }),
+      sortOrder: 'asc'}),
     []
   );
 
@@ -96,8 +92,7 @@ function DAGsContent() {
       searchTags,
       page,
       sortField,
-      sortOrder,
-    }),
+      sortOrder}),
     [searchText, searchTags, page, sortField, sortOrder]
   );
 
@@ -114,12 +109,11 @@ function DAGsContent() {
     const params = new URLSearchParams(location.search);
     const stored = searchState.readState<DAGDefinitionsFilters>(
       'dagDefinitions',
-      remoteNode
+      'local'
     );
     const base: DAGDefinitionsFilters = {
       ...defaultFilters,
-      ...(stored ?? {}),
-    };
+      ...(stored ?? {})};
 
     const urlFilters: Partial<DAGDefinitionsFilters> = {};
     let hasUrlFilters = false;
@@ -164,7 +158,7 @@ function DAGsContent() {
     if (current && areDAGDefinitionsFiltersEqual(current, next)) {
       if (hasUrlFilters) {
         lastPersistedFiltersRef.current = next;
-        searchState.writeState('dagDefinitions', remoteNode, next);
+        searchState.writeState('dagDefinitions', next);
       }
       return;
     }
@@ -178,8 +172,8 @@ function DAGsContent() {
     setSortOrder(next.sortOrder);
 
     lastPersistedFiltersRef.current = next;
-    searchState.writeState('dagDefinitions', remoteNode, next);
-  }, [defaultFilters, location.search, remoteNode, searchState]);
+    searchState.writeState('dagDefinitions', next);
+  }, [defaultFilters, location.search, searchState]);
 
   React.useEffect(() => {
     const persisted = lastPersistedFiltersRef.current;
@@ -188,8 +182,8 @@ function DAGsContent() {
     }
 
     lastPersistedFiltersRef.current = currentFilters;
-    searchState.writeState('dagDefinitions', remoteNode, currentFilters);
-  }, [currentFilters, remoteNode, searchState]);
+    searchState.writeState('dagDefinitions', currentFilters);
+  }, [currentFilters, searchState]);
 
   const handlePageLimitChange = (newLimit: number) => {
     updatePreference('pageLimit', newLimit);
@@ -202,8 +196,7 @@ function DAGsContent() {
       name: apiSearchText || undefined,
       tags: apiSearchTags.length > 0 ? apiSearchTags.join(',') : undefined,
       sort: sortField,
-      order: sortOrder,
-    }),
+      order: sortOrder}),
     [
       page,
       preferences.pageLimit,
@@ -221,18 +214,13 @@ function DAGsContent() {
       params: {
         query: {
           ...queryParams,
-          remoteNode,
           sort: sortField as PathsDagsGetParametersQuerySort,
-          order: sortOrder as PathsDagsGetParametersQueryOrder,
-        },
-      },
-    },
+          order: sortOrder as PathsDagsGetParametersQueryOrder}}},
     {
       ...sseFallbackOptions(dagsListSSE),
       revalidateIfStale: false,
       revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
+      revalidateOnReconnect: false}
   );
   useSSECacheSync(dagsListSSE, mutate);
 
@@ -313,8 +301,7 @@ function DAGsContent() {
     const dags = data?.dags ?? [];
     return {
       dagFiles: dags,
-      errorCount: dags.filter((dag) => dag.errors?.length).length,
-    };
+      errorCount: dags.filter((dag) => dag.errors?.length).length};
   }, [data]);
 
   const leftPanel = (
@@ -340,8 +327,7 @@ function DAGsContent() {
               page: page,
               pageChange: pageChange,
               onPageLimitChange: handlePageLimitChange,
-              pageLimit: preferences.pageLimit,
-            }}
+              pageLimit: preferences.pageLimit}}
             isLoading={isLoading}
             sortField={sortField}
             sortOrder={sortOrder}

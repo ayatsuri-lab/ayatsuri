@@ -5,15 +5,13 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  DialogTitle} from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 import { Switch } from '@/components/ui/switch';
 import {
   Table,
@@ -21,8 +19,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+  TableRow} from '@/components/ui/table';
 import { AppBarContext } from '@/contexts/AppBarContext';
 import { TOKEN_KEY, useCanManageWebhooks } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
@@ -35,8 +32,7 @@ import {
   MoreHorizontal,
   RefreshCw,
   Trash2,
-  Webhook,
-} from 'lucide-react';
+  Webhook} from 'lucide-react';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -73,19 +69,13 @@ export default function WebhooksPage() {
     const token = localStorage.getItem(TOKEN_KEY);
     return {
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    };
+      'Content-Type': 'application/json'};
   }, []);
-
-  const getRemoteNodeParam = useCallback(() => {
-    return appBarContext.selectedRemoteNode || 'local';
-  }, [appBarContext.selectedRemoteNode]);
 
   const fetchWebhooks = useCallback(async () => {
     try {
-      const remoteNode = getRemoteNodeParam();
       const response = await fetch(
-        `${config.apiURL}/webhooks?remoteNode=${remoteNode}`,
+        `${config.apiURL}/webhooks`,
         { headers: getAuthHeaders() }
       );
 
@@ -100,7 +90,7 @@ export default function WebhooksPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [config.apiURL, getAuthHeaders, getRemoteNodeParam]);
+  }, [config.apiURL, getAuthHeaders]);
 
   useEffect(() => {
     fetchWebhooks();
@@ -114,14 +104,12 @@ export default function WebhooksPage() {
     if (!togglingWebhook) return;
     try {
       setError(null);
-      const remoteNode = getRemoteNodeParam();
       const response = await fetch(
-        `${config.apiURL}/dags/${encodeURIComponent(togglingWebhook.webhook.dagName)}/webhook/toggle?remoteNode=${remoteNode}`,
+        `${config.apiURL}/dags/${encodeURIComponent(togglingWebhook.webhook.dagName)}/webhook/toggle`,
         {
           method: 'POST',
           headers: getAuthHeaders(),
-          body: JSON.stringify({ enabled: togglingWebhook.enabled }),
-        }
+          body: JSON.stringify({ enabled: togglingWebhook.enabled })}
       );
 
       if (!response.ok) {
@@ -142,13 +130,11 @@ export default function WebhooksPage() {
 
     try {
       setError(null);
-      const remoteNode = getRemoteNodeParam();
       const response = await fetch(
-        `${config.apiURL}/dags/${encodeURIComponent(regeneratingWebhook.dagName)}/webhook/regenerate?remoteNode=${remoteNode}`,
+        `${config.apiURL}/dags/${encodeURIComponent(regeneratingWebhook.dagName)}/webhook/regenerate`,
         {
           method: 'POST',
-          headers: getAuthHeaders(),
-        }
+          headers: getAuthHeaders()}
       );
 
       if (!response.ok) {
@@ -171,13 +157,11 @@ export default function WebhooksPage() {
     if (!deletingWebhook) return;
 
     try {
-      const remoteNode = getRemoteNodeParam();
       const response = await fetch(
-        `${config.apiURL}/dags/${encodeURIComponent(deletingWebhook.dagName)}/webhook?remoteNode=${remoteNode}`,
+        `${config.apiURL}/dags/${encodeURIComponent(deletingWebhook.dagName)}/webhook`,
         {
           method: 'DELETE',
-          headers: getAuthHeaders(),
-        }
+          headers: getAuthHeaders()}
       );
 
       if (!response.ok) {

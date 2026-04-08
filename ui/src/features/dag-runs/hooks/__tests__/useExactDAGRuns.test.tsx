@@ -4,34 +4,28 @@ import { useExactDAGRuns, type DAGRunListQuery } from '../dagRunPagination';
 
 const getMock = vi.fn();
 const client = {
-  GET: getMock,
-};
+  GET: getMock};
 const { useDAGRunsListSSEMock } = vi.hoisted(() => ({
   useDAGRunsListSSEMock: vi.fn(() => ({
     data: null,
     error: null,
     isConnected: false,
     isConnecting: false,
-    shouldUseFallback: true,
-  })),
-}));
+    shouldUseFallback: true}))}));
 
 vi.mock('@/hooks/api', () => ({
   useClient: () => client,
-  useQuery: vi.fn(),
-}));
+  useQuery: vi.fn()}));
 
 vi.mock('@/hooks/useDAGRunsListSSE', () => ({
-  useDAGRunsListSSE: useDAGRunsListSSEMock,
-}));
+  useDAGRunsListSSE: useDAGRunsListSSEMock}));
 
 function createQuery(
   overrides: Partial<DAGRunListQuery> = {}
 ): DAGRunListQuery {
   return {
     fromDate: 100,
-    ...overrides,
-  };
+    ...overrides};
 }
 
 function createDeferred<T>() {
@@ -58,8 +52,7 @@ describe('useExactDAGRuns', () => {
     getMock.mockResolvedValue({ data: { dagRuns: [] } });
 
     const { rerender } = renderHook(({ query }) => useExactDAGRuns({ query }), {
-      initialProps: { query: createQuery() },
-    });
+      initialProps: { query: createQuery() }});
 
     await waitFor(() => {
       expect(getMock).toHaveBeenCalledTimes(1);
@@ -78,8 +71,7 @@ describe('useExactDAGRuns', () => {
     getMock.mockResolvedValue({ data: { dagRuns: [] } });
 
     const { rerender } = renderHook(({ query }) => useExactDAGRuns({ query }), {
-      initialProps: { query: createQuery() },
-    });
+      initialProps: { query: createQuery() }});
 
     await waitFor(() => {
       expect(getMock).toHaveBeenCalledTimes(1);
@@ -95,11 +87,7 @@ describe('useExactDAGRuns', () => {
       params: {
         query: expect.objectContaining({
           fromDate: 200,
-          name: 'billing',
-          remoteNode: 'local',
-        }),
-      },
-    });
+          name: 'billing'})}});
   });
 
   it('refresh uses the latest query after rerender instead of a stale closure', async () => {
@@ -108,8 +96,7 @@ describe('useExactDAGRuns', () => {
     const { result, rerender } = renderHook(
       ({ query }) => useExactDAGRuns({ query }),
       {
-        initialProps: { query: createQuery({ fromDate: 100 }) },
-      }
+        initialProps: { query: createQuery({ fromDate: 100 }) }}
     );
 
     await waitFor(() => {
@@ -131,11 +118,7 @@ describe('useExactDAGRuns', () => {
       params: {
         query: expect.objectContaining({
           fromDate: 300,
-          name: 'ops',
-          remoteNode: 'local',
-        }),
-      },
-    });
+          name: 'ops'})}});
   });
 
   it('ignores stale responses after a query change and aborts the older request', async () => {
@@ -171,8 +154,7 @@ describe('useExactDAGRuns', () => {
     const { result, rerender } = renderHook(
       ({ query }) => useExactDAGRuns({ query }),
       {
-        initialProps: { query: createQuery({ fromDate: 100 }) },
-      }
+        initialProps: { query: createQuery({ fromDate: 100 }) }}
     );
 
     await waitFor(() => {
@@ -191,14 +173,10 @@ describe('useExactDAGRuns', () => {
 
     firstRequest.resolve({
       data: {
-        dagRuns: [{ name: 'stale', dagRunId: 'old' }],
-      },
-    });
+        dagRuns: [{ name: 'stale', dagRunId: 'old' }]}});
     secondRequest.resolve({
       data: {
-        dagRuns: [{ name: 'fresh', dagRunId: 'new' }],
-      },
-    });
+        dagRuns: [{ name: 'fresh', dagRunId: 'new' }]}});
 
     await waitFor(() => {
       expect(result.current.data).toEqual([{ name: 'fresh', dagRunId: 'new' }]);
@@ -231,20 +209,14 @@ describe('useExactDAGRuns', () => {
     expect(getMock.mock.calls[0]?.[1]).toMatchObject({
       params: {
         query: expect.objectContaining({
-          remoteNode: 'local',
           fromDate: 100,
-          limit: 100,
-        }),
-      },
-    });
+          limit: 100})}});
     expect(result.current.isLoading).toBe(true);
 
     firstPage.resolve({
       data: {
         dagRuns: [{ name: 'first', dagRunId: 'run-1' }],
-        nextCursor: 'cursor-1',
-      },
-    });
+        nextCursor: 'cursor-1'}});
 
     await waitFor(() => {
       expect(result.current.data).toEqual([
@@ -262,19 +234,13 @@ describe('useExactDAGRuns', () => {
     expect(getMock.mock.calls[1]?.[1]).toMatchObject({
       params: {
         query: expect.objectContaining({
-          remoteNode: 'local',
           fromDate: 100,
           limit: 100,
-          cursor: 'cursor-1',
-        }),
-      },
-    });
+          cursor: 'cursor-1'})}});
 
     secondPage.resolve({
       data: {
-        dagRuns: [{ name: 'second', dagRunId: 'run-2' }],
-      },
-    });
+        dagRuns: [{ name: 'second', dagRunId: 'run-2' }]}});
 
     await waitFor(() => {
       expect(result.current.data).toEqual([
@@ -293,8 +259,7 @@ describe('useExactDAGRuns', () => {
     renderHook(() =>
       useExactDAGRuns({
         query: createQuery(),
-        fallbackIntervalMs: 2000,
-      })
+        fallbackIntervalMs: 2000})
     );
 
     await act(async () => {

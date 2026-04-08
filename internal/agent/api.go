@@ -97,7 +97,6 @@ type API struct {
 	hooks                 *Hooks
 	memoryStore           MemoryStore
 	soulStore             SoulStore
-	remoteContextResolver RemoteContextResolver
 	oauthManager          *agentoauth.Manager
 	eventService          *eventstore.Service
 }
@@ -115,7 +114,6 @@ type APIConfig struct {
 	Environment           EnvironmentInfo
 	Hooks                 *Hooks
 	MemoryStore           MemoryStore
-	RemoteContextResolver RemoteContextResolver
 	OAuthManager          *agentoauth.Manager
 	EventService          *eventstore.Service
 }
@@ -178,7 +176,6 @@ func NewAPI(cfg APIConfig) *API {
 		environment:           cfg.Environment,
 		hooks:                 cfg.Hooks,
 		memoryStore:           cfg.MemoryStore,
-		remoteContextResolver: cfg.RemoteContextResolver,
 		oauthManager:          cfg.OAuthManager,
 		eventService:          cfg.EventService,
 	}
@@ -629,7 +626,6 @@ func (a *API) buildSessionManagerConfig(id string, user UserIdentity, cfg sessio
 		Soul:                  cfg.soul,
 		WebSearch:             cfg.webSearch,
 		ThinkingEffort:        cfg.thinkingEffort,
-		RemoteContextResolver: a.remoteContextResolver,
 	}
 }
 

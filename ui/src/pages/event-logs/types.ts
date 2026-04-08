@@ -25,7 +25,6 @@ export type EventLogFilters = {
 export type StoredEventLogState = EventLogFilters;
 
 export type EventLogQueryParams = {
-  remoteNode: string;
   kind?: EventKindFilter;
   paginationMode: components['parameters']['EventLogPaginationMode'];
   type?: string;

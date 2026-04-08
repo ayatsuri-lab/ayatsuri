@@ -26,7 +26,6 @@ import (
 	"github.com/ayatsuri-lab/ayatsuri/internal/core/baseconfig"
 	"github.com/ayatsuri-lab/ayatsuri/internal/core/exec"
 	"github.com/ayatsuri-lab/ayatsuri/internal/license"
-	"github.com/ayatsuri-lab/ayatsuri/internal/remotenode"
 	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
 	"github.com/ayatsuri-lab/ayatsuri/internal/service/audit"
 	authservice "github.com/ayatsuri-lab/ayatsuri/internal/service/auth"
@@ -54,8 +53,6 @@ type API struct {
 	queueStore          exec.QueueStore
 	procStore           exec.ProcStore
 	dagRunLeaseStore    exec.DAGRunLeaseStore
-	remoteNodeResolver  *remotenode.Resolver
-	remoteNodeStore     remotenode.Store
 	logEncodingCharset  string
 	config              *config.Config
 	metricsRegistry     *prometheus.Registry
@@ -213,20 +210,6 @@ func WithDocStore(store agent.DocStore) APIOption {
 	}
 }
 
-// WithRemoteNodeResolver returns an APIOption that sets the remote node resolver.
-func WithRemoteNodeResolver(r *remotenode.Resolver) APIOption {
-	return func(a *API) {
-		a.remoteNodeResolver = r
-	}
-}
-
-// WithRemoteNodeStore returns an APIOption that sets the remote node store.
-func WithRemoteNodeStore(s remotenode.Store) APIOption {
-	return func(a *API) {
-		a.remoteNodeStore = s
-	}
-}
-
 // WithWorkspaceStore returns an APIOption that sets the workspace store.
 func WithWorkspaceStore(s workspace.Store) APIOption {
 	return func(a *API) {
@@ -330,7 +313,6 @@ func (a *API) ConfigureRoutes(ctx context.Context, r chi.Router) error {
 	r.Group(func(r chi.Router) {
 		r.Use(frontendauth.ClientIPMiddleware())
 		r.Use(frontendauth.Middleware(authOptions))
-		r.Use(WithRemoteNode(a.remoteNodeResolver, mountedAPIPath))
 		r.Use(WebhookRawBodyMiddleware())
 
 		middlewares := []api.StrictMiddlewareFunc{validateDAGFileNameMiddleware}

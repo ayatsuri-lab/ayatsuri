@@ -16,7 +16,6 @@ import (
 	"time"
 
 	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
-	"github.com/ayatsuri-lab/ayatsuri/internal/remotenode"
 	"github.com/ayatsuri-lab/ayatsuri/internal/service/scheduler/filenotify"
 	"github.com/fsnotify/fsnotify"
 )
@@ -473,24 +472,16 @@ func fileEventReason(op fsnotify.Op) string {
 }
 
 type AppHandler struct {
-	stream       *AppStreamService
-	nodeResolver *remotenode.Resolver
+	stream *AppStreamService
 }
 
-func NewAppHandler(stream *AppStreamService, nodeResolver *remotenode.Resolver) *AppHandler {
+func NewAppHandler(stream *AppStreamService) *AppHandler {
 	return &AppHandler{
-		stream:       stream,
-		nodeResolver: nodeResolver,
+		stream: stream,
 	}
 }
 
 func (h *AppHandler) HandleStream(w http.ResponseWriter, r *http.Request) {
-	remoteNode := r.URL.Query().Get("remoteNode")
-	if remoteNode != "" && remoteNode != "local" {
-		h.proxyStreamToRemoteNode(w, r, remoteNode)
-		return
-	}
-
 	if h.stream == nil {
 		http.Error(w, "app stream unavailable", http.StatusServiceUnavailable)
 		return
@@ -550,57 +541,4 @@ func writeAppEventFrame(w http.ResponseWriter, event AppEvent) error {
 		return err
 	}
 	return nil
-}
-
-func (h *AppHandler) proxyStreamToRemoteNode(w http.ResponseWriter, r *http.Request, nodeName string) {
-	node, ok := h.resolveNode(w, r, nodeName)
-	if !ok {
-		return
-	}
-
-	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, buildRemoteEventURL(node.APIBaseURL, "/events/app", r.URL.Query()), nil)
-	if err != nil {
-		http.Error(w, "failed to create proxy request", http.StatusInternalServerError)
-		return
-	}
-	req.Header.Set("Accept", "text/event-stream")
-	node.ApplyAuth(req)
-
-	resp, err := newProxyHTTPClient(node.SkipTLSVerify).Do(req)
-	if err != nil {
-		if r.Context().Err() != nil {
-			return
-		}
-		http.Error(w, "failed to connect to remote node", http.StatusBadGateway)
-		return
-	}
-	defer func() { _ = resp.Body.Close() }()
-
-	if resp.StatusCode != http.StatusOK {
-		copyJSONResponse(w, resp)
-		return
-	}
-
-	flusher, ok := w.(http.Flusher)
-	if !ok {
-		http.Error(w, "streaming not supported", http.StatusInternalServerError)
-		return
-	}
-	SetSSEHeaders(w)
-	rc := http.NewResponseController(w)
-	_ = rc.SetWriteDeadline(time.Time{})
-	streamResponse(w, flusher, resp.Body)
-}
-
-func (h *AppHandler) resolveNode(w http.ResponseWriter, r *http.Request, nodeName string) (*remotenode.RemoteNode, bool) {
-	if h.nodeResolver == nil {
-		http.Error(w, "remote node resolution not available", http.StatusServiceUnavailable)
-		return nil, false
-	}
-	node, err := h.nodeResolver.GetByName(r.Context(), nodeName)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("unknown remote node: %s", nodeName), http.StatusBadRequest)
-		return nil, false
-	}
-	return node, true
 }

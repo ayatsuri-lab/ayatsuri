@@ -14,7 +14,6 @@ import (
 	"net/http"
 	"path"
 	"strconv"
-	"strings"
 	"sync"
 	"text/template"
 	"time"
@@ -123,7 +122,6 @@ type funcsConfig struct {
 	TZ                    string
 	TzOffsetInSec         int
 	MaxDashboardPageLimit int
-	RemoteNodes           []string
 	Permissions           map[config.Permission]bool
 	Paths                 config.PathsConfig
 	AuthMode              config.AuthMode
@@ -153,7 +151,6 @@ func defaultFunctions(cfg *funcsConfig) template.FuncMap {
 		"tz":                    func() string { return cfg.TZ },
 		"tzOffsetInSec":         func() int { return cfg.TzOffsetInSec },
 		"maxDashboardPageLimit": func() int { return cfg.MaxDashboardPageLimit },
-		"remoteNodes":           func() string { return strings.Join(cfg.RemoteNodes, ",") },
 		"authMode":              func() string { return string(cfg.AuthMode) },
 		"oidcButtonLabel":       func() string { return cfg.OIDCButtonLabel },
 		"initialWorkspacesJSON": func() string {

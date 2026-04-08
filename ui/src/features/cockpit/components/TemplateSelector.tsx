@@ -20,10 +20,7 @@ export function TemplateSelector({
   selectedTemplate,
   selectedWorkspace,
   onSelect,
-  onOpenChange,
-}: Props): React.ReactElement {
-  const appBarContext = useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
+  onOpenChange}: Props): React.ReactElement {
 
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -52,7 +49,6 @@ export function TemplateSelector({
   const { data: tagsData } = useQuery(
     '/dags/tags',
     whenEnabled(isOpen && isTagFilterOpen, {
-      params: { query: { remoteNode } },
     })
   );
   const availableTags = tagsData?.tags ?? [];
@@ -63,14 +59,9 @@ export function TemplateSelector({
     '/dags',
     whenEnabled(isOpen, {
       params: {
-        query: {
-          remoteNode,
-          perPage: 50,
+        query: { perPage: 50,
           ...(debouncedTerm ? { name: debouncedTerm } : {}),
-          ...(selectedTags.length > 0 ? { tags: selectedTags.join(',') } : {}),
-        },
-      },
-    })
+          ...(selectedTags.length > 0 ? { tags: selectedTags.join(',') } : {})}}})
   );
   const dags = data?.dags ?? [];
 
@@ -134,7 +125,7 @@ export function TemplateSelector({
   // Flattened list for keyboard navigation
   const flatList = useMemo(() => {
     const items: DAGFile[] = [];
-    for (const [, dagList] of groupedDags) {
+    for (const [dagList] of groupedDags) {
       items.push(...dagList);
     }
     return items;
@@ -165,7 +156,7 @@ export function TemplateSelector({
     setSelectedTags([]);
     setHighlightedIndex(-1);
     setSelectedDag(null);
-  }, [remoteNode]);
+  }, []);
 
   // Scroll highlighted item into view
   useEffect(() => {

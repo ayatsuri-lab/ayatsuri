@@ -8,7 +8,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
-	"io"
 	"net/http"
 	"net/url"
 	"time"
@@ -101,23 +100,6 @@ func SetSSEHeaders(w http.ResponseWriter) {
 	w.Header().Set("X-Accel-Buffering", "no")
 }
 
-// streamResponse copies data from the response body to the client.
-func streamResponse(w http.ResponseWriter, flusher http.Flusher, body io.Reader) {
-	buf := make([]byte, 4096)
-	for {
-		n, readErr := body.Read(buf)
-		if n > 0 {
-			if _, writeErr := w.Write(buf[:n]); writeErr != nil {
-				return
-			}
-			flusher.Flush()
-		}
-		if readErr != nil {
-			return
-		}
-	}
-}
-
 // parseAndSanitizeQuery parses and sanitizes a URL query string,
 // removing sensitive parameters and enforcing a maximum length.
 func parseAndSanitizeQuery(rawQuery string) (string, error) {
@@ -132,7 +114,6 @@ func parseAndSanitizeQuery(rawQuery string) (string, error) {
 
 	// Remove sensitive parameters that should not be part of topic identity
 	values.Del("token")
-	values.Del("remoteNode")
 
 	result := values.Encode()
 	if len(result) > maxQueryLength {

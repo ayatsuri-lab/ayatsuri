@@ -20,8 +20,8 @@ type TunnelStatusResponse = components['schemas']['TunnelStatusResponse'];
  * Render the System Status view showing service health, resource usage charts, and refresh controls.
  *
  * Displays Scheduler and Coordinator service cards, four resource usage charts (CPU, Memory, Disk, Load Average),
- * and controls for toggling auto-refresh and triggering a manual refresh. Data is fetched for the currently
- * selected remote node and the "last updated" timestamp reflects the most recent automatic or manual refresh.
+ * and controls for toggling auto-refresh and triggering a manual refresh. The "last updated" timestamp
+ * reflects the most recent automatic or manual refresh.
  *
  * @returns The rendered System Status UI containing service cards, resource charts, and refresh controls.
  */
@@ -36,95 +36,55 @@ function SystemStatus() {
     appBarContext.setTitle('System Status');
   }, [appBarContext]);
 
-  // Fetch all data with remoteNode support and auto-refresh
+  // Fetch all data with auto-refresh
   const {
     data: schedulerData,
     error: schedulerError,
-    mutate: mutateScheduler,
-  } = useQuery(
+    mutate: mutateScheduler} = useQuery(
     '/services/scheduler',
+    undefined,
     {
-      params: {
-        query: {
-          remoteNode: appBarContext.selectedRemoteNode || 'local',
-        },
-      },
-    },
-    {
-      refreshInterval: autoRefresh ? 5000 : 0,
-    }
+      refreshInterval: autoRefresh ? 5000 : 0}
   );
 
   const {
     data: coordinatorData,
     error: coordinatorError,
-    mutate: mutateCoordinator,
-  } = useQuery(
+    mutate: mutateCoordinator} = useQuery(
     '/services/coordinator',
+    undefined,
     {
-      params: {
-        query: {
-          remoteNode: appBarContext.selectedRemoteNode || 'local',
-        },
-      },
-    },
-    {
-      refreshInterval: autoRefresh ? 5000 : 0,
-    }
+      refreshInterval: autoRefresh ? 5000 : 0}
   );
 
   const {
     data: resourceData,
     error: resourceError,
-    mutate: mutateResource,
-  } = useQuery(
+    mutate: mutateResource} = useQuery(
     '/services/resources/history',
+    undefined,
     {
-      params: {
-        query: {
-          remoteNode: appBarContext.selectedRemoteNode || 'local',
-        },
-      },
-    },
-    {
-      refreshInterval: autoRefresh ? 5000 : 0,
-    }
+      refreshInterval: autoRefresh ? 5000 : 0}
   );
 
   const {
     data: workersData,
     error: workersError,
-    mutate: mutateWorkers,
-  } = useQuery(
+    mutate: mutateWorkers} = useQuery(
     '/workers',
+    undefined,
     {
-      params: {
-        query: {
-          remoteNode: appBarContext.selectedRemoteNode || 'local',
-        },
-      },
-    },
-    {
-      refreshInterval: autoRefresh ? 1000 : 0,
-    }
+      refreshInterval: autoRefresh ? 1000 : 0}
   );
 
   const {
     data: tunnelData,
     error: tunnelError,
-    mutate: mutateTunnel,
-  } = useQuery(
+    mutate: mutateTunnel} = useQuery(
     '/services/tunnel',
+    undefined,
     {
-      params: {
-        query: {
-          remoteNode: appBarContext.selectedRemoteNode || 'local',
-        },
-      },
-    },
-    {
-      refreshInterval: autoRefresh ? 5000 : 0,
-    }
+      refreshInterval: autoRefresh ? 5000 : 0}
   );
 
   const handleRefresh = async () => {
@@ -198,8 +158,7 @@ function SystemStatus() {
               port: s.port,
               status: s.status,
               automataController: s.automataController,
-              startedAt: s.startedAt,
-            })) || []
+              startedAt: s.startedAt})) || []
           }
           icon={<Calendar className="h-4 w-4" />}
           isLoading={!schedulerData && !schedulerError}
@@ -215,8 +174,7 @@ function SystemStatus() {
               host: c.host,
               port: c.port,
               status: c.status,
-              startedAt: c.startedAt,
-            })) || []
+              startedAt: c.startedAt})) || []
           }
           icon={<Server className="h-4 w-4" />}
           isLoading={!coordinatorData && !coordinatorError}

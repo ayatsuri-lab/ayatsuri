@@ -11,22 +11,19 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  SelectValue} from '@/components/ui/select';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
+  DialogFooter} from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import { ProviderAuthCard } from '@/features/agent/components/ProviderAuthCard';
 import {
   AGENT_MODEL_PROVIDERS,
   type AgentModelProvider,
-  getAgentModelProviderMeta,
-} from '@/features/agent/modelProviders';
+  getAgentModelProviderMeta} from '@/features/agent/modelProviders';
 import { getAuthHeaders } from '@/lib/authHeaders';
 
 type ModelConfig = components['schemas']['ModelConfigResponse'];
@@ -75,10 +72,8 @@ export function ModelFormModal({
   onCompleteProviderLogin,
   onDisconnectProvider,
   onClose,
-  onSuccess,
-}: ModelFormModalProps) {
+  onSuccess}: ModelFormModalProps) {
   const config = useConfig();
-  const appBarContext = useContext(AppBarContext);
   const isEditing = !!model;
 
   const [configId, setConfigId] = useState('');
@@ -189,8 +184,6 @@ export function ModelFormModal({
         throw new Error('Connect OpenAI Codex before saving this model');
       }
 
-      const remoteNode = encodeURIComponent(appBarContext.selectedRemoteNode || 'local');
-
       const body: Record<string, unknown> = {
         id: !isEditing && configId ? configId : undefined,
         name,
@@ -202,8 +195,7 @@ export function ModelFormModal({
         inputCostPer1M: inputCostPer1M !== '' ? inputCostPer1M : undefined,
         outputCostPer1M: outputCostPer1M !== '' ? outputCostPer1M : undefined,
         supportsThinking,
-        thinkingEffort: supportsThinking ? thinkingEffort : '',
-      };
+        thinkingEffort: supportsThinking ? thinkingEffort : ''};
 
       const trimmedBaseURL = baseUrl.trim();
       if (!usesSubscriptionAuth && trimmedBaseURL !== '') {
@@ -217,14 +209,13 @@ export function ModelFormModal({
       }
 
       const url = isEditing
-        ? `${config.apiURL}/settings/agent/models/${model.id}?remoteNode=${remoteNode}`
-        : `${config.apiURL}/settings/agent/models?remoteNode=${remoteNode}`;
+        ? `${config.apiURL}/settings/agent/models/${model.id}`
+        : `${config.apiURL}/settings/agent/models`;
 
       const response = await fetch(url, {
         method: isEditing ? 'PATCH' : 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify(body),
-      });
+        body: JSON.stringify(body)});
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));

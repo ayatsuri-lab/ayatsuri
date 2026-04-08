@@ -11,21 +11,14 @@ import { DAGPreviewModal } from '../DAGPreviewModal';
 const mockSidePanel = vi.fn((_props: unknown) => <div>dag details panel</div>);
 
 vi.mock('@/hooks/api', () => ({
-  useClient: vi.fn(),
-}));
+  useClient: vi.fn()}));
 
 vi.mock('@/features/dags/components/dag-details/DAGDetailsSidePanel', () => ({
-  default: (props: unknown) => mockSidePanel(props),
-}));
+  default: (props: unknown) => mockSidePanel(props)}));
 
 const appBarValue = {
   title: 'Cockpit',
-  setTitle: vi.fn(),
-  remoteNodes: ['local'],
-  setRemoteNodes: vi.fn(),
-  selectedRemoteNode: 'local',
-  selectRemoteNode: vi.fn(),
-};
+  setTitle: vi.fn()};
 
 const useClientMock = useClient as unknown as {
   mockReturnValue: (value: unknown) => void;
@@ -73,16 +66,14 @@ describe('DAGPreviewModal', () => {
         forceEnqueue: true,
         onClose: expect.any(Function),
         onEnqueue: expect.any(Function),
-        toolbarHint: expect.anything(),
-      })
+        toolbarHint: expect.anything()})
     );
   });
 
   it('enqueues with a sanitized workspace tag and returns the dag run id', async () => {
     const post = vi.fn().mockResolvedValue({
       data: { dagRunId: 'queued-run' },
-      error: undefined,
-    });
+      error: undefined});
     const onClose = vi.fn();
     useClientMock.mockReturnValue({ POST: post } as never);
 
@@ -103,22 +94,18 @@ describe('DAGPreviewModal', () => {
     expect(post).toHaveBeenCalledWith('/dags/{fileName}/enqueue', {
       params: {
         path: { fileName: 'example' },
-        query: { remoteNode: 'local' },
-      },
+        query: { }},
       body: {
         params: '["x"]',
         dagRunId: 'manual-run',
-        tags: ['workspace=briefingalpha'],
-      },
-    });
+        tags: ['workspace=briefingalpha']}});
     expect(onClose).not.toHaveBeenCalled();
   });
 
   it('throws when the cockpit enqueue request fails', async () => {
     const post = vi.fn().mockResolvedValue({
       data: undefined,
-      error: { message: 'enqueue failed' },
-    });
+      error: { message: 'enqueue failed' }});
     useClientMock.mockReturnValue({ POST: post } as never);
 
     renderPreview({ selectedWorkspace: 'ops' });

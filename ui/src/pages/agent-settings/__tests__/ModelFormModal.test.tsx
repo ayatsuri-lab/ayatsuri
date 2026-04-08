@@ -14,9 +14,7 @@ const fetchMock = vi.fn();
 
 vi.mock('@/lib/authHeaders', () => ({
   getAuthHeaders: () => ({
-    'Content-Type': 'application/json',
-  }),
-}));
+    'Content-Type': 'application/json'})}));
 
 const config: Config = {
   apiURL: '/api/v1',
@@ -27,7 +25,6 @@ const config: Config = {
   tzOffsetInSec: 0,
   version: 'test',
   maxDashboardPageLimit: 100,
-  remoteNodes: '',
   initialWorkspaces: [],
   authMode: 'builtin',
   setupRequired: false,
@@ -39,8 +36,7 @@ const config: Config = {
   latestVersion: '',
   permissions: {
     writeDags: true,
-    runDags: true,
-  },
+    runDags: true},
   license: {
     valid: true,
     plan: 'community',
@@ -49,8 +45,7 @@ const config: Config = {
     gracePeriod: false,
     community: true,
     source: 'test',
-    warningCode: '',
-  },
+    warningCode: ''},
   paths: {
     dagsDir: '',
     logDir: '',
@@ -62,18 +57,11 @@ const config: Config = {
     procDir: '',
     serviceRegistryDir: '',
     configFileUsed: '',
-    auditLogsDir: '',
-  },
-};
+    auditLogsDir: ''}};
 
 const appBarContextValue = {
   title: '',
-  setTitle: vi.fn(),
-  remoteNodes: ['local'],
-  setRemoteNodes: vi.fn(),
-  selectedRemoteNode: 'local',
-  selectRemoteNode: vi.fn(),
-};
+  setTitle: vi.fn()};
 
 const baseModel = {
   id: 'local-model',
@@ -87,8 +75,7 @@ const baseModel = {
   inputCostPer1M: 0,
   outputCostPer1M: 0,
   supportsThinking: false,
-  description: '',
-};
+  description: ''};
 
 function renderModal() {
   return render(
@@ -114,8 +101,7 @@ beforeEach(() => {
   fetchMock.mockReset();
   fetchMock.mockResolvedValue({
     ok: true,
-    json: async () => ({}),
-  });
+    json: async () => ({})});
   vi.stubGlobal('fetch', fetchMock);
   vi.stubGlobal(
     'ResizeObserver',
@@ -156,10 +142,9 @@ describe('ModelFormModal', () => {
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
 
     expect(fetchMock).toHaveBeenCalledWith(
-      '/api/v1/settings/agent/models/local-model?remoteNode=local',
+      '/api/v1/settings/agent/models/local-model',
       expect.objectContaining({
-        method: 'PATCH',
-      })
+        method: 'PATCH'})
     );
 
     const requestBody = JSON.parse(

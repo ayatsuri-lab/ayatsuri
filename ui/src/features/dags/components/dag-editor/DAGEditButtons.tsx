@@ -24,7 +24,6 @@ type Props = {
  * DAGEditButtons provides buttons for renaming and deleting a DAG
  */
 function DAGEditButtons({ fileName }: Props) {
-  const appBarContext = React.useContext(AppBarContext);
   const client = useClient();
   const config = useConfig();
   const { showError } = useErrorModal();
@@ -49,16 +48,9 @@ function DAGEditButtons({ fileName }: Props) {
       const { error } = await client.POST('/dags/{fileName}/rename', {
         params: {
           path: {
-            fileName: fileName,
-          },
-          query: {
-            remoteNode: appBarContext.selectedRemoteNode || 'local',
-          },
-        },
+            fileName: fileName}},
         body: {
-          newFileName: newFileName,
-        },
-      });
+          newFileName: newFileName}});
 
       if (error) {
         setRenameError(error.message || 'An error occurred');
@@ -94,13 +86,7 @@ function DAGEditButtons({ fileName }: Props) {
           const { error } = await client.DELETE('/dags/{fileName}', {
             params: {
               path: {
-                fileName: fileName,
-              },
-              query: {
-                remoteNode: appBarContext.selectedRemoteNode || 'local',
-              },
-            },
-          });
+                fileName: fileName}}});
           if (error) {
             showError(
               error.message || 'Failed to delete DAG',

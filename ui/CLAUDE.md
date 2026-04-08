@@ -162,7 +162,6 @@ Ayatsuri is a **modern, powerful, yet surprisingly simple workflow orchestration
   - Separate stdout/stderr views
   - Log search capabilities
 - **Advanced Search**: Find DAGs by name, tags, or content
-- **Remote Node Support**: Manage workflows across multiple environments
 
 ### 🔒 **Security & Configuration**
 - **Authentication**:
@@ -397,62 +396,6 @@ This document outlines the design principles and guidelines for the Ayatsuri UI 
 - Use pnpm for frontend package management
 
 ## API Development Guidelines
-
-### Remote Node Parameter Requirement
-
-**CRITICAL: All API calls MUST include the `remoteNode` parameter.**
-
-Ayatsuri supports managing workflows across multiple remote nodes. Every API endpoint that interacts with DAGs, services, or system resources must include the `remoteNode` query parameter to ensure the request is routed to the correct node.
-
-#### Pattern for `useQuery` hooks:
-```tsx
-const remoteNode = appBarContext.selectedRemoteNode || 'local';
-
-const { data } = useQuery(
-  '/endpoint',
-  {
-    params: {
-      query: { remoteNode },
-    },
-  },
-  { refreshInterval: 5000 }
-);
-```
-
-#### Pattern for `client.POST` / `client.GET` calls:
-```tsx
-// GET request
-const response = await client.GET('/endpoint/{name}', {
-  params: { path: { name: id }, query: { remoteNode } },
-});
-
-// POST request
-const response = await client.POST('/endpoint', {
-  params: { query: { remoteNode } },
-  body: { ... },
-});
-
-// POST with path params
-const response = await client.POST('/endpoint/{name}/action', {
-  params: { path: { name: id }, query: { remoteNode } },
-  body: { ... },
-});
-```
-
-#### Adding remoteNode to new API endpoints:
-When adding new endpoints to `api/v1/api.yaml`, include the RemoteNode parameter reference:
-```yaml
-/new-endpoint:
-  get:
-    summary: "Description"
-    operationId: "operationName"
-    tags:
-      - "tag"
-    parameters:
-      - $ref: "#/components/parameters/RemoteNode"  # Add this line
-    responses:
-      ...
-```
 
 After modifying `api.yaml`, regenerate the API files:
 ```bash

@@ -91,7 +91,7 @@ steps:
 // the API endpoints are served under that base path and not on the root.
 func TestServer_BasePath(t *testing.T) {
 	port := findPort(t)
-	configFile := writeServerConfig(t, port, "/ayatsuri", false)
+	configFile := writeServerConfig(t, port, "/ayatsuri")
 	stopServer := startServer(t, configFile, port)
 
 	requireHealthy(t, fmt.Sprintf("http://127.0.0.1:%s/ayatsuri/api/v1/health", port))
@@ -99,30 +99,7 @@ func TestServer_BasePath(t *testing.T) {
 	stopServer()
 }
 
-// TestServer_RemoteNode verifies that remote node health checks work with and without a base path.
-func TestServer_RemoteNode(t *testing.T) {
-	testCases := []struct {
-		name     string
-		basePath string
-	}{
-		{name: "root", basePath: ""},
-		{name: "with base path", basePath: "/ayatsuri"},
-	}
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			port := findPort(t)
-			configFile := writeServerConfig(t, port, tc.basePath, true)
-			stopServer := startServer(t, configFile, port)
-
-			url := fmt.Sprintf("http://127.0.0.1:%s%s/api/v1/health?remoteNode=dev", port, tc.basePath)
-			requireHealthy(t, url)
-
-			stopServer()
-		})
-	}
-}
-
-func writeServerConfig(t *testing.T, port, basePath string, includeRemoteNodes bool) string {
+func writeServerConfig(t *testing.T, port, basePath string) string {
 	t.Helper()
 	tempDir := t.TempDir()
 	configFile := filepath.Join(tempDir, "config.yaml")
@@ -133,13 +110,6 @@ base_path: "%s"
 auth:
   mode: none
 `, port, basePath)
-
-	if includeRemoteNodes {
-		configContent += fmt.Sprintf(`remote_nodes:
-  - name: "dev"
-    api_base_url: "http://127.0.0.1:%s%s/api/v1"
-`, port, basePath)
-	}
 
 	require.NoError(t, os.WriteFile(configFile, []byte(configContent), 0o600))
 	return configFile

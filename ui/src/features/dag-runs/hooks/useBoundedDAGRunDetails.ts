@@ -9,8 +9,7 @@ import {
   type DAGRunDetails,
   type DAGRunDetailsRequestTarget,
   fetchDAGRunDetails,
-  matchesRequestedDAGRunDetails,
-} from './dagRunDetailsRequest';
+  matchesRequestedDAGRunDetails} from './dagRunDetailsRequest';
 
 function toError(
   error: unknown,
@@ -47,23 +46,20 @@ function shouldUsePollingFallback(sseState: {
 export function useBoundedDAGRunDetails({
   target,
   enabled = true,
-  pollIntervalMs = 0,
-}: UseBoundedDAGRunDetailsOptions): UseBoundedDAGRunDetailsResult {
+  pollIntervalMs = 0}: UseBoundedDAGRunDetailsOptions): UseBoundedDAGRunDetailsResult {
   const isSubDAGRunTarget = Boolean(
     target?.subDAGRunId && target?.parentName && target?.parentDAGRunId
   );
   const dagRunSSE = useDAGRunSSE(
     target?.name ?? '',
     target?.dagRunId ?? '',
-    enabled && target != null && !isSubDAGRunTarget,
-    target?.remoteNode
+    enabled && target != null && !isSubDAGRunTarget
   );
   const subDAGRunSSE = useSubDAGRunSSE(
     target?.parentName ?? '',
     target?.parentDAGRunId ?? '',
     target?.subDAGRunId ?? '',
-    enabled && target != null && isSubDAGRunTarget,
-    target?.remoteNode
+    enabled && target != null && isSubDAGRunTarget
   );
   const sseState = isSubDAGRunTarget ? subDAGRunSSE : dagRunSSE;
 
@@ -155,8 +151,7 @@ export function useBoundedDAGRunDetails({
 
       try {
         const next = await fetchDAGRunDetails(request, {
-          signal: controller.signal,
-        });
+          signal: controller.signal});
         if (controller.signal.aborted || !mountedRef.current) {
           return;
         }
@@ -296,6 +291,5 @@ export function useBoundedDAGRunDetails({
     error,
     isLoading,
     isValidating,
-    refresh,
-  };
+    refresh};
 }

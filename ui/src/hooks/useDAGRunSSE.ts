@@ -13,11 +13,10 @@ interface DAGRunSSEResponse {
 export function useDAGRunSSE(
   name: string,
   dagRunId: string,
-  enabled: boolean = true,
-  remoteNode?: string
+  enabled: boolean = true
 ): SSEState<DAGRunSSEResponse> {
   const endpoint = `/events/dag-runs/${encodeURIComponent(name)}/${encodeURIComponent(dagRunId)}`;
-  return useSSE<DAGRunSSEResponse>(endpoint, enabled, remoteNode);
+  return useSSE<DAGRunSSEResponse>(endpoint, enabled);
 }
 
 export type { DAGRunSSEResponse };

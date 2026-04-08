@@ -6,8 +6,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  DialogTitle} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -35,7 +34,6 @@ type ResetPasswordModalProps = {
  */
 export function ResetPasswordModal({ open, user, onClose }: ResetPasswordModalProps) {
   const config = useConfig();
-  const appBarContext = useContext(AppBarContext);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -77,15 +75,12 @@ export function ResetPasswordModal({ open, user, onClose }: ResetPasswordModalPr
       if (!token) {
         throw new Error('Not authenticated');
       }
-      const remoteNode = encodeURIComponent(appBarContext.selectedRemoteNode || 'local');
-      const response = await fetch(`${config.apiURL}/users/${user.id}/reset-password?remoteNode=${remoteNode}`, {
+      const response = await fetch(`${config.apiURL}/users/${user.id}/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ newPassword }),
-      });
+          Authorization: `Bearer ${token}`},
+        body: JSON.stringify({ newPassword })});
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));

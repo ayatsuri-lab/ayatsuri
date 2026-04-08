@@ -9,24 +9,21 @@ import {
   getFilteredRowModel,
   RowData,
   Updater,
-  useReactTable,
-} from '@tanstack/react-table';
+  useReactTable} from '@tanstack/react-table';
 import {
   ArrowDown,
   ArrowUp,
   Calendar,
   ChevronDown,
   ChevronUp,
-  Search,
-} from 'lucide-react';
+  Search} from 'lucide-react';
 import React, {
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useRef,
-  useState,
-} from 'react';
+  useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { components, Status } from '../../../../api/v1/schema';
 import type { Config } from '../../../../contexts/ConfigContext';
@@ -34,8 +31,7 @@ import dayjs from '../../../../lib/dayjs';
 import {
   getScheduleKey,
   getScheduleLabel,
-  parseNextRun,
-} from '../../../../lib/dagSchedule';
+  parseNextRun} from '../../../../lib/dagSchedule';
 import StatusChip from '../../../../ui/StatusChip';
 import Ticker from '../../../../ui/Ticker';
 import VisuallyHidden from '../../../../ui/VisuallyHidden';
@@ -72,21 +68,18 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from '../../../../components/ui/table';
+  TableRow} from '../../../../components/ui/table';
 import { TagCombobox } from '../../../../components/ui/tag-combobox';
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger,
-} from '../../../../components/ui/tooltip';
+  TooltipTrigger} from '../../../../components/ui/tooltip';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '../../../../components/ui/select';
+  SelectValue} from '../../../../components/ui/select';
 import { AppBarContext } from '../../../../contexts/AppBarContext';
 import { useQuery } from '../../../../hooks/api';
 import { parseTagParts } from '../../../../lib/utils';
@@ -111,8 +104,7 @@ function DAGCard({
   onSelect,
   onTagClick,
   refreshFn,
-  className = '',
-}: DAGCardProps) {
+  className = ''}: DAGCardProps) {
   const fileName = dag.fileName;
   const title = dag.dag.name;
   const status = dag.latestDAGRun?.status;
@@ -295,8 +287,7 @@ type GroupRow = {
 };
 enum ItemKind {
   DAG = 0,
-  Group,
-}
+  Group}
 type Data = RowItem & { subRows?: RowItem[] };
 
 declare module '@tanstack/react-table' {
@@ -372,8 +363,7 @@ const defaultColumns = [
     },
     size: 32,
     minSize: 32,
-    maxSize: 32,
-  }),
+    maxSize: 32}),
   columnHelper.accessor('name', {
     id: 'Name',
     header: () => (
@@ -508,8 +498,7 @@ const defaultColumns = [
         }
       }
       return false;
-    },
-  }),
+    }}),
   // Tags column removed as tags are now displayed under the name
   // The filter functionality is preserved in the Name column
   columnHelper.accessor('kind', {
@@ -536,8 +525,7 @@ const defaultColumns = [
         );
       }
       return null;
-    },
-  }),
+    }}),
   // Removed Started At and Finished At columns
   columnHelper.accessor('kind', {
     id: 'LastRun',
@@ -596,8 +584,7 @@ const defaultColumns = [
           {durationContent}
         </div>
       );
-    },
-  }),
+    }}),
   columnHelper.accessor('kind', {
     id: 'ScheduleAndNextRun',
     size: 140,
@@ -701,8 +688,7 @@ const defaultColumns = [
           </div>
         </div>
       );
-    },
-  }),
+    }}),
   columnHelper.display({
     id: 'Actions',
     size: 60,
@@ -738,15 +724,13 @@ const defaultColumns = [
           />
         </div>
       );
-    },
-  }),
+    }}),
 ];
 
 // Mapping between column IDs and backend sort fields
 const columnToSortField: Record<string, string> = {
   Name: 'name',
-  ScheduleAndNextRun: 'nextRun',
-};
+  ScheduleAndNextRun: 'nextRun'};
 
 // Client-side sortable columns
 const clientSortableColumns = ['Status', 'LastRun'];
@@ -776,8 +760,7 @@ const SortableHeader = ({
   onSort,
   clientSort,
   clientOrder,
-  onClientSort,
-}: {
+  onClientSort}: {
   column: Column<Data, unknown>;
   children: React.ReactNode;
   currentSort?: string;
@@ -876,8 +859,7 @@ function DAGTable({
   sortOrder = 'asc',
   onSortChange,
   selectedDAG = null,
-  onSelectDAG,
-}: Props) {
+  onSelectDAG}: Props) {
   const navigate = useNavigate();
   const [columns] = useState(() => [...defaultColumns]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -1008,14 +990,12 @@ function DAGTable({
           groups[groupName] = {
             kind: ItemKind.Group,
             name: groupName,
-            subRows: [],
-          };
+            subRows: []};
         }
         groups[groupName].subRows!.push({
           kind: ItemKind.DAG,
           name: dag.dag.name,
-          dag: dag,
-        });
+          dag: dag});
       }
     });
 
@@ -1040,8 +1020,7 @@ function DAGTable({
         hierarchicalData.push({
           kind: ItemKind.DAG,
           name: dag.dag.name,
-          dag: dag,
-        });
+          dag: dag});
       });
     return hierarchicalData;
   }, [dags, clientSort, compareDags]);
@@ -1060,8 +1039,7 @@ function DAGTable({
         .filter((row) => (row.original as Data)?.kind === ItemKind.DAG)
         .map((row) => ({
           fileName: (row.original as DAGRow).dag.fileName,
-          title: (row.original as DAGRow).dag.dag.name,
-        }));
+          title: (row.original as DAGRow).dag.dag.name}));
 
       // Find current index
       const currentIndex = dagRows.findIndex(
@@ -1108,30 +1086,19 @@ function DAGTable({
     autoResetExpanded: false,
     state: {
       expanded,
-      columnFilters,
-    },
+      columnFilters},
     onExpandedChange: handleExpandedChange,
     meta: {
       group,
       refreshFn,
-      onTagClick: handleTagClick,
-    },
-  });
+      onTagClick: handleTagClick}});
 
   tableInstanceRef.current = instance as ReturnType<typeof useReactTable>;
-
-  const appBarContext = useContext(AppBarContext);
   const panelWidth = useContext(PanelWidthContext);
 
   const useCardView = panelWidth !== null && panelWidth < CARD_VIEW_THRESHOLD;
 
-  const { data: uniqueTags } = useQuery('/dags/tags', {
-    params: {
-      query: {
-        remoteNode: appBarContext?.selectedRemoteNode || 'local',
-      },
-    },
-  });
+  const { data: uniqueTags } = useQuery('/dags/tags');
 
   return (
     <div className="space-y-2">

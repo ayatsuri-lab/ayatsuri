@@ -880,7 +880,6 @@ type agentStoresResult struct {
 	SkillStore      agent.SkillStore
 	SoulStore       agent.SoulStore
 	OAuthManager    *agentoauth.Manager
-	ContextResolver agent.RemoteContextResolver
 }
 
 // agentStores creates the agent config, model, memory, and skill stores from the config paths.
@@ -935,18 +934,7 @@ func (c *Context) agentStores() agentStoresResult {
 		result.OAuthManager = oauthManager
 	}
 
-	// Build context resolver for agent step remote tools.
-	result.ContextResolver = c.buildRemoteContextResolver()
-
 	return result
-}
-
-// buildRemoteContextResolver creates a RemoteContextResolver from the CLI context store.
-func (c *Context) buildRemoteContextResolver() agent.RemoteContextResolver {
-	if c.ContextStore == nil {
-		return nil
-	}
-	return &agent.RemoteContextResolverAdapter{Store: c.ContextStore}
 }
 
 // OpenLogFile creates and opens a log file for a given dag-run.

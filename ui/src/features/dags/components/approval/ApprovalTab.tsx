@@ -19,8 +19,7 @@ function ApprovalCard({
   node,
   dagRun,
   dagName,
-  onAction,
-}: {
+  onAction}: {
   node: NodeData;
   dagRun: DAGRunDetails;
   dagName: string;
@@ -90,8 +89,6 @@ function ApprovalCard({
 
 export function ApprovalTab({ dagRun, dagName }: ApprovalTabProps) {
   const client = useClient();
-  const appBarContext = React.useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
 
   const [reviewState, setReviewState] = useState<{
     node: NodeData;
@@ -112,8 +109,7 @@ export function ApprovalTab({ dagRun, dagName }: ApprovalTabProps) {
     name: isSubRun ? dagRun.rootDAGRunName : dagName,
     dagRunId: isSubRun ? dagRun.rootDAGRunId : dagRun.dagRunId,
     stepName,
-    ...(isSubRun ? { subDAGRunId: dagRun.dagRunId } : {}),
-  });
+    ...(isSubRun ? { subDAGRunId: dagRun.dagRunId } : {})});
 
   const handleApprove = async (inputs: Record<string, string>) => {
     if (!reviewState) return;
@@ -121,9 +117,8 @@ export function ApprovalTab({ dagRun, dagName }: ApprovalTabProps) {
       ? '/dag-runs/{name}/{dagRunId}/sub-dag-runs/{subDAGRunId}/steps/{stepName}/approve'
       : '/dag-runs/{name}/{dagRunId}/steps/{stepName}/approve';
     const { error } = await client.POST(endpoint, {
-      params: { path: getPathParams(reviewState.node.step.name), query: { remoteNode } },
-      body: { inputs: Object.keys(inputs).length > 0 ? inputs : undefined },
-    });
+      params: { path: getPathParams(reviewState.node.step.name) },
+      body: { inputs: Object.keys(inputs).length > 0 ? inputs : undefined }});
     if (error) throw new Error(error.message || 'Failed to approve step');
   };
 
@@ -133,9 +128,8 @@ export function ApprovalTab({ dagRun, dagName }: ApprovalTabProps) {
       ? '/dag-runs/{name}/{dagRunId}/sub-dag-runs/{subDAGRunId}/steps/{stepName}/push-back'
       : '/dag-runs/{name}/{dagRunId}/steps/{stepName}/push-back';
     const { error } = await client.POST(endpoint, {
-      params: { path: getPathParams(reviewState.node.step.name), query: { remoteNode } },
-      body: { inputs: Object.keys(inputs).length > 0 ? inputs : undefined },
-    });
+      params: { path: getPathParams(reviewState.node.step.name) },
+      body: { inputs: Object.keys(inputs).length > 0 ? inputs : undefined }});
     if (error) throw new Error(error.message || 'Failed to retry step');
   };
 

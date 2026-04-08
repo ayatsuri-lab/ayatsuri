@@ -16,7 +16,6 @@ const testConfig: Config = {
   tzOffsetInSec: 0,
   version: 'test',
   maxDashboardPageLimit: 100,
-  remoteNodes: 'local',
   initialWorkspaces: [],
   authMode: 'none',
   setupRequired: false,
@@ -28,8 +27,7 @@ const testConfig: Config = {
   latestVersion: '',
   permissions: {
     writeDags: true,
-    runDags: true,
-  },
+    runDags: true},
   license: {
     valid: true,
     plan: 'community',
@@ -38,8 +36,7 @@ const testConfig: Config = {
     gracePeriod: false,
     community: true,
     source: 'test',
-    warningCode: '',
-  },
+    warningCode: ''},
   paths: {
     dagsDir: '',
     logDir: '',
@@ -51,9 +48,7 @@ const testConfig: Config = {
     procDir: '',
     serviceRegistryDir: '',
     configFileUsed: '',
-    auditLogsDir: '',
-  },
-};
+    auditLogsDir: ''}};
 
 function wrapper({ children }: { children: React.ReactNode }) {
   return (

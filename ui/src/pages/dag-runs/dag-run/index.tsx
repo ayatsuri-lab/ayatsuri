@@ -49,7 +49,6 @@ function ErrorDisplay({ error, name, dagRunId }: ErrorDisplayProps) {
 
 function DAGRunDetailsPage() {
   const { name, dagRunId = 'latest' } = useParams();
-  const appBarContext = useContext(AppBarContext);
   const { setContext } = usePageContext();
 
   const searchParams = new URLSearchParams(window.location.search);
@@ -58,33 +57,26 @@ function DAGRunDetailsPage() {
   const parentName = searchParams.get('dagRunName') || name;
 
   const canQuerySubDag = !!(subDAGRunId && parentDAGRunId && parentName);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const detailsTarget = canQuerySubDag
     ? {
-        remoteNode,
         name: name || '',
         dagRunId: dagRunId || 'latest',
         parentName: parentName as string,
         parentDAGRunId: parentDAGRunId as string,
-        subDAGRunId: subDAGRunId as string,
-      }
+        subDAGRunId: subDAGRunId as string}
     : name
       ? {
-          remoteNode,
           name,
-          dagRunId: dagRunId || 'latest',
-        }
+          dagRunId: dagRunId || 'latest'}
       : null;
 
   const {
     data: latestDetails,
     error,
-    refresh,
-  } = useBoundedDAGRunDetails({
+    refresh} = useBoundedDAGRunDetails({
     target: detailsTarget,
     enabled: detailsTarget !== null,
-    pollIntervalMs: detailsTarget ? 2000 : 0,
-  });
+    pollIntervalMs: detailsTarget ? 2000 : 0});
 
   const refreshFn = useCallback(() => {
     setTimeout(() => {
@@ -115,8 +107,7 @@ function DAGRunDetailsPage() {
       dagFile: displayName,
       dagRunId: displayDAGRunId || undefined,
       dagRunName: displayName,
-      source: 'dag-run-details-page',
-    });
+      source: 'dag-run-details-page'});
     return () => setContext(null);
   }, [displayName, displayDAGRunId, setContext]);
 
@@ -134,8 +125,7 @@ function DAGRunDetailsPage() {
         value={{
           refresh: refreshFn,
           name: displayName,
-          dagRunId: displayDAGRunId || '',
-        }}
+          dagRunId: displayDAGRunId || ''}}
       >
         <DAGRunDetailsContent
           name={displayName}

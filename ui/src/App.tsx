@@ -5,7 +5,7 @@ import { Theme } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import React from 'react';
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom';
-import { SWRConfig, mutate as globalMutate } from 'swr';
+import { SWRConfig } from 'swr';
 
 import { Shield } from 'lucide-react';
 
@@ -17,20 +17,18 @@ import { AuthProvider } from './contexts/AuthContext';
 import {
   Config,
   ConfigContext,
-  ConfigUpdateContext,
-} from './contexts/ConfigContext';
+  ConfigUpdateContext} from './contexts/ConfigContext';
 import { useHasFeature } from './hooks/useLicense';
 import { PageContextProvider } from './contexts/PageContext';
 import { SchemaProvider } from './contexts/SchemaContext';
 import { SearchStateProvider } from './contexts/SearchStateContext';
 import {
   UserPreferencesProvider,
-  useUserPreferences,
-} from './contexts/UserPreference';
+  useUserPreferences} from './contexts/UserPreference';
 import { AgentChatModal, AgentChatProvider } from './features/agent';
 import Layout from './layouts/Layout';
 import fetchJson from './lib/fetchJson';
-import { fetchWithTimeout, shouldRetryQueryError } from './lib/requestTimeout';
+import { shouldRetryQueryError } from './lib/requestTimeout';
 import Dashboard from './pages';
 import CockpitPage from './pages/cockpit';
 import AgentMemoryPage from './pages/agent-memory';
@@ -58,7 +56,6 @@ import Search from './pages/search';
 import SetupPage from './pages/setup';
 import SystemStatus from './pages/system-status';
 import TerminalPage from './pages/terminal';
-import RemoteNodesPage from './pages/remote-nodes';
 import UsersPage from './pages/users';
 import WebhooksPage from './pages/webhooks';
 
@@ -66,47 +63,23 @@ type Props = {
   config: Config;
 };
 
-const REMOTE_NODE_STORAGE_KEY = 'ayatsuri-selected-remote-node';
-
-function parseRemoteNodes(remoteNodesConfig: string): string[] {
-  const nodes = remoteNodesConfig
-    .split(',')
-    .filter(Boolean)
-    .map((node) => node.trim());
-  if (!nodes.includes('local')) {
-    nodes.unshift('local');
-  }
-  return nodes;
-}
-
-function getStoredRemoteNode(validNodes: string[]): string {
-  const storedNode = localStorage.getItem(REMOTE_NODE_STORAGE_KEY);
-  if (storedNode && validNodes.includes(storedNode)) {
-    return storedNode;
-  }
-  return 'local';
-}
-
 // Helper to wrap admin-only elements
 function AdminElement({
-  children,
-}: {
+  children}: {
   children: React.ReactElement;
 }): React.ReactElement {
   return <ProtectedRoute requiredRole="admin">{children}</ProtectedRoute>;
 }
 
 function ManagerElement({
-  children,
-}: {
+  children}: {
   children: React.ReactElement;
 }): React.ReactElement {
   return <ProtectedRoute requiredRole="manager">{children}</ProtectedRoute>;
 }
 
 function DeveloperElement({
-  children,
-}: {
+  children}: {
   children: React.ReactElement;
 }): React.ReactElement {
   return <ProtectedRoute requiredRole="developer">{children}</ProtectedRoute>;
@@ -114,8 +87,7 @@ function DeveloperElement({
 
 function LicensedRoute({
   feature,
-  children,
-}: {
+  children}: {
   feature: string;
   children: React.ReactElement;
 }): React.ReactElement {
@@ -149,64 +121,6 @@ function AppInner({ config: initialConfig }: Props): React.ReactElement {
   const { preferences } = useUserPreferences();
   const theme = preferences.theme || 'dark';
 
-  const [remoteNodes, setRemoteNodes] = React.useState<string[]>(() =>
-    parseRemoteNodes(config.remoteNodes)
-  );
-
-  const [selectedRemoteNode, setSelectedRemoteNode] = React.useState<string>(
-    () => getStoredRemoteNode(remoteNodes)
-  );
-
-  const handleSelectRemoteNode = React.useCallback(
-    (node: string) => {
-      const validNode = remoteNodes.includes(node) ? node : 'local';
-      setSelectedRemoteNode(validNode);
-      localStorage.setItem(REMOTE_NODE_STORAGE_KEY, validNode);
-
-      // Clear SWR cache on node switch. Active hooks refetch automatically
-      // since their keys include remoteNode.
-      globalMutate(() => true, undefined, { revalidate: false });
-    },
-    [remoteNodes]
-  );
-
-  // Fetch remote node names from the API on mount so the dropdown
-  // includes store-sourced nodes (not just config-sourced ones from the template).
-  React.useEffect(() => {
-    const fetchRemoteNodeNames = async () => {
-      try {
-        const token = localStorage.getItem('ayatsuri_auth_token');
-        const headers: Record<string, string> = { Accept: 'application/json' };
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
-        const response = await fetchWithTimeout(
-          `${config.apiURL}/remote-nodes?remoteNode=local`,
-          { headers }
-        );
-        if (!response.ok) return;
-        const data = await response.json();
-        const nodes: { name: string }[] = data.remoteNodes || [];
-        if (nodes.length > 0) {
-          const names = [
-            'local',
-            ...nodes.map((n: { name: string }) => n.name),
-          ];
-          setRemoteNodes([...new Set(names)]);
-        }
-      } catch {
-        // Silently fall back to template-provided nodes
-      }
-    };
-    fetchRemoteNodeNames();
-  }, [config.apiURL]);
-
-  React.useEffect(() => {
-    if (!remoteNodes.includes(selectedRemoteNode)) {
-      handleSelectRemoteNode('local');
-    }
-  }, [remoteNodes, selectedRemoteNode, handleSelectRemoteNode]);
-
   React.useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
     document.documentElement.style.backgroundColor = 'var(--background)';
@@ -229,18 +143,12 @@ function AppInner({ config: initialConfig }: Props): React.ReactElement {
           onError: console.error,
           shouldRetryOnError: shouldRetryQueryError,
           revalidateOnFocus: false,
-          revalidateOnReconnect: false,
-        }}
+          revalidateOnReconnect: false}}
       >
         <AppBarContext.Provider
           value={{
             title,
-            setTitle,
-            remoteNodes,
-            setRemoteNodes,
-            selectedRemoteNode,
-            selectRemoteNode: handleSelectRemoteNode,
-          }}
+            setTitle}}
         >
           <ConfigContext.Provider value={config}>
             <ConfigUpdateContext.Provider value={updateConfig}>
@@ -342,14 +250,6 @@ function AppInner({ config: initialConfig }: Props): React.ReactElement {
                                             element={
                                               <AdminElement>
                                                 <UsersPage />
-                                              </AdminElement>
-                                            }
-                                          />
-                                          <Route
-                                            path="/remote-nodes"
-                                            element={
-                                              <AdminElement>
-                                                <RemoteNodesPage />
                                               </AdminElement>
                                             }
                                           />

@@ -184,9 +184,6 @@ type Agent struct {
 	agentSoulStore agentpkg.SoulStore
 	// agentOAuthManager resolves subscription-backed provider credentials.
 	agentOAuthManager *agentoauth.Manager
-	// agentRemoteContextResolver resolves remote CLI contexts for agent step execution.
-	agentRemoteContextResolver agentpkg.RemoteContextResolver
-
 	// workDir is the per-run work directory (for DAG_RUN_WORK_DIR).
 	workDir string
 	// extraEnvs are additional execution-scoped env vars injected into the DAG run context.
@@ -270,8 +267,6 @@ type Options struct {
 	AgentSoulStore agentpkg.SoulStore
 	// AgentOAuthManager resolves subscription-backed provider credentials.
 	AgentOAuthManager *agentoauth.Manager
-	// AgentRemoteContextResolver resolves remote CLI contexts for agent step execution.
-	AgentRemoteContextResolver agentpkg.RemoteContextResolver
 	// ScheduleTime is the RFC 3339 timestamp of when this run was scheduled.
 	// Set by the scheduler for cron-triggered runs; empty for manual runs.
 	ScheduleTime string
@@ -317,7 +312,6 @@ func New(
 		agentSkillStore:            opts.AgentSkillStore,
 		agentSoulStore:             opts.AgentSoulStore,
 		agentOAuthManager:          opts.AgentOAuthManager,
-		agentRemoteContextResolver: opts.AgentRemoteContextResolver,
 		scheduleTime:               opts.ScheduleTime,
 	}
 
@@ -515,10 +509,6 @@ func (a *Agent) Run(ctx context.Context) error {
 	if a.agentOAuthManager != nil {
 		ctx = agentpkg.WithOAuthManager(ctx, a.agentOAuthManager)
 	}
-	if a.agentRemoteContextResolver != nil {
-		ctx = agentpkg.WithRemoteContextResolver(ctx, a.agentRemoteContextResolver)
-	}
-
 	// Add structured logging context
 	logFields := []slog.Attr{
 		tag.DAG(a.dag.Name),

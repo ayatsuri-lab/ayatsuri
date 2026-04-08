@@ -12,21 +12,17 @@ import { useDAGSSE } from '@/hooks/useDAGSSE';
 import DAGDetailsSidePanel from '../DAGDetailsSidePanel';
 
 vi.mock('@/hooks/api', () => ({
-  useQuery: vi.fn(),
-}));
+  useQuery: vi.fn()}));
 
 vi.mock('@/hooks/useDAGSSE', () => ({
-  useDAGSSE: vi.fn(),
-}));
+  useDAGSSE: vi.fn()}));
 
 vi.mock('@/hooks/useDAGRunSSE', () => ({
-  useDAGRunSSE: vi.fn(),
-}));
+  useDAGRunSSE: vi.fn()}));
 
 vi.mock('@/hooks/useSSECacheSync', () => ({
   sseFallbackOptions: vi.fn(() => ({})),
-  useSSECacheSync: vi.fn(),
-}));
+  useSSECacheSync: vi.fn()}));
 
 vi.mock('../DAGDetailsContent', () => ({
   default: ({
@@ -34,8 +30,7 @@ vi.mock('../DAGDetailsContent', () => ({
     activeTab,
     dagRunId,
     forceEnqueue,
-    onEnqueue,
-  }: {
+    onEnqueue}: {
     dag: { name: string };
     activeTab: string;
     dagRunId?: string;
@@ -60,25 +55,18 @@ vi.mock('../DAGDetailsContent', () => ({
         </button>
       ) : null}
     </div>
-  ),
-}));
+  )}));
 
 const appBarValue = {
   title: 'DAGs',
-  setTitle: vi.fn(),
-  remoteNodes: ['local'],
-  setRemoteNodes: vi.fn(),
-  selectedRemoteNode: 'local',
-  selectRemoteNode: vi.fn(),
-};
+  setTitle: vi.fn()};
 
 const liveState = {
   data: null,
   error: null,
   isConnected: false,
   isConnecting: false,
-  shouldUseFallback: true,
-};
+  shouldUseFallback: true};
 const useQueryMock = useQuery as unknown as {
   mockImplementation: (fn: (path: string, init?: unknown) => unknown) => void;
 };
@@ -114,13 +102,11 @@ describe('DAGDetailsSidePanel', () => {
         return {
           data: undefined,
           error: undefined,
-          mutate: vi.fn(),
-        } as never;
+          mutate: vi.fn()} as never;
       }
 
       return {
-        data: undefined,
-      } as never;
+        data: undefined} as never;
     });
 
     renderPanel();
@@ -137,8 +123,7 @@ describe('DAGDetailsSidePanel', () => {
       return {
         data: undefined,
         error: undefined,
-        mutate: vi.fn(),
-      } as never;
+        mutate: vi.fn()} as never;
     });
 
     renderPanel({ isOpen: false });
@@ -157,13 +142,11 @@ describe('DAGDetailsSidePanel', () => {
         return {
           data: undefined,
           error: { status: 404, message: 'not found' },
-          mutate: vi.fn(),
-        } as never;
+          mutate: vi.fn()} as never;
       }
 
       return {
-        data: undefined,
-      } as never;
+        data: undefined} as never;
     });
 
     renderPanel({ onClose });
@@ -185,13 +168,11 @@ describe('DAGDetailsSidePanel', () => {
         return {
           data: undefined,
           error: { message: 'backend unavailable' },
-          mutate,
-        } as never;
+          mutate} as never;
       }
 
       return {
-        data: undefined,
-      } as never;
+        data: undefined} as never;
     });
 
     renderPanel();
@@ -211,16 +192,13 @@ describe('DAGDetailsSidePanel', () => {
             dag: { name: 'example-dag' },
             filePath: '/tmp/example.yaml',
             latestDAGRun: undefined,
-            localDags: [],
-          },
+            localDags: []},
           error: undefined,
-          mutate: vi.fn(),
-        } as never;
+          mutate: vi.fn()} as never;
       }
 
       return {
-        data: undefined,
-      } as never;
+        data: undefined} as never;
     });
 
     renderPanel({ forceEnqueue: true, initialTab: 'history' });
@@ -243,24 +221,20 @@ describe('DAGDetailsSidePanel', () => {
             dag: { name: 'example-dag' },
             filePath: '/tmp/example.yaml',
             latestDAGRun: undefined,
-            localDags: [],
-          },
+            localDags: []},
           error: undefined,
-          mutate,
-        } as never;
+          mutate} as never;
       }
 
       if (path === '/dag-runs/{name}/{dagRunId}') {
         return {
           data: undefined,
           error: undefined,
-          mutate: vi.fn(),
-        } as never;
+          mutate: vi.fn()} as never;
       }
 
       return {
-        data: undefined,
-      } as never;
+        data: undefined} as never;
     });
 
     renderPanel({ initialTab: 'history', forceEnqueue: true, onEnqueue });

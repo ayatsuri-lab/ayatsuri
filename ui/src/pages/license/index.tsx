@@ -27,8 +27,6 @@ export default function LicensePage() {
     appBarContext.setTitle('License');
   }, [appBarContext]);
 
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
-
   async function handleActivate(e?: React.FormEvent) {
     if (e) e.preventDefault();
     if (!key.trim()) return;
@@ -37,9 +35,7 @@ export default function LicensePage() {
     setSuccessMessage(null);
     try {
       const { data, error: apiError } = await client.POST('/license/activate', {
-        params: { query: { remoteNode } },
-        body: { key: key.trim() },
-      });
+        body: { key: key.trim() }});
       if (apiError) {
         throw new Error(apiError.message || 'Activation failed');
       }
@@ -52,9 +48,7 @@ export default function LicensePage() {
           gracePeriod: false,
           community: false,
           source: 'file',
-          warningCode: '',
-        },
-      });
+          warningCode: ''}});
       setKey('');
       setSuccessMessage('License activated successfully.');
     } catch (err) {
@@ -71,7 +65,6 @@ export default function LicensePage() {
     setSuccessMessage(null);
     try {
       const { error: apiError } = await client.POST('/license/deactivate', {
-        params: { query: { remoteNode } },
       });
       if (apiError) {
         throw new Error(apiError.message || 'Deactivation failed');
@@ -85,9 +78,7 @@ export default function LicensePage() {
           gracePeriod: false,
           community: true,
           source: '',
-          warningCode: '',
-        },
-      });
+          warningCode: ''}});
       setSuccessMessage('License deactivated. Running in community mode.');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Deactivation failed');

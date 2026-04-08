@@ -4,8 +4,7 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useState,
-} from 'react';
+  useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { components } from '@/api/v1/schema';
 import { useConfig } from '@/contexts/ConfigContext';
@@ -22,8 +21,7 @@ import {
   SessionWithState,
   StreamResponse,
   UIActionType,
-  UserPromptResponse,
-} from '../types';
+  UserPromptResponse} from '../types';
 import { useSSEConnection } from './useSSEConnection';
 import { useDelegateManager } from './useDelegateManager';
 
@@ -42,13 +40,11 @@ function convertApiMessage(msg: ApiMessage): Message {
     tool_calls: msg.toolCalls?.map((tc) => ({
       id: tc.id,
       type: tc.type,
-      function: tc.function,
-    })),
+      function: tc.function})),
     tool_results: msg.toolResults?.map((tr) => ({
       tool_call_id: tr.toolCallId,
       content: tr.content,
-      is_error: tr.isError,
-    })),
+      is_error: tr.isError})),
     ui_action: msg.uiAction?.type
       ? { type: msg.uiAction.type as UIActionType, path: msg.uiAction.path }
       : undefined,
@@ -62,20 +58,17 @@ function convertApiMessage(msg: ApiMessage): Message {
           multi_select: msg.userPrompt.multiSelect,
           prompt_type: msg.userPrompt.promptType as PromptType | undefined,
           command: msg.userPrompt.command,
-          working_dir: msg.userPrompt.workingDir,
-        }
+          working_dir: msg.userPrompt.workingDir}
       : undefined,
     usage: msg.usage
       ? {
           prompt_tokens: msg.usage.promptTokens ?? 0,
           completion_tokens: msg.usage.completionTokens ?? 0,
-          total_tokens: msg.usage.totalTokens ?? 0,
-        }
+          total_tokens: msg.usage.totalTokens ?? 0}
       : undefined,
     cost: msg.cost,
     delegate_ids: msg.delegateIds ?? undefined,
-    created_at: msg.createdAt,
-  };
+    created_at: msg.createdAt};
 }
 
 function convertApiSessions(
@@ -89,13 +82,11 @@ function convertApiSessions(
       created_at: s.session.createdAt,
       updated_at: s.session.updatedAt,
       parent_session_id: s.session.parentSessionId,
-      delegate_task: s.session.delegateTask,
-    },
+      delegate_task: s.session.delegateTask},
     working: s.working,
     has_pending_prompt: s.hasPendingPrompt,
     model: s.model,
-    total_cost: s.totalCost,
-  }));
+    total_cost: s.totalCost}));
 }
 
 function convertApiSessionDetail(detail: ApiSessionDetail): StreamResponse {
@@ -109,8 +100,7 @@ function convertApiSessionDetail(detail: ApiSessionDetail): StreamResponse {
           created_at: detail.session.createdAt,
           updated_at: detail.session.updatedAt,
           parent_session_id: detail.session.parentSessionId,
-          delegate_task: detail.session.delegateTask,
-        }
+          delegate_task: detail.session.delegateTask}
       : undefined,
     session_state: detail.sessionState
       ? {
@@ -118,23 +108,19 @@ function convertApiSessionDetail(detail: ApiSessionDetail): StreamResponse {
           working: detail.sessionState.working,
           has_pending_prompt: detail.sessionState.hasPendingPrompt,
           model: detail.sessionState.model,
-          total_cost: detail.sessionState.totalCost,
-        }
+          total_cost: detail.sessionState.totalCost}
       : undefined,
     delegates: detail.delegates?.map((d) => ({
       id: d.id,
       task: d.task,
       status: d.status as DelegateStatus,
-      cost: d.cost,
-    })),
-  };
+      cost: d.cost}))};
 }
 
 function toDagContextsBody(dagContexts?: DAGContext[]) {
   return dagContexts?.map((dc) => ({
     dagFile: dc.dag_file,
-    dagRunId: dc.dag_run_id,
-  }));
+    dagRunId: dc.dag_run_id}));
 }
 
 function mergeMessages(current: Message[], incoming: Message[]): Message[] {
@@ -195,7 +181,6 @@ export function useAgentChat() {
   const client = useClient();
   const navigate = useNavigate();
   const { preferences } = useUserPreferences();
-  const appBarContext = useContext(AppBarContext);
   const {
     isOpen: isChatOpen,
     sessionId,
@@ -213,8 +198,7 @@ export function useAgentChat() {
     setHasMoreSessions,
     setSessionPage,
     setPendingUserMessage,
-    clearSession,
-  } = useAgentChatContext();
+    clearSession} = useAgentChatContext();
 
   const selectGenRef = useRef(0);
   const [isSending, setIsSending] = useState(false);
@@ -225,7 +209,6 @@ export function useAgentChat() {
   >({});
 
   const apiURL = config.apiURL;
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
 
   const dm = useDelegateManager();
   const {
@@ -241,8 +224,7 @@ export function useAgentChat() {
     openDelegate,
     setDelegateMessagesForId,
     hasDelegateMessages,
-    removeDelegate,
-  } = dm;
+    removeDelegate} = dm;
   const openDelegateSessionIds = delegates.map((delegate) => delegate.id);
   const sortedOpenDelegateSessionIds = useMemo(
     () => [...openDelegateSessionIds].sort(),
@@ -348,26 +330,24 @@ export function useAgentChat() {
       const { data, error: apiError } = await client.GET(
         '/agent/sessions/{sessionId}',
         {
-          params: { path: { sessionId: id }, query: { remoteNode } },
-        }
+          params: { path: { sessionId: id } }}
       );
       if (apiError)
         throw new Error(apiError.message || 'Failed to load session');
       if (!data) throw new Error('Failed to load session');
       return convertApiSessionDetail(data);
     },
-    [client, remoteNode]
+    [client]
   );
 
   const fetchSessionDetailRef = useRef(fetchSessionDetail);
   fetchSessionDetailRef.current = fetchSessionDetail;
 
-  const sseStatus = useSSEConnection(sessionId, apiURL, remoteNode, {
+  const sseStatus = useSSEConnection(sessionId, apiURL, {
     onEvent: (event, replace) => {
       applySessionEvent(event, replace);
     },
-    onNavigate: (path) => navigate(path),
-  });
+    onNavigate: (path) => navigate(path)});
 
   useEffect(() => {
     // Only poll when the chat modal is visible and a session is selected.
@@ -431,8 +411,7 @@ export function useAgentChat() {
     async (page: number): Promise<void> => {
       try {
         const { data, error: apiError } = await client.GET('/agent/sessions', {
-          params: { query: { remoteNode, page, perPage: 30 } },
-        });
+          params: { query: { page, perPage: 30 } }});
         if (apiError)
           throw new Error(apiError.message || 'Failed to fetch sessions');
         if (!data) return;
@@ -456,7 +435,6 @@ export function useAgentChat() {
     },
     [
       client,
-      remoteNode,
       setSessions,
       appendSessions,
       setHasMoreSessions,
@@ -477,22 +455,19 @@ export function useAgentChat() {
       soulId?: string
     ): Promise<string> => {
       const { data, error: apiError } = await client.POST('/agent/sessions', {
-        params: { query: { remoteNode } },
         body: {
           message,
           model,
           dagContexts: toDagContextsBody(dagContexts),
           safeMode: preferences.safeMode,
-          soulId: soulId || undefined,
-        },
-      });
+          soulId: soulId || undefined}});
       if (apiError)
         throw new Error(apiError.message || 'Failed to create session');
       setSessionId(data.sessionId);
       await fetchSessionsPage(1);
       return data.sessionId;
     },
-    [client, remoteNode, setSessionId, fetchSessionsPage, preferences.safeMode]
+    [client, setSessionId, fetchSessionsPage, preferences.safeMode]
   );
 
   const sendMessage = useCallback(
@@ -515,15 +490,13 @@ export function useAgentChat() {
         const { error: apiError } = await client.POST(
           '/agent/sessions/{sessionId}/chat',
           {
-            params: { path: { sessionId }, query: { remoteNode } },
+            params: { path: { sessionId } },
             body: {
               message,
               model,
               dagContexts: toDagContextsBody(dagContexts),
               safeMode: preferences.safeMode,
-              soulId: soulId || undefined,
-            },
-          }
+              soulId: soulId || undefined}}
         );
         if (apiError)
           throw new Error(apiError.message || 'Failed to send message');
@@ -539,7 +512,6 @@ export function useAgentChat() {
     },
     [
       client,
-      remoteNode,
       sessionId,
       startSession,
       setPendingUserMessage,
@@ -552,12 +524,11 @@ export function useAgentChat() {
     const { error: apiError } = await client.POST(
       '/agent/sessions/{sessionId}/cancel',
       {
-        params: { path: { sessionId }, query: { remoteNode } },
-      }
+        params: { path: { sessionId } }}
     );
     if (apiError)
       throw new Error(apiError.message || 'Failed to cancel session');
-  }, [client, remoteNode, sessionId]);
+  }, [client, sessionId]);
 
   const respondToPrompt = useCallback(
     async (
@@ -570,22 +541,19 @@ export function useAgentChat() {
         const { error: apiError } = await client.POST(
           '/agent/sessions/{sessionId}/respond',
           {
-            params: { path: { sessionId }, query: { remoteNode } },
+            params: { path: { sessionId } },
             body: {
               promptId: response.prompt_id,
               selectedOptionIds: response.selected_option_ids,
               freeTextResponse: response.free_text_response,
-              cancelled: response.cancelled,
-            },
-          }
+              cancelled: response.cancelled}}
         );
         if (apiError)
           throw new Error(apiError.message || 'Failed to submit response');
         setOptimisticWorking(true);
         setAnsweredPrompts((prev) => ({
           ...prev,
-          [response.prompt_id]: displayValue,
-        }));
+          [response.prompt_id]: displayValue}));
       } catch (err) {
         setOptimisticWorking(false);
         setError(
@@ -593,7 +561,7 @@ export function useAgentChat() {
         );
       }
     },
-    [client, remoteNode, sessionId]
+    [client, sessionId]
   );
 
   const fetchSessions = useCallback(async (): Promise<void> => {
@@ -675,6 +643,5 @@ export function useAgentChat() {
     delegateMessages,
     bringToFront,
     reopenDelegate,
-    removeDelegate,
-  };
+    removeDelegate};
 }

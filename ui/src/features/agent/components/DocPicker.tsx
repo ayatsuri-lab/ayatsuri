@@ -6,8 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
-  type KeyboardEvent,
-} from 'react';
+  type KeyboardEvent} from 'react';
 
 import { FileText, Search, X } from 'lucide-react';
 
@@ -46,7 +45,6 @@ export const DocPicker = forwardRef<DocPickerHandle, DocPickerProps>(
     ref
   ) {
     const client = useClient();
-    const appBarContext = useContext(AppBarContext);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [docs, setDocs] = useState<DocEntry[]>([]);
     const [highlightIndex, setHighlightIndex] = useState(0);
@@ -54,20 +52,17 @@ export const DocPicker = forwardRef<DocPickerHandle, DocPickerProps>(
     // Fetch docs on mount
     useEffect(() => {
       const controller = new AbortController();
-      const remoteNode = appBarContext?.selectedRemoteNode || 'local';
 
       async function fetchDocs() {
         try {
           const { data } = await client.GET('/docs', {
-            params: { query: { remoteNode, flat: true, perPage: 200 } },
-            signal: controller.signal,
-          });
+            params: { query: { flat: true, perPage: 200 } },
+            signal: controller.signal});
           if (!data?.items) return;
           setDocs(
             data.items.map((item) => ({
               id: item.id,
-              title: item.title,
-            }))
+              title: item.title}))
           );
         } catch {
           // Best-effort
@@ -76,7 +71,7 @@ export const DocPicker = forwardRef<DocPickerHandle, DocPickerProps>(
       fetchDocs();
 
       return () => controller.abort();
-    }, [client, appBarContext?.selectedRemoteNode]);
+    }, [client]);
 
     // Click-outside handler
     useEffect(() => {
@@ -143,8 +138,7 @@ export const DocPicker = forwardRef<DocPickerHandle, DocPickerProps>(
           return true;
         }
         return false;
-      },
-    }));
+      }}));
 
     return (
       <>

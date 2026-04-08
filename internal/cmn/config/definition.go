@@ -63,9 +63,6 @@ type Definition struct {
 	// Peer connections
 	Peer PeerDef `mapstructure:"peer"`
 
-	// Remote nodes
-	RemoteNodes []RemoteNodeDef `mapstructure:"remote_nodes"`
-
 	// Services
 	Coordinator *CoordinatorDef `mapstructure:"coordinator"`
 	Worker      *WorkerDef      `mapstructure:"worker"`
@@ -197,7 +194,6 @@ type PathsDef struct {
 	WebhooksDir        string `mapstructure:"webhooks_dir"`
 	SessionsDir        string `mapstructure:"sessions_dir"`
 	ContextsDir        string `mapstructure:"contexts_dir"`
-	RemoteNodesDir     string `mapstructure:"remote_nodes_dir"`
 	WorkspacesDir      string `mapstructure:"workspaces_dir"`
 }
 
@@ -244,19 +240,6 @@ type PeerDef struct {
 	Insecure      bool   `mapstructure:"insecure"`       // Use h2c instead of TLS
 	MaxRetries    int    `mapstructure:"max_retries"`    // Default: 10
 	RetryInterval string `mapstructure:"retry_interval"` // Default: 1s
-}
-
-// RemoteNodeDef configures a remote node connection.
-type RemoteNodeDef struct {
-	Name              string `mapstructure:"name"`
-	Description       string `mapstructure:"description"`
-	APIBaseURL        string `mapstructure:"api_base_url"`
-	AuthType          string `mapstructure:"auth_type"`
-	BasicAuthUsername string `mapstructure:"basic_auth_username"`
-	BasicAuthPassword string `mapstructure:"basic_auth_password"`
-	AuthToken         string `mapstructure:"auth_token"`
-	SkipTLSVerify     bool   `mapstructure:"skip_tls_verify"`
-	Timeout           int    `mapstructure:"timeout"` // seconds; 0 = use default
 }
 
 // -----------------------------------------------------------------------------

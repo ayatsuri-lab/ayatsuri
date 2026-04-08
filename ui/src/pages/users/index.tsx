@@ -4,16 +4,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+  TableRow} from '@/components/ui/table';
 import { AppBarContext } from '@/contexts/AppBarContext';
 import { TOKEN_KEY, useAuth, useIsAdmin } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
@@ -28,8 +26,7 @@ import {
   Pencil,
   Trash2,
   UserCheck,
-  UserPlus,
-} from 'lucide-react';
+  UserPlus} from 'lucide-react';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ResetPasswordModal } from './ResetPasswordModal';
@@ -68,16 +65,11 @@ export default function UsersPage() {
   const fetchUsers = useCallback(async () => {
     try {
       const token = localStorage.getItem(TOKEN_KEY);
-      const remoteNode = encodeURIComponent(
-        appBarContext.selectedRemoteNode || 'local'
-      );
       const response = await fetch(
-        `${config.apiURL}/users?remoteNode=${remoteNode}`,
+        `${config.apiURL}/users`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+            Authorization: `Bearer ${token}`}}
       );
 
       if (!response.ok) {
@@ -91,7 +83,7 @@ export default function UsersPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [config.apiURL, appBarContext.selectedRemoteNode]);
+  }, [config.apiURL]);
 
   useEffect(() => {
     fetchUsers();
@@ -102,17 +94,12 @@ export default function UsersPage() {
 
     try {
       const token = localStorage.getItem(TOKEN_KEY);
-      const remoteNode = encodeURIComponent(
-        appBarContext.selectedRemoteNode || 'local'
-      );
       const response = await fetch(
-        `${config.apiURL}/users/${deletingUser.id}?remoteNode=${remoteNode}`,
+        `${config.apiURL}/users/${deletingUser.id}`,
         {
           method: 'DELETE',
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+            Authorization: `Bearer ${token}`}}
       );
 
       if (!response.ok) {
@@ -131,19 +118,14 @@ export default function UsersPage() {
   const handleToggleDisabled = async (user: User) => {
     try {
       const token = localStorage.getItem(TOKEN_KEY);
-      const remoteNode = encodeURIComponent(
-        appBarContext.selectedRemoteNode || 'local'
-      );
       const response = await fetch(
-        `${config.apiURL}/users/${user.id}?remoteNode=${remoteNode}`,
+        `${config.apiURL}/users/${user.id}`,
         {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ isDisabled: !user.isDisabled }),
-        }
+            Authorization: `Bearer ${token}`},
+          body: JSON.stringify({ isDisabled: !user.isDisabled })}
       );
 
       if (!response.ok) {

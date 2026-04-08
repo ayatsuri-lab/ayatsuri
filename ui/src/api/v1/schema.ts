@@ -1602,290 +1602,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/sync/status": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Git sync status
-         * @description Returns the overall Git sync status including status of all DAGs
-         */
-        get: operations["getSyncStatus"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/sync/pull": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Pull changes from remote repository
-         * @description Fetches and syncs changes from the remote Git repository
-         */
-        post: operations["syncPull"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/sync/publish-all": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Publish selected DAGs
-         * @description Commits and pushes the specified item IDs. If itemIds is omitted, publishes all modified or untracked items.
-         */
-        post: operations["syncPublishAll"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/sync/test-connection": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Test connection to remote repository
-         * @description Tests authentication and connectivity to the configured Git repository
-         */
-        post: operations["syncTestConnection"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/sync/config": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Git sync configuration
-         * @description Returns the current Git sync configuration
-         */
-        get: operations["getSyncConfig"];
-        /**
-         * Update Git sync configuration
-         * @description Updates the Git sync configuration
-         */
-        put: operations["updateSyncConfig"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/sync/items/{itemId}/diff": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get diff for a sync item
-         * @description Returns the diff between local and remote versions of a sync item
-         */
-        get: operations["getSyncItemDiff"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/sync/items/{itemId}/publish": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Publish a single sync item
-         * @description Commits and pushes a single sync item to the remote repository
-         */
-        post: operations["publishSyncItem"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/sync/items/{itemId}/discard": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Discard local changes for a sync item
-         * @description Discards local changes and reverts to the version in the remote repository
-         */
-        post: operations["discardSyncItemChanges"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/sync/items/{itemId}/forget": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Forget a sync item
-         * @description Removes the state entry for a missing, untracked, or conflict sync item. Synced and modified items are rejected.
-         */
-        post: operations["forgetSyncItem"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/sync/items/{itemId}/delete": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Delete a sync item
-         * @description Removes an item from remote repository (git rm + commit + push), local disk, and sync state
-         */
-        post: operations["deleteSyncItem"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/sync/items/{itemId}/move": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Move a sync item
-         * @description Atomically renames an item across local filesystem, remote repository, and sync state
-         */
-        post: operations["moveSyncItem"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/sync/delete-missing": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Delete all missing sync items
-         * @description Removes all missing items from remote repository, local disk, and sync state
-         */
-        post: operations["syncDeleteMissing"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/sync/delete-batch": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Delete selected sync items
-         * @description Removes the specified items from remote repository, local disk, and sync state in a single commit.
-         */
-        post: operations["syncDeleteBatch"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/sync/cleanup": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Cleanup missing sync items
-         * @description Removes all missing entries from sync state
-         */
-        post: operations["syncCleanup"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/settings/base-config": {
         parameters: {
             query?: never;
@@ -2856,78 +2572,6 @@ export interface paths {
          * @description Deletes multiple documents and/or directories in a single operation. Supports recursive directory deletion. Not-found items are treated as successful deletes for idempotency. Requires DAG write permission.
          */
         post: operations["deleteDocBatch"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/remote-nodes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List all remote nodes
-         * @description Returns remote nodes from both config file and store
-         */
-        get: operations["listRemoteNodes"];
-        put?: never;
-        /**
-         * Create a new remote node
-         * @description Creates a store-managed remote node
-         */
-        post: operations["createRemoteNode"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/remote-nodes/{remoteNodeId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get a remote node
-         * @description Returns a single remote node by ID
-         */
-        get: operations["getRemoteNode"];
-        put?: never;
-        post?: never;
-        /**
-         * Delete a remote node
-         * @description Deletes a store-managed remote node
-         */
-        delete: operations["deleteRemoteNode"];
-        options?: never;
-        head?: never;
-        /**
-         * Update a remote node
-         * @description Updates a store-managed remote node
-         */
-        patch: operations["updateRemoteNode"];
-        trace?: never;
-    };
-    "/remote-nodes/{remoteNodeId}/test-connection": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Test remote node connection
-         * @description Tests connectivity to a remote node by making a health check request
-         */
-        post: operations["testRemoteNodeConnection"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4204,218 +3848,6 @@ export interface components {
             /** @description Success message */
             message: string;
         };
-        /**
-         * @description Sync status of a DAG
-         * @enum {string}
-         */
-        SyncStatus: SyncStatus;
-        /**
-         * @description Summary status for the sync badge
-         * @enum {string}
-         */
-        SyncSummary: SyncSummary;
-        /**
-         * @description Type of sync item
-         * @enum {string}
-         */
-        SyncItemKind: SyncItemKind;
-        /** @description Sync state for a single item */
-        SyncItem: {
-            /** @description Stable item identifier (file path without extension) */
-            itemId: string;
-            /** @description Relative file path with extension */
-            filePath: string;
-            /** @description Display-friendly item name */
-            displayName: string;
-            status: components["schemas"]["SyncStatus"];
-            kind: components["schemas"]["SyncItemKind"];
-            /** @description Commit hash when last synced */
-            baseCommit?: string;
-            /** @description Content hash when last synced */
-            lastSyncedHash?: string;
-            /**
-             * Format: date-time
-             * @description When the DAG was last synced
-             */
-            lastSyncedAt?: string;
-            /**
-             * Format: date-time
-             * @description When the DAG was last modified locally
-             */
-            modifiedAt?: string;
-            /** @description Current local content hash */
-            localHash?: string;
-            /** @description Remote commit hash (for conflicts) */
-            remoteCommit?: string;
-            /** @description Author of the remote commit (for conflicts) */
-            remoteAuthor?: string;
-            /** @description Message of the remote commit (for conflicts) */
-            remoteMessage?: string;
-            /**
-             * Format: date-time
-             * @description When the conflict was detected
-             */
-            conflictDetectedAt?: string;
-            /** @description Status before transitioning to missing */
-            previousStatus?: components["schemas"]["SyncStatus"];
-            /**
-             * Format: date-time
-             * @description When the file was first detected as missing
-             */
-            missingAt?: string;
-        };
-        /** @description Counts of DAGs in each sync status */
-        SyncStatusCounts: {
-            synced: number;
-            modified: number;
-            untracked: number;
-            conflict: number;
-            missing: number;
-        };
-        /** @description Overall Git sync status */
-        SyncStatusResponse: {
-            /** @description Whether Git sync is enabled */
-            enabled: boolean;
-            /** @description Repository URL */
-            repository?: string;
-            /** @description Branch being synced */
-            branch?: string;
-            summary: components["schemas"]["SyncSummary"];
-            /**
-             * Format: date-time
-             * @description When the last sync occurred
-             */
-            lastSyncAt?: string;
-            /** @description Commit hash of last sync */
-            lastSyncCommit?: string;
-            /** @description Status of last sync (success/error) */
-            lastSyncStatus?: string;
-            /** @description Error message from last failed sync */
-            lastError?: string;
-            /** @description Sync state for each item */
-            items: components["schemas"]["SyncItem"][];
-            counts: components["schemas"]["SyncStatusCounts"];
-        };
-        /** @description Error during sync operation */
-        SyncError: {
-            itemId?: string;
-            message: string;
-        };
-        /** @description Diff between local and remote versions of a sync item */
-        SyncItemDiffResponse: {
-            /** @description The item identifier */
-            itemId: string;
-            /** @description Relative file path with extension */
-            filePath: string;
-            status: components["schemas"]["SyncStatus"];
-            /** @description Current local file content */
-            localContent: string;
-            /** @description Content from remote repository */
-            remoteContent?: string;
-            /** @description Commit hash being compared against */
-            remoteCommit?: string;
-            /** @description Author of the remote commit */
-            remoteAuthor?: string;
-            /** @description Commit message of the remote version */
-            remoteMessage?: string;
-        };
-        /** @description Result of a sync operation */
-        SyncResultResponse: {
-            success: boolean;
-            message?: string;
-            /** @description DAG IDs that were synced */
-            synced?: string[];
-            /** @description DAG IDs that were modified */
-            modified?: string[];
-            /** @description DAG IDs with conflicts */
-            conflicts?: string[];
-            errors?: components["schemas"]["SyncError"][];
-            /** Format: date-time */
-            timestamp: string;
-        };
-        /** @description Request to publish a DAG */
-        SyncPublishRequest: {
-            /** @description Commit message */
-            message?: string;
-            /**
-             * @description Force publish even with conflicts
-             * @default false
-             */
-            force: boolean;
-        };
-        /** @description Request to publish selected items */
-        SyncPublishAllRequest: {
-            /** @description Commit message */
-            message?: string;
-            /** @description Item IDs to publish. If omitted, all modified or untracked items are published. */
-            itemIds?: string[];
-        };
-        /** @description Request to delete selected items */
-        SyncDeleteBatchRequest: {
-            /** @description Item IDs to delete */
-            itemIds: string[];
-            /** @description Commit message for the deletion */
-            message?: string;
-            /** @description Force delete items with local modifications or conflicts */
-            force?: boolean;
-        };
-        /** @description Response when a conflict is detected */
-        SyncConflictResponse: {
-            itemId: string;
-            remoteCommit?: string;
-            remoteAuthor?: string;
-            remoteMessage?: string;
-            message: string;
-        };
-        /** @description Result of connection test */
-        SyncConnectionTestResponse: {
-            success: boolean;
-            message?: string;
-            error?: string;
-        };
-        /** @description Git authentication configuration */
-        SyncAuthConfig: {
-            /** @enum {string} */
-            type: SyncAuthConfigType;
-            /** @description Personal access token (write-only) */
-            token?: string;
-            /** @description Path to SSH private key */
-            sshKeyPath?: string;
-        };
-        /** @description Auto-sync configuration */
-        SyncAutoSyncConfig: {
-            enabled: boolean;
-            onStartup: boolean;
-            /** @description Sync interval in seconds */
-            interval: number;
-        };
-        /** @description Commit configuration */
-        SyncCommitConfig: {
-            authorName?: string;
-            authorEmail?: string;
-        };
-        /** @description Git sync configuration */
-        SyncConfigResponse: {
-            enabled: boolean;
-            repository?: string;
-            branch?: string;
-            path?: string;
-            auth?: components["schemas"]["SyncAuthConfig"];
-            autoSync?: components["schemas"]["SyncAutoSyncConfig"];
-            pushEnabled?: boolean;
-            commit?: components["schemas"]["SyncCommitConfig"];
-        };
-        /** @description Request to update Git sync configuration */
-        SyncConfigUpdateRequest: {
-            enabled?: boolean;
-            repository?: string;
-            branch?: string;
-            path?: string;
-            auth?: components["schemas"]["SyncAuthConfig"];
-            autoSync?: components["schemas"]["SyncAutoSyncConfig"];
-            pushEnabled?: boolean;
-            commit?: components["schemas"]["SyncCommitConfig"];
-        };
         /** @description AI Agent configuration */
         AgentConfigResponse: {
             /** @description Whether the AI agent is enabled */
@@ -5201,70 +4633,6 @@ export interface components {
         AutomataDuplicateRequest: {
             newName: string;
         };
-        CreateRemoteNodeRequest: {
-            /** @description Display name for the remote node */
-            name: string;
-            /** @description Optional description */
-            description?: string;
-            /** @description Base URL of the remote Ayatsuri instance API */
-            apiBaseUrl: string;
-            /**
-             * @description Authentication mode
-             * @default none
-             * @enum {string}
-             */
-            authType: CreateRemoteNodeRequestAuthType;
-            /** @description Username for basic auth */
-            basicAuthUsername?: string;
-            /** @description Password for basic auth */
-            basicAuthPassword?: string;
-            /** @description Bearer token for token auth */
-            authToken?: string;
-            /**
-             * @description Skip TLS certificate verification
-             * @default false
-             */
-            skipTlsVerify: boolean;
-        };
-        UpdateRemoteNodeRequest: {
-            name?: string;
-            description?: string;
-            apiBaseUrl?: string;
-            /** @enum {string} */
-            authType?: UpdateRemoteNodeRequestAuthType;
-            basicAuthUsername?: string;
-            basicAuthPassword?: string;
-            authToken?: string;
-            skipTlsVerify?: boolean;
-        };
-        RemoteNodeResponse: {
-            id: string;
-            name: string;
-            description?: string;
-            apiBaseUrl: string;
-            /** @enum {string} */
-            authType: RemoteNodeResponseAuthType;
-            /** @description Whether credentials are configured (values are never returned) */
-            hasCredentials?: boolean;
-            skipTlsVerify?: boolean;
-            /**
-             * @description Where this node is defined
-             * @enum {string}
-             */
-            source: RemoteNodeResponseSource;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
-        };
-        RemoteNodeListResponse: {
-            remoteNodes: components["schemas"]["RemoteNodeResponse"][];
-        };
-        TestRemoteNodeConnectionResponse: {
-            success: boolean;
-            message?: string;
-            error?: string;
-        };
         CreateWorkspaceRequest: {
             name: string;
             description?: string;
@@ -5308,8 +4676,6 @@ export interface components {
         DAGName: components["schemas"]["DAGName"];
         /** @description name of the step */
         StepName: string;
-        /** @description name of the remote node */
-        RemoteNode: string;
         /** @description Filter entries after this time (ISO 8601 format) */
         LogStartTime: string;
         /** @description Filter entries before this time (ISO 8601 format) */
@@ -5358,8 +4724,6 @@ export interface components {
         AgentSessionId: string;
         /** @description The soul ID */
         SoulId: string;
-        /** @description The unique identifier of the remote node */
-        RemoteNodeId: string;
         /** @description The Automata name */
         AutomataName: string;
     };
@@ -5438,10 +4802,7 @@ export interface operations {
     };
     setup: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -6321,10 +5682,7 @@ export interface operations {
     };
     getWorkers: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -6367,8 +5725,6 @@ export interface operations {
                 page?: components["parameters"]["Page"];
                 /** @description number of items per page (default is 30, max is 100) */
                 perPage?: components["parameters"]["PerPage"];
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Filter DAGs by name */
                 name?: string;
                 /** @description Filter DAGs by tags (comma-separated). Returns DAGs that have ALL specified tags. */
@@ -6415,10 +5771,7 @@ export interface operations {
     };
     createNewDAG: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -6467,10 +5820,7 @@ export interface operations {
     };
     validateDAGSpec: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -6514,10 +5864,7 @@ export interface operations {
     };
     getDAGDetails: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -6562,10 +5909,7 @@ export interface operations {
     };
     deleteDAG: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -6604,10 +5948,7 @@ export interface operations {
     };
     executeDAG: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -6675,10 +6016,7 @@ export interface operations {
     };
     executeDAGSync: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -6757,10 +6095,7 @@ export interface operations {
     };
     enqueueDAGDAGRun: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -6830,10 +6165,7 @@ export interface operations {
     };
     getDAGDAGRunHistory: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -6870,10 +6202,7 @@ export interface operations {
     };
     getDAGDAGRunDetails: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -6909,10 +6238,7 @@ export interface operations {
     };
     getDAGSpec: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -6950,10 +6276,7 @@ export interface operations {
     };
     updateDAGSpec: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -6995,10 +6318,7 @@ export interface operations {
     };
     updateDAGSuspensionState: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -7044,10 +6364,7 @@ export interface operations {
     };
     renameDAG: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -7102,10 +6419,7 @@ export interface operations {
     };
     stopAllDAGRuns: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -7150,8 +6464,6 @@ export interface operations {
     searchDAGs: {
         parameters: {
             query: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description A search query string */
                 q: string;
             };
@@ -7189,8 +6501,6 @@ export interface operations {
     searchDAGFeed: {
         parameters: {
             query: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description A search query string */
                 q: string;
                 /** @description Opaque cursor returned by the previous search response */
@@ -7236,8 +6546,6 @@ export interface operations {
     searchDocFeed: {
         parameters: {
             query: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description A search query string */
                 q: string;
                 /** @description Opaque cursor returned by the previous search response */
@@ -7283,8 +6591,6 @@ export interface operations {
     searchDagMatches: {
         parameters: {
             query: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description A search query string */
                 q: string;
                 /** @description Opaque cursor returned by the previous search response */
@@ -7342,8 +6648,6 @@ export interface operations {
     searchDocMatches: {
         parameters: {
             query: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Document path (may include slashes for nested docs) */
                 path: components["schemas"]["DocPath"];
                 /** @description A search query string */
@@ -7399,10 +6703,7 @@ export interface operations {
     };
     getAllDAGTags: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -7444,8 +6745,6 @@ export interface operations {
                 limit?: components["parameters"]["DAGRunListLimit"];
                 /** @description Opaque cursor for loading the next page of older DAG-runs */
                 cursor?: components["parameters"]["DAGRunListCursor"];
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Filter DAG-runs by name */
                 name?: string;
                 /** @description Filter DAG-runs by DAG tags (comma-separated). Returns runs from DAGs that have ALL specified tags. */
@@ -7488,10 +6787,7 @@ export interface operations {
     };
     executeDAGRunFromSpec: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -7558,10 +6854,7 @@ export interface operations {
     };
     enqueueDAGRunFromSpec: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -7643,8 +6936,6 @@ export interface operations {
                 limit?: components["parameters"]["DAGRunListLimit"];
                 /** @description Opaque cursor for loading the next page of older DAG-runs */
                 cursor?: components["parameters"]["DAGRunListCursor"];
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
             };
             header?: never;
             path: {
@@ -7686,10 +6977,7 @@ export interface operations {
     };
     getDAGRunDetails: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -7734,10 +7022,7 @@ export interface operations {
     };
     getDAGRunSpec: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -7783,10 +7068,7 @@ export interface operations {
     };
     rescheduleDAGRun: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -7862,8 +7144,6 @@ export interface operations {
     getSubDAGRuns: {
         parameters: {
             query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Optional parent sub DAG run ID. When provided, returns sub-runs of this specific sub DAG run instead of the root DAG run. Used for multi-level nested DAGs. */
                 parentSubDAGRunId?: string;
             };
@@ -7911,10 +7191,7 @@ export interface operations {
     };
     dequeueDAGRun: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -7956,8 +7233,6 @@ export interface operations {
     getDAGRunLog: {
         parameters: {
             query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Number of lines to return from the end of the file */
                 tail?: components["parameters"]["Tail"];
                 /** @description Number of lines to return from the beginning of the file */
@@ -8009,10 +7284,7 @@ export interface operations {
     };
     downloadDAGRunLog: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -8057,10 +7329,7 @@ export interface operations {
     };
     getDAGRunOutputs: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -8103,10 +7372,7 @@ export interface operations {
     };
     retryDAGRun: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -8146,10 +7412,7 @@ export interface operations {
     };
     terminateDAGRun: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -8182,8 +7445,6 @@ export interface operations {
     getDAGRunStepLog: {
         parameters: {
             query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Number of lines to return from the end of the file */
                 tail?: components["parameters"]["Tail"];
                 /** @description Number of lines to return from the beginning of the file */
@@ -8240,8 +7501,6 @@ export interface operations {
     downloadDAGRunStepLog: {
         parameters: {
             query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Whether to return stdout or stderr logs */
                 stream?: components["parameters"]["Stream"];
             };
@@ -8291,10 +7550,7 @@ export interface operations {
     };
     getDAGRunStepMessages: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -8339,10 +7595,7 @@ export interface operations {
     };
     updateDAGRunStepStatus: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -8400,10 +7653,7 @@ export interface operations {
     };
     approveDAGRunStep: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -8461,10 +7711,7 @@ export interface operations {
     };
     rejectDAGRunStep: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -8522,10 +7769,7 @@ export interface operations {
     };
     pushBackDAGRunStep: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -8583,10 +7827,7 @@ export interface operations {
     };
     getSubDAGRunDetails: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -8633,10 +7874,7 @@ export interface operations {
     };
     getSubDAGRunSpec: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -8685,8 +7923,6 @@ export interface operations {
     getSubDAGRunLog: {
         parameters: {
             query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Number of lines to return from the end of the file */
                 tail?: components["parameters"]["Tail"];
                 /** @description Number of lines to return from the beginning of the file */
@@ -8740,10 +7976,7 @@ export interface operations {
     };
     downloadSubDAGRunLog: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -8791,8 +8024,6 @@ export interface operations {
     getSubDAGRunStepLog: {
         parameters: {
             query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Number of lines to return from the end of the file */
                 tail?: components["parameters"]["Tail"];
                 /** @description Number of lines to return from the beginning of the file */
@@ -8851,8 +8082,6 @@ export interface operations {
     downloadSubDAGRunStepLog: {
         parameters: {
             query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Whether to return stdout or stderr logs */
                 stream?: components["parameters"]["Stream"];
             };
@@ -8904,10 +8133,7 @@ export interface operations {
     };
     getSubDAGRunStepMessages: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -8954,10 +8180,7 @@ export interface operations {
     };
     updateSubDAGRunStepStatus: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -9017,10 +8240,7 @@ export interface operations {
     };
     approveSubDAGRunStep: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -9080,10 +8300,7 @@ export interface operations {
     };
     rejectSubDAGRunStep: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -9143,10 +8360,7 @@ export interface operations {
     };
     pushBackSubDAGRunStep: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description name of the DAG */
@@ -9206,10 +8420,7 @@ export interface operations {
     };
     listQueues: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -9238,10 +8449,7 @@ export interface operations {
     };
     getQueue: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Queue name */
@@ -9283,8 +8491,6 @@ export interface operations {
     listQueueItems: {
         parameters: {
             query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Maximum number of queued DAG-runs to return (default 100) */
                 limit?: components["parameters"]["QueueListLimit"];
                 /** @description Opaque cursor for loading the next page of queued DAG-runs */
@@ -9331,8 +8537,6 @@ export interface operations {
     getResourceHistory: {
         parameters: {
             query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Duration of history to retrieve (e.g., 30m, 1h) */
                 duration?: string;
             };
@@ -9364,10 +8568,7 @@ export interface operations {
     };
     getSchedulerStatus: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -9396,10 +8597,7 @@ export interface operations {
     };
     getCoordinatorStatus: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -9428,10 +8626,7 @@ export interface operations {
     };
     getTunnelStatus: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -9489,10 +8684,7 @@ export interface operations {
     };
     triggerWebhook: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: {
                 /** @description Bearer token for webhook authentication (e.g., 'Bearer ayatsuri_wh_...'). Required for authentication but marked optional in schema so the handler can return proper 401 responses. */
                 Authorization?: string;
@@ -9576,10 +8768,7 @@ export interface operations {
     };
     listWebhooks: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -9608,10 +8797,7 @@ export interface operations {
     };
     getDAGWebhook: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -9652,10 +8838,7 @@ export interface operations {
     };
     createDAGWebhook: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -9696,10 +8879,7 @@ export interface operations {
     };
     deleteDAGWebhook: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -9738,10 +8918,7 @@ export interface operations {
     };
     regenerateDAGWebhookToken: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -9782,10 +8959,7 @@ export interface operations {
     };
     toggleDAGWebhook: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description the name of the DAG file */
@@ -9831,8 +9005,6 @@ export interface operations {
     listAuditLogs: {
         parameters: {
             query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Filter by audit category (e.g., terminal, user, dag) */
                 category?: string;
                 /** @description Filter by user ID */
@@ -9893,8 +9065,6 @@ export interface operations {
     listEventLogs: {
         parameters: {
             query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Filter by event kind (e.g., dag_run, automata, llm_usage) */
                 kind?: string;
                 /** @description Filter by event type (e.g., dag.run.failed, automata.needs_input, llm.usage.recorded) */
@@ -9979,694 +9149,9 @@ export interface operations {
             };
         };
     };
-    getSyncStatus: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Sync status retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SyncStatusResponse"];
-                };
-            };
-            /** @description Unexpected error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    syncPull: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Pull completed successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SyncResultResponse"];
-                };
-            };
-            /** @description Unexpected error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    syncPublishAll: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SyncPublishAllRequest"];
-            };
-        };
-        responses: {
-            /** @description Publish completed successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SyncResultResponse"];
-                };
-            };
-            /** @description Unexpected error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    syncTestConnection: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Connection test result */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SyncConnectionTestResponse"];
-                };
-            };
-            /** @description Unexpected error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    getSyncConfig: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Configuration retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SyncConfigResponse"];
-                };
-            };
-            /** @description Unexpected error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    updateSyncConfig: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SyncConfigUpdateRequest"];
-            };
-        };
-        responses: {
-            /** @description Configuration updated successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SyncConfigResponse"];
-                };
-            };
-            /** @description Unexpected error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    getSyncItemDiff: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path: {
-                /** @description The sync item identifier (file path without extension) */
-                itemId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Diff retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SyncItemDiffResponse"];
-                };
-            };
-            /** @description Item not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Unexpected error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    publishSyncItem: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path: {
-                /** @description The sync item identifier (file path without extension) */
-                itemId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SyncPublishRequest"];
-            };
-        };
-        responses: {
-            /** @description Item published successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SyncResultResponse"];
-                };
-            };
-            /** @description Item not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Conflict detected */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SyncConflictResponse"];
-                };
-            };
-            /** @description Unexpected error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    discardSyncItemChanges: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path: {
-                /** @description The sync item identifier (file path without extension) */
-                itemId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Changes discarded successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SuccessResponse"];
-                };
-            };
-            /** @description Item not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Unexpected error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    forgetSyncItem: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path: {
-                /** @description The sync item identifier (file path without extension) */
-                itemId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Item forgotten successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SuccessResponse"];
-                };
-            };
-            /** @description Item cannot be forgotten */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Item not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Unexpected error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    deleteSyncItem: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path: {
-                /** @description The sync item identifier (file path without extension) */
-                itemId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @description Commit message for the deletion */
-                    message?: string;
-                    /** @description Force delete even if item has local modifications */
-                    force?: boolean;
-                };
-            };
-        };
-        responses: {
-            /** @description Item deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SuccessResponse"];
-                };
-            };
-            /** @description Item cannot be deleted */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Item not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Unexpected error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    moveSyncItem: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path: {
-                /** @description The current sync item identifier (file path without extension) */
-                itemId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @description The new item identifier to rename to */
-                    newItemId: string;
-                    /** @description Commit message for the move */
-                    message?: string;
-                    /** @description Force move even if item has conflicts */
-                    force?: boolean;
-                };
-            };
-        };
-        responses: {
-            /** @description Item moved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SuccessResponse"];
-                };
-            };
-            /** @description Item cannot be moved */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Item not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Conflict detected */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SyncConflictResponse"];
-                };
-            };
-            /** @description Unexpected error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    syncDeleteMissing: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @description Commit message for the deletion */
-                    message?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Missing items deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @description List of deleted item IDs */
-                        deleted: string[];
-                        /** @description Summary message */
-                        message: string;
-                    };
-                };
-            };
-            /** @description Cannot delete */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Unexpected error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    syncDeleteBatch: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SyncDeleteBatchRequest"];
-            };
-        };
-        responses: {
-            /** @description Items deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @description List of deleted item IDs */
-                        deleted: string[];
-                        /** @description Summary message */
-                        message: string;
-                    };
-                };
-            };
-            /** @description Cannot delete (push disabled, untracked items, validation error) */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Item not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Unexpected error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    syncCleanup: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Cleanup completed successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @description List of forgotten item IDs */
-                        forgotten: string[];
-                        /** @description Summary message */
-                        message: string;
-                    };
-                };
-            };
-            /** @description Unexpected error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
     getBaseConfig: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -10718,10 +9203,7 @@ export interface operations {
     };
     updateBaseConfig: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -10787,10 +9269,7 @@ export interface operations {
     };
     getAgentConfig: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -10837,10 +9316,7 @@ export interface operations {
     };
     updateAgentConfig: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -10900,10 +9376,7 @@ export interface operations {
     };
     listAgentModels: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -10950,10 +9423,7 @@ export interface operations {
     };
     createAgentModel: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -11022,10 +9492,7 @@ export interface operations {
     };
     listAgentAuthProviders: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -11072,10 +9539,7 @@ export interface operations {
     };
     startAgentAuthProviderLogin: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Auth provider ID */
@@ -11134,10 +9598,7 @@ export interface operations {
     };
     disconnectAgentAuthProviderLogin: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Auth provider ID */
@@ -11185,10 +9646,7 @@ export interface operations {
     };
     completeAgentAuthProviderLogin: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Auth provider ID */
@@ -11251,10 +9709,7 @@ export interface operations {
     };
     deleteAgentModel: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Model ID */
@@ -11311,10 +9766,7 @@ export interface operations {
     };
     updateAgentModel: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Model ID */
@@ -11386,10 +9838,7 @@ export interface operations {
     };
     setDefaultAgentModel: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -11450,8 +9899,6 @@ export interface operations {
     listAgentSkills: {
         parameters: {
             query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description page number of items to fetch (default is 1) */
                 page?: components["parameters"]["Page"];
                 /** @description number of items per page (default is 30, max is 100) */
@@ -11507,10 +9954,7 @@ export interface operations {
     };
     createAgentSkill: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -11579,10 +10023,7 @@ export interface operations {
     };
     getAgentSkill: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Skill ID */
@@ -11650,10 +10091,7 @@ export interface operations {
     };
     deleteAgentSkill: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Skill ID */
@@ -11719,10 +10157,7 @@ export interface operations {
     };
     updateAgentSkill: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Skill ID */
@@ -11794,10 +10229,7 @@ export interface operations {
     };
     setEnabledSkills: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -11857,10 +10289,7 @@ export interface operations {
     };
     getAgentMemory: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -11907,10 +10336,7 @@ export interface operations {
     };
     updateAgentMemory: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -11968,10 +10394,7 @@ export interface operations {
     };
     deleteAgentMemory: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -12016,10 +10439,7 @@ export interface operations {
     };
     getAgentDAGMemory: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Name of the DAG */
@@ -12069,10 +10489,7 @@ export interface operations {
     };
     updateAgentDAGMemory: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Name of the DAG */
@@ -12133,10 +10550,7 @@ export interface operations {
     };
     deleteAgentDAGMemory: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Name of the DAG */
@@ -12184,10 +10598,7 @@ export interface operations {
     };
     listModelPresets: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -12234,10 +10645,7 @@ export interface operations {
     };
     listAgentTools: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -12285,8 +10693,6 @@ export interface operations {
     listAgentSouls: {
         parameters: {
             query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description page number of items to fetch (default is 1) */
                 page?: components["parameters"]["Page"];
                 /** @description number of items per page (default is 30, max is 100) */
@@ -12340,10 +10746,7 @@ export interface operations {
     };
     createAgentSoul: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -12412,10 +10815,7 @@ export interface operations {
     };
     getAgentSoul: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description The soul ID */
@@ -12483,10 +10883,7 @@ export interface operations {
     };
     deleteAgentSoul: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description The soul ID */
@@ -12552,10 +10949,7 @@ export interface operations {
     };
     updateAgentSoul: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description The soul ID */
@@ -13866,8 +12260,6 @@ export interface operations {
     listAgentSessions: {
         parameters: {
             query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description page number of items to fetch (default is 1) */
                 page?: components["parameters"]["Page"];
                 /** @description number of items per page (default is 30, max is 100) */
@@ -13910,10 +12302,7 @@ export interface operations {
     };
     createAgentSession: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -13973,10 +12362,7 @@ export interface operations {
     };
     getAgentSession: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Unique identifier of the agent session */
@@ -14026,10 +12412,7 @@ export interface operations {
     };
     chatAgentSession: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Unique identifier of the agent session */
@@ -14101,10 +12484,7 @@ export interface operations {
     };
     cancelAgentSession: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Unique identifier of the agent session */
@@ -14154,10 +12534,7 @@ export interface operations {
     };
     respondAgentSession: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 /** @description Unique identifier of the agent session */
@@ -14229,10 +12606,7 @@ export interface operations {
     };
     activateLicense: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -14290,10 +12664,7 @@ export interface operations {
     };
     deactivateLicense: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -14343,8 +12714,6 @@ export interface operations {
     listDocs: {
         parameters: {
             query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description page number of items to fetch (default is 1) */
                 page?: components["parameters"]["Page"];
                 /** @description number of items per page (default is 30, max is 100) */
@@ -14388,10 +12757,7 @@ export interface operations {
     };
     createDoc: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -14445,8 +12811,6 @@ export interface operations {
     searchDocs: {
         parameters: {
             query: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Search query */
                 q: string;
             };
@@ -14488,8 +12852,6 @@ export interface operations {
     getDoc: {
         parameters: {
             query: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Document path (may include slashes for nested docs) */
                 path: components["schemas"]["DocPath"];
             };
@@ -14531,8 +12893,6 @@ export interface operations {
     deleteDoc: {
         parameters: {
             query: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Document path (may include slashes for nested docs) */
                 path: components["schemas"]["DocPath"];
             };
@@ -14572,8 +12932,6 @@ export interface operations {
     updateDoc: {
         parameters: {
             query: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Document path (may include slashes for nested docs) */
                 path: components["schemas"]["DocPath"];
             };
@@ -14621,8 +12979,6 @@ export interface operations {
     renameDoc: {
         parameters: {
             query: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
                 /** @description Current document or directory path (may include slashes for nested docs) */
                 path: components["schemas"]["DocPath"];
             };
@@ -14678,10 +13034,7 @@ export interface operations {
     };
     deleteDocBatch: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -14712,258 +13065,9 @@ export interface operations {
             };
         };
     };
-    listRemoteNodes: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of remote nodes */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RemoteNodeListResponse"];
-                };
-            };
-            /** @description Forbidden */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    createRemoteNode: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateRemoteNodeRequest"];
-            };
-        };
-        responses: {
-            /** @description Remote node created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RemoteNodeResponse"];
-                };
-            };
-            /** @description Invalid request */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Name already exists */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    getRemoteNode: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path: {
-                /** @description The unique identifier of the remote node */
-                remoteNodeId: components["parameters"]["RemoteNodeId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Remote node details */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RemoteNodeResponse"];
-                };
-            };
-            /** @description Not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    deleteRemoteNode: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path: {
-                /** @description The unique identifier of the remote node */
-                remoteNodeId: components["parameters"]["RemoteNodeId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Remote node deleted */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Cannot delete config-sourced node */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    updateRemoteNode: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path: {
-                /** @description The unique identifier of the remote node */
-                remoteNodeId: components["parameters"]["RemoteNodeId"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateRemoteNodeRequest"];
-            };
-        };
-        responses: {
-            /** @description Remote node updated */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RemoteNodeResponse"];
-                };
-            };
-            /** @description Cannot modify config-sourced node */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description Name already exists */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    testRemoteNodeConnection: {
-        parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
-            header?: never;
-            path: {
-                /** @description The unique identifier of the remote node */
-                remoteNodeId: components["parameters"]["RemoteNodeId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Connection test result */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TestRemoteNodeConnectionResponse"];
-                };
-            };
-            /** @description Not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
     listWorkspaces: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -14983,10 +13087,7 @@ export interface operations {
     };
     createWorkspace: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -15028,10 +13129,7 @@ export interface operations {
     };
     getWorkspace: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 workspaceId: string;
@@ -15062,10 +13160,7 @@ export interface operations {
     };
     deleteWorkspace: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 workspaceId: string;
@@ -15094,10 +13189,7 @@ export interface operations {
     };
     updateWorkspace: {
         parameters: {
-            query?: {
-                /** @description name of the remote node */
-                remoteNode?: components["parameters"]["RemoteNode"];
-            };
+            query?: never;
             header?: never;
             path: {
                 workspaceId: string;
@@ -15170,7 +13262,6 @@ export enum ErrorCode {
     internal_error = "internal_error",
     unauthorized = "unauthorized",
     bad_gateway = "bad_gateway",
-    remote_node_error = "remote_node_error",
     max_run_reached = "max_run_reached",
     not_running = "not_running",
     already_exists = "already_exists",
@@ -15303,31 +13394,6 @@ export enum UserAuthProvider {
     builtin = "builtin",
     oidc = "oidc"
 }
-export enum SyncStatus {
-    synced = "synced",
-    modified = "modified",
-    untracked = "untracked",
-    conflict = "conflict",
-    missing = "missing"
-}
-export enum SyncSummary {
-    synced = "synced",
-    pending = "pending",
-    conflict = "conflict",
-    missing = "missing",
-    error = "error"
-}
-export enum SyncItemKind {
-    dag = "dag",
-    memory = "memory",
-    skill = "skill",
-    soul = "soul",
-    doc = "doc"
-}
-export enum SyncAuthConfigType {
-    token = "token",
-    ssh = "ssh"
-}
 export enum AgentBashPolicyDefaultBehavior {
     allow = "allow",
     deny = "deny"
@@ -15447,25 +13513,6 @@ export enum AutomataWaitingReason {
 export enum AutomataTaskState {
     open = "open",
     done = "done"
-}
-export enum CreateRemoteNodeRequestAuthType {
-    none = "none",
-    basic = "basic",
-    token = "token"
-}
-export enum UpdateRemoteNodeRequestAuthType {
-    none = "none",
-    basic = "basic",
-    token = "token"
-}
-export enum RemoteNodeResponseAuthType {
-    none = "none",
-    basic = "basic",
-    token = "token"
-}
-export enum RemoteNodeResponseSource {
-    config = "config",
-    store = "store"
 }
 export enum ComponentsParametersEventLogPaginationMode {
     offset = "offset",

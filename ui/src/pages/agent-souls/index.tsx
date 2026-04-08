@@ -8,16 +8,14 @@ import {
   Plus,
   Search,
   Star,
-  Trash2,
-} from 'lucide-react';
+  Trash2} from 'lucide-react';
 import { components } from '@/api/v1/schema';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { AppBarContext } from '@/contexts/AppBarContext';
 import { useIsAdmin } from '@/contexts/AuthContext';
@@ -45,8 +43,6 @@ export default function AgentSoulsPage(): React.ReactNode {
 
   const [deletingSoul, setDeletingSoul] = useState<SoulResponse | null>(null);
   const [defaultSoulId, setDefaultSoulId] = useState<string | undefined>();
-
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const debouncedQuery = useDebouncedValue(searchQuery, 300);
 
   useEffect(() => {
@@ -60,26 +56,21 @@ export default function AgentSoulsPage(): React.ReactNode {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await client.GET('/settings/agent', { params: { query: { remoteNode } } });
+        const { data } = await client.GET('/settings/agent', { });
         if (data) setDefaultSoulId(data.selectedSoulId ?? undefined);
       } catch {
         // Best-effort fetch
       }
     })();
-  }, [client, remoteNode]);
+  }, [client]);
 
   const { data, mutate, isLoading } = useQuery(
     '/settings/agent/souls',
     {
       params: {
-        query: {
-          remoteNode,
-          page,
+        query: { page,
           perPage,
-          q: debouncedQuery || undefined,
-        },
-      },
-    },
+          q: debouncedQuery || undefined}}},
     { keepPreviousData: true }
   );
 
@@ -89,9 +80,7 @@ export default function AgentSoulsPage(): React.ReactNode {
   async function handleSetDefault(soul: SoulResponse): Promise<void> {
     try {
       const { data, error: apiError } = await client.PATCH('/settings/agent', {
-        params: { query: { remoteNode } },
-        body: { selectedSoulId: soul.id },
-      });
+        body: { selectedSoulId: soul.id }});
       if (apiError) throw new Error(apiError.message || 'Failed to set default soul');
       setDefaultSoulId(data.selectedSoulId ?? undefined);
       setSuccess(`"${soul.name}" is now the default soul`);
@@ -104,8 +93,7 @@ export default function AgentSoulsPage(): React.ReactNode {
     if (!deletingSoul) return;
     try {
       const { error: apiError } = await client.DELETE('/settings/agent/souls/{soulId}', {
-        params: { path: { soulId: deletingSoul.id }, query: { remoteNode } },
-      });
+        params: { path: { soulId: deletingSoul.id } }});
       if (apiError) throw new Error(apiError.message || 'Failed to delete soul');
       setDeletingSoul(null);
       setSuccess(`Soul "${deletingSoul.name}" deleted`);

@@ -4,8 +4,7 @@ import { Bot, PauseCircle, PlayCircle, Waypoints } from 'lucide-react';
 import {
   AutomataDisplayStatus,
   components,
-  Status,
-} from '@/api/v1/schema';
+  Status} from '@/api/v1/schema';
 import { AppBarContext } from '@/contexts/AppBarContext';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@/hooks/api';
@@ -35,24 +34,19 @@ const STATE_META: Record<
   running: {
     label: 'Running',
     description: 'Live and available, including standby services.',
-    icon: <PlayCircle size={16} />,
-  },
+    icon: <PlayCircle size={16} />},
   paused: {
     label: 'Paused',
     description: 'Temporarily frozen by an operator.',
-    icon: <PauseCircle size={16} />,
-  },
+    icon: <PauseCircle size={16} />},
   idle: {
     label: 'Idle',
     description: 'No active task assigned.',
-    icon: <Waypoints size={16} />,
-  },
+    icon: <Waypoints size={16} />},
   finished: {
     label: 'Finished',
     description: 'Completed the current task.',
-    icon: <Bot size={16} />,
-  },
-};
+    icon: <Bot size={16} />}};
 
 function getLifecycleClass(state: string): string {
   switch (state) {
@@ -162,8 +156,7 @@ function buildWorkspaceActivity(
         : current.latestRun;
     activity.set(automataName, {
       count: current.count + 1,
-      latestRun: nextLatest,
-    });
+      latestRun: nextLatest});
   }
   return activity;
 }
@@ -195,12 +188,9 @@ function automataDisplayName(item: {
 }
 
 export function AutomataCockpit({
-  selectedWorkspace,
-}: {
+  selectedWorkspace}: {
   selectedWorkspace: string;
 }): React.ReactElement {
-  const appBar = React.useContext(AppBarContext);
-  const remoteNode = appBar.selectedRemoteNode || 'local';
   const [selectedAutomataName, setSelectedAutomataName] = React.useState<
     string | null
   >(null);
@@ -208,15 +198,13 @@ export function AutomataCockpit({
   const {
     data: automataData,
     error: automataError,
-    mutate: retryAutomata,
-  } = useQuery(
+    mutate: retryAutomata} = useQuery(
     '/automata',
     {},
     {
       refreshInterval: 5000,
       revalidateOnFocus: false,
-      revalidateOnReconnect: true,
-    }
+      revalidateOnReconnect: true}
   );
 
   const workspaceTag = selectedWorkspace
@@ -225,24 +213,17 @@ export function AutomataCockpit({
   const {
     data: workspaceRunsData,
     error: workspaceRunsError,
-    mutate: retryWorkspaceRuns,
-  } = useQuery(
+    mutate: retryWorkspaceRuns} = useQuery(
     '/dag-runs',
     selectedWorkspace && workspaceTag
       ? {
           params: {
-            query: {
-              remoteNode,
-              tags: workspaceTag,
-            },
-          },
-        }
+            query: { tags: workspaceTag}}}
       : null,
     {
       refreshInterval: 5000,
       revalidateOnFocus: false,
-      revalidateOnReconnect: true,
-    }
+      revalidateOnReconnect: true}
   );
 
   const automata = React.useMemo(
@@ -269,8 +250,7 @@ export function AutomataCockpit({
       running: [],
       paused: [],
       idle: [],
-      finished: [],
-    };
+      finished: []};
     for (const item of automata) {
       const state = (item.displayStatus || item.state) as LifecycleState;
       if (state in buckets) {
@@ -350,8 +330,7 @@ export function AutomataCockpit({
             {workspaceTag || 'workspace=<invalid>'}
           </span>
           . Workspace activity is derived from Automata-triggered DAG runs
-          carrying the same tag on
-          <span className="mx-1 font-mono text-foreground">{remoteNode}</span>.
+          carrying the same tag.
           {workspaceAutomataCount > 0 ? (
             <span className="ml-1">
               {workspaceAutomataCount} Automata have workspace-tagged activity.

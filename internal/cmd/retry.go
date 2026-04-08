@@ -385,7 +385,6 @@ func executeRetry(ctx *Context, dag *core.DAG, status *exec.DAGRunStatus, rootRu
 			AgentSkillStore:            as.SkillStore,
 			AgentSoulStore:             as.SoulStore,
 			AgentOAuthManager:          as.OAuthManager,
-			AgentRemoteContextResolver: as.ContextResolver,
 		},
 	)
 

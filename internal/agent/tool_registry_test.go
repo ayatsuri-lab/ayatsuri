@@ -11,17 +11,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// testRemoteContextResolver is a minimal resolver for tests.
-type testRemoteContextResolver struct{}
-
-func (r *testRemoteContextResolver) GetByName(_ context.Context, _ string) (RemoteContextInfo, error) {
-	return RemoteContextInfo{}, nil
-}
-
-func (r *testRemoteContextResolver) ListRemoteContexts(_ context.Context) ([]RemoteContextInfo, error) {
-	return nil, nil
-}
-
 type testAutomataRuntime struct{}
 
 func (r *testAutomataRuntime) ListTasks(_ context.Context) ([]AutomataTask, error) {
@@ -59,7 +48,6 @@ func TestRegisteredTools_ContainsAllExpected(t *testing.T) {
 		"bash", "read", "patch", "think",
 		"navigate", "ask_user",
 		"delegate", "use_skill", "search_skills",
-		"remote_agent", "list_contexts",
 		"list_automata_tasks",
 		"list_allowed_dags", "run_allowed_dag", "retry_automata_run",
 		"set_automata_task_done", "request_human_input", "finish_automata",
@@ -119,7 +107,6 @@ func TestRegisteredTools_FactoriesProduceValidTools(t *testing.T) {
 	cfg := ToolConfig{
 		DAGsDir:               "/tmp/test-dags",
 		SkillStore:            &testSkillStore{},
-		RemoteContextResolver: &testRemoteContextResolver{},
 		AutomataRuntime:       &testAutomataRuntime{},
 	}
 	for _, reg := range RegisteredTools() {
@@ -142,7 +129,6 @@ func TestCreateTools_UsesRegistry(t *testing.T) {
 	tools := CreateTools(ToolConfig{
 		DAGsDir:               "/tmp/dags",
 		SkillStore:            &testSkillStore{},
-		RemoteContextResolver: &testRemoteContextResolver{},
 		AutomataRuntime:       &testAutomataRuntime{},
 	})
 	regs := RegisteredTools()

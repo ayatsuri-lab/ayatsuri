@@ -1,16 +1,14 @@
-import { useState, useEffect, useCallback, useContext } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig, useUpdateConfig } from '@/contexts/ConfigContext';
-import { AppBarContext } from '@/contexts/AppBarContext';
 import { ProviderAuthCard } from '@/features/agent/components/ProviderAuthCard';
 import { useAgentAuthProviders } from '@/features/agent/hooks/useAgentAuthProviders';
 import {
   AGENT_MODEL_PROVIDERS,
   type AgentModelProvider,
   getAgentModelProviderMeta,
-  isAgentModelProvider,
-} from '@/features/agent/modelProviders';
+  isAgentModelProvider} from '@/features/agent/modelProviders';
 import { useClient } from '@/hooks/api';
 import { components } from '@/api/v1/schema';
 import { Button } from '@/components/ui/button';
@@ -21,8 +19,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  SelectValue} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import {
   AlertCircle,
@@ -30,8 +27,7 @@ import {
   Bot,
   ChevronRight,
   SkipForward,
-  Loader2,
-} from 'lucide-react';
+  Loader2} from 'lucide-react';
 
 type ModelPreset = components['schemas']['ModelPreset'];
 type CreateModelConfigRequest = components['schemas']['CreateModelConfigRequest'];
@@ -74,7 +70,6 @@ export default function SetupPage() {
   const [presetsLoading, setPresetsLoading] = useState(false);
 
   const client = useClient();
-  const appBarContext = useContext(AppBarContext);
   const {
     providerMap,
     isLoading: authLoading,
@@ -82,9 +77,7 @@ export default function SetupPage() {
     refreshProviders,
     startLogin,
     completeLogin,
-    disconnect,
-  } = useAgentAuthProviders();
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
+    disconnect} = useAgentAuthProviders();
   const providerMeta = getAgentModelProviderMeta(selectedProvider);
   const codexProvider = providerMap['openai-codex'] || null;
   const usesCodexSubscription = providerMeta.authMode === 'subscription';
@@ -109,9 +102,7 @@ export default function SetupPage() {
   const fetchPresets = useCallback(async () => {
     setPresetsLoading(true);
     try {
-      const { data } = await client.GET('/settings/agent/model-presets', {
-        params: { query: { remoteNode } },
-      });
+      const { data } = await client.GET('/settings/agent/model-presets');
       if (data) {
         setPresets(data.presets || []);
       }
@@ -120,7 +111,7 @@ export default function SetupPage() {
     } finally {
       setPresetsLoading(false);
     }
-  }, [client, remoteNode]);
+  }, [client]);
 
   useEffect(() => {
     if (currentStep === 2) {
@@ -174,9 +165,7 @@ export default function SetupPage() {
 
     if (!agentEnabled) {
       await client.PATCH('/settings/agent', {
-        params: { query: { remoteNode } },
-        body: { enabled: false },
-      });
+        body: { enabled: false }});
       navigate('/', { replace: true });
       return;
     }
@@ -202,9 +191,7 @@ export default function SetupPage() {
     try {
       // 1. Enable agent
       const { error: enableError } = await client.PATCH('/settings/agent', {
-        params: { query: { remoteNode } },
-        body: { enabled: true },
-      });
+        body: { enabled: true }});
       if (enableError) {
         throw new Error(enableError.message || 'Failed to enable agent');
       }
@@ -229,8 +216,7 @@ export default function SetupPage() {
             maxOutputTokens: preset.maxOutputTokens || undefined,
             inputCostPer1M: preset.inputCostPer1M || undefined,
             outputCostPer1M: preset.outputCostPer1M || undefined,
-            supportsThinking: preset.supportsThinking || false,
-          }
+            supportsThinking: preset.supportsThinking || false}
         : {
             id: generateSlugId(manualModel),
             name: manualModel,
@@ -241,8 +227,7 @@ export default function SetupPage() {
             maxOutputTokens: undefined,
             inputCostPer1M: undefined,
             outputCostPer1M: undefined,
-            supportsThinking: false,
-          };
+            supportsThinking: false};
 
       const trimmedAPIKey = apiKey.trim();
       const trimmedBaseURL = baseUrl.trim();
@@ -250,7 +235,6 @@ export default function SetupPage() {
       const { data: createdModel, error: createError } = await client.POST(
         '/settings/agent/models',
         {
-          params: { query: { remoteNode } },
           body: {
             ...modelConfig,
             apiKey:
@@ -260,9 +244,7 @@ export default function SetupPage() {
             baseUrl:
               !usesManualModelConfig || trimmedBaseURL === ''
                 ? undefined
-                : trimmedBaseURL,
-          },
-        }
+                : trimmedBaseURL}}
       );
       if (createError) {
         throw new Error(createError.message || 'Failed to create model');
@@ -274,9 +256,7 @@ export default function SetupPage() {
       const { error: defaultError } = await client.PUT(
         '/settings/agent/default-model',
         {
-          params: { query: { remoteNode } },
-          body: { modelId },
-        }
+          body: { modelId }}
       );
       if (defaultError) {
         throw new Error(

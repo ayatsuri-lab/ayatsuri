@@ -9,8 +9,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+  TableRow} from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import StatusChip from '../../../../ui/StatusChip';
 import dayjs from '@/lib/dayjs';
@@ -48,22 +47,17 @@ type SortConfig = {
 };
 
 function DAGRunOutputs({ dagName, dagRunId }: Props) {
-  const appBarContext = React.useContext(AppBarContext);
   const [filter, setFilter] = useState('');
   const [sortConfig, setSortConfig] = useState<SortConfig>({
     key: 'name',
-    direction: 'asc',
-  });
+    direction: 'asc'});
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   const { data, isLoading, error } = useQuery(
     '/dag-runs/{name}/{dagRunId}/outputs',
     {
       params: {
-        query: { remoteNode: appBarContext.selectedRemoteNode || 'local' },
-        path: { name: dagName, dagRunId },
-      },
-    },
+        path: { name: dagName, dagRunId }}},
     { revalidateOnFocus: false }
   );
 
@@ -99,8 +93,7 @@ function DAGRunOutputs({ dagName, dagRunId }: Props) {
   const handleSort = (key: 'name' | 'value') => {
     setSortConfig((prev) => ({
       key,
-      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
-    }));
+      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'}));
   };
 
   const handleCopy = async (key: string, value: string) => {

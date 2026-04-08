@@ -4,15 +4,13 @@ import {
   AgentBashPolicyDefaultBehavior,
   AgentBashPolicyDenyBehavior,
   AgentBashRuleAction,
-  components,
-} from '@/api/v1/schema';
+  components} from '@/api/v1/schema';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import {
@@ -20,8 +18,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  SelectValue} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import {
   Table,
@@ -29,8 +26,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+  TableRow} from '@/components/ui/table';
 import { AppBarContext } from '@/contexts/AppBarContext';
 import { useIsAdmin } from '@/contexts/AuthContext';
 import { useUpdateConfig } from '@/contexts/ConfigContext';
@@ -78,9 +74,7 @@ function createDefaultToolPolicy(tools: ToolMeta[]): AgentToolPolicy {
     bash: {
       rules: [],
       defaultBehavior: AgentBashPolicyDefaultBehavior.allow,
-      denyBehavior: AgentBashPolicyDenyBehavior.ask_user,
-    },
-  };
+      denyBehavior: AgentBashPolicyDenyBehavior.ask_user}};
 }
 
 function normalizeToolPolicy(policy: AgentToolPolicy | undefined, tools: ToolMeta[]): AgentToolPolicy {
@@ -89,8 +83,7 @@ function normalizeToolPolicy(policy: AgentToolPolicy | undefined, tools: ToolMet
   const bash = {
     rules: policy?.bash?.rules || defaults.bash?.rules || [],
     defaultBehavior: policy?.bash?.defaultBehavior || defaults.bash?.defaultBehavior,
-    denyBehavior: policy?.bash?.denyBehavior || defaults.bash?.denyBehavior,
-  };
+    denyBehavior: policy?.bash?.denyBehavior || defaults.bash?.denyBehavior};
   return { tools: merged, bash };
 }
 
@@ -103,17 +96,14 @@ function canonicalizeToolPolicy(policy: AgentToolPolicy | undefined, tools: Tool
   const rules = (normalized.bash?.rules || []).map((rule) => ({
     ...rule,
     name: rule.name || '',
-    enabled: rule.enabled ?? true,
-  }));
+    enabled: rule.enabled ?? true}));
 
   return {
     tools: sortedTools,
     bash: {
       rules,
       defaultBehavior: normalized.bash?.defaultBehavior || AgentBashPolicyDefaultBehavior.allow,
-      denyBehavior: normalized.bash?.denyBehavior || AgentBashPolicyDenyBehavior.ask_user,
-    },
-  };
+      denyBehavior: normalized.bash?.denyBehavior || AgentBashPolicyDenyBehavior.ask_user}};
 }
 
 export default function AgentSettingsPage(): ReactNode {
@@ -127,8 +117,7 @@ export default function AgentSettingsPage(): ReactNode {
     error: authError,
     startLogin,
     completeLogin,
-    disconnect,
-  } = useAgentAuthProviders();
+    disconnect} = useAgentAuthProviders();
   const [toolMetas, setToolMetas] = useState<ToolMeta[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -152,8 +141,6 @@ export default function AgentSettingsPage(): ReactNode {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingModel, setEditingModel] = useState<ModelConfig | null>(null);
   const [deletingModel, setDeletingModel] = useState<ModelConfig | null>(null);
-
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const codexProvider = (providerMap['openai-codex'] as AgentAuthProviderStatus | undefined) || null;
   const bashRuleIdCounter = useRef(0);
 
@@ -173,7 +160,6 @@ export default function AgentSettingsPage(): ReactNode {
   const fetchTools = useCallback(async (): Promise<ToolMeta[]> => {
     try {
       const { data } = await client.GET('/settings/agent/tools', {
-        params: { query: { remoteNode } },
       });
       const tools: ToolMeta[] = data?.tools || [];
       setToolMetas(tools);
@@ -182,12 +168,11 @@ export default function AgentSettingsPage(): ReactNode {
       console.error('Failed to load tool definitions', err);
       return [];
     }
-  }, [client, remoteNode]);
+  }, [client]);
 
   const fetchConfig = useCallback(async (tools: ToolMeta[]) => {
     try {
       const { data, error: apiError } = await client.GET('/settings/agent', {
-        params: { query: { remoteNode } },
       });
       if (apiError) throw new Error('Failed to fetch agent configuration');
       const normalizedPolicy = normalizeToolPolicy(data.toolPolicy, tools);
@@ -203,18 +188,16 @@ export default function AgentSettingsPage(): ReactNode {
         selectedSoulId: data.selectedSoulId ?? undefined,
         toolPolicy: normalizedPolicy,
         webSearchEnabled: data.webSearch?.enabled ?? false,
-        webSearchMaxUses: data.webSearch?.maxUses ?? undefined,
-      });
+        webSearchMaxUses: data.webSearch?.maxUses ?? undefined});
       setBashRuleIds(buildBashRuleIDs(normalizedPolicy.bash?.rules?.length || 0));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load configuration');
     }
-  }, [buildBashRuleIDs, client, remoteNode]);
+  }, [buildBashRuleIDs, client]);
 
   const fetchModels = useCallback(async () => {
     try {
       const { data, error: apiError } = await client.GET('/settings/agent/models', {
-        params: { query: { remoteNode } },
       });
       if (apiError) throw new Error('Failed to fetch models');
       setModels(data.models || []);
@@ -222,12 +205,11 @@ export default function AgentSettingsPage(): ReactNode {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load models');
     }
-  }, [client, remoteNode]);
+  }, [client]);
 
   const fetchPresets = useCallback(async () => {
     try {
       const { data } = await client.GET('/settings/agent/model-presets', {
-        params: { query: { remoteNode } },
       });
       if (data) {
         setPresets(data.presets || []);
@@ -235,12 +217,11 @@ export default function AgentSettingsPage(): ReactNode {
     } catch {
       // Presets are optional, don't show error
     }
-  }, [client, remoteNode]);
+  }, [client]);
 
   const fetchSouls = useCallback(async () => {
     try {
       const { data } = await client.GET('/settings/agent/souls', {
-        params: { query: { remoteNode } },
       });
       if (data) {
         setSouls((data.souls || []).map((s) => ({ id: s.id, name: s.name })));
@@ -248,7 +229,7 @@ export default function AgentSettingsPage(): ReactNode {
     } catch {
       // Souls fetch is best-effort
     }
-  }, [client, remoteNode]);
+  }, [client]);
 
   useEffect(() => {
     async function load() {
@@ -284,8 +265,7 @@ export default function AgentSettingsPage(): ReactNode {
       if (!savedConfig || webSearchEnabled !== savedConfig.webSearchEnabled || webSearchMaxUses !== savedConfig.webSearchMaxUses) {
         requestBody.webSearch = {
           enabled: webSearchEnabled,
-          maxUses: webSearchMaxUses,
-        };
+          maxUses: webSearchMaxUses};
       }
 
       if (Object.keys(requestBody).length === 0) {
@@ -294,9 +274,7 @@ export default function AgentSettingsPage(): ReactNode {
       }
 
       const { data, error: apiError } = await client.PATCH('/settings/agent', {
-        params: { query: { remoteNode } },
-        body: requestBody,
-      });
+        body: requestBody});
 
       if (apiError) {
         throw new Error(apiError.message || 'Failed to save configuration');
@@ -315,8 +293,7 @@ export default function AgentSettingsPage(): ReactNode {
         selectedSoulId: data.selectedSoulId ?? undefined,
         toolPolicy: normalizedPolicy,
         webSearchEnabled: data.webSearch?.enabled ?? false,
-        webSearchMaxUses: data.webSearch?.maxUses ?? undefined,
-      });
+        webSearchMaxUses: data.webSearch?.maxUses ?? undefined});
       updateConfig({ agentEnabled: data.enabled ?? false });
       setSuccess('Configuration saved successfully');
     } catch (err) {
@@ -330,9 +307,7 @@ export default function AgentSettingsPage(): ReactNode {
     setError(null);
     try {
       const { error: apiError } = await client.PUT('/settings/agent/default-model', {
-        params: { query: { remoteNode } },
-        body: { modelId },
-      });
+        body: { modelId }});
       if (apiError) {
         throw new Error(apiError.message || 'Failed to set default model');
       }
@@ -346,8 +321,7 @@ export default function AgentSettingsPage(): ReactNode {
     if (!deletingModel) return;
     try {
       const { error: apiError } = await client.DELETE('/settings/agent/models/{modelId}', {
-        params: { path: { modelId: deletingModel.id }, query: { remoteNode } },
-      });
+        params: { path: { modelId: deletingModel.id } }});
       if (apiError) {
         throw new Error(apiError.message || 'Failed to delete model');
       }
@@ -381,9 +355,7 @@ export default function AgentSettingsPage(): ReactNode {
         ...normalized,
         tools: {
           ...normalized.tools,
-          [toolName]: value,
-        },
-      };
+          [toolName]: value}};
     });
   }
 
@@ -397,9 +369,7 @@ export default function AgentSettingsPage(): ReactNode {
         ...normalized,
         bash: {
           ...normalized.bash,
-          [key]: value,
-        },
-      };
+          [key]: value}};
     });
   }
 
@@ -408,17 +378,14 @@ export default function AgentSettingsPage(): ReactNode {
       name: '',
       pattern: '',
       action: AgentBashRuleAction.allow,
-      enabled: true,
-    };
+      enabled: true};
     setToolPolicy((prev) => {
       const normalized = normalizeToolPolicy(prev, toolMetas);
       return {
         ...normalized,
         bash: {
           ...normalized.bash,
-          rules: [...(normalized.bash?.rules || []), newRule],
-        },
-      };
+          rules: [...(normalized.bash?.rules || []), newRule]}};
     });
     setBashRuleIds((prev) => [...prev, nextBashRuleId()]);
   }
@@ -433,9 +400,7 @@ export default function AgentSettingsPage(): ReactNode {
         ...normalized,
         bash: {
           ...normalized.bash,
-          rules,
-        },
-      };
+          rules}};
     });
   }
 
@@ -449,9 +414,7 @@ export default function AgentSettingsPage(): ReactNode {
         ...normalized,
         bash: {
           ...normalized.bash,
-          rules,
-        },
-      };
+          rules}};
     });
     setBashRuleIds((prev) => {
       if (index < 0 || index >= prev.length) return prev;
@@ -472,9 +435,7 @@ export default function AgentSettingsPage(): ReactNode {
         ...normalized,
         bash: {
           ...normalized.bash,
-          rules,
-        },
-      };
+          rules}};
     });
     setBashRuleIds((prev) => {
       const ids = [...prev];

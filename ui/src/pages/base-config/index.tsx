@@ -10,7 +10,6 @@ import { useClient, useQuery } from '../../hooks/api';
 
 function BaseConfigPage(): React.ReactNode {
   const appBarContext = React.useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const client = useClient();
   const config = useConfig();
   const { showError } = useErrorModal();
@@ -29,13 +28,10 @@ function BaseConfigPage(): React.ReactNode {
     '/settings/base-config',
     {
       params: {
-        query: { remoteNode },
-      },
-    },
+      }},
     {
       revalidateOnFocus: true,
-      revalidateOnMount: true,
-    }
+      revalidateOnMount: true}
   );
 
   // Initialize editor value from fetched data
@@ -65,12 +61,9 @@ function BaseConfigPage(): React.ReactNode {
       '/settings/base-config',
       {
         params: {
-          query: { remoteNode },
         },
         body: {
-          spec: currentValue,
-        },
-      }
+          spec: currentValue}}
     );
 
     if (error) {
@@ -89,7 +82,7 @@ function BaseConfigPage(): React.ReactNode {
     setHasUnsavedChanges(false);
     mutate();
     showToast('Base configuration saved successfully');
-  }, [currentValue, remoteNode, client, showError, showToast, mutate]);
+  }, [currentValue, client, showError, showToast, mutate]);
 
   useEffect(() => {
     saveHandlerRef.current = handleSave;

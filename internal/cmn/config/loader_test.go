@@ -251,7 +251,6 @@ func TestLoad_Env(t *testing.T) {
 			WebhooksDir:        filepath.Join(testPaths, "data", "webhooks"),          // Derived from DataDir
 			SessionsDir:        filepath.Join(testPaths, "data", "agent", "sessions"), // Derived from DataDir
 			ContextsDir:        filepath.Join(testPaths, "data", "contexts"),          // Derived from DataDir
-			RemoteNodesDir:     filepath.Join(testPaths, "data", "remote-nodes"),      // Derived from DataDir
 			WorkspacesDir:      filepath.Join(testPaths, "data", "workspaces"),        // Derived from DataDir
 		},
 		Secrets: SecretsConfig{
@@ -539,18 +538,6 @@ auth:
       - "email"
     whitelist:
       - "user@example.com"
-remote_nodes:
-  - name: "node1"
-    description: "Primary processing node"
-    api_base_url: "http://node1.example.com/api"
-    auth_type: basic
-    basic_auth_username: "nodeuser"
-    basic_auth_password: "nodepass"
-    skip_tls_verify: true
-  - name: "node2"
-    api_base_url: "http://node2.example.com/api"
-    auth_type: token
-    auth_token: "node-token-123"
 tls:
   cert_file: "/path/to/cert.pem"
   key_file: "/path/to/key.pem"
@@ -638,23 +625,6 @@ scheduler:
 				KeyFile:  "/path/to/key.pem",
 				CAFile:   "/path/to/ca.pem",
 			},
-			RemoteNodes: []RemoteNode{
-				{
-					Name:              "node1",
-					Description:       "Primary processing node",
-					APIBaseURL:        "http://node1.example.com/api",
-					AuthType:          "basic",
-					BasicAuthUsername: "nodeuser",
-					BasicAuthPassword: "nodepass",
-					SkipTLSVerify:     true,
-				},
-				{
-					Name:       "node2",
-					APIBaseURL: "http://node2.example.com/api",
-					AuthType:   "token",
-					AuthToken:  "node-token-123",
-				},
-			},
 			Permissions: map[Permission]bool{
 				PermissionWriteDAGs: false,
 				PermissionRunDAGs:   false,
@@ -694,7 +664,6 @@ scheduler:
 			WebhooksDir:        "/var/ayatsuri/data/webhooks",
 			SessionsDir:        "/var/ayatsuri/data/agent/sessions",
 			ContextsDir:        "/var/ayatsuri/data/contexts",
-			RemoteNodesDir:     "/var/ayatsuri/data/remote-nodes",
 			WorkspacesDir:      "/var/ayatsuri/data/workspaces",
 		},
 		UI: UI{

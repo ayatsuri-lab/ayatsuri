@@ -9,8 +9,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  DialogTitle} from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { AppBarContext } from '@/contexts/AppBarContext';
 import { useClient } from '@/hooks/api';
@@ -20,8 +19,7 @@ import { DAGRunSelectionItem } from '../../hooks/useBulkDAGRunSelection';
 import {
   BatchActionResult,
   BatchActionType,
-  useDAGRunBatchSubmission,
-} from '../../hooks/useDAGRunBatchSubmission';
+  useDAGRunBatchSubmission} from '../../hooks/useDAGRunBatchSubmission';
 
 interface DAGRunBatchActionsProps {
   loadedCount: number;
@@ -34,13 +32,11 @@ interface DAGRunBatchActionsProps {
 
 const actionLabels: Record<BatchActionType, string> = {
   retry: 'Retry selected',
-  reschedule: 'Reschedule selected',
-};
+  reschedule: 'Reschedule selected'};
 
 const actionVerbs: Record<BatchActionType, string> = {
   retry: 'retry',
-  reschedule: 'reschedule',
-};
+  reschedule: 'reschedule'};
 
 function DAGRunBatchActions({
   loadedCount,
@@ -48,9 +44,7 @@ function DAGRunBatchActions({
   onClearSelection,
   onReplaceSelection,
   onSelectAllLoaded,
-  selectedRuns,
-}: DAGRunBatchActionsProps) {
-  const appBarContext = React.useContext(AppBarContext);
+  selectedRuns}: DAGRunBatchActionsProps) {
   const client = useClient();
   const {
     activeBatch,
@@ -59,12 +53,10 @@ function DAGRunBatchActions({
     openBatchDialog,
     phase,
     progress,
-    submitBatchAction,
-  } = useDAGRunBatchSubmission({
+    submitBatchAction} = useDAGRunBatchSubmission({
     onActionComplete,
     onReplaceSelection,
-    selectedRuns,
-  });
+    selectedRuns});
   const selectedCount = selectedRuns.length;
   const snapshot = activeBatch?.snapshot ?? [];
   const totalCount = snapshot.length;
@@ -97,13 +89,7 @@ function DAGRunBatchActions({
           params: {
             path: {
               name: dagRun.name,
-              dagRunId: dagRun.dagRunId,
-            },
-            query: {
-              remoteNode: appBarContext.selectedRemoteNode || 'local',
-            },
-          },
-        });
+              dagRunId: dagRun.dagRunId}}});
 
         return Boolean(data?.dagRunDetails?.specFromFile);
       })
@@ -132,7 +118,7 @@ function DAGRunBatchActions({
     return () => {
       cancelled = true;
     };
-  }, [activeBatch, appBarContext.selectedRemoteNode, client, phase]);
+  }, [activeBatch, client, phase]);
 
   const renderResultDetails = (
     action: BatchActionType,

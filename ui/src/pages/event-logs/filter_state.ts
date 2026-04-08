@@ -2,19 +2,16 @@ import { ComponentsParametersEventLogPaginationMode } from '@/api/v1/schema';
 import {
   createDefaultEventLogFilters,
   formatDateForApi,
-  parseDateFromUrl,
-} from './date_range';
+  parseDateFromUrl} from './date_range';
 import {
   isEventKindFilter,
-  sanitizeEventTypeForKind,
-} from './options';
+  sanitizeEventTypeForKind} from './options';
 import {
   PAGE_SIZE,
   SEARCH_STATE_KEY,
   type EventLogFilters,
   type EventLogQueryParams,
-  type StoredEventLogState,
-} from './types';
+  type StoredEventLogState} from './types';
 import { hasQueryParams } from './utils';
 
 export type SearchStateStore = {
@@ -25,8 +22,7 @@ export type SearchStateStore = {
 export function sanitizeFilters(filters: EventLogFilters): EventLogFilters {
   return {
     ...filters,
-    type: sanitizeEventTypeForKind(filters.kind, filters.type),
-  };
+    type: sanitizeEventTypeForKind(filters.kind, filters.type)};
 }
 
 export function buildLocationParams(filters: EventLogFilters): URLSearchParams {
@@ -76,8 +72,7 @@ export function parseLocationState(args: {
   );
   const base = sanitizeFilters({
     ...createDefaultEventLogFilters(tzOffsetInSec),
-    ...persisted,
-  });
+    ...persisted});
 
   if (!hasQueryParams(params)) {
     return base;
@@ -145,9 +140,8 @@ export function buildEventLogQuery(args: {
   remoteKey: string;
   tzOffsetInSec?: number;
 }): EventLogQueryParams {
-  const { filters, remoteKey, tzOffsetInSec } = args;
+  const { filters, tzOffsetInSec } = args;
   return {
-    remoteNode: remoteKey,
     kind: filters.kind !== 'all' ? filters.kind : undefined,
     paginationMode: ComponentsParametersEventLogPaginationMode.cursor,
     type: filters.type !== 'all' ? filters.type : undefined,
@@ -157,6 +151,5 @@ export function buildEventLogQuery(args: {
     attemptId: filters.attemptId || undefined,
     startTime: formatDateForApi(filters.fromDate, tzOffsetInSec),
     endTime: formatDateForApi(filters.toDate, tzOffsetInSec),
-    limit: PAGE_SIZE,
-  };
+    limit: PAGE_SIZE};
 }

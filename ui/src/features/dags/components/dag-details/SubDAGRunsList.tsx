@@ -42,10 +42,7 @@ export function SubDAGRunsList({
   allSubRuns,
   isExpanded,
   onToggleExpand,
-  onNavigate,
-}: Props) {
-  const appBarContext = useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
+  onNavigate}: Props) {
   const dagRunIdsKey = allSubRuns.map((sr) => sr.dagRunId).join('|');
   const [statusFilter, setStatusFilter] = useState<StatusFilterValue>('all');
 
@@ -61,18 +58,11 @@ export function SubDAGRunsList({
       params: {
         path: {
           name: rootDagName,
-          dagRunId: rootDagRunId,
-        },
-        query: {
-          remoteNode,
-          // For multi-level nested DAGs, pass the parent sub DAG run ID
-          parentSubDAGRunId: isNestedSubDAG ? dagRunId : undefined,
-        },
-      },
-    }),
+          dagRunId: rootDagRunId},
+        query: { // For multi-level nested DAGs, pass the parent sub DAG run ID
+          parentSubDAGRunId: isNestedSubDAG ? dagRunId : undefined}}}),
     {
-      refreshInterval: shouldFetch ? 3000 : 0,
-    }
+      refreshInterval: shouldFetch ? 3000 : 0}
   );
 
   // When the list of sub run ids changes (new executions), immediately refresh timing info
@@ -89,8 +79,7 @@ export function SubDAGRunsList({
   // Map each sub run to include its original index
   const subRunsWithIndex: IndexedSubRun[] = allSubRuns.map((subRun, index) => ({
     ...subRun,
-    originalIndex: index,
-  }));
+    originalIndex: index}));
 
   // If we have API data with timing, filter to only THIS node's sub runs, merge and sort
   const subRunsFromApi: IndexedSubRunDetail[] = subRunsData?.subRuns
@@ -105,8 +94,7 @@ export function SubDAGRunsList({
           );
           return {
             ...apiSubRun,
-            originalIndex: matchingSubRun?.originalIndex ?? 0,
-          };
+            originalIndex: matchingSubRun?.originalIndex ?? 0};
         })
         .sort((a, b) => {
           const timeA = new Date(a.startedAt).getTime();
@@ -181,8 +169,7 @@ export function SubDAGRunsList({
         filters.push({
           value: status,
           label: STATUS_DISPLAY_LABELS[status],
-          count,
-        });
+          count});
       }
     }
 

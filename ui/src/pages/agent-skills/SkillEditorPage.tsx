@@ -27,7 +27,6 @@ export default function SkillEditorPage() {
   const { showError } = useErrorModal();
 
   const isCreating = !skillId;
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
 
   const [name, setName] = useState('');
   const [idField, setIdField] = useState('');
@@ -52,8 +51,7 @@ export default function SkillEditorPage() {
 
     (async () => {
       const { data, error } = await client.GET('/settings/agent/skills/{skillId}', {
-        params: { path: { skillId }, query: { remoteNode } },
-      });
+        params: { path: { skillId } }});
       if (error) {
         showError(error.message || 'Failed to load skill');
         navigate('/agent-skills');
@@ -68,7 +66,7 @@ export default function SkillEditorPage() {
       setTagsInput(data.tags?.join(', ') ?? '');
       setIsLoading(false);
     })();
-  }, [skillId, isCreating, client, remoteNode, showError, navigate]);
+  }, [skillId, isCreating, client, showError, navigate]);
 
   function parseTags(input: string): string[] {
     return input
@@ -85,7 +83,6 @@ export default function SkillEditorPage() {
       const tags = parseTags(tagsInput);
       if (isCreating) {
         const { error } = await client.POST('/settings/agent/skills', {
-          params: { query: { remoteNode } },
           body: {
             id: idField || undefined,
             name,
@@ -93,23 +90,19 @@ export default function SkillEditorPage() {
             description: description || undefined,
             version: version || undefined,
             author: author || undefined,
-            tags: tags.length > 0 ? tags : undefined,
-          },
-        });
+            tags: tags.length > 0 ? tags : undefined}});
         if (error) throw new Error(error.message || 'Failed to create skill');
         showToast('Skill created');
       } else {
         const { error } = await client.PATCH('/settings/agent/skills/{skillId}', {
-          params: { path: { skillId: skillId! }, query: { remoteNode } },
+          params: { path: { skillId: skillId! } },
           body: {
             name,
             knowledge,
             description: description || undefined,
             version: version || undefined,
             author: author || undefined,
-            tags: tags.length > 0 ? tags : undefined,
-          },
-        });
+            tags: tags.length > 0 ? tags : undefined}});
         if (error) throw new Error(error.message || 'Failed to update skill');
         showToast('Skill saved');
       }
@@ -121,7 +114,7 @@ export default function SkillEditorPage() {
     }
   }, [
     name, knowledge, description, version, author, tagsInput, idField,
-    isCreating, skillId, client, remoteNode, showToast, showError, navigate,
+    isCreating, skillId, client, showToast, showError, navigate,
   ]);
 
   useEffect(() => {

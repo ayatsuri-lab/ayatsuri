@@ -20,8 +20,7 @@ import { useContentEditor } from '../../../../hooks/useContentEditor';
 import { useDAGSSE } from '../../../../hooks/useDAGSSE';
 import {
   sseFallbackOptions,
-  useSSECacheSync,
-} from '../../../../hooks/useSSECacheSync';
+  useSSECacheSync} from '../../../../hooks/useSSECacheSync';
 import LoadingIndicator from '../../../../ui/LoadingIndicator';
 import { DAGContext } from '../../contexts/DAGContext';
 import { DAGStepTable } from '../dag-details';
@@ -45,8 +44,6 @@ type Props = {
  * including visualization, attributes, steps, and YAML definition
  */
 function DAGSpec({ fileName, localDags }: Props) {
-  const appBarContext = React.useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const client = useClient();
   const config = useConfig();
   const { showError } = useErrorModal();
@@ -89,19 +86,13 @@ function DAGSpec({ fileName, localDags }: Props) {
   const {
     data,
     isLoading,
-    mutate: mutateSpec,
-  } = useQuery(
+    mutate: mutateSpec} = useQuery(
     '/dags/{fileName}/spec',
     {
       params: {
-        query: {
-          remoteNode,
-        },
+        query: { },
         path: {
-          fileName: fileName,
-        },
-      },
-    },
+          fileName: fileName}}},
     sseFallbackOptions(dagSSE)
   );
   useSSECacheSync(dagSSE, mutateSpec, (next) =>
@@ -110,8 +101,7 @@ function DAGSpec({ fileName, localDags }: Props) {
       : {
           dag: next.dag,
           errors: next.errors ?? [],
-          spec: next.spec,
-        }
+          spec: next.spec}
   );
 
   // Server spec — SWR cache stays current via live invalidations or polling fallback
@@ -125,11 +115,9 @@ function DAGSpec({ fileName, localDags }: Props) {
     conflict,
     resolveConflict,
     markAsSaved,
-    discardChanges,
-  } = useContentEditor({
-    key: `${fileName}:${remoteNode}`,
-    serverContent: serverSpec,
-  });
+    discardChanges} = useContentEditor({
+    key: fileName,
+    serverContent: serverSpec});
 
   // Sync unsaved changes context
   useEffect(() => {
@@ -165,16 +153,10 @@ function DAGSpec({ fileName, localDags }: Props) {
       {
         params: {
           path: {
-            fileName: fileName,
-          },
-          query: {
-            remoteNode,
-          },
-        },
+            fileName: fileName},
+          query: { }},
         body: {
-          spec: currentValue,
-        },
-      }
+          spec: currentValue}}
     );
 
     if (error) {
@@ -201,7 +183,6 @@ function DAGSpec({ fileName, localDags }: Props) {
   }, [
     currentValue,
     fileName,
-    remoteNode,
     client,
     saveScrollPosition,
     showError,

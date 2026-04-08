@@ -159,13 +159,6 @@
     "peer": {
       "$ref": "#/definitions/PeerDef"
     },
-    "remote_nodes": {
-      "type": "array",
-      "description": "List of remote node connections for distributed monitoring.",
-      "items": {
-        "$ref": "#/definitions/RemoteNodeDef"
-      }
-    },
     "coordinator": {
       "$ref": "#/definitions/CoordinatorDef"
     },
@@ -478,10 +471,6 @@
         "sessions_dir": {
           "type": "string",
           "description": "Directory for session data storage."
-        },
-        "remote_nodes_dir": {
-          "type": "string",
-          "description": "Directory for remote node data storage."
         }
       }
     },
@@ -586,46 +575,6 @@
         "retry_interval": {
           "type": "string",
           "description": "Interval between connection retries. Default: '1s'."
-        }
-      }
-    },
-    "RemoteNodeDef": {
-      "type": "object",
-      "description": "Remote node connection configuration.",
-      "additionalProperties": false,
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Display name for the remote node."
-        },
-        "description": {
-          "type": "string",
-          "description": "Optional description for the remote node."
-        },
-        "api_base_url": {
-          "type": "string",
-          "description": "Base URL of the remote node's API."
-        },
-        "auth_type": {
-          "type": "string",
-          "enum": ["none", "basic", "token"],
-          "description": "Authentication type for this remote node."
-        },
-        "basic_auth_username": {
-          "type": "string",
-          "description": "Basic auth username for this remote node."
-        },
-        "basic_auth_password": {
-          "type": "string",
-          "description": "Basic auth password for this remote node."
-        },
-        "auth_token": {
-          "type": "string",
-          "description": "Auth token for this remote node."
-        },
-        "skip_tls_verify": {
-          "type": "boolean",
-          "description": "Skip TLS certificate verification for this remote node."
         }
       }
     },

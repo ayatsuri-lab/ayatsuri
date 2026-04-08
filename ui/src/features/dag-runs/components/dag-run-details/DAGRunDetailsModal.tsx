@@ -30,21 +30,13 @@ function DAGRunDetailsModal({
   name,
   dagRunId,
   isOpen,
-  onClose,
-}: DAGRunDetailsModalProps): React.ReactElement | null {
+  onClose}: DAGRunDetailsModalProps): React.ReactElement | null {
   const navigate = useNavigate();
-  const appBarContext = useContext(AppBarContext);
   const { setContext } = usePageContext();
 
   const [shouldRender, setShouldRender] = useState(isOpen);
   const [isVisible, setIsVisible] = useState(false);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const previousDataRef = useRef<PreviousData | null>(null);
-  const prevRemoteNodeRef = useRef(remoteNode);
-  if (prevRemoteNodeRef.current !== remoteNode) {
-    prevRemoteNodeRef.current = remoteNode;
-    previousDataRef.current = null;
-  }
 
   useEffect(() => {
     if (isOpen) {
@@ -74,19 +66,15 @@ function DAGRunDetailsModal({
   const dagRunQueryEnabled = isOpen && !canQuerySubDag && Boolean(name);
   const detailsTarget = subDAGQueryEnabled
     ? {
-        remoteNode,
         name: name || '',
         dagRunId: dagRunId || 'latest',
         parentName,
         parentDAGRunId: parentDAGRunId ?? '',
-        subDAGRunId: subDAGRunId ?? '',
-      }
+        subDAGRunId: subDAGRunId ?? ''}
     : dagRunQueryEnabled
       ? {
-          remoteNode,
           name: name || '',
-          dagRunId: dagRunId || 'latest',
-        }
+          dagRunId: dagRunId || 'latest'}
       : null;
 
   const {
@@ -94,12 +82,10 @@ function DAGRunDetailsModal({
     error,
     isLoading,
     isValidating,
-    refresh,
-  } = useBoundedDAGRunDetails({
+    refresh} = useBoundedDAGRunDetails({
     target: detailsTarget,
     enabled: subDAGQueryEnabled || dagRunQueryEnabled,
-    pollIntervalMs: isOpen ? 2000 : 0,
-  });
+    pollIntervalMs: isOpen ? 2000 : 0});
 
   const expectedDagRunId = canQuerySubDag ? (subDAGRunId ?? '') : (dagRunId || 'latest');
   const freshDetails =
@@ -116,9 +102,6 @@ function DAGRunDetailsModal({
     }
   }, [freshDetails, name, dagRunId]);
 
-  // Note: previousDataRef is cleared synchronously during render (above)
-  // when remoteNode changes, preventing stale cross-node data.
-
   const isInitialLoading = isLoading && !displayData;
   const previousData = previousDataRef.current;
   const isTransitioning =
@@ -132,8 +115,7 @@ function DAGRunDetailsModal({
         dagFile: name,
         dagRunId: dagRunId || undefined,
         dagRunName: name,
-        source: 'dag-run-details-modal',
-      });
+        source: 'dag-run-details-modal'});
     }
   }, [isOpen, name, dagRunId, setContext]);
 
@@ -198,8 +180,7 @@ function DAGRunDetailsModal({
           value={{
             refresh: refreshFn,
             name: name || '',
-            dagRunId: dagRunId || '',
-          }}
+            dagRunId: dagRunId || ''}}
         >
           <div className="p-6 w-full flex flex-col h-full dagRun-modal-content">
             <div className="flex justify-between items-center mb-4">

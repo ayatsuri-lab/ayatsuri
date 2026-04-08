@@ -21,8 +21,7 @@ import {
   FileText,
   Save,
   Trash2,
-  Undo2,
-} from 'lucide-react';
+  Undo2} from 'lucide-react';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import DocExternalChangeDialog from './DocExternalChangeDialog';
 
@@ -45,8 +44,6 @@ type Props = {
 
 function DocEditor({ tabId, docPath, onDeleteDoc, onContentChange }: Props) {
   const client = useClient();
-  const appBarContext = useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const canWrite = useCanWrite();
   const { showToast } = useSimpleToast();
   const { getDraft, setDraft, clearDraft, markTabUnsaved, markTabSaved } =
@@ -59,12 +56,7 @@ function DocEditor({ tabId, docPath, onDeleteDoc, onContentChange }: Props) {
     '/docs/doc',
     {
       params: {
-        query: {
-          remoteNode,
-          path: docPath,
-        },
-      },
-    },
+        query: { path: docPath}}},
     sseFallbackOptions(docSSE)
   );
   useSSECacheSync(docSSE, mutateDoc);
@@ -78,11 +70,9 @@ function DocEditor({ tabId, docPath, onDeleteDoc, onContentChange }: Props) {
     conflict,
     resolveConflict,
     markAsSaved,
-    discardChanges,
-  } = useContentEditor({
-    key: `${docPath}:${remoteNode}`,
-    serverContent,
-  });
+    discardChanges} = useContentEditor({
+    key: docPath,
+    serverContent});
 
   const [mode, setMode] = useState<'edit' | 'preview'>(() => {
     const stored = localStorage.getItem('doc-editor-mode');
@@ -149,9 +139,8 @@ function DocEditor({ tabId, docPath, onDeleteDoc, onContentChange }: Props) {
     setIsSaving(true);
     try {
       const { error } = await client.PATCH('/docs/doc', {
-        params: { query: { remoteNode, path: docPath } },
-        body: { content: currentValueRef.current ?? '' },
-      });
+        params: { query: { path: docPath } },
+        body: { content: currentValueRef.current ?? '' }});
       if (error) {
         showToast('Failed to save document');
       } else {
@@ -170,7 +159,6 @@ function DocEditor({ tabId, docPath, onDeleteDoc, onContentChange }: Props) {
   }, [
     isSaving,
     client,
-    remoteNode,
     docPath,
     markAsSaved,
     mutateDoc,
@@ -401,8 +389,7 @@ function DocEditor({ tabId, docPath, onDeleteDoc, onContentChange }: Props) {
                       return <>{children}</>;
                     }
                     return <pre>{children}</pre>;
-                  },
-                }}
+                  }}}
               >
                 {currentValue}
               </ReactMarkdown>

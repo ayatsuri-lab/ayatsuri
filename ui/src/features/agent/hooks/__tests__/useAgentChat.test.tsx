@@ -20,23 +20,18 @@ const postMock = vi.fn();
 const navigateMock = vi.fn();
 const useSSEConnectionMock = vi.fn();
 let mockedSSEStatus = {
-  isSessionLive: false,
-};
+  isSessionLive: false};
 
 vi.mock('@/hooks/api', () => ({
   useClient: () => ({
     GET: getMock,
-    POST: postMock,
-  }),
-}));
+    POST: postMock})}));
 
 vi.mock('../useSSEConnection', () => ({
-  useSSEConnection: (...args: unknown[]) => useSSEConnectionMock(...args),
-}));
+  useSSEConnection: (...args: unknown[]) => useSSEConnectionMock(...args)}));
 
 vi.mock('react-router-dom', () => ({
-  useNavigate: () => navigateMock,
-}));
+  useNavigate: () => navigateMock}));
 
 const testConfig: Config = {
   apiURL: '/api/v1',
@@ -47,7 +42,6 @@ const testConfig: Config = {
   tzOffsetInSec: 0,
   version: 'test',
   maxDashboardPageLimit: 100,
-  remoteNodes: '',
   initialWorkspaces: [],
   authMode: 'none',
   setupRequired: false,
@@ -59,8 +53,7 @@ const testConfig: Config = {
   latestVersion: '',
   permissions: {
     writeDags: true,
-    runDags: true,
-  },
+    runDags: true},
   license: {
     valid: true,
     plan: 'community',
@@ -69,8 +62,7 @@ const testConfig: Config = {
     gracePeriod: false,
     community: true,
     source: 'test',
-    warningCode: '',
-  },
+    warningCode: ''},
   paths: {
     dagsDir: '',
     logDir: '',
@@ -82,9 +74,7 @@ const testConfig: Config = {
     procDir: '',
     serviceRegistryDir: '',
     configFileUsed: '',
-    auditLogsDir: '',
-  },
-};
+    auditLogsDir: ''}};
 
 function makeApiMessage(id: string, content: string, sequenceId = 1) {
   return {
@@ -93,8 +83,7 @@ function makeApiMessage(id: string, content: string, sequenceId = 1) {
     type: 'assistant',
     sequenceId,
     content,
-    createdAt: '2026-03-13T00:00:00Z',
-  };
+    createdAt: '2026-03-13T00:00:00Z'};
 }
 
 function makeSessionDetailResponse(options?: {
@@ -115,18 +104,15 @@ function makeSessionDetailResponse(options?: {
       title: `Session ${id}`,
       createdAt: '2026-03-13T00:00:00Z',
       updatedAt: '2026-03-13T00:00:00Z',
-      delegateTask: options?.delegateTask,
-    },
+      delegateTask: options?.delegateTask},
     sessionState: {
       sessionId: id,
       working: options?.working ?? false,
       hasPendingPrompt: false,
       model: 'gpt-test',
-      totalCost: 0,
-    },
+      totalCost: 0},
     messages: options?.messages ?? [],
-    delegates: options?.delegates ?? [],
-  };
+    delegates: options?.delegates ?? []};
 }
 
 function TestProviders({ children }: { children: ReactNode }) {
@@ -135,12 +121,7 @@ function TestProviders({ children }: { children: ReactNode }) {
       <AppBarContext.Provider
         value={{
           title: '',
-          setTitle: () => undefined,
-          remoteNodes: ['local'],
-          setRemoteNodes: () => undefined,
-          selectedRemoteNode: 'local',
-          selectRemoteNode: () => undefined,
-        }}
+          setTitle: () => undefined}}
       >
         <UserPreferencesProvider>
           <AgentChatProvider>{children}</AgentChatProvider>
@@ -158,8 +139,7 @@ describe('useAgentChat fallback polling', () => {
     postMock.mockReset();
     navigateMock.mockReset();
     mockedSSEStatus = {
-      isSessionLive: false,
-    };
+      isSessionLive: false};
     useSSEConnectionMock.mockReset();
     useSSEConnectionMock.mockImplementation(() => mockedSSEStatus);
   });
@@ -172,12 +152,10 @@ describe('useAgentChat fallback polling', () => {
     const sessionResponses = [
       makeSessionDetailResponse({
         messages: [makeApiMessage('msg-1', 'initial snapshot')],
-        working: false,
-      }),
+        working: false}),
       makeSessionDetailResponse({
         messages: [makeApiMessage('msg-2', 'polled snapshot')],
-        working: true,
-      }),
+        working: true}),
     ];
     let sessionFetchCount = 0;
 
@@ -196,8 +174,7 @@ describe('useAgentChat fallback polling', () => {
     );
 
     const { result, rerender } = renderHook(() => useAgentChatWithOpen(), {
-      wrapper: TestProviders,
-    });
+      wrapper: TestProviders});
 
     act(() => { result.current.openChat(); });
     await act(async () => {
@@ -217,8 +194,7 @@ describe('useAgentChat fallback polling', () => {
     expect(result.current.sessionState?.working).toBe(true);
 
     mockedSSEStatus = {
-      isSessionLive: true,
-    };
+      isSessionLive: true};
     rerender();
     const callsAfterReconnect = sessionFetchCount;
 
@@ -231,8 +207,7 @@ describe('useAgentChat fallback polling', () => {
 
   it('polls open delegate panes while the root agent stream is offline and stops after reconnect', async () => {
     mockedSSEStatus = {
-      isSessionLive: false,
-    };
+      isSessionLive: false};
     useSSEConnectionMock.mockImplementation(() => mockedSSEStatus);
 
     let delegateFetchCount = 0;
@@ -248,9 +223,7 @@ describe('useAgentChat fallback polling', () => {
               messages: [makeApiMessage('msg-root', 'root session')],
               delegates: [
                 { id: 'delegate-1', task: 'Delegate task', status: 'running' },
-              ],
-            }),
-          };
+              ]})};
         }
         if (sessionId === 'delegate-1') {
           delegateFetchCount += 1;
@@ -266,17 +239,14 @@ describe('useAgentChat fallback polling', () => {
                     : 'delegate polled'
                 ),
               ],
-              working: delegateFetchCount === 1,
-            }),
-          };
+              working: delegateFetchCount === 1})};
         }
         throw new Error('unexpected request');
       }
     );
 
     const { result, rerender } = renderHook(() => useAgentChatWithOpen(), {
-      wrapper: TestProviders,
-    });
+      wrapper: TestProviders});
 
     act(() => { result.current.openChat(); });
     await act(async () => {
@@ -301,8 +271,7 @@ describe('useAgentChat fallback polling', () => {
     );
 
     mockedSSEStatus = {
-      isSessionLive: true,
-    };
+      isSessionLive: true};
     rerender();
     const callsAfterReconnect = delegateFetchCount;
 
@@ -322,17 +291,14 @@ describe('useAgentChat fallback polling', () => {
         if (request?.params?.path?.sessionId === 'sess-1') {
           return {
             data: makeSessionDetailResponse({
-              messages: [makeApiMessage('msg-1', 'initial snapshot', 1)],
-            }),
-          };
+              messages: [makeApiMessage('msg-1', 'initial snapshot', 1)]})};
         }
         throw new Error('unexpected request');
       }
     );
 
     const { result } = renderHook(() => useAgentChatWithOpen(), {
-      wrapper: TestProviders,
-    });
+      wrapper: TestProviders});
 
     act(() => { result.current.openChat(); });
     await act(async () => {
@@ -363,10 +329,8 @@ describe('useAgentChat fallback polling', () => {
               type: 'assistant',
               sequence_id: 3,
               content: 'streamed reply',
-              created_at: '2026-03-13T00:00:01Z',
-            },
-          ],
-        },
+              created_at: '2026-03-13T00:00:01Z'},
+          ]},
         false
       );
       callbacks.onEvent(
@@ -378,10 +342,8 @@ describe('useAgentChat fallback polling', () => {
               type: 'assistant',
               sequence_id: 3,
               content: 'streamed reply updated',
-              created_at: '2026-03-13T00:00:01Z',
-            },
-          ],
-        },
+              created_at: '2026-03-13T00:00:01Z'},
+          ]},
         false
       );
       callbacks.onEvent(
@@ -393,10 +355,8 @@ describe('useAgentChat fallback polling', () => {
               type: 'assistant',
               sequence_id: 2,
               content: 'out-of-order reply',
-              created_at: '2026-03-13T00:00:01Z',
-            },
-          ],
-        },
+              created_at: '2026-03-13T00:00:01Z'},
+          ]},
         false
       );
       callbacks.onEvent(
@@ -404,9 +364,7 @@ describe('useAgentChat fallback polling', () => {
           delegate_event: {
             type: 'started',
             delegate_id: 'delegate-1',
-            task: 'Delegate task',
-          },
-        },
+            task: 'Delegate task'}},
         false
       );
       callbacks.onEvent(
@@ -420,11 +378,8 @@ describe('useAgentChat fallback polling', () => {
                 type: 'assistant',
                 sequence_id: 1,
                 content: 'delegate reply',
-                created_at: '2026-03-13T00:00:02Z',
-              },
-            ],
-          },
-        },
+                created_at: '2026-03-13T00:00:02Z'},
+            ]}},
         false
       );
     });
@@ -447,18 +402,15 @@ describe('useAgentChat fallback polling', () => {
 
   it('heals correctly when polling updates state before the stream reconnect snapshot arrives', async () => {
     mockedSSEStatus = {
-      isSessionLive: false,
-    };
+      isSessionLive: false};
     useSSEConnectionMock.mockImplementation(() => mockedSSEStatus);
 
     const sessionResponses = [
       makeSessionDetailResponse({
-        messages: [makeApiMessage('msg-1', 'initial snapshot', 1)],
-      }),
+        messages: [makeApiMessage('msg-1', 'initial snapshot', 1)]}),
       makeSessionDetailResponse({
         messages: [makeApiMessage('msg-2', 'polled snapshot', 2)],
-        working: true,
-      }),
+        working: true}),
     ];
     let sessionFetchCount = 0;
 
@@ -477,8 +429,7 @@ describe('useAgentChat fallback polling', () => {
     );
 
     const { result, rerender } = renderHook(() => useAgentChatWithOpen(), {
-      wrapper: TestProviders,
-    });
+      wrapper: TestProviders});
 
     act(() => { result.current.openChat(); });
     await act(async () => {
@@ -496,8 +447,7 @@ describe('useAgentChat fallback polling', () => {
     expect(result.current.sessionState?.working).toBe(true);
 
     mockedSSEStatus = {
-      isSessionLive: true,
-    };
+      isSessionLive: true};
     rerender();
 
     const latestCall =
@@ -523,9 +473,7 @@ describe('useAgentChat fallback polling', () => {
             working: false,
             has_pending_prompt: false,
             model: 'gpt-test',
-            total_cost: 0,
-          },
-        },
+            total_cost: 0}},
         true
       );
       callbacks.onEvent(
@@ -537,10 +485,8 @@ describe('useAgentChat fallback polling', () => {
               type: 'assistant',
               sequence_id: 4,
               content: 'post-reconnect delta',
-              created_at: '2026-03-13T00:00:03Z',
-            },
-          ],
-        },
+              created_at: '2026-03-13T00:00:03Z'},
+          ]},
         false
       );
     });
@@ -564,9 +510,7 @@ describe('useAgentChat fallback polling', () => {
           return {
             data: makeSessionDetailResponse({
               messages: [makeApiMessage('msg-1', 'user echoed', 1)],
-              working: true,
-            }),
-          };
+              working: true})};
         }
         throw new Error('unexpected request');
       }
@@ -574,8 +518,7 @@ describe('useAgentChat fallback polling', () => {
     postMock.mockResolvedValue({ data: { status: 'accepted' } });
 
     const { result } = renderHook(() => useAgentChatWithOpen(), {
-      wrapper: TestProviders,
-    });
+      wrapper: TestProviders});
 
     act(() => {
       result.current.openChat();
@@ -595,8 +538,7 @@ describe('useAgentChat fallback polling', () => {
     expect(postMock).toHaveBeenCalledWith(
       '/agent/sessions/{sessionId}/chat',
       expect.objectContaining({
-        params: { path: { sessionId: 'sess-1' }, query: { remoteNode: 'local' } },
-      })
+        params: { path: { sessionId: 'sess-1' }, query: { } }})
     );
     expect(getMock).not.toHaveBeenCalled();
   });

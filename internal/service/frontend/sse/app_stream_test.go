@@ -53,7 +53,7 @@ func TestAppStreamServiceShutdownIsIdempotent(_ *testing.T) {
 }
 
 func TestAppHandlerHandleStreamUnavailable(t *testing.T) {
-	handler := NewAppHandler(nil, nil)
+	handler := NewAppHandler(nil)
 	req := httptest.NewRequest(http.MethodGet, "/api/v1/events/app", nil)
 	recorder := httptest.NewRecorder()
 

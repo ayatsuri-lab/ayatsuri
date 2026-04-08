@@ -55,7 +55,6 @@ function EditorSkeleton({ className }: { className?: string }) {
  * with the Schema Documentation sidebar available for reference.
  */
 function DAGSpecReadOnly({ dagName, dagRunId, subDAGRunId, className }: DAGSpecReadOnlyProps) {
-  const appBarContext = React.useContext(AppBarContext);
 
   // Select endpoint based on whether this is a subdag
   const endpoint = subDAGRunId
@@ -70,13 +69,8 @@ function DAGSpecReadOnly({ dagName, dagRunId, subDAGRunId, className }: DAGSpecR
   // Fetch DAG specification data using the appropriate endpoint
   const { data, isLoading, error } = useQuery(endpoint, {
     params: {
-      query: {
-        remoteNode: appBarContext.selectedRemoteNode || 'local',
-      },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      path: pathParams as any,
-    },
-  });
+      path: pathParams as any}});
 
   if (isLoading) {
     return <EditorSkeleton className={className} />;

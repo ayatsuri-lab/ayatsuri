@@ -4,17 +4,12 @@
 package sse
 
 import (
-	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
-
-	"github.com/ayatsuri-lab/ayatsuri/internal/remotenode"
 )
 
 // TopicMutationRequest updates the topic set for a multiplexed SSE session.
@@ -26,15 +21,13 @@ type TopicMutationRequest struct {
 
 // MultiplexHandler serves the multiplexed SSE stream and topic mutation API.
 type MultiplexHandler struct {
-	mux          *Multiplexer
-	nodeResolver *remotenode.Resolver
+	mux *Multiplexer
 }
 
 // NewMultiplexHandler creates a handler for multiplexed SSE endpoints.
-func NewMultiplexHandler(mux *Multiplexer, nodeResolver *remotenode.Resolver) *MultiplexHandler {
+func NewMultiplexHandler(mux *Multiplexer) *MultiplexHandler {
 	return &MultiplexHandler{
-		mux:          mux,
-		nodeResolver: nodeResolver,
+		mux: mux,
 	}
 }
 
@@ -43,12 +36,6 @@ func (h *MultiplexHandler) HandleStream(w http.ResponseWriter, r *http.Request) 
 	SetSSEHeaders(w)
 	rc := http.NewResponseController(w)
 	_ = rc.SetWriteDeadline(time.Time{})
-
-	remoteNode := r.URL.Query().Get("remoteNode")
-	if remoteNode != "" && remoteNode != "local" {
-		h.proxyStreamToRemoteNode(w, r, remoteNode)
-		return
-	}
 
 	lastEventID, err := parseLastEventID(r)
 	if err != nil {
@@ -72,12 +59,6 @@ func (h *MultiplexHandler) HandleStream(w http.ResponseWriter, r *http.Request) 
 
 // HandleTopicMutation adds and removes topics for an existing stream.
 func (h *MultiplexHandler) HandleTopicMutation(w http.ResponseWriter, r *http.Request) {
-	remoteNode := r.URL.Query().Get("remoteNode")
-	if remoteNode != "" && remoteNode != "local" {
-		h.proxyTopicMutationToRemoteNode(w, r, remoteNode)
-		return
-	}
-
 	var req TopicMutationRequest
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
@@ -128,137 +109,6 @@ func parseLastEventID(r *http.Request) (uint64, error) {
 		return 0, err
 	}
 	return lastEventID, nil
-}
-
-func (h *MultiplexHandler) proxyStreamToRemoteNode(w http.ResponseWriter, r *http.Request, nodeName string) {
-	node, ok := h.resolveNode(w, r, nodeName)
-	if !ok {
-		return
-	}
-
-	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, buildRemoteStreamURL(node.APIBaseURL, r.URL.Query()), nil)
-	if err != nil {
-		http.Error(w, "failed to create proxy request", http.StatusInternalServerError)
-		return
-	}
-	req.Header.Set("Accept", "text/event-stream")
-	if lastEventID := strings.TrimSpace(r.Header.Get("Last-Event-ID")); lastEventID != "" {
-		req.Header.Set("Last-Event-ID", lastEventID)
-	}
-	node.ApplyAuth(req)
-
-	resp, err := newProxyHTTPClient(node.SkipTLSVerify).Do(req)
-	if err != nil {
-		if r.Context().Err() != nil {
-			return
-		}
-		http.Error(w, "failed to connect to remote node", http.StatusBadGateway)
-		return
-	}
-	defer func() { _ = resp.Body.Close() }()
-
-	if resp.StatusCode != http.StatusOK {
-		copyJSONResponse(w, resp)
-		return
-	}
-
-	flusher, ok := w.(http.Flusher)
-	if !ok {
-		http.Error(w, "streaming not supported", http.StatusInternalServerError)
-		return
-	}
-	streamResponse(w, flusher, resp.Body)
-}
-
-func (h *MultiplexHandler) proxyTopicMutationToRemoteNode(w http.ResponseWriter, r *http.Request, nodeName string) {
-	node, ok := h.resolveNode(w, r, nodeName)
-	if !ok {
-		return
-	}
-
-	req, err := http.NewRequestWithContext(r.Context(), http.MethodPost, buildRemoteTopicMutationURL(node.APIBaseURL, r.URL.Query()), r.Body)
-	if err != nil {
-		http.Error(w, "failed to create proxy request", http.StatusInternalServerError)
-		return
-	}
-	req.Header.Set("Accept", "application/json")
-	req.Header.Set("Content-Type", "application/json")
-	node.ApplyAuth(req)
-
-	resp, err := newProxyHTTPClient(node.SkipTLSVerify).Do(req)
-	if err != nil {
-		if r.Context().Err() != nil {
-			return
-		}
-		http.Error(w, "failed to connect to remote node", http.StatusBadGateway)
-		return
-	}
-	defer func() { _ = resp.Body.Close() }()
-
-	copyJSONResponse(w, resp)
-}
-
-func (h *MultiplexHandler) resolveNode(w http.ResponseWriter, r *http.Request, nodeName string) (*remotenode.RemoteNode, bool) {
-	if h.nodeResolver == nil {
-		http.Error(w, "remote node resolution not available", http.StatusServiceUnavailable)
-		return nil, false
-	}
-	node, err := h.nodeResolver.GetByName(r.Context(), nodeName)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("unknown remote node: %s", nodeName), http.StatusBadRequest)
-		return nil, false
-	}
-	return node, true
-}
-
-func buildRemoteStreamURL(baseURL string, query url.Values) string {
-	return buildRemoteEventURL(baseURL, "/events/stream", query)
-}
-
-func buildRemoteTopicMutationURL(baseURL string, query url.Values) string {
-	return buildRemoteEventURL(baseURL, "/events/stream/topics", query)
-}
-
-func buildRemoteEventURL(baseURL, route string, query url.Values) string {
-	u, err := url.Parse(strings.TrimSuffix(baseURL, "/") + route)
-	if err != nil {
-		return strings.TrimSuffix(baseURL, "/") + route
-	}
-	cloned := make(url.Values, len(query))
-	for key, values := range query {
-		copied := make([]string, len(values))
-		copy(copied, values)
-		cloned[key] = copied
-	}
-	cloned.Del("remoteNode")
-	cloned.Del("token")
-	u.RawQuery = cloned.Encode()
-	return u.String()
-}
-
-func newProxyHTTPClient(skipTLSVerify bool) *http.Client {
-	return &http.Client{
-		Timeout: 0,
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: skipTLSVerify, //nolint:gosec
-				MinVersion:         tls.VersionTLS12,
-			},
-			MaxIdleConns:       10,
-			IdleConnTimeout:    90 * time.Second,
-			DisableCompression: true,
-		},
-	}
-}
-
-func copyJSONResponse(w http.ResponseWriter, resp *http.Response) {
-	if contentType := resp.Header.Get("Content-Type"); contentType != "" {
-		w.Header().Set("Content-Type", contentType)
-	} else {
-		w.Header().Set("Content-Type", "application/json")
-	}
-	w.WriteHeader(resp.StatusCode)
-	_, _ = io.Copy(w, resp.Body)
 }
 
 func writeJSON(w http.ResponseWriter, statusCode int, value any) {

@@ -39,7 +39,6 @@ export type Config = {
   tzOffsetInSec: number | undefined;
   version: string;
   maxDashboardPageLimit: number;
-  remoteNodes: string;
   initialWorkspaces: WorkspaceResponse[];
   authMode: AuthMode;
   setupRequired: boolean;

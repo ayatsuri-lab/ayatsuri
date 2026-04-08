@@ -75,8 +75,7 @@ function getLoadState(
   if (status === 404) {
     return {
       state: 'not_found',
-      message: 'DAG not found or has been deleted.',
-    };
+      message: 'DAG not found or has been deleted.'};
   }
 
   if (data?.dag) {
@@ -111,11 +110,8 @@ function DAGDetailsSidePanel({
   backdropVisibleClassName = 'bg-black/20',
   renderInPortal = false,
   forceEnqueue = false,
-  onEnqueue,
-}: Props): React.ReactElement | null {
+  onEnqueue}: Props): React.ReactElement | null {
   const navigate = useNavigate();
-  const appBarContext = React.useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
 
   const [shouldRender, setShouldRender] = React.useState(isOpen);
   const [isVisible, setIsVisible] = React.useState(false);
@@ -160,7 +156,7 @@ function DAGDetailsSidePanel({
     setActiveTab(initialTab);
     setTrackedDagRunId(undefined);
     setCurrentDAGRun(undefined);
-  }, [fileName, initialTab, isOpen, remoteNode]);
+  }, [fileName, initialTab, isOpen]);
 
   const navigateToStatusTab = React.useCallback(() => {
     setActiveTab('status');
@@ -172,10 +168,7 @@ function DAGDetailsSidePanel({
     '/dags/{fileName}',
     whenEnabled(dagDetailsEnabled, {
       params: {
-        query: { remoteNode },
-        path: { fileName: stableFileName },
-      },
-    }),
+        path: { fileName: stableFileName }}}),
     sseFallbackOptions(dagDetailsSSE)
   );
   useSSECacheSync(dagDetailsSSE, mutate);
@@ -185,17 +178,13 @@ function DAGDetailsSidePanel({
   const trackedRunSSE = useDAGRunSSE(
     dagName,
     trackedDagRunId || '',
-    trackedRunEnabled,
-    remoteNode
+    trackedRunEnabled
   );
   const { data: trackedRunData, mutate: mutateTrackedRun } = useQuery(
     '/dag-runs/{name}/{dagRunId}',
     whenEnabled(trackedRunEnabled, {
       params: {
-        path: { name: dagName, dagRunId: trackedDagRunId || '' },
-        query: { remoteNode },
-      },
-    }),
+        path: { name: dagName, dagRunId: trackedDagRunId || '' }}}),
     sseFallbackOptions(trackedRunSSE)
   );
   useSSECacheSync(trackedRunSSE, mutateTrackedRun);
@@ -296,8 +285,7 @@ function DAGDetailsSidePanel({
               data: currentDAGRun,
               setData: (dagRun: components['schemas']['DAGRunDetails']) => {
                 setCurrentDAGRun(dagRun);
-              },
-            }}
+              }}}
           >
             <div className="p-6 w-full flex flex-col h-full dag-modal-content">
               <div className="flex justify-between items-center mb-4 gap-4">

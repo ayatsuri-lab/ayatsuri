@@ -48,8 +48,7 @@ const createEmptyProgress = (): BatchProgressState => ({
   processedCount: 0,
   refreshError: null,
   results: [],
-  successCount: 0,
-});
+  successCount: 0});
 
 const getErrorMessage = (error: unknown, fallback: string): string => {
   if (error instanceof Error && error.message) {
@@ -70,9 +69,7 @@ const getErrorMessage = (error: unknown, fallback: string): string => {
 export function useDAGRunBatchSubmission({
   onActionComplete,
   onReplaceSelection,
-  selectedRuns,
-}: UseDAGRunBatchSubmissionProps) {
-  const appBarContext = React.useContext(AppBarContext);
+  selectedRuns}: UseDAGRunBatchSubmissionProps) {
   const client = useClient();
   const [activeBatch, setActiveBatch] = React.useState<ActiveBatch | null>(
     null
@@ -80,8 +77,6 @@ export function useDAGRunBatchSubmission({
   const [phase, setPhase] = React.useState<BatchActionPhase | null>(null);
   const [progress, setProgress] =
     React.useState<BatchProgressState>(createEmptyProgress);
-
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const isRunning = phase === 'running';
 
   const closeDialog = React.useCallback(() => {
@@ -100,8 +95,7 @@ export function useDAGRunBatchSubmission({
       }
       setActiveBatch({
         action,
-        snapshot: [...selectedRuns],
-      });
+        snapshot: [...selectedRuns]});
       setPhase('confirm');
       setProgress(createEmptyProgress());
     },
@@ -124,30 +118,22 @@ export function useDAGRunBatchSubmission({
               params: {
                 path: {
                   name: dagRun.name,
-                  dagRunId: dagRun.dagRunId,
-                },
-                query: {
-                  remoteNode,
-                },
-              },
+                  dagRunId: dagRun.dagRunId},
+                query: { }},
               body: {
-                dagRunId: dagRun.dagRunId,
-              },
-            }
+                dagRunId: dagRun.dagRunId}}
           );
 
           if (error) {
             return {
               ...dagRun,
               ok: false,
-              error: error.message || fallback,
-            };
+              error: error.message || fallback};
           }
 
           return {
             ...dagRun,
-            ok: true,
-          };
+            ok: true};
         }
 
         const { data, error } = await client.POST(
@@ -156,50 +142,40 @@ export function useDAGRunBatchSubmission({
             params: {
               path: {
                 name: dagRun.name,
-                dagRunId: dagRun.dagRunId,
-              },
-              query: {
-                remoteNode,
-              },
-            },
+                dagRunId: dagRun.dagRunId},
+              query: { }},
             body: {
               dagRunId: undefined,
-              useCurrentDagFile: options?.useCurrentDagFile,
-            },
-          }
+              useCurrentDagFile: options?.useCurrentDagFile}}
         );
 
         if (error) {
           return {
             ...dagRun,
             ok: false,
-            error: error.message || fallback,
-          };
+            error: error.message || fallback};
         }
 
         if (!data?.dagRunId) {
           return {
             ...dagRun,
             ok: false,
-            error: 'Reschedule request did not return a new DAG run ID.',
-          };
+            error: 'Reschedule request did not return a new DAG run ID.'};
         }
 
         return {
           ...dagRun,
           ok: true,
           newDagRunId: data.dagRunId,
-          queued: data?.queued,
-        };
+          queued: data?.queued};
       } catch (error) {
         return {
           ...dagRun,
           ok: false,
-          error: getErrorMessage(error, fallback),
-        };
+          error: getErrorMessage(error, fallback)};
       }
     },
-    [client, remoteNode]
+    [client]
   );
 
   const submitBatchAction = React.useCallback(
@@ -221,8 +197,7 @@ export function useDAGRunBatchSubmission({
         processedCount: 0,
         refreshError: null,
         results: [],
-        successCount: 0,
-      });
+        successCount: 0});
 
       for (const [index, dagRun] of snapshot.entries()) {
         setProgress({
@@ -232,8 +207,7 @@ export function useDAGRunBatchSubmission({
           processedCount: index,
           refreshError: null,
           results: [...results],
-          successCount,
-        });
+          successCount});
 
         const result = await submitBatchItem(action, dagRun, options);
         results.push(result);
@@ -251,8 +225,7 @@ export function useDAGRunBatchSubmission({
           processedCount: index + 1,
           refreshError: null,
           results: [...results],
-          successCount,
-        });
+          successCount});
       }
 
       setPhase('complete');
@@ -263,8 +236,7 @@ export function useDAGRunBatchSubmission({
         processedCount: snapshot.length,
         refreshError: null,
         results,
-        successCount,
-      });
+        successCount});
 
       let refreshError: string | null = null;
       try {
@@ -281,15 +253,13 @@ export function useDAGRunBatchSubmission({
           .filter((result) => !result.ok)
           .map((result) => ({
             name: result.name,
-            dagRunId: result.dagRunId,
-          }))
+            dagRunId: result.dagRunId}))
       );
 
       setProgress((previous) => ({
         ...previous,
         isRefreshing: false,
-        refreshError,
-      }));
+        refreshError}));
     },
     [activeBatch, onActionComplete, onReplaceSelection, submitBatchItem]
   );
@@ -301,6 +271,5 @@ export function useDAGRunBatchSubmission({
     openBatchDialog,
     phase,
     progress,
-    submitBatchAction,
-  };
+    submitBatchAction};
 }

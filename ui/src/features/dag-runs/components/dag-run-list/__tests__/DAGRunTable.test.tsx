@@ -13,8 +13,7 @@ import DAGRunTable from '../DAGRunTable';
 vi.mock('../StepDetailsTooltip', () => ({
   StepDetailsTooltip: ({ children }: { children: React.ReactNode }) => (
     <>{children}</>
-  ),
-}));
+  )}));
 
 const config = {
   apiURL: '',
@@ -25,7 +24,6 @@ const config = {
   tzOffsetInSec: 0,
   version: 'test',
   maxDashboardPageLimit: 100,
-  remoteNodes: '',
   initialWorkspaces: [],
   authMode: 'none',
   setupRequired: false,
@@ -37,8 +35,7 @@ const config = {
   latestVersion: '',
   permissions: {
     writeDags: true,
-    runDags: true,
-  },
+    runDags: true},
   license: {
     valid: true,
     plan: 'community',
@@ -47,8 +44,7 @@ const config = {
     gracePeriod: false,
     community: true,
     source: 'test',
-    warningCode: '',
-  },
+    warningCode: ''},
   paths: {
     dagsDir: '',
     logDir: '',
@@ -60,9 +56,7 @@ const config = {
     procDir: '',
     serviceRegistryDir: '',
     configFileUsed: '',
-    auditLogsDir: '',
-  },
-} as Config;
+    auditLogsDir: ''}} as Config;
 
 describe('DAGRunTable', () => {
   it('shows the scheduled at column and value when schedule time exists', () => {
@@ -82,8 +76,7 @@ describe('DAGRunTable', () => {
                 queuedAt: '2026-03-13T10:00:30Z',
                 scheduleTime: '2026-03-13T10:00:00Z',
                 startedAt: '',
-                finishedAt: '',
-              },
+                finishedAt: ''},
             ]}
           />
         </ConfigContext.Provider>
@@ -116,8 +109,7 @@ describe('DAGRunTable', () => {
                 triggerType: TriggerType.manual,
                 queuedAt: '2026-03-13T10:00:30Z',
                 startedAt: '2026-03-13T10:01:00Z',
-                finishedAt: '2026-03-13T10:02:00Z',
-              },
+                finishedAt: '2026-03-13T10:02:00Z'},
             ]}
             onSelectDAGRun={onSelectDAGRun}
             onToggleBulkSelect={onToggleBulkSelect}
@@ -132,8 +124,7 @@ describe('DAGRunTable', () => {
 
     expect(onToggleBulkSelect).toHaveBeenCalledWith({
       name: 'bulk-dag',
-      dagRunId: 'run-1',
-    });
+      dagRunId: 'run-1'});
     expect(onSelectDAGRun).not.toHaveBeenCalled();
   });
 
@@ -157,8 +148,7 @@ describe('DAGRunTable', () => {
                   triggerType: TriggerType.manual,
                   queuedAt: '2026-03-13T10:00:30Z',
                   startedAt: '2026-03-13T10:01:00Z',
-                  finishedAt: '2026-03-13T10:02:00Z',
-                },
+                  finishedAt: '2026-03-13T10:02:00Z'},
               ]}
               onSelectDAGRun={onSelectDAGRun}
             />

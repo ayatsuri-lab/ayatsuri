@@ -14,8 +14,7 @@ import {
   Terminal,
   Trash2,
   Webhook,
-  WebhookOff,
-} from 'lucide-react';
+  WebhookOff} from 'lucide-react';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { components } from '../../../../api/v1/schema';
 import { Button } from '../../../../components/ui/button';
@@ -24,8 +23,7 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
-} from '../../../../components/ui/card';
+  CardTitle} from '../../../../components/ui/card';
 import { Switch } from '../../../../components/ui/switch';
 import { AppBarContext } from '../../../../contexts/AppBarContext';
 import { TOKEN_KEY } from '../../../../contexts/AuthContext';
@@ -61,7 +59,6 @@ function CopyButton({ copied, onCopy, label }: CopyButtonProps) {
 
 function WebhookTab({ fileName }: WebhookTabProps) {
   const config = useConfig();
-  const appBarContext = useContext(AppBarContext);
 
   // State
   const [webhook, setWebhook] = useState<WebhookDetails | null>(null);
@@ -80,34 +77,24 @@ function WebhookTab({ fileName }: WebhookTabProps) {
   const [copiedToken, setCopiedToken] = useState(false);
   const [copiedCurl, setCopiedCurl] = useState(false);
 
-  // Construct webhook URL (include remoteNode if not local)
-  const remoteNode = appBarContext.selectedRemoteNode;
-  const webhookUrl =
-    remoteNode && remoteNode !== 'local'
-      ? `${window.location.origin}/api/v1/webhooks/${encodeURIComponent(fileName)}?remoteNode=${encodeURIComponent(remoteNode)}`
-      : `${window.location.origin}/api/v1/webhooks/${encodeURIComponent(fileName)}`;
+  // Construct webhook URL
+  const webhookUrl = `${window.location.origin}/api/v1/webhooks/${encodeURIComponent(fileName)}`;
 
   // API helpers
   const getAuthHeaders = useCallback(() => {
     const token = localStorage.getItem(TOKEN_KEY);
     return {
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    };
+      'Content-Type': 'application/json'};
   }, []);
-
-  const getRemoteNodeParam = useCallback(() => {
-    return appBarContext.selectedRemoteNode || 'local';
-  }, [appBarContext.selectedRemoteNode]);
 
   // Fetch webhook
   const fetchWebhook = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
-      const remoteNode = getRemoteNodeParam();
       const response = await fetch(
-        `${config.apiURL}/dags/${encodeURIComponent(fileName)}/webhook?remoteNode=${remoteNode}`,
+        `${config.apiURL}/dags/${encodeURIComponent(fileName)}/webhook`,
         { headers: getAuthHeaders() }
       );
 
@@ -132,7 +119,7 @@ function WebhookTab({ fileName }: WebhookTabProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [config.apiURL, fileName, getAuthHeaders, getRemoteNodeParam]);
+  }, [config.apiURL, fileName, getAuthHeaders]);
 
   useEffect(() => {
     fetchWebhook();
@@ -143,13 +130,11 @@ function WebhookTab({ fileName }: WebhookTabProps) {
     try {
       setIsActioning(true);
       setError(null);
-      const remoteNode = getRemoteNodeParam();
       const response = await fetch(
-        `${config.apiURL}/dags/${encodeURIComponent(fileName)}/webhook?remoteNode=${remoteNode}`,
+        `${config.apiURL}/dags/${encodeURIComponent(fileName)}/webhook`,
         {
           method: 'POST',
-          headers: getAuthHeaders(),
-        }
+          headers: getAuthHeaders()}
       );
 
       if (!response.ok) {
@@ -172,13 +157,11 @@ function WebhookTab({ fileName }: WebhookTabProps) {
     try {
       setIsActioning(true);
       setError(null);
-      const remoteNode = getRemoteNodeParam();
       const response = await fetch(
-        `${config.apiURL}/dags/${encodeURIComponent(fileName)}/webhook?remoteNode=${remoteNode}`,
+        `${config.apiURL}/dags/${encodeURIComponent(fileName)}/webhook`,
         {
           method: 'DELETE',
-          headers: getAuthHeaders(),
-        }
+          headers: getAuthHeaders()}
       );
 
       if (!response.ok) {
@@ -201,13 +184,11 @@ function WebhookTab({ fileName }: WebhookTabProps) {
     try {
       setIsActioning(true);
       setError(null);
-      const remoteNode = getRemoteNodeParam();
       const response = await fetch(
-        `${config.apiURL}/dags/${encodeURIComponent(fileName)}/webhook/regenerate?remoteNode=${remoteNode}`,
+        `${config.apiURL}/dags/${encodeURIComponent(fileName)}/webhook/regenerate`,
         {
           method: 'POST',
-          headers: getAuthHeaders(),
-        }
+          headers: getAuthHeaders()}
       );
 
       if (!response.ok) {
@@ -237,14 +218,12 @@ function WebhookTab({ fileName }: WebhookTabProps) {
     if (pendingToggleState === null) return;
     try {
       setError(null);
-      const remoteNode = getRemoteNodeParam();
       const response = await fetch(
-        `${config.apiURL}/dags/${encodeURIComponent(fileName)}/webhook/toggle?remoteNode=${remoteNode}`,
+        `${config.apiURL}/dags/${encodeURIComponent(fileName)}/webhook/toggle`,
         {
           method: 'POST',
           headers: getAuthHeaders(),
-          body: JSON.stringify({ enabled: pendingToggleState }),
-        }
+          body: JSON.stringify({ enabled: pendingToggleState })}
       );
 
       if (!response.ok) {

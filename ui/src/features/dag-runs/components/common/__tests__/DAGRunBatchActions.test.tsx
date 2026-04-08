@@ -6,8 +6,7 @@ import {
   render,
   screen,
   waitFor,
-  within,
-} from '@testing-library/react';
+  within} from '@testing-library/react';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppBarContext } from '@/contexts/AppBarContext';
@@ -18,18 +17,12 @@ const postMock = vi.fn();
 const getMock = vi.fn();
 
 vi.mock('@/hooks/api', () => ({
-  useClient: vi.fn(),
-}));
+  useClient: vi.fn()}));
 
 const useClientMock = vi.mocked(useClient);
 const appBarContextValue = {
   title: '',
-  setTitle: vi.fn(),
-  remoteNodes: [],
-  setRemoteNodes: vi.fn(),
-  selectedRemoteNode: 'local',
-  selectRemoteNode: vi.fn(),
-};
+  setTitle: vi.fn()};
 
 const createDeferred = <T,>() => {
   let resolve: (value: T) => void = () => undefined;
@@ -45,8 +38,7 @@ describe('DAGRunBatchActions', () => {
     getMock.mockReset();
     useClientMock.mockReturnValue({
       GET: getMock,
-      POST: postMock,
-    } as never);
+      POST: postMock} as never);
   });
 
   it('submits reschedules sequentially and keeps failed items selected', async () => {
@@ -70,17 +62,11 @@ describe('DAGRunBatchActions', () => {
       .mockResolvedValueOnce({
         data: {
           dagRunDetails: {
-            specFromFile: true,
-          },
-        },
-      })
+            specFromFile: true}}})
       .mockResolvedValueOnce({
         data: {
           dagRunDetails: {
-            specFromFile: true,
-          },
-        },
-      });
+            specFromFile: true}}});
 
     const onActionComplete = vi
       .fn()
@@ -111,8 +97,7 @@ describe('DAGRunBatchActions', () => {
     ).toBeChecked();
     fireEvent.click(
       within(await screen.findByRole('dialog')).getByRole('button', {
-        name: 'Reschedule 2 Runs',
-      })
+        name: 'Reschedule 2 Runs'})
     );
 
     await waitFor(() => expect(postMock).toHaveBeenCalledTimes(1));
@@ -123,26 +108,19 @@ describe('DAGRunBatchActions', () => {
         params: {
           path: {
             name: 'alpha',
-            dagRunId: 'run-1',
-          },
+            dagRunId: 'run-1'},
           query: {
-            remoteNode: 'local',
-          },
-        },
+          }},
         body: {
           dagRunId: undefined,
-          useCurrentDagFile: true,
-        },
-      }
+          useCurrentDagFile: true}}
     );
 
     expect(screen.getByText('Submitting requests...')).toBeInTheDocument();
     firstRequest.resolve({
       data: {
         dagRunId: 'run-1-copy',
-        queued: false,
-      },
-    });
+        queued: false}});
 
     await waitFor(() => expect(postMock).toHaveBeenCalledTimes(2));
     expect(
@@ -156,24 +134,17 @@ describe('DAGRunBatchActions', () => {
         params: {
           path: {
             name: 'beta',
-            dagRunId: 'run-2',
-          },
+            dagRunId: 'run-2'},
           query: {
-            remoteNode: 'local',
-          },
-        },
+          }},
         body: {
           dagRunId: undefined,
-          useCurrentDagFile: true,
-        },
-      }
+          useCurrentDagFile: true}}
     );
 
     secondRequest.resolve({
       error: {
-        message: 'unable to reschedule',
-      },
-    });
+        message: 'unable to reschedule'}});
 
     expect(
       await screen.findByText('Refreshing the DAG-run list')
@@ -216,8 +187,7 @@ describe('DAGRunBatchActions', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Retry selected' }));
     fireEvent.click(
       within(await screen.findByRole('dialog')).getByRole('button', {
-        name: 'Retry 1 Run',
-      })
+        name: 'Retry 1 Run'})
     );
 
     expect(
@@ -227,30 +197,21 @@ describe('DAGRunBatchActions', () => {
       params: {
         path: {
           name: 'alpha',
-          dagRunId: 'run-1',
-        },
+          dagRunId: 'run-1'},
         query: {
-          remoteNode: 'local',
-        },
-      },
+        }},
       body: {
-        dagRunId: 'run-1',
-      },
-    });
+        dagRunId: 'run-1'}});
     expect(onReplaceSelection).toHaveBeenCalledWith([]);
   });
 
   it('treats a reschedule response without a new run ID as a failure', async () => {
     postMock.mockResolvedValueOnce({
-      data: {},
-    });
+      data: {}});
     getMock.mockResolvedValueOnce({
       data: {
         dagRunDetails: {
-          specFromFile: false,
-        },
-      },
-    });
+          specFromFile: false}}});
 
     render(
       <AppBarContext.Provider value={appBarContextValue}>
@@ -270,8 +231,7 @@ describe('DAGRunBatchActions', () => {
     );
     fireEvent.click(
       within(await screen.findByRole('dialog')).getByRole('button', {
-        name: 'Reschedule 1 Run',
-      })
+        name: 'Reschedule 1 Run'})
     );
 
     expect(
@@ -286,17 +246,11 @@ describe('DAGRunBatchActions', () => {
       .mockResolvedValueOnce({
         data: {
           dagRunDetails: {
-            specFromFile: true,
-          },
-        },
-      })
+            specFromFile: true}}})
       .mockResolvedValueOnce({
         data: {
           dagRunDetails: {
-            specFromFile: false,
-          },
-        },
-      });
+            specFromFile: false}}});
 
     render(
       <AppBarContext.Provider value={appBarContextValue}>

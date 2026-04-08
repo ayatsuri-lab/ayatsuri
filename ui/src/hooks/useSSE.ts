@@ -1,5 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
-import { AppBarContext } from '../contexts/AppBarContext';
+import { useEffect, useRef, useState } from 'react';
 import { useConfig } from '../contexts/ConfigContext';
 import { sseManager } from './SSEManager';
 
@@ -42,18 +41,13 @@ const INITIAL_STATE: SSEState<unknown> = {
   error: null,
   isConnected: false,
   isConnecting: false,
-  shouldUseFallback: false,
-};
+  shouldUseFallback: false};
 
 export function useSSE<T>(
   endpoint: string,
-  enabled: boolean = true,
-  remoteNodeOverride?: string
+  enabled: boolean = true
 ): SSEState<T> {
-  const appBarContext = useContext(AppBarContext);
   const config = useConfig();
-  const remoteNode =
-    remoteNodeOverride || appBarContext.selectedRemoteNode || 'local';
 
   const [state, setState] = useState<SSEState<T>>(INITIAL_STATE as SSEState<T>);
 
@@ -61,7 +55,7 @@ export function useSSE<T>(
   // This prevents stale data from the old connection being returned in the first
   // render after a change — critical because consumers use isConnected to gate
   // SWR polling, and stale isConnected=true blocks SWR fetches.
-  const connectionKey = `${endpoint}|${remoteNode}|${config.apiURL}|${enabled}`;
+  const connectionKey = `${endpoint}|${config.apiURL}|${enabled}`;
   const prevConnectionKeyRef = useRef(connectionKey);
   if (prevConnectionKeyRef.current !== connectionKey) {
     prevConnectionKeyRef.current = connectionKey;
@@ -73,14 +67,13 @@ export function useSSE<T>(
       setState((prev) => ({
         ...prev,
         isConnected: false,
-        shouldUseFallback: true,
-      }));
+        shouldUseFallback: true}));
       return;
     }
 
     let unsubscribe: (() => void) | undefined;
     try {
-      unsubscribe = sseManager.subscribe(endpoint, remoteNode, config.apiURL, {
+      unsubscribe = sseManager.subscribe(endpoint, config.apiURL, {
         onData: (data) =>
           setState((prev) => ({
             ...prev,
@@ -88,14 +81,11 @@ export function useSSE<T>(
             isConnected: true,
             isConnecting: false,
             shouldUseFallback: false,
-            error: null,
-          })),
+            error: null})),
         onStateChange: (connState) =>
           setState((prev) => ({
             ...prev,
-            ...connState,
-          })),
-      });
+            ...connState}))});
     } catch (error) {
       setState((prev) => ({
         ...prev,
@@ -105,13 +95,12 @@ export function useSSE<T>(
         error:
           error instanceof Error
             ? error
-            : new Error('Failed to subscribe to SSE'),
-      }));
+            : new Error('Failed to subscribe to SSE')}));
       return;
     }
 
     return () => unsubscribe?.();
-  }, [endpoint, remoteNode, config.apiURL, enabled]);
+  }, [endpoint, config.apiURL, enabled]);
 
   return state;
 }

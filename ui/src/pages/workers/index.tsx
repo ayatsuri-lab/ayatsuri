@@ -25,18 +25,11 @@ function Workers() {
 
   const { data, error, isLoading, mutate } = useQuery(
     '/workers',
-    {
-      params: {
-        query: {
-          remoteNode: appBarContext.selectedRemoteNode || 'local',
-        },
-      },
-    },
+    undefined,
     {
       refreshInterval: 1000, // Refresh every second for real-time updates
       revalidateOnFocus: true,
-      revalidateOnReconnect: true,
-    }
+      revalidateOnReconnect: true}
   );
 
   const handleRefresh = async () => {
@@ -96,8 +89,7 @@ function Workers() {
       totalPollers,
       busyPollers,
       totalTasks,
-      utilization,
-    };
+      utilization};
   }, [data?.workers]);
 
   // Handle task click
@@ -118,14 +110,12 @@ function Workers() {
         // Open modal with parent DAG info
         setModalDAGRun({
           name: task.parentDagRunName,
-          dagRunId: task.parentDagRunId,
-        });
+          dagRunId: task.parentDagRunId});
       } else {
         // For root tasks, open directly
         setModalDAGRun({
           name: task.dagName,
-          dagRunId: task.dagRunId,
-        });
+          dagRunId: task.dagRunId});
       }
     },
     []

@@ -70,8 +70,7 @@ function SearchResultItem({
   initialMatches,
   initialHasMoreMatches,
   initialNextCursor,
-  loadMore,
-}: SearchResultItemProps) {
+  loadMore}: SearchResultItemProps) {
   const [matches, setMatches] = React.useState<SearchMatch[]>(initialMatches);
   const [hasMoreMatches, setHasMoreMatches] = React.useState(
     initialHasMoreMatches
@@ -163,8 +162,6 @@ function SearchResultItem({
 function SearchResult(props: Props) {
   const { type, query, results } = props;
   const client = useClient();
-  const appBarContext = React.useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
 
   const items =
     type === 'dag'
@@ -180,22 +177,15 @@ function SearchResult(props: Props) {
             const response = await client.GET('/search/dags/{fileName}/matches', {
               params: {
                 path: { fileName: result.fileName },
-                query: {
-                  remoteNode,
-                  q: query,
-                  cursor,
-                },
-              },
-            });
+                query: { q: query,
+                  cursor}}});
 
             return {
               error: response.error?.message || undefined,
               matches: response.data?.matches ?? [],
               hasMore: response.data?.hasMore ?? false,
-              nextCursor: response.data?.nextCursor,
-            };
-          },
-        }))
+              nextCursor: response.data?.nextCursor};
+          }}))
       : results.map((result) => ({
           key: `doc-${result.id}-${query}`,
           kind: 'Doc' as const,
@@ -207,23 +197,16 @@ function SearchResult(props: Props) {
           loadMore: async (cursor?: string): Promise<LoadMoreResponse> => {
             const response = await client.GET('/search/docs/matches', {
               params: {
-                query: {
-                  remoteNode,
-                  path: result.id,
+                query: { path: result.id,
                   q: query,
-                  cursor,
-                },
-              },
-            });
+                  cursor}}});
 
             return {
               error: response.error?.message || undefined,
               matches: response.data?.matches ?? [],
               hasMore: response.data?.hasMore ?? false,
-              nextCursor: response.data?.nextCursor,
-            };
-          },
-        }));
+              nextCursor: response.data?.nextCursor};
+          }}));
 
   return (
     <ul className="divide-y rounded-md border">

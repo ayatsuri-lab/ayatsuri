@@ -27,8 +27,6 @@ export default function SoulEditorPage() {
   const { showError } = useErrorModal();
 
   const isCreating = !soulId;
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
-
   const [name, setName] = useState('');
   const [idField, setIdField] = useState('');
   const [customId, setCustomId] = useState(false);
@@ -53,9 +51,8 @@ export default function SoulEditorPage() {
 
     (async () => {
       const { data, error } = await client.GET('/settings/agent/souls/{soulId}', {
-        params: { path: { soulId }, query: { remoteNode } },
-        signal: controller.signal,
-      });
+        params: { path: { soulId } },
+        signal: controller.signal});
       if (controller.signal.aborted) return;
       if (error) {
         showError(error.message || 'Failed to load soul');
@@ -70,7 +67,7 @@ export default function SoulEditorPage() {
     })();
 
     return () => controller.abort();
-  }, [soulId, isCreating, client, remoteNode, showError, navigate]);
+  }, [soulId, isCreating, client, showError, navigate]);
 
   const handleSave = useCallback(async () => {
     setNameTouched(true);
@@ -81,25 +78,20 @@ export default function SoulEditorPage() {
     try {
       if (isCreating) {
         const { error } = await client.POST('/settings/agent/souls', {
-          params: { query: { remoteNode } },
           body: {
             id: idField || undefined,
             name,
             content,
-            description: description || undefined,
-          },
-        });
+            description: description || undefined}});
         if (error) throw new Error(error.message || 'Failed to create soul');
         showToast('Soul created');
       } else {
         const { error } = await client.PATCH('/settings/agent/souls/{soulId}', {
-          params: { path: { soulId: soulId! }, query: { remoteNode } },
+          params: { path: { soulId: soulId! } },
           body: {
             name,
             content,
-            description: description || undefined,
-          },
-        });
+            description: description || undefined}});
         if (error) throw new Error(error.message || 'Failed to update soul');
         showToast('Soul saved');
       }
@@ -111,7 +103,7 @@ export default function SoulEditorPage() {
     }
   }, [
     name, content, description, idField,
-    isCreating, soulId, client, remoteNode, showToast, showError, navigate,
+    isCreating, soulId, client, showToast, showError, navigate,
   ]);
 
   useEffect(() => {

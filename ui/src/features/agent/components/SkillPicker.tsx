@@ -6,8 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
-  type KeyboardEvent,
-} from 'react';
+  type KeyboardEvent} from 'react';
 
 import { Search, Sparkles, X } from 'lucide-react';
 
@@ -48,7 +47,6 @@ export const SkillPicker = forwardRef<SkillPickerHandle, SkillPickerProps>(
     ref
   ) {
     const client = useClient();
-    const appBarContext = useContext(AppBarContext);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [skills, setSkills] = useState<SkillEntry[]>([]);
     const [highlightIndex, setHighlightIndex] = useState(0);
@@ -56,14 +54,11 @@ export const SkillPicker = forwardRef<SkillPickerHandle, SkillPickerProps>(
     // Fetch enabled skills once on mount.
     useEffect(() => {
       const controller = new AbortController();
-      const remoteNode = appBarContext?.selectedRemoteNode || 'local';
 
       async function fetchSkills() {
         try {
           const { data } = await client.GET('/settings/agent/skills', {
-            params: { query: { remoteNode } },
-            signal: controller.signal,
-          });
+            signal: controller.signal});
           if (!data?.skills) return;
           setSkills(
             data.skills
@@ -72,8 +67,7 @@ export const SkillPicker = forwardRef<SkillPickerHandle, SkillPickerProps>(
                 id: s.id,
                 name: s.name,
                 description: s.description,
-                tags: s.tags,
-              }))
+                tags: s.tags}))
           );
         } catch {
           // Best-effort
@@ -82,7 +76,7 @@ export const SkillPicker = forwardRef<SkillPickerHandle, SkillPickerProps>(
       fetchSkills();
 
       return () => controller.abort();
-    }, [client, appBarContext?.selectedRemoteNode]);
+    }, [client]);
 
     // Click-outside handler.
     useEffect(() => {
@@ -150,8 +144,7 @@ export const SkillPicker = forwardRef<SkillPickerHandle, SkillPickerProps>(
           return true;
         }
         return false;
-      },
-    }));
+      }}));
 
     return (
       <>

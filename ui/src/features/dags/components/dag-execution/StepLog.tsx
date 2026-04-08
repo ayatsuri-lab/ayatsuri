@@ -70,9 +70,7 @@ function StepLog({
   stepName,
   dagRun,
   stream = Stream.stdout,
-  node,
-}: Props) {
-  const appBarContext = React.useContext(AppBarContext);
+  node}: Props) {
   const config = useConfig();
   const { preferences, updatePreference } = useUserPreferences();
   const [viewMode, setViewMode] = useState<'tail' | 'head' | 'page'>('tail');
@@ -109,8 +107,6 @@ function StepLog({
 
   // Fall back to REST polling when SSE is not available or not connected
   const usePolling = !sseIsActive;
-
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const tail = viewMode === 'tail' ? pageSize : undefined;
   const head = viewMode === 'head' ? pageSize : undefined;
   const offset = viewMode === 'page' ? (currentPage - 1) * pageSize + 1 : undefined;
@@ -122,8 +118,7 @@ function StepLog({
       refreshInterval: usePolling && isLiveMode && isActive ? 2000 : 0,
       keepPreviousData: true,
       revalidateOnFocus: false,
-      dedupingInterval: 1000,
-    }),
+      dedupingInterval: 1000}),
     [isActive, isLiveMode, usePolling]
   );
 
@@ -131,22 +126,16 @@ function StepLog({
     '/dag-runs/{name}/{dagRunId}/sub-dag-runs/{subDAGRunId}/steps/{stepName}/log',
     whenEnabled(!!isSubDAGRun, {
       params: {
-        query: {
-          remoteNode,
-          stream,
+        query: { stream,
           tail,
           head,
           offset,
-          limit,
-        },
+          limit},
         path: {
           name: dagRun?.rootDAGRunName as string,
           dagRunId: dagRun?.rootDAGRunId as string,
           subDAGRunId: dagRun?.dagRunId as string,
-          stepName,
-        },
-      },
-    }),
+          stepName}}}),
     swrOptions
   );
 
@@ -154,21 +143,15 @@ function StepLog({
     '/dag-runs/{name}/{dagRunId}/steps/{stepName}/log',
     whenEnabled(!isSubDAGRun, {
       params: {
-        query: {
-          remoteNode,
-          stream,
+        query: { stream,
           tail,
           head,
           offset,
-          limit,
-        },
+          limit},
         path: {
           name: dagName,
           dagRunId,
-          stepName,
-        },
-      },
-    }),
+          stepName}}}),
     swrOptions
   );
 
@@ -182,8 +165,7 @@ function StepLog({
           : sseResult.data.stderrContent,
         lineCount: sseResult.data.lineCount,
         totalLines: sseResult.data.totalLines,
-        hasMore: sseResult.data.hasMore,
-      }
+        hasMore: sseResult.data.hasMore}
     : null;
 
   const scrollToBottom = useCallback(() => {
@@ -288,13 +270,11 @@ function StepLog({
       : `${config.apiURL}/dag-runs/${dagName}/${dagRunId}/steps/${stepName}/log/download`;
 
     const url = new URL(endpoint, window.location.origin);
-    url.searchParams.set('remoteNode', remoteNode);
     url.searchParams.set('stream', stream);
 
     try {
       const response = await fetch(url.toString(), {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
+        headers: token ? { Authorization: `Bearer ${token}` } : {}});
 
       if (!response.ok) {
         throw new Error(`Download failed: ${response.statusText}`);
@@ -315,7 +295,7 @@ function StepLog({
     } catch (err) {
       console.error('Download failed:', err);
     }
-  }, [config.apiURL, dagName, dagRunId, stepName, stream, dagRun, isSubDAGRun, remoteNode]);
+  }, [config.apiURL, dagName, dagRunId, stepName, stream, dagRun, isSubDAGRun]);
 
   if (isLoading && !cachedData && isInitialLoad.current) {
     return <LoadingIndicator />;

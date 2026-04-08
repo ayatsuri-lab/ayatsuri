@@ -6,8 +6,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  DialogTitle} from '@/components/ui/dialog';
 import { RefreshButton } from '@/components/ui/refresh-button';
 import { Button } from '@/components/ui/button';
 import { AppBarContext } from '@/contexts/AppBarContext';
@@ -33,7 +32,7 @@ export default function EventLogsPage() {
   const canViewEventLogs = useCanViewEventLogs();
   const appBarContext = React.useContext(AppBarContext);
   const searchState = useSearchState();
-  const remoteKey = appBarContext.selectedRemoteNode || 'local';
+  const remoteKey = 'local';
   const [searchParams, setSearchParams] = useSearchParams();
   const searchKey = searchParams.toString();
   const locationSearchParams = React.useMemo(
@@ -53,8 +52,7 @@ export default function EventLogsPage() {
     searchKey,
     locationSearchParams,
     searchState,
-    setSearchParams,
-  });
+    setSearchParams});
 
   const {
     data,
@@ -69,8 +67,7 @@ export default function EventLogsPage() {
     isLoadingMore,
     loadMoreError,
     handleRefresh,
-    handleLoadMore,
-  } = useEventLogFeed(client, filters.query, filters.isReady);
+    handleLoadMore} = useEventLogFeed(client, filters.query, filters.isReady);
 
   const rawEventJson = React.useMemo(
     () => (selectedEvent ? safeStringify(selectedEvent) : ''),
@@ -114,7 +111,7 @@ export default function EventLogsPage() {
           <div>
             <h1 className="text-lg font-semibold">Events</h1>
             <p className="text-sm text-muted-foreground">
-              Recent operational events for the selected remote node
+              Recent operational events
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {lastUpdatedAt

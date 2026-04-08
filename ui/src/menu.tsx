@@ -1,10 +1,3 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { UserMenu } from '@/components/UserMenu';
 import {
   useCanAccessSystemStatus,
@@ -12,8 +5,7 @@ import {
   useCanManageWebhooks,
   useCanViewAuditLogs,
   useCanWrite,
-  useIsAdmin,
-} from '@/contexts/AuthContext';
+  useIsAdmin} from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import { useHasFeature } from '@/hooks/useLicense';
 import { AutomataSwarmIcon } from '@/components/icons/AutomataSwarmIcon';
@@ -31,7 +23,6 @@ import {
   Ghost,
   Shield,
   Sparkles,
-  Globe,
   History,
   Inbox,
   KeyRound,
@@ -43,11 +34,9 @@ import {
   Sun,
   Terminal,
   Users,
-  Webhook,
-} from 'lucide-react';
+  Webhook} from 'lucide-react';
 import * as React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { AppBarContext } from './contexts/AppBarContext';
 import { useUserPreferences } from './contexts/UserPreference';
 import { useAgentChatContext } from './features/agent';
 
@@ -94,23 +83,6 @@ function getIconWrapperStyle(customColor: boolean): string {
   return customColor ? 'text-sidebar-foreground' : 'text-sidebar-foreground';
 }
 
-type RemoteNodeSelectContentProps = {
-  nodes: string[];
-};
-
-function RemoteNodeSelectContent({ nodes }: RemoteNodeSelectContentProps): React.ReactElement {
-  const uniqueNodes = [...new Set(nodes)];
-  return (
-    <SelectContent>
-      {uniqueNodes.map((node) => (
-        <SelectItem key={node} value={node}>
-          {node}
-        </SelectItem>
-      ))}
-    </SelectContent>
-  );
-}
-
 type SectionLabelProps = {
   label: string;
   isOpen: boolean;
@@ -128,8 +100,7 @@ function SectionLabel({ label, isOpen, customColor = false }: SectionLabelProps)
       style={{
         transition: 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1), max-height 250ms cubic-bezier(0.4, 0, 0.2, 1)',
         opacity: isOpen ? 1 : 0,
-        maxHeight: isOpen ? '24px' : '0px',
-      }}
+        maxHeight: isOpen ? '24px' : '0px'}}
     >
       {label}
     </div>
@@ -162,8 +133,7 @@ function SidebarButton({ onClick, icon, label, isOpen, customColor }: SidebarBut
           transition: 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1), max-width 280ms cubic-bezier(0.4, 0, 0.2, 1)',
           opacity: isOpen ? 1 : 0,
           maxWidth: isOpen ? '180px' : '0px',
-          transform: isOpen ? 'translateX(0)' : 'translateX(-8px)',
-        }}
+          transform: isOpen ? 'translateX(0)' : 'translateX(-8px)'}}
       >
         {label}
       </span>
@@ -226,8 +196,7 @@ function NavItem({ to, icon, text, isOpen, onClick, customColor = false }: NavIt
             transition: 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1), max-width 280ms cubic-bezier(0.4, 0, 0.2, 1)',
             opacity: isOpen ? 1 : 0,
             maxWidth: isOpen ? '180px' : '0px',
-            transform: isOpen ? 'translateX(0)' : 'translateX(-8px)',
-          }}
+            transform: isOpen ? 'translateX(0)' : 'translateX(-8px)'}}
         >
           {text}
         </span>
@@ -313,8 +282,7 @@ function NavGroup({ groupKey, icon, label, isOpen, basePath, customColor = false
               transition: 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1), max-width 280ms cubic-bezier(0.4, 0, 0.2, 1)',
               opacity: isOpen ? 1 : 0,
               maxWidth: isOpen ? '180px' : '0px',
-              transform: isOpen ? 'translateX(0)' : 'translateX(-8px)',
-            }}
+              transform: isOpen ? 'translateX(0)' : 'translateX(-8px)'}}
           >
             {label}
           </span>
@@ -323,8 +291,7 @@ function NavGroup({ groupKey, icon, label, isOpen, basePath, customColor = false
             style={{
               transition: 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1)',
               opacity: isOpen ? 0.6 : 0,
-              transform: effectivelyExpanded ? 'rotate(0deg)' : 'rotate(-90deg)',
-            }}
+              transform: effectivelyExpanded ? 'rotate(0deg)' : 'rotate(-90deg)'}}
           >
             <ChevronDown size={14} />
           </div>
@@ -335,8 +302,7 @@ function NavGroup({ groupKey, icon, label, isOpen, basePath, customColor = false
           transition: 'max-height 250ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms cubic-bezier(0.4, 0, 0.2, 1)',
           maxHeight: effectivelyExpanded ? '200px' : '0px',
           opacity: effectivelyExpanded ? 1 : 0,
-          overflow: 'hidden',
-        }}
+          overflow: 'hidden'}}
       >
         <div className={cn(isOpen && 'pl-4')}>
           {children}
@@ -394,8 +360,7 @@ export const mainListItems = React.forwardRef<
               transition: 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1)',
               opacity: isOpen ? 0 : 1,
               transform: isOpen ? 'scale(0.8)' : 'scale(1)',
-              pointerEvents: isOpen ? 'none' : 'auto',
-            }}
+              pointerEvents: isOpen ? 'none' : 'auto'}}
           >
             <span className="font-medium text-xs text-sidebar-foreground">
               {titleInitial}
@@ -406,8 +371,7 @@ export const mainListItems = React.forwardRef<
             style={{
               transition: 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1)',
               opacity: isOpen ? 1 : 0,
-              transform: isOpen ? 'scale(1)' : 'scale(0.8)',
-            }}
+              transform: isOpen ? 'scale(1)' : 'scale(0.8)'}}
           >
             <PanelLeft size={18} />
           </div>
@@ -421,8 +385,7 @@ export const mainListItems = React.forwardRef<
             transition: 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1), max-width 280ms cubic-bezier(0.4, 0, 0.2, 1)',
             opacity: isOpen ? 1 : 0,
             maxWidth: isOpen ? '180px' : '0px',
-            transform: isOpen ? 'translateX(0)' : 'translateX(-8px)',
-          }}
+            transform: isOpen ? 'translateX(0)' : 'translateX(-8px)'}}
         >
           {title}
         </span>
@@ -430,49 +393,6 @@ export const mainListItems = React.forwardRef<
 
       {/* GCP-Style Navigation - Compact Spacing */}
       <nav className="flex-1 flex flex-col gap-4">
-        <AppBarContext.Consumer>
-          {(context) => {
-            const { remoteNodes, selectedRemoteNode, selectRemoteNode } = context;
-            if (!remoteNodes || remoteNodes.length === 0) return null;
-
-            return (
-              <div className="px-1">
-                <Select value={selectedRemoteNode} onValueChange={selectRemoteNode}>
-                  <SelectTrigger
-                    className={cn(
-                      'h-9 text-xs text-sidebar-foreground rounded-md',
-                      isOpen
-                        ? 'bg-sidebar-hover border-sidebar-border hover:bg-sidebar-active'
-                        : 'bg-transparent border-transparent hover:bg-sidebar-hover [&>svg:last-child]:hidden'
-                    )}
-                    style={{
-                      transition: 'width 280ms cubic-bezier(0.4, 0, 0.2, 1), background-color 150ms ease, border-color 150ms ease, padding 280ms cubic-bezier(0.4, 0, 0.2, 1)',
-                      width: isOpen ? '100%' : '36px',
-                      paddingLeft: isOpen ? '12px' : '9px',
-                      paddingRight: isOpen ? '12px' : '9px',
-                    }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Globe size={18} className="text-sidebar-foreground flex-shrink-0" />
-                      <span
-                        className="overflow-hidden whitespace-nowrap"
-                        style={{
-                          transition: 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1), max-width 280ms cubic-bezier(0.4, 0, 0.2, 1)',
-                          opacity: isOpen ? 1 : 0,
-                          maxWidth: isOpen ? '150px' : '0px',
-                        }}
-                      >
-                        <SelectValue />
-                      </span>
-                    </div>
-                  </SelectTrigger>
-                  <RemoteNodeSelectContent nodes={remoteNodes} />
-                </Select>
-              </div>
-            );
-          }}
-        </AppBarContext.Consumer>
-
         <div className="space-y-4">
           <div className="space-y-0.5">
             <SectionLabel label="Overview" isOpen={isOpen} customColor={customColor} />
@@ -578,16 +498,6 @@ export const mainListItems = React.forwardRef<
                   to="/system-status"
                   text="System Status"
                   icon={<Activity size={18} />}
-                  isOpen={isOpen}
-                  onClick={onNavItemClick}
-                  customColor={customColor}
-                />
-              )}
-              {isAdmin && (
-                <NavItem
-                  to="/remote-nodes"
-                  text="Remote Nodes"
-                  icon={<Globe size={18} />}
                   isOpen={isOpen}
                   onClick={onNavItemClick}
                   customColor={customColor}

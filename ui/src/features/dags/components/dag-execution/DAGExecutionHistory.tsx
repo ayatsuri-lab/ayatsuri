@@ -10,15 +10,12 @@ import {
   components,
   NodeStatus,
   Status,
-  Stream,
-} from '../../../../api/v1/schema';
-import { AppBarContext } from '../../../../contexts/AppBarContext';
+  Stream} from '../../../../api/v1/schema';
 import { useClient, useQuery } from '../../../../hooks/api';
 import { useDAGHistorySSE } from '../../../../hooks/useDAGHistorySSE';
 import {
   sseFallbackOptions,
-  useSSECacheSync,
-} from '../../../../hooks/useSSECacheSync';
+  useSSECacheSync} from '../../../../hooks/useSSECacheSync';
 import { toMermaidNodeId } from '../../../../lib/utils';
 import LoadingIndicator from '../../../../ui/LoadingIndicator';
 import { DAGContext } from '../../contexts/DAGContext';
@@ -44,24 +41,15 @@ type Props = {
  * including a history table, graph visualization, and status details
  */
 function DAGExecutionHistory({
-  fileName,
-}: Omit<Props, 'isInModal' | 'activeTab'>) {
-  const appBarContext = React.useContext(AppBarContext);
-
+  fileName}: Omit<Props, 'isInModal' | 'activeTab'>) {
   const historySSE = useDAGHistorySSE(fileName, !!fileName);
   // Fetch execution history data — SWR is the single source of truth, refreshed by live invalidations
   const { data, mutate } = useQuery(
     '/dags/{fileName}/dag-runs',
     {
       params: {
-        query: {
-          remoteNode: appBarContext.selectedRemoteNode || 'local',
-        },
         path: {
-          fileName: fileName,
-        },
-      },
-    },
+          fileName: fileName}}},
     sseFallbackOptions(historySSE)
   );
   useSSECacheSync(historySSE, mutate);
@@ -101,7 +89,6 @@ type HistoryTableProps = {
  * DAGHistoryTable displays detailed execution history with interactive elements
  */
 function DAGHistoryTable({ fileName, gridData, dagRuns }: HistoryTableProps) {
-  const appBarContext = React.useContext(AppBarContext);
   const client = useClient();
   const navigate = useNavigate();
   const { showError } = useErrorModal();
@@ -119,8 +106,7 @@ function DAGHistoryTable({ fileName, gridData, dagRuns }: HistoryTableProps) {
     logType: 'step',
     stepName: '',
     dagRunId: '',
-    stream: Stream.stdout,
-  });
+    stream: Stream.stdout});
 
   // Get the selected dagRun index from URL parameters using React Router
   const [searchParams, setSearchParams] = useSearchParams();
@@ -260,16 +246,9 @@ function DAGHistoryTable({ fileName, gridData, dagRuns }: HistoryTableProps) {
           path: {
             name: reversedDAGRuns[idx].name,
             dagRunId: reversedDAGRuns[idx].dagRunId,
-            stepName: selectedStep.name,
-          },
-          query: {
-            remoteNode: appBarContext.selectedRemoteNode || 'local',
-          },
-        },
+            stepName: selectedStep.name}},
         body: {
-          status,
-        },
-      }
+          status}}
     );
 
     if (error) {
@@ -313,8 +292,7 @@ function DAGHistoryTable({ fileName, gridData, dagRuns }: HistoryTableProps) {
         // Include dagRunName parameter to avoid waiting for DAG details
         navigate({
           pathname: `/dags/${fileName}`,
-          search: `?dagRunId=${dagRun.rootDAGRunId}&subDAGRunId=${subDAGRun.dagRunId}&dagRunName=${encodeURIComponent(dagRun.rootDAGRunName)}`,
-        });
+          search: `?dagRunId=${dagRun.rootDAGRunId}&subDAGRunId=${subDAGRun.dagRunId}&dagRunName=${encodeURIComponent(dagRun.rootDAGRunName)}`});
       }
     },
     [reversedDAGRuns, idx, navigate]
@@ -377,8 +355,7 @@ function DAGHistoryTable({ fileName, gridData, dagRuns }: HistoryTableProps) {
                       logType: 'execution',
                       stepName: '',
                       dagRunId,
-                      stream: Stream.stdout,
-                    });
+                      stream: Stream.stdout});
                   }}
                 />
               </div>
@@ -398,8 +375,7 @@ function DAGHistoryTable({ fileName, gridData, dagRuns }: HistoryTableProps) {
                     logType: 'step',
                     stepName: actualStepName,
                     dagRunId: dagRunId || reversedDAGRuns[idx]?.dagRunId || '',
-                    stream: isStderr ? Stream.stderr : Stream.stdout,
-                  });
+                    stream: isStderr ? Stream.stderr : Stream.stdout});
                 }}
               />
 
@@ -420,8 +396,7 @@ function DAGHistoryTable({ fileName, gridData, dagRuns }: HistoryTableProps) {
                       stepName: actualStepName,
                       dagRunId:
                         dagRunId || reversedDAGRuns[idx]?.dagRunId || '',
-                      stream: isStderr ? Stream.stderr : Stream.stdout,
-                    });
+                      stream: isStderr ? Stream.stderr : Stream.stdout});
                   }}
                 />
               ) : null}

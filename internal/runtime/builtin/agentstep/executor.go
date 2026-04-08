@@ -325,16 +325,6 @@ func buildTools(ctx context.Context, dagCtx exec.Context, stepCfg *core.AgentSte
 		allTools["search_skills"] = agent.NewSearchSkillsTool(skillStore, allowedSkills)
 	}
 
-	remoteResolver := agent.GetRemoteContextResolver(ctx)
-	if remoteResolver != nil {
-		if t := agent.NewRemoteAgentTool(remoteResolver); t != nil {
-			allTools["remote_agent"] = t
-		}
-		if t := agent.NewListContextsTool(remoteResolver); t != nil {
-			allTools["list_contexts"] = t
-		}
-	}
-
 	// Remove tools disabled by global policy (output is step-only, always kept).
 	for name := range allTools {
 		if name != "output" && !agent.IsToolEnabledResolved(globalPolicy, name) {

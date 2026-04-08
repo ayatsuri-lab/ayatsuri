@@ -6,8 +6,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  DialogTitle} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,8 +15,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  SelectValue} from '@/components/ui/select';
 import { AlertCircle, Check, UserPlus, X } from 'lucide-react';
 
 type User = components['schemas']['User'];
@@ -48,7 +46,6 @@ const ROLES = [
  */
 export function UserFormModal({ open, user, onClose, onSuccess }: UserFormModalProps) {
   const config = useConfig();
-  const appBarContext = useContext(AppBarContext);
   const isEditing = !!user;
 
   const [username, setUsername] = useState('');
@@ -86,18 +83,14 @@ export function UserFormModal({ open, user, onClose, onSuccess }: UserFormModalP
       if (!token) {
         throw new Error('Not authenticated');
       }
-      const remoteNode = encodeURIComponent(appBarContext.selectedRemoteNode || 'local');
-
       if (isEditing) {
         // Update user
-        const response = await fetch(`${config.apiURL}/users/${user.id}?remoteNode=${remoteNode}`, {
+        const response = await fetch(`${config.apiURL}/users/${user.id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ username, role }),
-        });
+            Authorization: `Bearer ${token}`},
+          body: JSON.stringify({ username, role })});
 
         if (!response.ok) {
           const data = await response.json().catch(() => ({}));
@@ -105,14 +98,12 @@ export function UserFormModal({ open, user, onClose, onSuccess }: UserFormModalP
         }
       } else {
         // Create user
-        const response = await fetch(`${config.apiURL}/users?remoteNode=${remoteNode}`, {
+        const response = await fetch(`${config.apiURL}/users`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ username, password, role }),
-        });
+            Authorization: `Bearer ${token}`},
+          body: JSON.stringify({ username, password, role })});
 
         if (!response.ok) {
           const data = await response.json().catch(() => ({}));

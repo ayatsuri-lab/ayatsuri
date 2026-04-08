@@ -29,7 +29,6 @@ interface TopicSubscription {
 interface ManagedConnection {
   key: string;
   apiURL: string;
-  remoteNode: string;
   eventSource: EventSource | null;
   sessionId: string | null;
   lastEventId: string;
@@ -59,8 +58,8 @@ interface TopicMutationResponse {
 
 let subscriberIdCounter = 0;
 
-function buildConnectionKey(apiURL: string, remoteNode: string): string {
-  return `${apiURL}|${remoteNode}`;
+function buildConnectionKey(apiURL: string): string {
+  return apiURL;
 }
 
 function buildTopic(topicType: string, identifier: string = ''): string {
@@ -69,7 +68,7 @@ function buildTopic(topicType: string, identifier: string = ''): string {
 
 function canonicalizeQuery(params: URLSearchParams): string {
   const entries = Array.from(params.entries())
-    .filter(([key]) => key !== 'token' && key !== 'remoteNode')
+    .filter(([key]) => key !== 'token')
     .sort(([keyA, valueA], [keyB, valueB]) => {
       if (keyA === keyB) {
         return valueA.localeCompare(valueB);
@@ -173,7 +172,6 @@ export function endpointToTopic(endpoint: string): string {
 
 function buildStreamUrl(
   apiURL: string,
-  remoteNode: string,
   topics: string[],
   lastEventId: string
 ): string {
@@ -181,7 +179,6 @@ function buildStreamUrl(
   for (const topic of [...topics].sort()) {
     url.searchParams.append('topic', topic);
   }
-  url.searchParams.set('remoteNode', remoteNode);
 
   const token = getAuthToken();
   if (token) {
@@ -194,10 +191,11 @@ function buildStreamUrl(
   return url.toString();
 }
 
-function buildMutationUrl(apiURL: string, remoteNode: string): string {
-  const url = new URL(`${apiURL}/events/stream/topics`, window.location.origin);
-  url.searchParams.set('remoteNode', remoteNode);
-  return url.toString();
+function buildMutationUrl(apiURL: string): string {
+  return new URL(
+    `${apiURL}/events/stream/topics`,
+    window.location.origin
+  ).toString();
 }
 
 function buildTopicState(
@@ -211,8 +209,7 @@ function buildTopicState(
     isConnected: conn.state.isConnected && isSubscribed,
     isConnecting: conn.state.isConnecting || isPendingAdd,
     shouldUseFallback: conn.state.shouldUseFallback,
-    error: conn.state.error,
-  };
+    error: conn.state.error};
 }
 
 function calculateRetryDelay(retryCount: number): number {
@@ -224,13 +221,11 @@ export class SSEManager {
 
   subscribe(
     endpoint: string,
-    remoteNode: string,
     apiURL: string,
     callbacks: SubscriberCallbacks
   ): () => void {
     return this.subscribeTopic(
       endpointToTopic(endpoint),
-      remoteNode,
       apiURL,
       callbacks
     );
@@ -238,13 +233,12 @@ export class SSEManager {
 
   subscribeTopic(
     topic: string,
-    remoteNode: string,
     apiURL: string,
     callbacks: SubscriberCallbacks
   ): () => void {
-    const key = buildConnectionKey(apiURL, remoteNode);
+    const key = buildConnectionKey(apiURL);
     const subscriberId = String(++subscriberIdCounter);
-    const conn = this.getOrCreateConnection(key, apiURL, remoteNode);
+    const conn = this.getOrCreateConnection(key, apiURL);
 
     if (conn.drainTimeout) {
       clearTimeout(conn.drainTimeout);
@@ -256,8 +250,7 @@ export class SSEManager {
     if (!topicEntry) {
       topicEntry = {
         subscribers: new Map(),
-        lastPayload: null,
-      };
+        lastPayload: null};
       conn.topics.set(topic, topicEntry);
     }
 
@@ -279,8 +272,7 @@ export class SSEManager {
 
   private getOrCreateConnection(
     key: string,
-    apiURL: string,
-    remoteNode: string
+    apiURL: string
   ): ManagedConnection {
     const existing = this.connections.get(key);
     if (existing) {
@@ -290,7 +282,6 @@ export class SSEManager {
     const conn: ManagedConnection = {
       key,
       apiURL,
-      remoteNode,
       eventSource: null,
       sessionId: null,
       lastEventId: '',
@@ -308,9 +299,7 @@ export class SSEManager {
         isConnected: false,
         isConnecting: false,
         shouldUseFallback: false,
-        error: null,
-      },
-    };
+        error: null}};
 
     this.connections.set(key, conn);
     return conn;
@@ -411,7 +400,6 @@ export class SSEManager {
 
     const url = buildStreamUrl(
       conn.apiURL,
-      conn.remoteNode,
       Array.from(conn.topics.keys()),
       conn.lastEventId
     );
@@ -424,8 +412,7 @@ export class SSEManager {
       isConnected: false,
       isConnecting: true,
       shouldUseFallback: conn.retryCount >= FALLBACK_AFTER_RETRIES,
-      error: null,
-    });
+      error: null});
 
     conn.connectTimeout = setTimeout(() => {
       if (conn.eventSource !== eventSource || conn.sessionId) {
@@ -465,8 +452,7 @@ export class SSEManager {
           isConnected: true,
           isConnecting: false,
           shouldUseFallback: false,
-          error: null,
-        });
+          error: null});
 
         if (control.errors && control.errors.length > 0) {
           console.warn('SSE control errors:', control.errors);
@@ -512,8 +498,7 @@ export class SSEManager {
           error:
             error instanceof Error
               ? error
-              : new Error('Invalid JSON response from SSE'),
-        });
+              : new Error('Invalid JSON response from SSE')});
       }
     });
 
@@ -543,8 +528,7 @@ export class SSEManager {
       isConnected: false,
       isConnecting: false,
       shouldUseFallback: conn.retryCount >= FALLBACK_AFTER_RETRIES,
-      error,
-    });
+      error});
 
     if (conn.topics.size === 0) {
       return;
@@ -594,16 +578,14 @@ export class SSEManager {
     conn.mutationInFlight = true;
     try {
       const response = await fetch(
-        buildMutationUrl(conn.apiURL, conn.remoteNode),
+        buildMutationUrl(conn.apiURL),
         {
           method: 'POST',
           headers: getAuthHeaders(),
           body: JSON.stringify({
             sessionID: mutationSessionId,
             add,
-            remove,
-          }),
-        }
+            remove})}
       );
 
       const isStaleMutation = () =>
@@ -660,8 +642,7 @@ export class SSEManager {
         error:
           error instanceof Error
             ? error
-            : new Error('Failed to update SSE topics'),
-      });
+            : new Error('Failed to update SSE topics')});
     } finally {
       conn.mutationInFlight = false;
       if (
@@ -680,8 +661,7 @@ export class SSEManager {
   ): void {
     conn.state = {
       ...conn.state,
-      ...partial,
-    };
+      ...partial};
 
     this.notifyAllTopicStates(conn);
   }

@@ -8,14 +8,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import SearchResult from '../SearchResult';
 
 const { getMock } = vi.hoisted(() => ({
-  getMock: vi.fn(),
-}));
+  getMock: vi.fn()}));
 
 vi.mock('@/hooks/api', () => ({
   useClient: () => ({
-    GET: getMock,
-  }),
-}));
+    GET: getMock})}));
 
 describe('SearchResult', () => {
   beforeEach(() => {
@@ -23,9 +20,7 @@ describe('SearchResult', () => {
     getMock.mockResolvedValue({
       data: {
         matches: [],
-        hasMore: false,
-      },
-    });
+        hasMore: false}});
   });
 
   it('loads more DAG matches without sending a client-side limit override', async () => {
@@ -42,12 +37,10 @@ describe('SearchResult', () => {
                 {
                   line: 'needle',
                   lineNumber: 3,
-                  startLine: 3,
-                },
+                  startLine: 3},
               ],
               hasMoreMatches: true,
-              nextMatchesCursor: 'cursor-1',
-            },
+              nextMatchesCursor: 'cursor-1'},
           ]}
         />
       </MemoryRouter>
@@ -65,11 +58,7 @@ describe('SearchResult', () => {
       params: {
         path: { fileName: 'build' },
         query: {
-          remoteNode: 'local',
           q: 'needle',
-          cursor: 'cursor-1',
-        },
-      },
-    });
+          cursor: 'cursor-1'}}});
   });
 });

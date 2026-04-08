@@ -10,8 +10,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 import type { DocSortField, DocSortOrder } from '@/contexts/UserPreference';
 import {
   AlertCircle,
@@ -24,16 +23,14 @@ import {
   RefreshCw,
   Search,
   Trash2,
-  X,
-} from 'lucide-react';
+  X} from 'lucide-react';
 import React, {
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useRef,
-  useState,
-} from 'react';
+  useState} from 'react';
 import { Tree, TreeApi, NodeApi } from 'react-arborist';
 import DocArboristNode, { type ContextAction } from './DocArboristNode';
 import DocOutlinePanel from './DocOutlinePanel';
@@ -106,8 +103,7 @@ function filterTree(
       const filteredChildren = filterTree(node.children, matchIds, ancestorIds);
       return {
         ...node,
-        children: filteredChildren.length > 0 ? filteredChildren : undefined,
-      };
+        children: filteredChildren.length > 0 ? filteredChildren : undefined};
     })
     .filter(
       (node) =>
@@ -135,12 +131,9 @@ function DocTreeSidebar({
   onHeadingClick,
   sortField,
   sortOrder,
-  onSortChange,
-}: Props) {
+  onSortChange}: Props) {
   const canWrite = useCanWrite();
   const client = useClient();
-  const appBarContext = useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const { activeTabId, tabs } = useDocTabContext();
   const activeDocPath = activeTabId
     ? tabs.find((t) => t.id === activeTabId)?.docPath || null
@@ -214,8 +207,7 @@ function DocTreeSidebar({
       try {
         setSearchError(null);
         const { data, error } = await client.GET('/docs/search', {
-          params: { query: { remoteNode, q: searchQuery } },
-        });
+          params: { query: { q: searchQuery } }});
         if (cancelled) return;
         if (error) {
           setSearchResults(null);
@@ -237,7 +229,7 @@ function DocTreeSidebar({
       cancelled = true;
       if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
     };
-  }, [searchQuery, client, remoteNode]);
+  }, [searchQuery, client]);
 
   // Compute filtered tree data
   const treeData = useMemo(() => {
@@ -303,8 +295,7 @@ function DocTreeSidebar({
   const handleRename = useCallback(
     async ({
       id,
-      name,
-    }: {
+      name}: {
       id: string;
       name: string;
       node: NodeApi<DocTreeNodeResponse>;
@@ -324,8 +315,7 @@ function DocTreeSidebar({
     async ({
       dragIds,
       parentId,
-      parentNode,
-    }: {
+      parentNode}: {
       dragIds: string[];
       dragNodes: NodeApi<DocTreeNodeResponse>[];
       parentId: string | null;
@@ -347,8 +337,7 @@ function DocTreeSidebar({
   const disableDrop = useCallback(
     ({
       parentNode,
-      dragNodes,
-    }: {
+      dragNodes}: {
       parentNode: NodeApi<DocTreeNodeResponse>;
       dragNodes: NodeApi<DocTreeNodeResponse>[];
       index: number;
@@ -397,8 +386,7 @@ function DocTreeSidebar({
               docPath: node.id,
               title: node.data.title || node.data.name,
               isDir,
-              hasChildren,
-            });
+              hasChildren});
           }
         }
       } else if (e.key === 'F2') {
@@ -616,8 +604,7 @@ function DocTreeSidebar({
                 className="h-5 rounded bg-muted/60 animate-pulse"
                 style={{
                   width: `${SKELETON_WIDTHS[i]}%`,
-                  marginLeft: `${(i % 3) * 12}px`,
-                }}
+                  marginLeft: `${(i % 3) * 12}px`}}
               />
             ))}
           </div>

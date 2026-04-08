@@ -3,14 +3,12 @@ import { components, NodeStatus } from '../../../../api/v1/schema';
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger,
-} from '../../../../components/ui/tooltip';
+  TooltipTrigger} from '../../../../components/ui/tooltip';
 import { AppBarContext } from '../../../../contexts/AppBarContext';
 import { isAbortLikeError } from '../../../../lib/requestTimeout';
 import {
   fetchDAGRunDetails,
-  type DAGRunDetails,
-} from '../../hooks/dagRunDetailsRequest';
+  type DAGRunDetails} from '../../hooks/dagRunDetailsRequest';
 
 type DAGRunSummary = components['schemas']['DAGRunSummary'];
 type Node = components['schemas']['Node'];
@@ -68,10 +66,7 @@ function renderStepList(title: string, nodes: Node[], colorClass: string) {
 
 export function StepDetailsTooltip({
   dagRun,
-  children,
-}: StepDetailsTooltipProps) {
-  const appBarContext = React.useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
+  children}: StepDetailsTooltipProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [details, setDetails] = React.useState<DAGRunDetails | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
@@ -80,7 +75,7 @@ export function StepDetailsTooltip({
   const controllerRef = React.useRef<AbortController | null>(null);
 
   const canRequestDetails = Boolean(dagRun.name && dagRun.dagRunId);
-  const cacheKey = `${remoteNode}:${dagRun.name}:${dagRun.dagRunId}`;
+  const cacheKey = `${dagRun.name}:${dagRun.dagRunId}`;
 
   React.useEffect(() => {
     if (fetchTimerRef.current) {
@@ -116,10 +111,8 @@ export function StepDetailsTooltip({
 
       void fetchDAGRunDetails(
         {
-          remoteNode,
           name: dagRun.name,
-          dagRunId: dagRun.dagRunId,
-        },
+          dagRunId: dagRun.dagRunId},
         { signal: controller.signal }
       )
         .then((nextDetails) => {
@@ -128,8 +121,7 @@ export function StepDetailsTooltip({
           }
           hoverDetailsCache.set(cacheKey, {
             details: nextDetails,
-            expiresAt: Date.now() + HOVER_CACHE_TTL_MS,
-          });
+            expiresAt: Date.now() + HOVER_CACHE_TTL_MS});
           setDetails(nextDetails);
           setError(null);
         })
@@ -163,7 +155,6 @@ export function StepDetailsTooltip({
     dagRun.dagRunId,
     dagRun.name,
     isOpen,
-    remoteNode,
   ]);
 
   const nodes = details?.nodes || [];

@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import React from 'react';
-import { AppBarContext } from '@/contexts/AppBarContext';
 import { useClient } from '@/hooks/api';
 import { components, ErrorCode } from '@/api/v1/schema';
 import { QueueSelectionItem } from './useQueueSelection';
@@ -10,7 +9,6 @@ import { QueueSelectionItem } from './useQueueSelection';
 export type QueueBatchPhase = 'confirm' | 'running' | 'complete';
 
 type ActiveBatch = {
-  remoteNode: string;
   snapshot: QueueSelectionItem[];
 };
 
@@ -46,8 +44,7 @@ const createEmptyProgress = (): QueueBatchProgressState => ({
   refreshError: null,
   results: [],
   skippedCount: 0,
-  successCount: 0,
-});
+  successCount: 0});
 
 const getErrorMessage = (error: unknown, fallback: string): string => {
   if (error instanceof Error && error.message) {
@@ -83,9 +80,7 @@ const getSkippedResultMessage = (
 export function useQueueBatchDequeue({
   onActionComplete,
   onReplaceSelection,
-  selectedRuns,
-}: UseQueueBatchDequeueProps) {
-  const appBarContext = React.useContext(AppBarContext);
+  selectedRuns}: UseQueueBatchDequeueProps) {
   const client = useClient();
   const [activeBatch, setActiveBatch] = React.useState<ActiveBatch | null>(
     null
@@ -93,8 +88,6 @@ export function useQueueBatchDequeue({
   const [phase, setPhase] = React.useState<QueueBatchPhase | null>(null);
   const [progress, setProgress] =
     React.useState<QueueBatchProgressState>(createEmptyProgress);
-
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const isRunning = phase === 'running';
 
   const closeDialog = React.useCallback(() => {
@@ -111,17 +104,14 @@ export function useQueueBatchDequeue({
       return;
     }
     setActiveBatch({
-      remoteNode,
-      snapshot: [...selectedRuns],
-    });
+      snapshot: [...selectedRuns]});
     setPhase('confirm');
     setProgress(createEmptyProgress());
-  }, [remoteNode, selectedRuns]);
+  }, [selectedRuns]);
 
   const submitBatchItem = React.useCallback(
     async (
-      dagRun: QueueSelectionItem,
-      batchRemoteNode: string
+      dagRun: QueueSelectionItem
     ): Promise<QueueBatchResult> => {
       const fallback = 'Failed to dequeue DAG run';
 
@@ -130,13 +120,7 @@ export function useQueueBatchDequeue({
           params: {
             path: {
               name: dagRun.name,
-              dagRunId: dagRun.dagRunId,
-            },
-            query: {
-              remoteNode: batchRemoteNode,
-            },
-          },
-        });
+              dagRunId: dagRun.dagRunId}}});
 
         if (error) {
           const skippedMessage = getSkippedResultMessage(error);
@@ -145,28 +129,24 @@ export function useQueueBatchDequeue({
               ...dagRun,
               ok: true,
               skipped: true,
-              message: skippedMessage,
-            };
+              message: skippedMessage};
           }
 
           return {
             ...dagRun,
             ok: false,
-            error: error.message || fallback,
-          };
+            error: error.message || fallback};
         }
 
         return {
           ...dagRun,
           ok: true,
-          message: 'Dequeue request accepted.',
-        };
+          message: 'Dequeue request accepted.'};
       } catch (error) {
         return {
           ...dagRun,
           ok: false,
-          error: getErrorMessage(error, fallback),
-        };
+          error: getErrorMessage(error, fallback)};
       }
     },
     [client]
@@ -177,7 +157,7 @@ export function useQueueBatchDequeue({
       return;
     }
 
-    const { remoteNode: batchRemoteNode, snapshot } = activeBatch;
+    const { snapshot } = activeBatch;
     const results: QueueBatchResult[] = [];
     let successCount = 0;
     let skippedCount = 0;
@@ -192,8 +172,7 @@ export function useQueueBatchDequeue({
       refreshError: null,
       results: [],
       skippedCount: 0,
-      successCount: 0,
-    });
+      successCount: 0});
 
     for (const [index, dagRun] of snapshot.entries()) {
       setProgress({
@@ -204,10 +183,9 @@ export function useQueueBatchDequeue({
         refreshError: null,
         results: [...results],
         skippedCount,
-        successCount,
-      });
+        successCount});
 
-      const result = await submitBatchItem(dagRun, batchRemoteNode);
+      const result = await submitBatchItem(dagRun);
       results.push(result);
 
       if (!result.ok) {
@@ -226,8 +204,7 @@ export function useQueueBatchDequeue({
         refreshError: null,
         results: [...results],
         skippedCount,
-        successCount,
-      });
+        successCount});
     }
 
     setPhase('complete');
@@ -239,8 +216,7 @@ export function useQueueBatchDequeue({
       refreshError: null,
       results: [...results],
       skippedCount,
-      successCount,
-    });
+      successCount});
 
     let refreshError: string | null = null;
     if (onActionComplete) {
@@ -261,8 +237,7 @@ export function useQueueBatchDequeue({
       refreshError,
       results: [...results],
       skippedCount,
-      successCount,
-    });
+      successCount});
   }, [activeBatch, onActionComplete, onReplaceSelection, submitBatchItem]);
 
   return {
@@ -272,6 +247,5 @@ export function useQueueBatchDequeue({
     openBatchDialog,
     phase,
     progress,
-    submitBatchDequeue,
-  };
+    submitBatchDequeue};
 }

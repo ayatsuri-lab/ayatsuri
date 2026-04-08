@@ -150,7 +150,6 @@ type Server struct {
 	LatestStatusToday bool
 	TLS               *TLSConfig
 	Auth              Auth
-	RemoteNodes       []RemoteNode
 	Permissions       map[Permission]bool
 	StrictValidation  bool
 	Metrics           MetricsAccess // "private" or "public"
@@ -317,7 +316,6 @@ type PathsConfig struct {
 	WebhooksDir        string
 	SessionsDir        string
 	ContextsDir        string
-	RemoteNodesDir     string
 	WorkspacesDir      string
 	ConfigFileUsed     string
 }
@@ -346,19 +344,6 @@ type UI struct {
 type DAGsConfig struct {
 	SortField string
 	SortOrder string
-}
-
-// RemoteNode represents a remote node configuration.
-type RemoteNode struct {
-	Name              string
-	Description       string
-	APIBaseURL        string
-	AuthType          string
-	BasicAuthUsername string
-	BasicAuthPassword string
-	AuthToken         string
-	SkipTLSVerify     bool
-	Timeout           int // seconds; 0 = use default
 }
 
 // TLSConfig represents TLS configuration.
@@ -478,9 +463,6 @@ func (c *Config) Validate() error {
 		return err
 	}
 	if err := c.validateTunnel(); err != nil {
-		return err
-	}
-	if err := c.validateRemoteNodes(); err != nil {
 		return err
 	}
 	if err := c.validateLicense(); err != nil {
@@ -753,38 +735,6 @@ func (c *Config) validateTunnelRateLimiting() error {
 // IsTunnelPublic returns true if the tunnel exposes the service to the public internet.
 func (c *Config) IsTunnelPublic() bool {
 	return c.Tunnel.Enabled && c.Tunnel.Tailscale.Funnel
-}
-
-// validateRemoteNodes validates the remote node configuration.
-func (c *Config) validateRemoteNodes() error {
-	for i, n := range c.Server.RemoteNodes {
-		if n.Name == "" {
-			continue
-		}
-		if n.APIBaseURL == "" {
-			return fmt.Errorf("remote_nodes[%d] (%q): api_base_url is required", i, n.Name)
-		}
-		switch n.AuthType {
-		case "", "none", "basic", "token":
-			// valid
-		default:
-			return fmt.Errorf("remote_nodes[%d] (%q): invalid auth_type %q (must be one of: none, basic, token)", i, n.Name, n.AuthType)
-		}
-		if n.AuthType == "basic" {
-			if n.BasicAuthUsername == "" || n.BasicAuthPassword == "" {
-				return fmt.Errorf("remote_nodes[%d] (%q): basic auth requires both basic_auth_username and basic_auth_password", i, n.Name)
-			}
-		}
-		if n.AuthType == "token" {
-			if n.AuthToken == "" {
-				return fmt.Errorf("remote_nodes[%d] (%q): token auth requires auth_token", i, n.Name)
-			}
-		}
-		if n.Timeout < 0 {
-			return fmt.Errorf("remote_nodes[%d] (%q): timeout must not be negative", i, n.Name)
-		}
-	}
-	return nil
 }
 
 // validateLicense validates the license configuration.

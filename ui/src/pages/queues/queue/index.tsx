@@ -6,8 +6,7 @@ import {
   CheckCircle2,
   Layers,
   RefreshCw,
-  Trash2,
-} from 'lucide-react';
+  Trash2} from 'lucide-react';
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { components } from '@/api/v1/schema';
@@ -18,16 +17,14 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  DialogTitle} from '@/components/ui/dialog';
 import { RefreshButton } from '@/components/ui/refresh-button';
 import { AppBarContext } from '@/contexts/AppBarContext';
 import { DAGRunDetailsModal } from '@/features/dag-runs/components/dag-run-details';
 import QueueRunsTable from '@/features/queues/components/QueueRunsTable';
 import {
   QueueBatchResult,
-  useQueueBatchDequeue,
-} from '@/features/queues/hooks/useQueueBatchDequeue';
+  useQueueBatchDequeue} from '@/features/queues/hooks/useQueueBatchDequeue';
 import { useQueuedItemsFeed } from '@/features/queues/hooks/useQueuedItemsFeed';
 import { useQueueSelection } from '@/features/queues/hooks/useQueueSelection';
 import { useQuery } from '@/hooks/api';
@@ -80,15 +77,13 @@ function queueRefreshToken(
     queuedCount: queue.queuedCount,
     running: (queue.running ?? []).map(
       (dagRun) => `${dagRun.name}:${dagRun.dagRunId}:${dagRun.status}`
-    ),
-  });
+    )});
 }
 
 function QueueDetailsPage() {
   const { name } = useParams();
   const queueName = React.useMemo(() => decodeQueueName(name), [name]);
   const appBarContext = React.useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const [modalDAGRun, setModalDAGRun] = React.useState<{
     name: string;
     dagRunId: string;
@@ -104,26 +99,19 @@ function QueueDetailsPage() {
     error,
     isLoading,
     isValidating,
-    mutate,
-  } = useQuery(
+    mutate} = useQuery(
     '/queues/{name}',
     queueName
       ? {
           params: {
-            path: { name: queueName },
-            query: {
-              remoteNode,
-            },
-          },
-        }
+            path: { name: queueName }}}
       : null,
     {
       refreshInterval: 3000,
       keepPreviousData: true,
       revalidateIfStale: false,
       revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
+      revalidateOnReconnect: false}
   );
 
   const refreshToken = React.useMemo(() => queueRefreshToken(queue), [queue]);
@@ -134,12 +122,10 @@ function QueueDetailsPage() {
     isLoading: isQueuedItemsLoading,
     isLoadingMore,
     loadMore,
-    reload,
-  } = useQueuedItemsFeed({
+    reload} = useQueuedItemsFeed({
     enabled: Boolean(queue && (queue.queuedCount || 0) > 0),
     queueName,
-    refreshToken,
-  });
+    refreshToken});
 
   const handleLoadMore = React.useCallback(() => {
     void loadMore();
@@ -158,8 +144,7 @@ function QueueDetailsPage() {
     selectAllLoaded,
     selectedCount,
     selectedRuns,
-    toggleSelection,
-  } = useQueueSelection(queuedItems);
+    toggleSelection} = useQueueSelection(queuedItems);
 
   const {
     activeBatch,
@@ -168,14 +153,12 @@ function QueueDetailsPage() {
     openBatchDialog,
     phase,
     progress,
-    submitBatchDequeue,
-  } = useQueueBatchDequeue({
+    submitBatchDequeue} = useQueueBatchDequeue({
     onActionComplete: async () => {
       await Promise.all([mutate(), reload()]);
     },
     onReplaceSelection: replaceSelection,
-    selectedRuns,
-  });
+    selectedRuns});
 
   const handleRefresh = React.useCallback(async () => {
     await Promise.all([mutate(), reload()]);
@@ -398,8 +381,7 @@ function QueueDetailsPage() {
                     onToggleSelection={(dagRun) =>
                       toggleSelection({
                         name: dagRun.name,
-                        dagRunId: dagRun.dagRunId,
-                      })
+                        dagRunId: dagRun.dagRunId})
                     }
                     showQueuedAt
                   />

@@ -36,24 +36,16 @@ function LiveSwitch({ dag, refresh, 'aria-label': ariaLabel }: Props) {
   const [checked, setChecked] = useState(!dag.suspended);
   const [showConfirm, setShowConfirm] = useState(false);
   const [pendingState, setPendingState] = useState<boolean | null>(null);
-  const appBarContext = useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
 
   const onSubmit = useCallback(
     async (suspend: boolean) => {
       const { error } = await client.POST('/dags/{fileName}/suspend', {
         params: {
           path: {
-            fileName: dag.fileName,
-          },
-          query: {
-            remoteNode,
-          },
-        },
+            fileName: dag.fileName},
+          query: { }},
         body: {
-          suspend,
-        },
-      });
+          suspend}});
       if (error) {
         showError(
           error.message || 'Failed to update DAG status',
@@ -65,7 +57,7 @@ function LiveSwitch({ dag, refresh, 'aria-label': ariaLabel }: Props) {
         refresh();
       }
     },
-    [client, dag.fileName, refresh, remoteNode, showError]
+    [client, dag.fileName, refresh, showError]
   );
 
   const handleCheckedChange = useCallback((newCheckedState: boolean) => {

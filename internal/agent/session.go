@@ -66,7 +66,6 @@ type SessionManager struct {
 	delegates             map[string]DelegateSnapshot // guarded by mu
 	soul                  *Soul
 	webSearch             *llm.WebSearchRequest
-	remoteContextResolver RemoteContextResolver
 	promptWaitInterval    time.Duration
 	allowedTools          []string
 	systemPromptExtra     string
@@ -121,8 +120,6 @@ type SessionManagerConfig struct {
 	Soul *Soul
 	// WebSearch configures provider-native web search for this session.
 	WebSearch *llm.WebSearchRequest
-	// RemoteContextResolver provides access to remote CLI contexts for remote_agent tools.
-	RemoteContextResolver RemoteContextResolver
 	// Delegates seeds known delegate sessions when restoring from storage.
 	Delegates []DelegateSnapshot
 	// PromptWaitInterval overrides the heartbeat interval used while waiting
@@ -216,7 +213,6 @@ func NewSessionManager(cfg SessionManagerConfig) *SessionManager {
 		registry:              cfg.Registry,
 		soul:                  cfg.Soul,
 		webSearch:             cfg.WebSearch,
-		remoteContextResolver: cfg.RemoteContextResolver,
 		promptWaitInterval:    promptWaitInterval,
 		allowedTools:          append([]string(nil), cfg.AllowedTools...),
 		systemPromptExtra:     cfg.SystemPromptExtra,
@@ -865,7 +861,6 @@ func (sm *SessionManager) buildRuntimeArtifacts() ([]*AgentTool, string, map[str
 		AllowedTools:          allowedTools,
 		SkillStore:            sm.skillStore,
 		AllowedSkills:         allowedSkills,
-		RemoteContextResolver: sm.remoteContextResolver,
 		AutomataRuntime:       sm.automataRuntime,
 	})
 	systemPrompt := GenerateSystemPrompt(SystemPromptParams{

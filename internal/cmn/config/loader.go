@@ -388,7 +388,6 @@ func (l *ConfigLoader) loadPathsConfig(cfg *Config, def Definition) error {
 		{"WebhooksDir", &cfg.Paths.WebhooksDir, def.Paths.WebhooksDir},
 		{"SessionsDir", &cfg.Paths.SessionsDir, def.Paths.SessionsDir},
 		{"ContextsDir", &cfg.Paths.ContextsDir, def.Paths.ContextsDir},
-		{"RemoteNodesDir", &cfg.Paths.RemoteNodesDir, def.Paths.RemoteNodesDir},
 		{"WorkspacesDir", &cfg.Paths.WorkspacesDir, def.Paths.WorkspacesDir},
 	}
 
@@ -438,7 +437,6 @@ func (l *ConfigLoader) loadServerConfig(cfg *Config, def Definition) {
 	}
 
 	l.loadServerPermissions(cfg, def)
-	l.loadServerRemoteNodes(cfg, def)
 	l.loadServerFlags(cfg, def)
 	l.loadServerTLS(cfg, def)
 	l.loadServerAuth(cfg, def)
@@ -457,12 +455,6 @@ func (l *ConfigLoader) loadServerPermissions(cfg *Config, def Definition) {
 	}
 	if def.PermissionRunDAGs != nil {
 		cfg.Server.Permissions[PermissionRunDAGs] = *def.PermissionRunDAGs
-	}
-}
-
-func (l *ConfigLoader) loadServerRemoteNodes(cfg *Config, def Definition) {
-	for _, node := range def.RemoteNodes {
-		cfg.Server.RemoteNodes = append(cfg.Server.RemoteNodes, RemoteNode(node))
 	}
 }
 
@@ -1251,7 +1243,6 @@ func (l *ConfigLoader) finalizePaths(cfg *Config) {
 		{&cfg.Paths.APIKeysDir, "apikeys"},
 		{&cfg.Paths.WebhooksDir, "webhooks"},
 		{&cfg.Paths.ContextsDir, "contexts"},
-		{&cfg.Paths.RemoteNodesDir, "remote-nodes"},
 		{&cfg.Paths.WorkspacesDir, "workspaces"},
 	}
 

@@ -7,7 +7,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -15,8 +14,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
-	"github.com/ayatsuri-lab/ayatsuri/internal/remotenode"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -323,51 +320,6 @@ func TestMultiplexerSharesTopicRegistryAcrossSessions(t *testing.T) {
 	assert.Contains(t, mux.topics, "dag:test.yaml")
 }
 
-func TestBuildRemoteEventURLStripsSensitiveQueryParams(t *testing.T) {
-	req := httptest.NewRequest("GET", "/api/v1/events/stream?topic=dag%3Atest.yaml&remoteNode=remote1&token=secret", nil)
-
-	remoteURL := buildRemoteStreamURL("https://remote.example.com/api/v1", req.URL.Query())
-
-	assert.Equal(t, "https://remote.example.com/api/v1/events/stream?topic=dag%3Atest.yaml", remoteURL)
-}
-
-func TestBuildRemoteTopicMutationURLStripsSensitiveQueryParams(t *testing.T) {
-	req := httptest.NewRequest("POST", "/api/v1/events/stream/topics?remoteNode=remote1&token=secret", nil)
-
-	remoteURL := buildRemoteTopicMutationURL("https://remote.example.com/api/v1", req.URL.Query())
-
-	assert.Equal(t, "https://remote.example.com/api/v1/events/stream/topics", remoteURL)
-}
-
-func TestMultiplexHandlerProxyStreamForwardsLastEventID(t *testing.T) {
-	var forwardedLastEventID string
-	remoteServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		forwardedLastEventID = r.Header.Get("Last-Event-ID")
-		w.Header().Set("Content-Type", "text/event-stream")
-		_, _ = io.WriteString(w, "event: control\ndata: {}\n\n")
-	}))
-	defer remoteServer.Close()
-
-	mux := NewMultiplexer(StreamConfig{}, nil)
-	t.Cleanup(mux.Shutdown)
-
-	handler := NewMultiplexHandler(mux, remotenode.NewResolver([]config.RemoteNode{
-		{
-			Name:       "remote1",
-			APIBaseURL: remoteServer.URL,
-		},
-	}, nil))
-
-	req := httptest.NewRequest("GET", "/api/v1/events/stream?remoteNode=remote1&topic=dag%3Atest.yaml", nil)
-	req.Header.Set("Last-Event-ID", "47")
-	recorder := httptest.NewRecorder()
-
-	handler.proxyStreamToRemoteNode(recorder, req, "remote1")
-
-	assert.Equal(t, "47", forwardedLastEventID)
-	assert.Equal(t, http.StatusOK, recorder.Code)
-}
-
 func TestMultiplexHandlerHandleStreamAllowsUnsupportedInitialTopics(t *testing.T) {
 	mux := NewMultiplexer(StreamConfig{HeartbeatInterval: time.Hour}, nil)
 	t.Cleanup(mux.Shutdown)
@@ -376,7 +328,7 @@ func TestMultiplexHandlerHandleStreamAllowsUnsupportedInitialTopics(t *testing.T
 		return map[string]string{"id": identifier}, nil
 	})
 
-	handler := NewMultiplexHandler(mux, nil)
+	handler := NewMultiplexHandler(mux)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 	defer cancel()

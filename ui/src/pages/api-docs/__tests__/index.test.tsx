@@ -12,15 +12,13 @@ const fetchJsonMock = vi.fn();
 const scalarViewerMock = vi.fn();
 
 vi.mock('@/lib/fetchJson', () => ({
-  default: (...args: unknown[]) => fetchJsonMock(...args),
-}));
+  default: (...args: unknown[]) => fetchJsonMock(...args)}));
 
 vi.mock('../ScalarViewer', () => ({
   default: (props: Record<string, unknown>) => {
     scalarViewerMock(props);
     return <div data-testid="scalar-viewer">viewer</div>;
-  },
-}));
+  }}));
 
 function makeConfig(overrides: Partial<Config> = {}): Config {
   return {
@@ -32,7 +30,6 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
     tzOffsetInSec: 0,
     version: 'test',
     maxDashboardPageLimit: 100,
-    remoteNodes: '',
     initialWorkspaces: [],
     authMode: 'none',
     setupRequired: false,
@@ -44,8 +41,7 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
     latestVersion: '',
     permissions: {
       writeDags: true,
-      runDags: true,
-    },
+      runDags: true},
     license: {
       valid: true,
       plan: 'community',
@@ -54,8 +50,7 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
       gracePeriod: false,
       community: true,
       source: 'test',
-      warningCode: '',
-    },
+      warningCode: ''},
     paths: {
       dagsDir: '',
       logDir: '',
@@ -67,10 +62,8 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
       procDir: '',
       serviceRegistryDir: '',
       configFileUsed: '',
-      auditLogsDir: '',
-    },
-    ...overrides,
-  };
+      auditLogsDir: ''},
+    ...overrides};
 }
 
 function renderPage(configOverrides: Partial<Config> = {}) {
@@ -79,12 +72,7 @@ function renderPage(configOverrides: Partial<Config> = {}) {
       <AppBarContext.Provider
         value={{
           title: '',
-          setTitle: () => undefined,
-          remoteNodes: ['local'],
-          setRemoteNodes: () => undefined,
-          selectedRemoteNode: 'local',
-          selectRemoteNode: () => undefined,
-        }}
+          setTitle: () => undefined}}
       >
         <APIDocsPage />
       </AppBarContext.Provider>
@@ -121,9 +109,7 @@ describe('APIDocsPage', () => {
     fetchJsonMock.mockResolvedValue({
       openapi: '3.0.0',
       info: {
-        title: 'Ayatsuri',
-      },
-    });
+        title: 'Ayatsuri'}});
 
     renderPage();
 
@@ -132,9 +118,7 @@ describe('APIDocsPage', () => {
       expect(scalarViewerMock).toHaveBeenCalledWith(
         expect.objectContaining({
           spec: expect.objectContaining({
-            openapi: '3.0.0',
-          }),
-        })
+            openapi: '3.0.0'})})
       );
     });
   });
@@ -144,9 +128,7 @@ describe('APIDocsPage', () => {
     fetchJsonMock.mockResolvedValue({
       openapi: '3.0.0',
       info: {
-        title: 'Ayatsuri',
-      },
-    });
+        title: 'Ayatsuri'}});
 
     renderPage({ authMode: 'builtin' });
 
@@ -154,8 +136,7 @@ describe('APIDocsPage', () => {
     await waitFor(() => {
       expect(scalarViewerMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          preferredBearerToken: 'builtin-token',
-        })
+          preferredBearerToken: 'builtin-token'})
       );
     });
   });

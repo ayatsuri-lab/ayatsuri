@@ -42,13 +42,11 @@ function dayBounds(
       : dayjs(dateStr);
   return {
     fromDate: d.startOf('day').unix(),
-    toDate: d.add(1, 'day').startOf('day').unix(),
-  };
+    toDate: d.add(1, 'day').startOf('day').unix()};
 }
 
 function useKanbanBucket(
   query: {
-    remoteNode: string;
     tags?: string;
     fromDate: number;
     toDate: number;
@@ -66,13 +64,11 @@ function useKanbanBucket(
     loadMoreError,
     hasMore,
     refresh,
-    loadMore,
-  } = usePaginatedDAGRuns({
+    loadMore} = usePaginatedDAGRuns({
     query,
     liveEnabled,
     fallbackIntervalMs,
-    resetOnSSEInvalidate: liveEnabled,
-  });
+    resetOnSSEInvalidate: liveEnabled});
 
   return {
     runs: dagRuns,
@@ -82,8 +78,7 @@ function useKanbanBucket(
     error,
     loadMoreError,
     loadMore,
-    retry: refresh,
-  };
+    retry: refresh};
 }
 
 export function useDateKanbanData(
@@ -92,9 +87,7 @@ export function useDateKanbanData(
   isToday: boolean,
   isLive: boolean
 ) {
-  const appBarContext = useContext(AppBarContext);
   const { tzOffsetInSec } = useConfig();
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const tag = selectedWorkspace ? `workspace=${selectedWorkspace}` : undefined;
 
   const { fromDate, toDate } = useMemo(
@@ -103,12 +96,10 @@ export function useDateKanbanData(
   );
   const baseQuery = useMemo(
     () => ({
-      remoteNode,
       tags: tag,
       fromDate,
-      toDate,
-    }),
-    [fromDate, remoteNode, tag, toDate]
+      toDate}),
+    [fromDate, tag, toDate]
   );
   const fallbackIntervalMs = isToday ? 2000 : 0;
 
@@ -116,8 +107,7 @@ export function useDateKanbanData(
     {
       ...baseQuery,
       status: [Status.Queued, Status.NotStarted],
-      limit: QUEUED_PAGE_LIMIT,
-    },
+      limit: QUEUED_PAGE_LIMIT},
     isLive,
     fallbackIntervalMs
   );
@@ -125,8 +115,7 @@ export function useDateKanbanData(
     {
       ...baseQuery,
       status: [Status.Running],
-      limit: RUNNING_PAGE_LIMIT,
-    },
+      limit: RUNNING_PAGE_LIMIT},
     isLive,
     fallbackIntervalMs
   );
@@ -134,8 +123,7 @@ export function useDateKanbanData(
     {
       ...baseQuery,
       status: [Status.Waiting],
-      limit: WAITING_PAGE_LIMIT,
-    },
+      limit: WAITING_PAGE_LIMIT},
     isLive,
     fallbackIntervalMs
   );
@@ -143,8 +131,7 @@ export function useDateKanbanData(
     {
       ...baseQuery,
       status: [Status.Success, Status.PartialSuccess],
-      limit: DONE_PAGE_LIMIT,
-    },
+      limit: DONE_PAGE_LIMIT},
     isLive,
     fallbackIntervalMs
   );
@@ -152,8 +139,7 @@ export function useDateKanbanData(
     {
       ...baseQuery,
       status: [Status.Failed, Status.Aborted, Status.Rejected],
-      limit: FAILED_PAGE_LIMIT,
-    },
+      limit: FAILED_PAGE_LIMIT},
     isLive,
     fallbackIntervalMs
   );
@@ -164,8 +150,7 @@ export function useDateKanbanData(
       running,
       review,
       done,
-      failed,
-    }),
+      failed}),
     [done, failed, queued, review, running]
   );
 
@@ -184,6 +169,5 @@ export function useDateKanbanData(
     isEmpty,
     retry: async () => {
       await Promise.all(allColumns.map((column) => column.retry()));
-    },
-  };
+    }};
 }

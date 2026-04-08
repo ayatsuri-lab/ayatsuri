@@ -4,16 +4,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+  TableRow} from '@/components/ui/table';
 import { AppBarContext } from '@/contexts/AppBarContext';
 import { TOKEN_KEY, useIsAdmin } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
@@ -46,14 +44,11 @@ export default function APIKeysPage() {
   const fetchAPIKeys = useCallback(async () => {
     try {
       const token = localStorage.getItem(TOKEN_KEY);
-      const remoteNode = appBarContext.selectedRemoteNode || 'local';
       const response = await fetch(
-        `${config.apiURL}/api-keys?remoteNode=${remoteNode}`,
+        `${config.apiURL}/api-keys`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+            Authorization: `Bearer ${token}`}}
       );
 
       if (!response.ok) {
@@ -67,7 +62,7 @@ export default function APIKeysPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [config.apiURL, appBarContext.selectedRemoteNode]);
+  }, [config.apiURL]);
 
   useEffect(() => {
     fetchAPIKeys();
@@ -78,15 +73,12 @@ export default function APIKeysPage() {
 
     try {
       const token = localStorage.getItem(TOKEN_KEY);
-      const remoteNode = appBarContext.selectedRemoteNode || 'local';
       const response = await fetch(
-        `${config.apiURL}/api-keys/${deletingKey.id}?remoteNode=${remoteNode}`,
+        `${config.apiURL}/api-keys/${deletingKey.id}`,
         {
           method: 'DELETE',
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+            Authorization: `Bearer ${token}`}}
       );
 
       if (!response.ok) {

@@ -25,20 +25,16 @@ const completeLoginMock = vi.fn();
 const disconnectMock = vi.fn();
 
 vi.mock('react-router-dom', () => ({
-  useNavigate: () => navigateMock,
-}));
+  useNavigate: () => navigateMock}));
 
 vi.mock('@/contexts/AuthContext', () => ({
-  useAuth: vi.fn(),
-}));
+  useAuth: vi.fn()}));
 
 vi.mock('@/hooks/api', () => ({
-  useClient: vi.fn(),
-}));
+  useClient: vi.fn()}));
 
 vi.mock('@/features/agent/hooks/useAgentAuthProviders', () => ({
-  useAgentAuthProviders: vi.fn(),
-}));
+  useAgentAuthProviders: vi.fn()}));
 
 const useAuthMock = vi.mocked(useAuth);
 const useClientMock = vi.mocked(useClient);
@@ -53,7 +49,6 @@ const config: Config = {
   tzOffsetInSec: 0,
   version: 'test',
   maxDashboardPageLimit: 100,
-  remoteNodes: '',
   initialWorkspaces: [],
   authMode: 'builtin',
   setupRequired: true,
@@ -65,8 +60,7 @@ const config: Config = {
   latestVersion: '',
   permissions: {
     writeDags: true,
-    runDags: true,
-  },
+    runDags: true},
   license: {
     valid: true,
     plan: 'community',
@@ -75,8 +69,7 @@ const config: Config = {
     gracePeriod: false,
     community: true,
     source: 'test',
-    warningCode: '',
-  },
+    warningCode: ''},
   paths: {
     dagsDir: '',
     logDir: '',
@@ -88,18 +81,11 @@ const config: Config = {
     procDir: '',
     serviceRegistryDir: '',
     configFileUsed: '',
-    auditLogsDir: '',
-  },
-};
+    auditLogsDir: ''}};
 
 const appBarContextValue = {
   title: '',
-  setTitle: vi.fn(),
-  remoteNodes: ['local'],
-  setRemoteNodes: vi.fn(),
-  selectedRemoteNode: 'local',
-  selectRemoteNode: vi.fn(),
-};
+  setTitle: vi.fn()};
 
 const presets = [
   {
@@ -111,8 +97,7 @@ const presets = [
     maxOutputTokens: 64_000,
     inputCostPer1M: 3,
     outputCostPer1M: 15,
-    supportsThinking: true,
-  },
+    supportsThinking: true},
   {
     name: 'GPT-5.4 Codex',
     provider: 'openai-codex',
@@ -122,8 +107,7 @@ const presets = [
     maxOutputTokens: 128_000,
     inputCostPer1M: 0,
     outputCostPer1M: 0,
-    supportsThinking: true,
-  },
+    supportsThinking: true},
 ];
 
 function renderPage() {
@@ -140,22 +124,18 @@ function renderPage() {
 
 async function moveToAgentStep() {
   fireEvent.change(screen.getByLabelText('Username'), {
-    target: { value: 'admin-user' },
-  });
+    target: { value: 'admin-user' }});
   fireEvent.change(screen.getByLabelText('Password'), {
-    target: { value: 'password123' },
-  });
+    target: { value: 'password123' }});
   fireEvent.change(screen.getByLabelText('Confirm Password'), {
-    target: { value: 'password123' },
-  });
+    target: { value: 'password123' }});
 
   fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
 
   await screen.findByText('Enable AI Agent');
   await waitFor(() => {
     expect(getMock).toHaveBeenCalledWith('/settings/agent/model-presets', {
-      params: { query: { remoteNode: 'local' } },
-    });
+      params: { query: { } }});
   });
 }
 
@@ -174,8 +154,7 @@ beforeEach(() => {
 
   setupMock.mockResolvedValue({
     token: 'token-1',
-    user: { id: '1', username: 'admin-user', role: 'admin' },
-  });
+    user: { id: '1', username: 'admin-user', role: 'admin' }});
   getMock.mockResolvedValue({ data: { presets } });
   patchMock.mockResolvedValue({});
   postMock.mockResolvedValue({ data: { id: 'created-model' } });
@@ -191,15 +170,13 @@ beforeEach(() => {
     setup: setupMock,
     logout: vi.fn(),
     refreshUser: vi.fn(),
-    completeSetup: completeSetupMock,
-  });
+    completeSetup: completeSetupMock});
 
   useClientMock.mockReturnValue({
     GET: getMock,
     PATCH: patchMock,
     POST: postMock,
-    PUT: putMock,
-  } as never);
+    PUT: putMock} as never);
 
   useAgentAuthProvidersMock.mockReturnValue({
     providers: [],
@@ -209,17 +186,13 @@ beforeEach(() => {
         name: 'OpenAI Codex',
         connected: false,
         expiresAt: '',
-        accountId: '',
-      },
-    },
-    remoteNode: 'local',
+        accountId: ''}},
     isLoading: false,
     error: null,
     refreshProviders: vi.fn(),
     startLogin: startLoginMock,
     completeLogin: completeLoginMock,
-    disconnect: disconnectMock,
-  });
+    disconnect: disconnectMock});
 });
 
 afterEach(() => {
@@ -244,27 +217,23 @@ describe('SetupPage', () => {
     ).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText('Model'), {
-      target: { value: 'llama3.2' },
-    });
+      target: { value: 'llama3.2' }});
 
     fireEvent.click(screen.getByRole('button', { name: 'Complete Setup' }));
 
     await waitFor(() => expect(postMock).toHaveBeenCalledTimes(1));
 
     expect(patchMock).toHaveBeenCalledWith('/settings/agent', {
-      params: { query: { remoteNode: 'local' } },
-      body: { enabled: true },
-    });
+      params: { query: { } },
+      body: { enabled: true }});
     expect(postMock).toHaveBeenCalledWith('/settings/agent/models', {
-      params: { query: { remoteNode: 'local' } },
+      params: { query: { } },
       body: expect.objectContaining({
         id: 'llama3-2',
         name: 'llama3.2',
         provider: 'local',
         model: 'llama3.2',
-        supportsThinking: false,
-      }),
-    });
+        supportsThinking: false})});
     const createBody = postMock.mock.calls[0]![1]!.body as Record<
       string,
       unknown
@@ -272,14 +241,12 @@ describe('SetupPage', () => {
     expect(createBody.apiKey).toBeUndefined();
     expect(createBody.baseUrl).toBeUndefined();
     expect(putMock).toHaveBeenCalledWith('/settings/agent/default-model', {
-      params: { query: { remoteNode: 'local' } },
-      body: { modelId: 'created-model' },
-    });
+      params: { query: { } },
+      body: { modelId: 'created-model' }});
     expect(updateConfigMock).toHaveBeenCalledWith({ agentEnabled: true });
     expect(navigateMock).toHaveBeenCalledWith('/', {
       replace: true,
-      state: { openAgent: true },
-    });
+      state: { openAgent: true }});
   });
 
   it('requires an API key for manual OpenRouter setup', async () => {
@@ -288,8 +255,7 @@ describe('SetupPage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'OpenRouter' }));
     fireEvent.change(screen.getByLabelText('Model'), {
-      target: { value: 'anthropic/claude-sonnet-4-6' },
-    });
+      target: { value: 'anthropic/claude-sonnet-4-6' }});
 
     fireEvent.click(screen.getByRole('button', { name: 'Complete Setup' }));
 

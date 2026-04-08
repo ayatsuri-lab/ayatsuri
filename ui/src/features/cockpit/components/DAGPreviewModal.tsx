@@ -14,11 +14,8 @@ export function DAGPreviewModal({
   fileName,
   isOpen,
   selectedWorkspace,
-  onClose,
-}: DAGPreviewModalProps): React.ReactElement | null {
+  onClose}: DAGPreviewModalProps): React.ReactElement | null {
   const client = useClient();
-  const appBarContext = useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
 
   const handleEnqueue = React.useCallback(
     async (params: string, dagRunId?: string): Promise<string | void> => {
@@ -32,15 +29,11 @@ export function DAGPreviewModal({
 
       const { data, error } = await client.POST('/dags/{fileName}/enqueue', {
         params: {
-          path: { fileName },
-          query: { remoteNode },
-        },
+          path: { fileName }},
         body: {
           params: params || undefined,
           dagRunId: dagRunId || undefined,
-          tags: tags.length > 0 ? tags : undefined,
-        },
-      });
+          tags: tags.length > 0 ? tags : undefined}});
 
       if (error) {
         throw new Error(error.message || 'Failed to enqueue DAG execution.');
@@ -48,7 +41,7 @@ export function DAGPreviewModal({
 
       return data?.dagRunId;
     },
-    [client, fileName, remoteNode, selectedWorkspace]
+    [client, fileName, selectedWorkspace]
   );
 
   const toolbarHint = selectedWorkspace ? (

@@ -19,8 +19,6 @@ function upsertProvider(
 
 export function useAgentAuthProviders() {
   const client = useClient();
-  const appBarContext = useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
 
   const [providers, setProviders] = useState<AgentAuthProviderStatus[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,7 +28,6 @@ export function useAgentAuthProviders() {
     setIsLoading(true);
     try {
       const { data, error: apiError } = await client.GET('/settings/agent/auth/providers', {
-        params: { query: { remoteNode } },
       });
       if (apiError) {
         throw new Error(apiError.message || 'Failed to load provider connections');
@@ -47,7 +44,7 @@ export function useAgentAuthProviders() {
     } finally {
       setIsLoading(false);
     }
-  }, [client, remoteNode]);
+  }, [client]);
 
   useEffect(() => {
     void refreshProviders().catch(() => {
@@ -57,8 +54,7 @@ export function useAgentAuthProviders() {
 
   const startLogin = useCallback(async (providerId: string): Promise<StartAgentAuthProviderLoginResponse> => {
     const { data, error: apiError } = await client.POST('/settings/agent/auth/providers/{providerId}/login', {
-      params: { path: { providerId }, query: { remoteNode } },
-    });
+      params: { path: { providerId } }});
     if (apiError) {
       throw new Error(apiError.message || 'Failed to start provider login');
     }
@@ -66,16 +62,15 @@ export function useAgentAuthProviders() {
       throw new Error('Failed to start provider login');
     }
     return data;
-  }, [client, remoteNode]);
+  }, [client]);
 
   const completeLogin = useCallback(async (
     providerId: string,
     body: CompleteAgentAuthProviderLoginRequest
   ): Promise<AgentAuthProviderStatus | null> => {
     const { data, error: apiError } = await client.POST('/settings/agent/auth/providers/{providerId}/login/complete', {
-      params: { path: { providerId }, query: { remoteNode } },
-      body,
-    });
+      params: { path: { providerId } },
+      body});
     if (apiError) {
       throw new Error(apiError.message || 'Failed to complete provider login');
     }
@@ -84,17 +79,16 @@ export function useAgentAuthProviders() {
       setProviders((current) => upsertProvider(current, provider));
     }
     return provider;
-  }, [client, remoteNode]);
+  }, [client]);
 
   const disconnect = useCallback(async (providerId: string): Promise<void> => {
     const { error: apiError } = await client.DELETE('/settings/agent/auth/providers/{providerId}/login', {
-      params: { path: { providerId }, query: { remoteNode } },
-    });
+      params: { path: { providerId } }});
     if (apiError) {
       throw new Error(apiError.message || 'Failed to disconnect provider');
     }
     await refreshProviders();
-  }, [client, refreshProviders, remoteNode]);
+  }, [client, refreshProviders]);
 
   const providerMap = useMemo<Record<string, AgentAuthProviderStatus>>(
     () => Object.fromEntries(providers.map((provider) => [provider.id, provider])) as Record<string, AgentAuthProviderStatus>,
@@ -104,12 +98,10 @@ export function useAgentAuthProviders() {
   return {
     providers,
     providerMap,
-    remoteNode,
     isLoading,
     error,
     refreshProviders,
     startLogin,
     completeLogin,
-    disconnect,
-  };
+    disconnect};
 }

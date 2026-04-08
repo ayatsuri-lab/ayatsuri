@@ -10,23 +10,16 @@ import { useBoundedDAGRunDetails } from '../../../hooks/useBoundedDAGRunDetails'
 import DAGRunDetailsPanel from '../DAGRunDetailsPanel';
 
 vi.mock('../../../hooks/useBoundedDAGRunDetails', () => ({
-  useBoundedDAGRunDetails: vi.fn(),
-}));
+  useBoundedDAGRunDetails: vi.fn()}));
 
 vi.mock('../DAGRunDetailsContent', () => ({
   default: ({ dagRun }: { dagRun: { dagRunId: string } }) => (
     <div>run {dagRun.dagRunId}</div>
-  ),
-}));
+  )}));
 
 const appBarValue = {
   title: 'Runs',
-  setTitle: vi.fn(),
-  remoteNodes: ['local'],
-  setRemoteNodes: vi.fn(),
-  selectedRemoteNode: 'local',
-  selectRemoteNode: vi.fn(),
-};
+  setTitle: vi.fn()};
 
 const useBoundedDAGRunDetailsMock = useBoundedDAGRunDetails as unknown as {
   mockReturnValue: (value: unknown) => void;
@@ -60,8 +53,7 @@ describe('DAGRunDetailsPanel', () => {
     useBoundedDAGRunDetailsMock.mockReturnValue({
       data: { dagRunId: 'child-run' },
       error: null,
-      refresh: vi.fn(),
-    });
+      refresh: vi.fn()});
 
     renderPanel();
 
@@ -70,13 +62,10 @@ describe('DAGRunDetailsPanel', () => {
     ).toEqual(
       expect.objectContaining({
         target: {
-          remoteNode: 'local',
           name: 'child-dag',
-          dagRunId: 'child-run',
-        },
+          dagRunId: 'child-run'},
         enabled: true,
-        pollIntervalMs: 2000,
-      })
+        pollIntervalMs: 2000})
     );
     expect(screen.getByText('run child-run')).toBeInTheDocument();
   });
@@ -90,8 +79,7 @@ describe('DAGRunDetailsPanel', () => {
     useBoundedDAGRunDetailsMock.mockReturnValue({
       data: { dagRunId: 'sub-run' },
       error: null,
-      refresh: vi.fn(),
-    });
+      refresh: vi.fn()});
 
     renderPanel();
 
@@ -100,16 +88,13 @@ describe('DAGRunDetailsPanel', () => {
     ).toEqual(
       expect.objectContaining({
         target: {
-          remoteNode: 'local',
           name: 'child-dag',
           dagRunId: 'child-run',
           parentName: 'root-dag',
           parentDAGRunId: 'root-run',
-          subDAGRunId: 'sub-run',
-        },
+          subDAGRunId: 'sub-run'},
         enabled: true,
-        pollIntervalMs: 2000,
-      })
+        pollIntervalMs: 2000})
     );
     expect(screen.getByText('run sub-run')).toBeInTheDocument();
   });

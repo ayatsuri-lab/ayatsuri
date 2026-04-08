@@ -3,8 +3,7 @@ import { Tab, Tabs } from '@/components/ui/tabs';
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+  TooltipTrigger} from '@/components/ui/tooltip';
 import {
   ActivitySquare,
   FileCode,
@@ -12,8 +11,7 @@ import {
   GripHorizontal,
   MousePointerClick,
   Package,
-  ShieldCheck,
-} from 'lucide-react';
+  ShieldCheck} from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
@@ -32,8 +30,7 @@ import { DAGSpecReadOnly } from './dag-editor';
 import {
   LogViewer,
   ParallelExecutionModal,
-  StatusUpdateModal,
-} from './dag-execution';
+  StatusUpdateModal} from './dag-execution';
 import { FlowchartType, Graph, TimelineChart } from './visualization';
 
 type Props = {
@@ -53,7 +50,6 @@ function isSubDAGRun(dagRun: components['schemas']['DAGRunDetails']): boolean {
 }
 
 function DAGStatus({ dagRun, fileName }: Props) {
-  const appBarContext = React.useContext(AppBarContext);
   const config = useConfig();
   const navigate = useNavigate();
   const { showError } = useErrorModal();
@@ -103,15 +99,13 @@ function DAGStatus({ dagRun, fileName }: Props) {
     logType: 'step',
     stepName: '',
     dagRunId: '',
-    stream: Stream.stdout,
-  });
+    stream: Stream.stdout});
   // State for parallel execution modal
   const [parallelExecutionModal, setParallelExecutionModal] = useState<{
     isOpen: boolean;
     node?: components['schemas']['Node'];
   }>({
-    isOpen: false,
-  });
+    isOpen: false});
   const client = useClient();
   const dismissModal = () => setModal(false);
 
@@ -137,8 +131,7 @@ function DAGStatus({ dagRun, fileName }: Props) {
       name: isSubRun ? dagRun.rootDAGRunName : dagRun.name,
       dagRunId: isSubRun ? dagRun.rootDAGRunId : dagRun.dagRunId,
       stepName: step.name,
-      ...(isSubRun ? { subDAGRunId: dagRun.dagRunId } : {}),
-    };
+      ...(isSubRun ? { subDAGRunId: dagRun.dagRunId } : {})};
 
     // Use the appropriate endpoint based on whether this is a sub DAG-run
     const endpoint = isSubRun
@@ -147,15 +140,9 @@ function DAGStatus({ dagRun, fileName }: Props) {
 
     const { error } = await client.PATCH(endpoint, {
       params: {
-        path: pathParams,
-        query: {
-          remoteNode: appBarContext.selectedRemoteNode || 'local',
-        },
-      },
+        path: pathParams},
       body: {
-        status,
-      },
-    });
+        status}});
     if (error) {
       showError(
         error.message || 'Failed to update status',
@@ -183,8 +170,7 @@ function DAGStatus({ dagRun, fileName }: Props) {
           // Show modal to select which execution to view
           setParallelExecutionModal({
             isOpen: true,
-            node: n,
-          });
+            node: n});
         } else {
           // Single sub dagRun - navigate directly
           navigateToSubDagRun(n, 0);
@@ -296,8 +282,7 @@ function DAGStatus({ dagRun, fileName }: Props) {
       stepName: actualStepName,
       dagRunId: dagRunId || dagRun.dagRunId,
       stream: isStderr ? Stream.stderr : Stream.stdout,
-      node,
-    });
+      node});
   };
 
   // Check if timeline should be shown (any status except not started)
@@ -447,8 +432,7 @@ function DAGStatus({ dagRun, fileName }: Props) {
                           logType: 'execution',
                           stepName: '',
                           dagRunId,
-                          stream: Stream.stdout,
-                        });
+                          stream: Stream.stdout});
                       }}
                     />
                   </div>

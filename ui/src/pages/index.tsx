@@ -6,16 +6,14 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  SelectValue} from '@/components/ui/select';
 import { Filter } from 'lucide-react';
 import React from 'react';
 import type { components } from '../api/v1/schema';
 import {
   PathsDagsGetParametersQueryOrder,
   PathsDagsGetParametersQuerySort,
-  Status,
-} from '../api/v1/schema';
+  Status} from '../api/v1/schema';
 import { AppBarContext } from '../contexts/AppBarContext';
 import { useConfig } from '../contexts/ConfigContext';
 import { useSearchState } from '../contexts/SearchStateContext';
@@ -64,8 +62,7 @@ function getDayBounds(
     tzOffsetInSec !== undefined ? date.utcOffset(tzOffsetInSec / 60) : date;
   return {
     startOfDay: adjusted.startOf('day'),
-    endOfDay: adjusted.endOf('day'),
-  };
+    endOfDay: adjusted.endOf('day')};
 }
 
 function compareDAGNames(left: string, right: string): number {
@@ -74,7 +71,6 @@ function compareDAGNames(left: string, right: string): number {
 
 async function fetchAllDashboardDAGNames(
   client: ReturnType<typeof useClient>,
-  remoteNode: string,
   signal: AbortSignal
 ): Promise<string[]> {
   const names = new Set<string>();
@@ -83,16 +79,11 @@ async function fetchAllDashboardDAGNames(
   for (;;) {
     const response = await client.GET('/dags', {
       params: {
-        query: {
-          remoteNode,
-          page,
+        query: { page,
           perPage: 100,
           sort: PathsDagsGetParametersQuerySort.name,
-          order: PathsDagsGetParametersQueryOrder.asc,
-        },
-      },
-      signal,
-    });
+          order: PathsDagsGetParametersQueryOrder.asc}},
+      signal});
 
     if (response.error) {
       const message =
@@ -126,8 +117,7 @@ function Dashboard(): React.ReactElement | null {
   const client = useClient();
   const config = useConfig();
   const searchState = useSearchState();
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
-  const remoteKey = remoteNode;
+  const remoteKey = 'local';
 
   const [modalDAGRun, setModalDAGRun] = React.useState<{
     name: string;
@@ -157,15 +147,13 @@ function Dashboard(): React.ReactElement | null {
     const { startOfDay } = getDayBounds(dayjs(), config.tzOffsetInSec);
     return {
       startDate: startOfDay.unix(),
-      endDate: undefined,
-    };
+      endDate: undefined};
   }, [config.tzOffsetInSec]);
 
   const defaultFilters = React.useMemo<DashboardFilters>(
     () => ({
       selectedDAGRun: 'all',
-      dateRange: getDefaultDateRange(),
-    }),
+      dateRange: getDefaultDateRange()}),
     [getDefaultDateRange]
   );
 
@@ -180,8 +168,7 @@ function Dashboard(): React.ReactElement | null {
   const currentFilters = React.useMemo<DashboardFilters>(
     () => ({
       selectedDAGRun,
-      dateRange,
-    }),
+      dateRange}),
     [selectedDAGRun, dateRange]
   );
 
@@ -206,9 +193,7 @@ function Dashboard(): React.ReactElement | null {
             endDate:
               stored.dateRange?.endDate === undefined
                 ? base.dateRange.endDate
-                : stored.dateRange.endDate,
-          },
-        }
+                : stored.dateRange.endDate}}
       : base;
 
     const current = currentFiltersRef.current;
@@ -238,8 +223,7 @@ function Dashboard(): React.ReactElement | null {
   const handleDateChange = (startTimestamp: number, endTimestamp: number) => {
     setDateRange({
       startDate: startTimestamp,
-      endDate: endTimestamp,
-    });
+      endDate: endTimestamp});
   };
 
   const selectedDAGName = selectedDAGRun !== 'all' ? selectedDAGRun : undefined;
@@ -249,20 +233,17 @@ function Dashboard(): React.ReactElement | null {
   );
   const dagRunsQuery = React.useMemo(
     () => ({
-      remoteNode,
       fromDate: dateRange.startDate,
       toDate: dateRange.endDate,
       name: selectedDAGName,
       status: DASHBOARD_VISIBLE_STATUSES,
       ...(dashboardPageLimit !== undefined
         ? { limit: dashboardPageLimit }
-        : {}),
-    }),
+        : {})}),
     [
       dashboardPageLimit,
       dateRange.endDate,
       dateRange.startDate,
-      remoteNode,
       selectedDAGName,
     ]
   );
@@ -274,13 +255,11 @@ function Dashboard(): React.ReactElement | null {
     isLoadingMore,
     hasMore,
     loadMore,
-    refresh,
-  } = usePaginatedDAGRuns({
+    refresh} = usePaginatedDAGRuns({
     query: dagRunsQuery,
     liveEnabled: true,
     fallbackIntervalMs: 5000,
-    resetOnSSEInvalidate: true,
-  });
+    resetOnSSEInvalidate: true});
 
   const handleRefreshAll = async () => {
     await refresh();
@@ -308,8 +287,7 @@ function Dashboard(): React.ReactElement | null {
   const selectedTimelineDate = React.useMemo(
     () => ({
       startTimestamp: dateRange.startDate,
-      endTimestamp: dateRange.endDate,
-    }),
+      endTimestamp: dateRange.endDate}),
     [dateRange.endDate, dateRange.startDate]
   );
 
@@ -323,7 +301,7 @@ function Dashboard(): React.ReactElement | null {
     const controller = new AbortController();
     setAvailableDAGNames([]);
 
-    void fetchAllDashboardDAGNames(client, remoteNode, controller.signal)
+    void fetchAllDashboardDAGNames(client, controller.signal)
       .then((names) => {
         if (!controller.signal.aborted) {
           setAvailableDAGNames(names);
@@ -336,7 +314,7 @@ function Dashboard(): React.ReactElement | null {
       });
 
     return () => controller.abort();
-  }, [client, remoteNode]);
+  }, [client]);
 
   React.useEffect(() => {
     lastWindowScrollYRef.current = window.scrollY;

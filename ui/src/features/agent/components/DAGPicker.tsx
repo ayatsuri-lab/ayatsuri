@@ -20,30 +20,21 @@ export function DAGPicker({
   selectedDags,
   onChange,
   currentPageDag,
-  disabled,
-}: DAGPickerProps) {
+  disabled}: DAGPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const appBarContext = useContext(AppBarContext);
-  const remoteNode = appBarContext?.selectedRemoteNode || 'local';
 
   const { data } = useQuery('/dags', {
     params: {
-      query: {
-        remoteNode,
-        perPage: 100,
-      },
-    },
-  });
+      query: { perPage: 100}}});
 
   const dagFiles = useMemo(() => {
     if (!data?.dags) return [];
     return data.dags.map((d) => ({
       fileName: d.fileName,
-      name: d.dag.name,
-    }));
+      name: d.dag.name}));
   }, [data]);
 
   const filteredDags = useMemo(() => {

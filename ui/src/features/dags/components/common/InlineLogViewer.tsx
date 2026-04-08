@@ -20,16 +20,13 @@ export function InlineLogViewer({
   dagRunId,
   stepName,
   stream,
-  dagRun,
-}: {
+  dagRun}: {
   dagName: string;
   dagRunId: string;
   stepName: string;
   stream: components['schemas']['Stream'];
   dagRun?: components['schemas']['DAGRunDetails'];
 }) {
-  const appBarContext = useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
 
   // Determine if this is a sub DAG run - check both rootDAGRunId AND rootDAGRunName
   const isSubDAGRun =
@@ -43,23 +40,16 @@ export function InlineLogViewer({
     '/dag-runs/{name}/{dagRunId}/sub-dag-runs/{subDAGRunId}/steps/{stepName}/log',
     whenEnabled(!!isSubDAGRun, {
       params: {
-        query: {
-          remoteNode,
-          stream,
-          tail: 100,
-        },
+        query: { stream,
+          tail: 100},
         path: {
           name: dagRun?.rootDAGRunName as string,
           dagRunId: dagRun?.rootDAGRunId as string,
           subDAGRunId: dagRun?.dagRunId as string,
-          stepName,
-        },
-      },
-    }),
+          stepName}}}),
     {
       refreshInterval: 2000,
-      revalidateOnFocus: false,
-    }
+      revalidateOnFocus: false}
   );
 
   // Fetch regular DAG-run step log (only when isSubDAGRun is false)
@@ -67,22 +57,15 @@ export function InlineLogViewer({
     '/dag-runs/{name}/{dagRunId}/steps/{stepName}/log',
     whenEnabled(!isSubDAGRun, {
       params: {
-        query: {
-          remoteNode,
-          stream,
-          tail: 100,
-        },
+        query: { stream,
+          tail: 100},
         path: {
           name: dagName,
           dagRunId,
-          stepName,
-        },
-      },
-    }),
+          stepName}}}),
     {
       refreshInterval: 2000,
-      revalidateOnFocus: false,
-    }
+      revalidateOnFocus: false}
   );
 
   // Use the appropriate query based on whether this is a sub-DAG-run

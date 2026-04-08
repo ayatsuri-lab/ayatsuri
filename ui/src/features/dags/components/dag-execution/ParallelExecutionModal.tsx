@@ -3,8 +3,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  DialogTitle} from '@/components/ui/dialog';
 import { AppBarContext } from '@/contexts/AppBarContext';
 import { useQuery } from '@/hooks/api';
 import { whenEnabled } from '@/hooks/queryUtils';
@@ -42,14 +41,11 @@ export function ParallelExecutionModal({
   onSelectSubRun,
   rootDagName,
   rootDagRunId,
-  parentDagRunId,
-}: Props) {
+  parentDagRunId}: Props) {
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilterValue>('all');
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
-  const appBarContext = useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
 
   // Determine if this is a nested sub-DAG
   const isNestedSubDAG = parentDagRunId && parentDagRunId !== rootDagRunId;
@@ -61,17 +57,10 @@ export function ParallelExecutionModal({
       params: {
         path: {
           name: rootDagName,
-          dagRunId: rootDagRunId,
-        },
-        query: {
-          remoteNode,
-          parentSubDAGRunId: isNestedSubDAG ? parentDagRunId : undefined,
-        },
-      },
-    }),
+          dagRunId: rootDagRunId},
+        query: { parentSubDAGRunId: isNestedSubDAG ? parentDagRunId : undefined}}}),
     {
-      refreshInterval: isOpen ? 3000 : 0,
-    }
+      refreshInterval: isOpen ? 3000 : 0}
   );
 
   // Create a map of dagRunId to status details
@@ -140,8 +129,7 @@ export function ParallelExecutionModal({
         filters.push({
           value: status,
           label: STATUS_DISPLAY_LABELS[status],
-          count,
-        });
+          count});
       }
     }
 

@@ -16,27 +16,20 @@ const { fetchDAGRunDetailsMock, dagRunSSEState, subDAGRunSSEState } =
         error: null,
         isConnected: true,
         isConnecting: false,
-        shouldUseFallback: false,
-      } as any,
-    },
+        shouldUseFallback: false} as any},
     subDAGRunSSEState: {
       current: {
         data: null,
         error: null,
         isConnected: false,
         isConnecting: false,
-        shouldUseFallback: true,
-      } as any,
-    },
-  }));
+        shouldUseFallback: true} as any}}));
 
 vi.mock('@/hooks/useDAGRunSSE', () => ({
-  useDAGRunSSE: vi.fn(() => dagRunSSEState.current),
-}));
+  useDAGRunSSE: vi.fn(() => dagRunSSEState.current)}));
 
 vi.mock('@/hooks/useSubDAGRunSSE', () => ({
-  useSubDAGRunSSE: vi.fn(() => subDAGRunSSEState.current),
-}));
+  useSubDAGRunSSE: vi.fn(() => subDAGRunSSEState.current)}));
 
 vi.mock('../dagRunDetailsRequest', () => ({
   fetchDAGRunDetails: fetchDAGRunDetailsMock,
@@ -50,16 +43,13 @@ vi.mock('../dagRunDetailsRequest', () => ({
     return (
       requestedDagRunId === 'latest' || details.dagRunId === requestedDagRunId
     );
-  },
-}));
+  }}));
 
 function createTarget(overrides: Record<string, string> = {}) {
   return {
-    remoteNode: 'local',
     name: 'billing',
     dagRunId: 'run-1',
-    ...overrides,
-  };
+    ...overrides};
 }
 
 function createDeferred<T>() {
@@ -81,15 +71,13 @@ describe('useBoundedDAGRunDetails', () => {
       error: null,
       isConnected: true,
       isConnecting: false,
-      shouldUseFallback: false,
-    };
+      shouldUseFallback: false};
     subDAGRunSSEState.current = {
       data: null,
       error: null,
       isConnected: false,
       isConnecting: false,
-      shouldUseFallback: true,
-    };
+      shouldUseFallback: true};
   });
 
   afterEach(() => {
@@ -102,8 +90,7 @@ describe('useBoundedDAGRunDetails', () => {
     renderHook(() =>
       useBoundedDAGRunDetails({
         target: createTarget(),
-        pollIntervalMs: 2000,
-      })
+        pollIntervalMs: 2000})
     );
 
     await act(async () => {
@@ -119,8 +106,7 @@ describe('useBoundedDAGRunDetails', () => {
     expect(useDAGRunSSE).toHaveBeenCalledWith(
       'billing',
       'run-1',
-      true,
-      'local'
+      true
     );
   });
 
@@ -137,8 +123,7 @@ describe('useBoundedDAGRunDetails', () => {
     const { result, rerender } = renderHook(() =>
       useBoundedDAGRunDetails({
         target: createTarget(),
-        pollIntervalMs: 2000,
-      })
+        pollIntervalMs: 2000})
     );
 
     await act(async () => {
@@ -151,14 +136,11 @@ describe('useBoundedDAGRunDetails', () => {
         data: {
           dagRunDetails: {
             dagRunId: 'run-1',
-            name: 'billing',
-          },
-        },
+            name: 'billing'}},
         error: null,
         isConnected: true,
         isConnecting: false,
-        shouldUseFallback: false,
-      };
+        shouldUseFallback: false};
       rerender();
     });
 
@@ -167,30 +149,25 @@ describe('useBoundedDAGRunDetails', () => {
     });
     expect(result.current.data).toMatchObject({
       dagRunId: 'run-1',
-      name: 'billing',
-    });
+      name: 'billing'});
 
     expect(capturedSignal?.aborted).toBe(true);
   });
 
-  it('passes the selected remote node to sub DAG-run SSE subscriptions', () => {
+  it('subscribes to sub DAG-run SSE', () => {
     renderHook(() =>
       useBoundedDAGRunDetails({
         target: createTarget({
-          remoteNode: 'remote-a',
           parentName: 'billing',
           parentDAGRunId: 'parent-run',
-          subDAGRunId: 'sub-run',
-        }),
-      })
+          subDAGRunId: 'sub-run'})})
     );
 
     expect(useSubDAGRunSSE).toHaveBeenCalledWith(
       'billing',
       'parent-run',
       'sub-run',
-      true,
-      'remote-a'
+      true
     );
   });
 });

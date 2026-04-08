@@ -6,8 +6,7 @@ import {
   AutomataDisplayStatus,
   AutomataKind,
   Status,
-  type components,
-} from '@/api/v1/schema';
+  type components} from '@/api/v1/schema';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,8 +15,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  SelectValue} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { AppBarContext } from '@/contexts/AppBarContext';
 import { AutomataAvatar } from '@/features/automata/components/AutomataAvatar';
@@ -25,8 +23,7 @@ import { AutomataDetailSurface } from '@/features/automata/components/AutomataDe
 import {
   isValidAutomataIconUrl,
   parseAutomataScheduleText,
-  validateAutomataScheduleExpressions,
-} from '@/features/automata/detail-utils';
+  validateAutomataScheduleExpressions} from '@/features/automata/detail-utils';
 import { useAutomataDetailController } from '@/features/automata/hooks/useAutomataDetail';
 import { useClient, useQuery } from '@/hooks/api';
 import { cn } from '@/lib/utils';
@@ -62,8 +59,7 @@ function DAGNameMultiSelect({
   availableDAGs,
   selectedNames,
   onChange,
-  disabled,
-}: {
+  disabled}: {
   availableDAGs: DAGOption[];
   selectedNames: string[];
   onChange: (names: string[]) => void;
@@ -144,8 +140,7 @@ function DAGNameMultiSelect({
         width: `${width}px`,
         minWidth: `${Math.min(520, availableWidth)}px`,
         maxWidth: `${availableWidth}px`,
-        zIndex: 60,
-      });
+        zIndex: 60});
     }
 
     updateDropdownPosition();
@@ -465,11 +460,7 @@ function AutomataPage(): React.ReactElement {
     {
       params: {
         query: {
-          perPage: 500,
-          remoteNode: appBar.selectedRemoteNode || undefined,
-        },
-      },
-    },
+          perPage: 500}}},
     { refreshInterval: 15000 }
   );
 
@@ -478,13 +469,11 @@ function AutomataPage(): React.ReactElement {
     enabled: !!name,
     onUpdated: async () => {
       await listQuery.mutate();
-    },
-  });
+    }});
   const availableDAGOptions = React.useMemo<DAGOption[]>(() => {
     return (dagListQuery.data?.dags || []).map((dag) => ({
       fileName: dag.fileName,
-      name: dag.dag?.name || dag.fileName,
-    }));
+      name: dag.dag?.name || dag.fileName}));
   }, [dagListQuery.data?.dags]);
   const listItems = (listQuery.data?.automata || []) as AutomataSummary[];
 
@@ -525,8 +514,7 @@ function AutomataPage(): React.ReactElement {
       iconUrl: createIconUrl,
       goal: createGoal,
       schedule: parsedSchedule,
-      allowedDAGNames: createAllowedDAGNames,
-    });
+      allowedDAGNames: createAllowedDAGNames});
     if (validationError) {
       setCreateError(validationError);
       return;
@@ -549,10 +537,7 @@ function AutomataPage(): React.ReactElement {
             schedule: parsedSchedule,
             kind: createKind,
             tags: parseTagInput(createTags),
-            allowedDAGNames: createAllowedDAGNames,
-          }),
-        },
-      });
+            allowedDAGNames: createAllowedDAGNames})}});
       if (apiError) {
         throw new Error(apiError.message || 'Failed to create automata');
       }

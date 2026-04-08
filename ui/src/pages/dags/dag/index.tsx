@@ -6,8 +6,7 @@ import { usePageContext } from '../../../contexts/PageContext';
 import { UnsavedChangesProvider } from '../../../contexts/UnsavedChangesContext';
 import {
   DAGDetailsContent,
-  DAGHeader,
-} from '../../../features/dags/components/dag-details';
+  DAGHeader} from '../../../features/dags/components/dag-details';
 import { DAGContext } from '../../../features/dags/contexts/DAGContext';
 import { RootDAGRunContext } from '../../../features/dags/contexts/RootDAGRunContext';
 import { useQuery } from '../../../hooks/api';
@@ -16,8 +15,7 @@ import { useDAGSSE } from '../../../hooks/useDAGSSE';
 import { whenEnabled } from '../../../hooks/queryUtils';
 import {
   sseFallbackOptions,
-  useSSECacheSync,
-} from '../../../hooks/useSSECacheSync';
+  useSSECacheSync} from '../../../hooks/useSSECacheSync';
 import { useSubDAGRunSSE } from '../../../hooks/useSubDAGRunSSE';
 import dayjs from '../../../lib/dayjs';
 
@@ -32,7 +30,6 @@ type DAGRunDetails = components['schemas']['DAGRunDetails'];
 function DAGDetails() {
   const params = useParams<Params>();
   const navigate = useNavigate();
-  const appBarContext = useContext(AppBarContext);
   const { setContext } = usePageContext();
   const [searchParams] = useSearchParams();
 
@@ -40,10 +37,6 @@ function DAGDetails() {
   const stepName = searchParams.get('step');
   const subDAGRunId = searchParams.get('subDAGRunId');
   const queriedDAGRunName = searchParams.get('dagRunName');
-  const remoteNode =
-    searchParams.get('remoteNode') ||
-    appBarContext.selectedRemoteNode ||
-    'local';
   const fileName = params.fileName || '';
 
   // Set page context for agent chat
@@ -52,8 +45,7 @@ function DAGDetails() {
       setContext({
         dagFile: fileName,
         dagRunId: dagRunId || undefined,
-        source: 'dag-details-page',
-      });
+        source: 'dag-details-page'});
     }
     return () => {
       setContext(null);
@@ -82,15 +74,12 @@ function DAGDetails() {
     []
   );
 
-  // Build URL with remote node parameter if needed
+  // Build URL path
   const buildUrl = useCallback(
     (path: string) => {
-      if (remoteNode && remoteNode !== 'local') {
-        return `${path}?remoteNode=${encodeURIComponent(remoteNode)}`;
-      }
       return path;
     },
-    [remoteNode]
+    []
   );
 
   // Handle tab changes - navigates to the appropriate URL for the given tab
@@ -118,10 +107,7 @@ function DAGDetails() {
     '/dags/{fileName}',
     {
       params: {
-        query: { remoteNode },
-        path: { fileName },
-      },
-    },
+        path: { fileName }}},
     sseFallbackOptions(dagSSE)
   );
   useSSECacheSync(dagSSE, mutateDag);
@@ -134,8 +120,7 @@ function DAGDetails() {
   const dagRunSSE = useDAGRunSSE(
     dagRunName,
     dagRunId || '',
-    dagRunQueryEnabled,
-    remoteNode
+    dagRunQueryEnabled
   );
   const { data: dagRunResponse, mutate: mutateDagRun } = useQuery(
     '/dag-runs/{name}/{dagRunId}',
@@ -143,11 +128,7 @@ function DAGDetails() {
       params: {
         path: {
           name: dagRunName,
-          dagRunId: dagRunId || '',
-        },
-        query: { remoteNode },
-      },
-    }),
+          dagRunId: dagRunId || ''}}}),
     sseFallbackOptions(dagRunSSE)
   );
   useSSECacheSync(dagRunSSE, mutateDagRun);
@@ -158,8 +139,7 @@ function DAGDetails() {
     dagRunName,
     dagRunId || '',
     subDAGRunId || '',
-    subDAGRunQueryEnabled,
-    remoteNode
+    subDAGRunQueryEnabled
   );
   const { data: subDAGRunResponse, mutate: mutateSubDagRun } = useQuery(
     '/dag-runs/{name}/{dagRunId}/sub-dag-runs/{subDAGRunId}',
@@ -168,11 +148,7 @@ function DAGDetails() {
         path: {
           name: dagRunName,
           dagRunId: dagRunId || '',
-          subDAGRunId: subDAGRunId || '',
-        },
-        query: { remoteNode },
-      },
-    }),
+          subDAGRunId: subDAGRunId || ''}}}),
     sseFallbackOptions(subDAGRunSSE)
   );
   useSSECacheSync(subDAGRunSSE, mutateSubDagRun);
@@ -221,14 +197,12 @@ function DAGDetails() {
         value={{
           refresh: refreshData,
           fileName,
-          name: dagRunName,
-        }}
+          name: dagRunName}}
       >
         <RootDAGRunContext.Provider
           value={{
             data: rootDAGRunData,
-            setData: setRootDAGRunData,
-          }}
+            setData: setRootDAGRunData}}
         >
           <div className="max-w-7xl flex flex-col">
             {dagData?.dag && (

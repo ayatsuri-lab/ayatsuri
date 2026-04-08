@@ -11,8 +11,7 @@ import { useQuery } from '../../../../hooks/api';
 import { useDAGSSE } from '../../../../hooks/useDAGSSE';
 import {
   sseFallbackOptions,
-  useSSECacheSync,
-} from '../../../../hooks/useSSECacheSync';
+  useSSECacheSync} from '../../../../hooks/useSSECacheSync';
 import dayjs from '../../../../lib/dayjs';
 import { shouldIgnoreKeyboardShortcuts } from '../../../../lib/keyboard-shortcuts';
 import LoadingIndicator from '../../../../ui/LoadingIndicator';
@@ -50,10 +49,8 @@ type DAGRunDetails = components['schemas']['DAGRunDetails'];
 function DAGDetailsPanel({
   fileName,
   onClose,
-  onNavigate,
-}: Props): React.ReactElement | null {
+  onNavigate}: Props): React.ReactElement | null {
   const navigate = useNavigate();
-  const appBarContext = useContext(AppBarContext);
   const { setContext } = usePageContext();
 
   const [currentDAGRun, setCurrentDAGRun] = useState<
@@ -67,8 +64,7 @@ function DAGDetailsPanel({
     if (fileName) {
       setContext({
         dagFile: fileName,
-        source: 'dag-details-panel',
-      });
+        source: 'dag-details-panel'});
     }
     return () => {
       setContext(null);
@@ -76,17 +72,13 @@ function DAGDetailsPanel({
   }, [fileName, setContext]);
 
   const dagSSE = useDAGSSE(fileName, !!fileName);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   // Fetch DAG details — SWR is the single source of truth, refreshed by live invalidations
   const sseOpts = sseFallbackOptions(dagSSE);
   const { data, error, mutate } = useQuery(
     '/dags/{fileName}',
     {
       params: {
-        query: { remoteNode },
-        path: { fileName: fileName || '' },
-      },
-    },
+        path: { fileName: fileName || '' }}},
     { ...sseOpts, refreshInterval: notFound ? 0 : sseOpts.refreshInterval }
   );
   useSSECacheSync(dagSSE, mutate);
@@ -107,7 +99,7 @@ function DAGDetailsPanel({
   useEffect(() => {
     setNotFound(false);
     setActiveTab('status');
-  }, [fileName, remoteNode]);
+  }, [fileName]);
 
   function refreshFn(): void {
     setTimeout(() => mutate(), 500);
@@ -188,14 +180,12 @@ function DAGDetailsPanel({
         value={{
           refresh: refreshFn,
           fileName: fileName || '',
-          name: data.dag.name || '',
-        }}
+          name: data.dag.name || ''}}
       >
         <RootDAGRunContext.Provider
           value={{
             data: currentDAGRun,
-            setData: setCurrentDAGRun,
-          }}
+            setData: setCurrentDAGRun}}
         >
           <div className="px-2 pt-2 w-full flex flex-col h-full overflow-hidden">
             <div className="flex justify-between items-center mb-2 flex-shrink-0 pr-4">

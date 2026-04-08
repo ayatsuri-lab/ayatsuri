@@ -16,8 +16,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'; // Import Shadcn Tooltip
+  TooltipTrigger} from '@/components/ui/tooltip'; // Import Shadcn Tooltip
 import dayjs from '@/lib/dayjs';
 import ActionButton from '@/ui/ActionButton';
 import StatusChip from '@/ui/StatusChip';
@@ -26,8 +25,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from '@/ui/CustomDialog';
+  DialogTitle} from '@/ui/CustomDialog';
 import { AlertTriangle, Ban, Play, RefreshCw, Square, X } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
@@ -73,9 +71,7 @@ function DAGActions({
   dag,
   refresh,
   displayMode = 'compact',
-  navigateToStatusTab,
-}: Props) {
-  const appBarContext = React.useContext(AppBarContext);
+  navigateToStatusTab}: Props) {
   const dagContext = React.useContext(DAGContext);
   const config = useConfig();
   const { hasUnsavedChanges } = useUnsavedChanges();
@@ -122,13 +118,7 @@ function DAGActions({
           params: {
             path: {
               name: status.name,
-              dagRunId: retryDagRunId,
-            },
-            query: {
-              remoteNode: appBarContext.selectedRemoteNode || 'local',
-            },
-          },
-        });
+              dagRunId: retryDagRunId}}});
         if (cancelled) {
           return;
         }
@@ -151,9 +141,7 @@ function DAGActions({
     return () => {
       cancelled = true;
     };
-  }, [
-    appBarContext.selectedRemoteNode,
-    client,
+  }, [client,
     isRetryModal,
     retryDagRunId,
     status?.name,
@@ -179,12 +167,7 @@ function DAGActions({
       try {
         const { data, error } = await client.GET('/dags/{fileName}', {
           params: {
-            path: { fileName },
-            query: {
-              remoteNode: appBarContext.selectedRemoteNode || 'local',
-            },
-          },
-        });
+            path: { fileName }}});
         if (cancelled) {
           return;
         }
@@ -215,7 +198,7 @@ function DAGActions({
     return () => {
       cancelled = true;
     };
-  }, [appBarContext.selectedRemoteNode, client, fileName, isEnqueueModal]);
+  }, [client, fileName, isEnqueueModal]);
 
   /**
    * Reload DAG data after an action is performed
@@ -239,9 +222,7 @@ function DAGActions({
         status?.name && status?.dagRunId
           ? `Do you really want to stop the dag-run "${status.name}"?`
           : 'Do you really want to cancel the DAG?',
-      cancelConfirmText: `Do you really want to cancel auto-retry for the dag-run "${status?.name || ''}"?`,
-    },
-  });
+      cancelConfirmText: `Do you really want to cancel auto-retry for the dag-run "${status?.name || ''}"?`}});
   const terminateAction = terminateDetails.action;
 
   // Determine which buttons should be enabled based on current status
@@ -252,8 +233,7 @@ function DAGActions({
     retry:
       Boolean(status?.dagRunId) &&
       status?.status !== Status.Running &&
-      status?.status !== Status.Queued,
-  };
+      status?.status !== Status.Queued};
 
   if (!dag || !config.permissions.runDags) {
     return <></>;
@@ -368,14 +348,7 @@ function DAGActions({
                       {
                         params: {
                           path: {
-                            fileName: fileName,
-                          },
-                          query: {
-                            remoteNode:
-                              appBarContext.selectedRemoteNode || 'local',
-                          },
-                        },
-                      }
+                            fileName: fileName}}}
                     );
 
                     if (data?.dagRuns && data.dagRuns.length > 0) {
@@ -464,15 +437,8 @@ function DAGActions({
                           path: {
                             name: status!.name,
                             dagRunId: status!.dagRunId,
-                            stepName: node.step.name,
-                          },
-                          query: {
-                            remoteNode:
-                              appBarContext.selectedRemoteNode || 'local',
-                          },
-                        },
-                        body: { reason: rejectReason || undefined },
-                      }
+                            stepName: node.step.name}},
+                        body: { reason: rejectReason || undefined }}
                     );
                     if (error) {
                       errors.push(node.step.name);
@@ -509,12 +475,7 @@ function DAGActions({
             if (terminateAction === 'stop' && stopAllRunning) {
               const { error } = await client.POST('/dags/{fileName}/stop-all', {
                 params: {
-                  path: { fileName },
-                  query: {
-                    remoteNode: appBarContext.selectedRemoteNode || 'local',
-                  },
-                },
-              });
+                  path: { fileName }}});
               if (error) {
                 console.error('Stop all API error:', error);
                 showError(
@@ -532,15 +493,9 @@ function DAGActions({
                   '/dag-runs/{name}/{dagRunId}/stop',
                   {
                     params: {
-                      query: {
-                        remoteNode: appBarContext.selectedRemoteNode || 'local',
-                      },
                       path: {
                         name: status.name,
-                        dagRunId: status.dagRunId,
-                      },
-                    },
-                  }
+                        dagRunId: status.dagRunId}}}
                 );
                 if (error) {
                   console.error('Stop dag-run API error:', error);
@@ -636,18 +591,11 @@ function DAGActions({
                     params: {
                       path: {
                         name: status.name,
-                        dagRunId: retryDagRunId,
-                      },
-                      query: {
-                        remoteNode: appBarContext.selectedRemoteNode || 'local',
-                      },
-                    },
+                        dagRunId: retryDagRunId}},
                     body: {
                       dagRunId: newRunId || undefined, // Auto-generate if empty
                       ...(dagNameOverride ? { dagName: dagNameOverride } : {}),
-                      useCurrentDagFile,
-                    },
-                  }
+                      useCurrentDagFile}}
                 );
                 if (error) {
                   showError(
@@ -680,16 +628,9 @@ function DAGActions({
                     params: {
                       path: {
                         name: status.name,
-                        dagRunId: retryDagRunId,
-                      },
-                      query: {
-                        remoteNode: appBarContext.selectedRemoteNode || 'local',
-                      },
-                    },
+                        dagRunId: retryDagRunId}},
                     body: {
-                      dagRunId: retryDagRunId,
-                    },
-                  }
+                      dagRunId: retryDagRunId}}
                 );
                 if (error) {
                   showError(
@@ -832,25 +773,13 @@ function DAGActions({
               ? client.POST('/dags/{fileName}/start', {
                   params: {
                     path: {
-                      fileName: fileName,
-                    },
-                    query: {
-                      remoteNode: appBarContext.selectedRemoteNode || 'local',
-                    },
-                  },
-                  body,
-                })
+                      fileName: fileName}},
+                  body})
               : client.POST('/dags/{fileName}/enqueue', {
                   params: {
                     path: {
-                      fileName: fileName,
-                    },
-                    query: {
-                      remoteNode: appBarContext.selectedRemoteNode || 'local',
-                    },
-                  },
-                  body,
-                }));
+                      fileName: fileName}},
+                  body}));
             if (error) {
               throw new Error(
                 error.message || 'Failed to start DAG execution.'

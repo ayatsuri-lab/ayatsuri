@@ -7,8 +7,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  SelectValue} from '@/components/ui/select';
 import { ToggleButton, ToggleGroup } from '@/components/ui/toggle-group';
 import { AppBarContext } from '@/contexts/AppBarContext';
 import { TOKEN_KEY, useCanViewAuditLogs } from '@/contexts/AuthContext';
@@ -62,12 +61,8 @@ export default function AuditLogsPage() {
   const [apiStartTime, setApiStartTime] = useState<string | undefined>();
   const [apiEndTime, setApiEndTime] = useState<string | undefined>();
 
-  // Get selected remote node
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
-
   // Track previous values to detect filter changes
   const prevCategoryRef = useRef(category);
-  const prevRemoteNodeRef = useRef(remoteNode);
   const prevApiStartTimeRef = useRef(apiStartTime);
   const prevApiEndTimeRef = useRef(apiEndTime);
 
@@ -86,28 +81,22 @@ export default function AuditLogsPage() {
         case 'yesterday':
           return {
             from: startOfDay.subtract(1, 'day').format('YYYY-MM-DDTHH:mm:ss'),
-            to: startOfDay.format('YYYY-MM-DDTHH:mm:ss'),
-          };
+            to: startOfDay.format('YYYY-MM-DDTHH:mm:ss')};
         case 'last7days':
           return {
-            from: startOfDay.subtract(7, 'day').format('YYYY-MM-DDTHH:mm:ss'),
-          };
+            from: startOfDay.subtract(7, 'day').format('YYYY-MM-DDTHH:mm:ss')};
         case 'last30days':
           return {
-            from: startOfDay.subtract(30, 'day').format('YYYY-MM-DDTHH:mm:ss'),
-          };
+            from: startOfDay.subtract(30, 'day').format('YYYY-MM-DDTHH:mm:ss')};
         case 'thisWeek':
           return {
-            from: startOfDay.startOf('week').format('YYYY-MM-DDTHH:mm:ss'),
-          };
+            from: startOfDay.startOf('week').format('YYYY-MM-DDTHH:mm:ss')};
         case 'thisMonth':
           return {
-            from: startOfDay.startOf('month').format('YYYY-MM-DDTHH:mm:ss'),
-          };
+            from: startOfDay.startOf('month').format('YYYY-MM-DDTHH:mm:ss')};
         default:
           return {
-            from: startOfDay.subtract(7, 'day').format('YYYY-MM-DDTHH:mm:ss'),
-          };
+            from: startOfDay.subtract(7, 'day').format('YYYY-MM-DDTHH:mm:ss')};
       }
     },
     [config.tzOffsetInSec]
@@ -138,8 +127,7 @@ export default function AuditLogsPage() {
       const unit = period === 'date' ? 'day' : period;
       return {
         from: date.startOf(unit).format('YYYY-MM-DDTHH:mm:ss'),
-        to: date.endOf(unit).format('YYYY-MM-DDTHH:mm:ss'),
-      };
+        to: date.endOf(unit).format('YYYY-MM-DDTHH:mm:ss')};
     },
     [config.tzOffsetInSec]
   );
@@ -205,7 +193,6 @@ export default function AuditLogsPage() {
       let effectiveOffset = offset;
       const filtersChanged =
         prevCategoryRef.current !== category ||
-        prevRemoteNodeRef.current !== remoteNode ||
         prevApiStartTimeRef.current !== apiStartTime ||
         prevApiEndTimeRef.current !== apiEndTime;
 
@@ -214,7 +201,6 @@ export default function AuditLogsPage() {
         if (filtersChanged) {
           setOffset(0);
           prevCategoryRef.current = category;
-          prevRemoteNodeRef.current = remoteNode;
           prevApiStartTimeRef.current = apiStartTime;
           prevApiEndTimeRef.current = apiEndTime;
         }
@@ -225,7 +211,6 @@ export default function AuditLogsPage() {
         const token = localStorage.getItem(TOKEN_KEY);
 
         const params = new URLSearchParams();
-        params.set('remoteNode', remoteNode);
         if (category && category !== 'all') params.set('category', category);
         params.set('limit', String(PAGE_SIZE));
         params.set('offset', String(effectiveOffset));
@@ -236,9 +221,7 @@ export default function AuditLogsPage() {
           `${config.apiURL}/audit?${params.toString()}`,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+              Authorization: `Bearer ${token}`}}
         );
 
         if (!response.ok) {
@@ -260,7 +243,7 @@ export default function AuditLogsPage() {
         setIsLoading(false);
       }
     },
-    [config.apiURL, category, offset, remoteNode, apiStartTime, apiEndTime]
+    [config.apiURL, category, offset, apiStartTime, apiEndTime]
   );
 
   useEffect(() => {

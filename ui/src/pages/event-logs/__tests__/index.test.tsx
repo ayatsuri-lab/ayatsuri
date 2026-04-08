@@ -6,8 +6,7 @@ import {
   fireEvent,
   render,
   screen,
-  waitFor,
-} from '@testing-library/react';
+  waitFor} from '@testing-library/react';
 import * as React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -20,8 +19,7 @@ import EventLogsPage from '../index';
 
 vi.mock('@/hooks/api', () => ({
   useQuery: vi.fn(),
-  useClient: vi.fn(),
-}));
+  useClient: vi.fn()}));
 
 type QueryCall = {
   path: string;
@@ -46,7 +44,6 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
     tzOffsetInSec: 0,
     version: 'test',
     maxDashboardPageLimit: 100,
-    remoteNodes: 'local,remote-a',
     initialWorkspaces: [],
     authMode: 'none',
     setupRequired: false,
@@ -58,8 +55,7 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
     latestVersion: '',
     permissions: {
       writeDags: true,
-      runDags: true,
-    },
+      runDags: true},
     license: {
       valid: true,
       plan: 'community',
@@ -68,8 +64,7 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
       gracePeriod: false,
       community: true,
       source: 'test',
-      warningCode: '',
-    },
+      warningCode: ''},
     paths: {
       dagsDir: '',
       logDir: '',
@@ -81,20 +76,14 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
       procDir: '',
       serviceRegistryDir: '',
       configFileUsed: '',
-      auditLogsDir: '',
-    },
-    ...overrides,
-  };
+      auditLogsDir: ''},
+    ...overrides};
 }
 
 function renderPage({
   initialEntry = '/event-logs',
-  selectedRemoteNode = 'remote-a',
-  configOverrides,
-}: {
-  initialEntry?: string;
-  selectedRemoteNode?: string;
-  configOverrides?: Partial<Config>;
+  configOverrides}: {
+  initialEntry?: string;  configOverrides?: Partial<Config>;
 } = {}) {
   return render(
     <MemoryRouter initialEntries={[initialEntry]}>
@@ -104,12 +93,7 @@ function renderPage({
             <AppBarContext.Provider
               value={{
                 title: '',
-                setTitle: () => undefined,
-                remoteNodes: ['local', 'remote-a'],
-                setRemoteNodes: () => undefined,
-                selectedRemoteNode,
-                selectRemoteNode: () => undefined,
-              }}
+                setTitle: () => undefined}}
             >
               <EventLogsPage />
             </AppBarContext.Provider>
@@ -124,13 +108,11 @@ function mockQueryResult(overrides: Record<string, unknown> = {}) {
   return {
     data: {
       entries: [],
-      nextCursor: undefined,
-    },
+      nextCursor: undefined},
     error: undefined,
     isLoading: false,
     mutate: vi.fn(),
-    ...overrides,
-  } as never;
+    ...overrides} as never;
 }
 
 function latestEventLogsCall(calls: QueryCall[]): QueryCall | undefined {
@@ -147,8 +129,7 @@ describe('EventLogsPage', () => {
     sessionStorage.clear();
     clientGetMock.mockReset();
     useClientMock.mockReturnValue({
-      GET: clientGetMock,
-    });
+      GET: clientGetMock});
   });
 
   afterEach(() => {
@@ -160,8 +141,7 @@ describe('EventLogsPage', () => {
     useQueryMock.mockImplementation(() =>
       mockQueryResult({
         data: undefined,
-        isLoading: true,
-      })
+        isLoading: true})
     );
 
     renderPage();
@@ -171,7 +151,7 @@ describe('EventLogsPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('queries event logs with the selected remote node and cursor pagination defaults', async () => {
+  it('queries event logs with cursor pagination defaults', async () => {
     const calls: QueryCall[] = [];
     useQueryMock.mockImplementation((path, init) => {
       calls.push({ path, init });
@@ -187,12 +167,8 @@ describe('EventLogsPage', () => {
         expect.objectContaining({
           params: {
             query: expect.objectContaining({
-              remoteNode: 'remote-a',
               paginationMode: 'cursor',
-              limit: 50,
-            }),
-          },
-        })
+              limit: 50})}})
       );
     });
   });
@@ -205,8 +181,7 @@ describe('EventLogsPage', () => {
     });
 
     renderPage({
-      initialEntry: '/event-logs?dagName=payments&type=dag.run.failed',
-    });
+      initialEntry: '/event-logs?dagName=payments&type=dag.run.failed'});
 
     await waitFor(() => {
       const call = latestEventLogsCall(calls);
@@ -216,10 +191,7 @@ describe('EventLogsPage', () => {
             query: expect.objectContaining({
               dagName: 'payments',
               type: 'dag.run.failed',
-              paginationMode: 'cursor',
-            }),
-          },
-        })
+              paginationMode: 'cursor'})}})
       );
     });
   });
@@ -232,8 +204,7 @@ describe('EventLogsPage', () => {
     });
 
     renderPage({
-      initialEntry: '/event-logs?kind=automata&type=dag.run.failed',
-    });
+      initialEntry: '/event-logs?kind=automata&type=dag.run.failed'});
 
     await waitFor(() => {
       const call = latestEventLogsCall(calls);
@@ -241,10 +212,7 @@ describe('EventLogsPage', () => {
         expect.objectContaining({
           params: {
             query: expect.objectContaining({
-              kind: 'automata',
-            }),
-          },
-        })
+              kind: 'automata'})}})
       );
       expect(
         (call?.init as { params: { query: Record<string, unknown> } }).params
@@ -259,9 +227,7 @@ describe('EventLogsPage', () => {
       JSON.stringify({
         'eventLogs:remote-a': {
           kind: 'automata',
-          type: 'dag.run.failed',
-        },
-      })
+          type: 'dag.run.failed'}})
     );
 
     const calls: QueryCall[] = [];
@@ -278,10 +244,7 @@ describe('EventLogsPage', () => {
         expect.objectContaining({
           params: {
             query: expect.objectContaining({
-              kind: 'automata',
-            }),
-          },
-        })
+              kind: 'automata'})}})
       );
       expect(
         (call?.init as { params: { query: Record<string, unknown> } }).params
@@ -310,13 +273,9 @@ describe('EventLogsPage', () => {
               attemptId: 'attempt-1',
               status: 'failed',
               data: {
-                reason: 'boom',
-              },
-            },
+                reason: 'boom'}},
           ],
-          nextCursor: undefined,
-        },
-      });
+          nextCursor: undefined}});
     });
 
     renderPage();
@@ -337,10 +296,7 @@ describe('EventLogsPage', () => {
         expect.objectContaining({
           params: {
             query: expect.objectContaining({
-              dagName: 'demo',
-            }),
-          },
-        })
+              dagName: 'demo'})}})
       );
     });
 
@@ -374,10 +330,7 @@ describe('EventLogsPage', () => {
         expect.objectContaining({
           params: {
             query: expect.not.objectContaining({
-              dagName: 'draft-only',
-            }),
-          },
-        })
+              dagName: 'draft-only'})}})
       );
     });
 
@@ -405,10 +358,7 @@ describe('EventLogsPage', () => {
         expect.objectContaining({
           params: {
             query: expect.objectContaining({
-              dagName: 'payments',
-            }),
-          },
-        })
+              dagName: 'payments'})}})
       );
     });
 
@@ -423,10 +373,7 @@ describe('EventLogsPage', () => {
         expect.objectContaining({
           params: {
             query: expect.objectContaining({
-              dagName: 'payments',
-            }),
-          },
-        })
+              dagName: 'payments'})}})
       );
     });
 
@@ -450,12 +397,9 @@ describe('EventLogsPage', () => {
             sourceService: 'scheduler',
             dagName: 'demo',
             dagRunId: 'run-2',
-            attemptId: 'attempt-2',
-          },
-        ],
-      },
-      error: undefined,
-    });
+            attemptId: 'attempt-2'},
+        ]},
+      error: undefined});
     useQueryMock.mockImplementation((path, init) => {
       calls.push({ path, init });
       return mockQueryResult({
@@ -471,12 +415,9 @@ describe('EventLogsPage', () => {
               sourceService: 'scheduler',
               dagName: 'demo',
               dagRunId: 'run-1',
-              attemptId: 'attempt-1',
-            },
+              attemptId: 'attempt-1'},
           ],
-          nextCursor: 'cursor-1',
-        },
-      });
+          nextCursor: 'cursor-1'}});
     });
 
     renderPage();
@@ -487,13 +428,9 @@ describe('EventLogsPage', () => {
       expect(clientGetMock).toHaveBeenCalledWith('/event-logs', {
         params: {
           query: expect.objectContaining({
-            remoteNode: 'remote-a',
             limit: 50,
             paginationMode: 'cursor',
-            cursor: 'cursor-1',
-          }),
-        },
-      });
+            cursor: 'cursor-1'})}});
     });
 
     expect(await screen.findByText('run-2 / attempt-2')).toBeInTheDocument();

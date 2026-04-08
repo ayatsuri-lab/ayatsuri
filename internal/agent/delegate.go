@@ -318,9 +318,6 @@ func runSingleDelegate(ctx ToolContext, task delegateTask) singleDelegateResult 
 	childTools := filterOutTool(dc.Tools, delegateToolName)
 	childTools = filterOutTool(childTools, "ask_user")
 	childTools = filterOutTool(childTools, "navigate")
-	childTools = filterOutTool(childTools, "remote_agent")
-	childTools = filterOutTool(childTools, "list_contexts")
-
 	// Create a cancellable context for the child loop.
 	childCtx, cancelChild := context.WithCancel(ctx.Context)
 	defer cancelChild()

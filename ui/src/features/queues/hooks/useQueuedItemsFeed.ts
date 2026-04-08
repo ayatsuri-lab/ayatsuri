@@ -43,11 +43,8 @@ const mergeQueuedItems = (
 export function useQueuedItemsFeed({
   enabled,
   queueName,
-  refreshToken,
-}: UseQueuedItemsFeedProps) {
+  refreshToken}: UseQueuedItemsFeedProps) {
   const client = useClient();
-  const appBarContext = React.useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const [items, setItems] = React.useState<QueueDAGRun[]>([]);
   const [nextCursor, setNextCursor] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
@@ -96,11 +93,7 @@ export function useQueuedItemsFeed({
             path: { name: queueName },
             query: {
               cursor: reset ? undefined : (nextCursorRef.current ?? undefined),
-              limit: defaultQueuePageSize,
-              remoteNode,
-            },
-          },
-        });
+              limit: defaultQueuePageSize}}});
 
         if (requestIDRef.current !== requestID) {
           return;
@@ -143,7 +136,7 @@ export function useQueuedItemsFeed({
         setIsLoadingMore(false);
       }
     },
-    [client, enabled, queueName, remoteNode]
+    [client, enabled, queueName]
   );
 
   React.useEffect(() => {
@@ -171,6 +164,5 @@ export function useQueuedItemsFeed({
     isLoadingMore,
     items,
     loadMore,
-    reload,
-  };
+    reload};
 }

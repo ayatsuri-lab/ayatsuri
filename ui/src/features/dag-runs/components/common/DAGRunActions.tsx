@@ -12,8 +12,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+  TooltipTrigger} from '@/components/ui/tooltip';
 import dayjs from '@/lib/dayjs';
 import ActionButton from '@/ui/ActionButton';
 import {
@@ -21,8 +20,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from '@/ui/CustomDialog';
+  DialogTitle} from '@/ui/CustomDialog';
 import { Ban, RefreshCw, Square, X } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
@@ -63,9 +61,7 @@ function DAGRunActions({
   name,
   refresh,
   displayMode = 'compact',
-  isRootLevel = true,
-}: Props) {
-  const appBarContext = React.useContext(AppBarContext);
+  isRootLevel = true}: Props) {
   const config = useConfig();
   const { showError } = useErrorModal();
   const { showToast } = useSimpleToast();
@@ -109,13 +105,7 @@ function DAGRunActions({
           params: {
             path: {
               name,
-              dagRunId: dagRun.dagRunId,
-            },
-            query: {
-              remoteNode: appBarContext.selectedRemoteNode || 'local',
-            },
-          },
-        });
+              dagRunId: dagRun.dagRunId}}});
         if (cancelled) {
           return;
         }
@@ -142,9 +132,7 @@ function DAGRunActions({
     return () => {
       cancelled = true;
     };
-  }, [
-    appBarContext.selectedRemoteNode,
-    client,
+  }, [client,
     dagRun?.dagRunId,
     isRetryModal,
     name,
@@ -156,8 +144,7 @@ function DAGRunActions({
     'nodes' in dagRun &&
     Array.isArray((dagRun as components['schemas']['DAGRunDetails']).nodes);
   const terminateDetails = getDAGRunTerminateActionDetails(dagRun, {
-    isRootLevel,
-  });
+    isRootLevel});
   const terminateAction = terminateDetails.action;
 
   // Determine which buttons should be enabled based on current status and root level
@@ -169,8 +156,7 @@ function DAGRunActions({
       dagRun?.status !== Status.Running &&
       dagRun?.status !== Status.Queued &&
       dagRun?.dagRunId !== '',
-    dequeue: isRootLevel && dagRun?.status === Status.Queued,
-  };
+    dequeue: isRootLevel && dagRun?.status === Status.Queued};
 
   if (!dagRun || !config.permissions.runDags) {
     return <></>;
@@ -288,15 +274,9 @@ function DAGRunActions({
               '/dag-runs/{name}/{dagRunId}/stop',
               {
                 params: {
-                  query: {
-                    remoteNode: appBarContext.selectedRemoteNode || 'local',
-                  },
                   path: {
                     name: name,
-                    dagRunId: dagRun.dagRunId,
-                  },
-                },
-              }
+                    dagRunId: dagRun.dagRunId}}}
             );
             if (error) {
               console.error('Stop API error:', error);
@@ -336,18 +316,11 @@ function DAGRunActions({
                   params: {
                     path: {
                       name: name,
-                      dagRunId: dagRun.dagRunId,
-                    },
-                    query: {
-                      remoteNode: appBarContext.selectedRemoteNode || 'local',
-                    },
-                  },
+                      dagRunId: dagRun.dagRunId}},
                   body: {
                     dagRunId: newRunId || undefined, // Auto-generate if empty
                     ...(dagNameOverride ? { dagName: dagNameOverride } : {}), // Use original if empty
-                    useCurrentDagFile,
-                  },
-                }
+                    useCurrentDagFile}}
               );
               if (error) {
                 showError(
@@ -380,16 +353,9 @@ function DAGRunActions({
                   params: {
                     path: {
                       name: name,
-                      dagRunId: dagRun.dagRunId,
-                    },
-                    query: {
-                      remoteNode: appBarContext.selectedRemoteNode || 'local',
-                    },
-                  },
+                      dagRunId: dagRun.dagRunId}},
                   body: {
-                    dagRunId: dagRun.dagRunId,
-                  },
-                }
+                    dagRunId: dagRun.dagRunId}}
               );
               if (error) {
                 showError(
@@ -554,11 +520,8 @@ function DAGRunActions({
                       '/dag-runs/{name}/{dagRunId}/steps/{stepName}/reject',
                       {
                         params: {
-                          path: { name, dagRunId: dagRun!.dagRunId, stepName: node.step.name },
-                          query: { remoteNode: appBarContext.selectedRemoteNode || 'local' },
-                        },
-                        body: { reason: rejectReason || undefined },
-                      }
+                          path: { name, dagRunId: dagRun!.dagRunId, stepName: node.step.name }},
+                        body: { reason: rejectReason || undefined }}
                     );
                     if (error) {
                       errors.push(node.step.name);
@@ -595,13 +558,7 @@ function DAGRunActions({
                 params: {
                   path: {
                     name: name,
-                    dagRunId: dagRun.dagRunId,
-                  },
-                  query: {
-                    remoteNode: appBarContext.selectedRemoteNode || 'local',
-                  },
-                },
-              }
+                    dagRunId: dagRun.dagRunId}}}
             );
             if (error) {
               showError(

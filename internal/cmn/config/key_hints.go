@@ -38,7 +38,6 @@ var legacyToSnakeCaseKey = map[string]string{
 	"navbartitle":            "navbar_title",
 	"maxdashboardpagelimit":  "max_dashboard_page_limit",
 	"lateststatustoday":      "latest_status_today",
-	"remotenodes":            "remote_nodes",
 	"defaultexecutionmode":   "default_execution_mode",
 	"skipexamples":           "skip_examples",
 	// TLS
@@ -98,17 +97,6 @@ var legacyToSnakeCaseKey = map[string]string{
 	"peer.skiptlsverify": "peer.skip_tls_verify",
 	"peer.maxretries":    "peer.max_retries",
 	"peer.retryinterval": "peer.retry_interval",
-
-	// Remote nodes (array items use lowercased camelCase too)
-	"remotenodes.apibaseurl":        "remote_nodes.api_base_url",
-	"remotenodes.authtype":          "remote_nodes.auth_type",
-	"remotenodes.authmode":          "remote_nodes.auth_type",
-	"remotenodes.isbasicauth":       "remote_nodes.auth_type (use value \"basic\" instead of boolean)",
-	"remotenodes.isauthtoken":       "remote_nodes.auth_type (use value \"token\" instead of boolean)",
-	"remotenodes.basicauthusername": "remote_nodes.basic_auth_username",
-	"remotenodes.basicauthpassword": "remote_nodes.basic_auth_password",
-	"remotenodes.authtoken":         "remote_nodes.auth_token",
-	"remotenodes.skiptlsverify":     "remote_nodes.skip_tls_verify",
 
 	// Worker
 	"worker.maxactiveruns":                "worker.max_active_runs",

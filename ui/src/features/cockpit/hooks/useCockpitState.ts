@@ -8,10 +8,8 @@ const WORKSPACE_STORAGE_KEY = 'ayatsuri_cockpit_workspace';
 type WorkspaceResponse = components['schemas']['WorkspaceResponse'];
 
 export function useCockpitState() {
-  const appBarContext = useContext(AppBarContext);
   const config = useConfig();
   const updateConfig = useUpdateConfig();
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const client = useClient();
 
   const [selectedWorkspace, setSelectedWorkspace] = useState(
@@ -44,7 +42,7 @@ export function useCockpitState() {
 
   useEffect(() => {
     setSelectedTemplate('');
-  }, [remoteNode]);
+  }, []);
 
   const selectWorkspace = useCallback((name: string) => {
     setSelectedWorkspace(name);
@@ -60,9 +58,7 @@ export function useCockpitState() {
       if (!name) return;
       setWorkspaceError(null);
       const { data, error } = await client.POST('/workspaces', {
-        params: { query: { remoteNode } },
-        body: { name },
-      });
+        body: { name }});
       if (error) {
         const nextError = new Error(error.message || 'Failed to create workspace');
         console.error(nextError);
@@ -77,15 +73,14 @@ export function useCockpitState() {
         selectWorkspace(data.name);
       }
     },
-    [applyWorkspaces, client, remoteNode, selectWorkspace]
+    [applyWorkspaces, client, selectWorkspace]
   );
 
   const deleteWorkspace = useCallback(
     async (id: string) => {
       setWorkspaceError(null);
       const { error } = await client.DELETE('/workspaces/{workspaceId}', {
-        params: { path: { workspaceId: id }, query: { remoteNode } },
-      });
+        params: { path: { workspaceId: id } }});
       if (error) {
         const nextError = new Error(error.message || 'Failed to delete workspace');
         console.error(nextError);
@@ -95,7 +90,7 @@ export function useCockpitState() {
       applyWorkspaces((prev) => prev.filter((ws) => ws.id !== id));
       selectWorkspace('');
     },
-    [applyWorkspaces, client, remoteNode, selectWorkspace]
+    [applyWorkspaces, client, selectWorkspace]
   );
 
   return {
@@ -106,6 +101,5 @@ export function useCockpitState() {
     selectWorkspace,
     selectTemplate: setSelectedTemplate,
     createWorkspace,
-    deleteWorkspace,
-  };
+    deleteWorkspace};
 }

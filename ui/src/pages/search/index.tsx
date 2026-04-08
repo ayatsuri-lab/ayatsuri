@@ -38,7 +38,6 @@ type SearchFeedPanelProps = {
 
 type SearchFeedProps = {
   query: string;
-  remoteNode: string;
 };
 
 function parseScope(value: string | null): SearchScope {
@@ -115,8 +114,7 @@ function SearchFeedPanel({
   onLoadMore,
   onRetryLoadMore,
   sentinelRef,
-  children,
-}: SearchFeedPanelProps) {
+  children}: SearchFeedPanelProps) {
   if (!query) {
     return (
       <div className="text-sm text-muted-foreground italic">
@@ -191,7 +189,7 @@ function SearchFeedPanel({
   );
 }
 
-function DAGSearchFeed({ query, remoteNode }: SearchFeedProps) {
+function DAGSearchFeed({ query }: SearchFeedProps) {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const { data, error, isLoading, isValidating, setSize, mutate } = useInfinite(
     '/search/dags',
@@ -205,20 +203,14 @@ function DAGSearchFeed({ query, remoteNode }: SearchFeedProps) {
 
       return {
         params: {
-          query: {
-            remoteNode,
-            q: query,
-            cursor: pageIndex === 0 ? undefined : previousPage?.nextCursor,
-          },
-        },
-      };
+          query: { q: query,
+            cursor: pageIndex === 0 ? undefined : previousPage?.nextCursor}}};
     },
     {
       revalidateIfStale: false,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-      revalidateFirstPage: false,
-    }
+      revalidateFirstPage: false}
   );
 
   const pages = data ?? [];
@@ -269,7 +261,7 @@ function DAGSearchFeed({ query, remoteNode }: SearchFeedProps) {
   );
 }
 
-function DocSearchFeed({ query, remoteNode }: SearchFeedProps) {
+function DocSearchFeed({ query }: SearchFeedProps) {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const { data, error, isLoading, isValidating, setSize, mutate } = useInfinite(
     '/search/docs',
@@ -283,20 +275,14 @@ function DocSearchFeed({ query, remoteNode }: SearchFeedProps) {
 
       return {
         params: {
-          query: {
-            remoteNode,
-            q: query,
-            cursor: pageIndex === 0 ? undefined : previousPage?.nextCursor,
-          },
-        },
-      };
+          query: { q: query,
+            cursor: pageIndex === 0 ? undefined : previousPage?.nextCursor}}};
     },
     {
       revalidateIfStale: false,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-      revalidateFirstPage: false,
-    }
+      revalidateFirstPage: false}
   );
 
   const pages = data ?? [];
@@ -354,11 +340,10 @@ function DocSearchFeed({ query, remoteNode }: SearchFeedProps) {
 }
 
 function Search() {
-  const [, setSearchParams] = useSearchParams();
+  const [setSearchParams] = useSearchParams();
   const location = useLocation();
-  const appBarContext = React.useContext(AppBarContext);
   const searchState = useSearchState();
-  const remoteKey = appBarContext.selectedRemoteNode || 'local';
+  const remoteKey = 'local';
   const inputRef = useRef<HTMLInputElement>(null);
   const didHydrateFromSessionRef = useRef(false);
 
@@ -370,8 +355,7 @@ function Search() {
   const currentFilters = useMemo<SearchFilters>(
     () => ({
       searchVal: queryParams.get('q') || '',
-      scope: parseScope(queryParams.get('scope')),
-    }),
+      scope: parseScope(queryParams.get('scope'))}),
     [queryParams]
   );
 
@@ -412,8 +396,7 @@ function Search() {
       syncFilters(
         {
           searchVal: value.trim(),
-          scope: currentFilters.scope,
-        },
+          scope: currentFilters.scope},
         false
       );
     },
@@ -421,7 +404,6 @@ function Search() {
   );
 
   const submittedQuery = currentFilters.searchVal.trim();
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
 
   return (
     <div className="max-w-5xl">
@@ -463,8 +445,7 @@ function Search() {
               onClick={() => {
                 syncFilters({
                   searchVal,
-                  scope: 'dags',
-                });
+                  scope: 'dags'});
               }}
             >
               DAGs
@@ -475,8 +456,7 @@ function Search() {
               onClick={() => {
                 syncFilters({
                   searchVal,
-                  scope: 'docs',
-                });
+                  scope: 'docs'});
               }}
             >
               Docs
@@ -486,9 +466,9 @@ function Search() {
 
         <div className="mt-4 space-y-4">
           {currentFilters.scope === 'docs' ? (
-            <DocSearchFeed query={submittedQuery} remoteNode={remoteNode} />
+            <DocSearchFeed query={submittedQuery} />
           ) : (
-            <DAGSearchFeed query={submittedQuery} remoteNode={remoteNode} />
+            <DAGSearchFeed query={submittedQuery} />
           )}
         </div>
       </div>

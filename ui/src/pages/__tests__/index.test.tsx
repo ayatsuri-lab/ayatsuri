@@ -14,20 +14,16 @@ import { useClient } from '../../hooks/api';
 import DashboardPage from '../index';
 
 vi.mock('../../features/dashboard/components/DashboardTimechart', () => ({
-  default: () => <div data-testid="dashboard-timechart" />,
-}));
+  default: () => <div data-testid="dashboard-timechart" />}));
 
 vi.mock('../../features/dag-runs/components/dag-run-details', () => ({
-  DAGRunDetailsModal: () => null,
-}));
+  DAGRunDetailsModal: () => null}));
 
 vi.mock('../../features/dag-runs/hooks/dagRunPagination', () => ({
-  usePaginatedDAGRuns: vi.fn(),
-}));
+  usePaginatedDAGRuns: vi.fn()}));
 
 vi.mock('../../hooks/api', () => ({
-  useClient: vi.fn(),
-}));
+  useClient: vi.fn()}));
 
 const useClientMock = vi.mocked(useClient);
 const usePaginatedDAGRunsMock = vi.mocked(usePaginatedDAGRuns);
@@ -42,7 +38,6 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
     tzOffsetInSec: 0,
     version: 'test',
     maxDashboardPageLimit: 100,
-    remoteNodes: 'local,remote-a',
     initialWorkspaces: [],
     authMode: 'none',
     setupRequired: false,
@@ -54,8 +49,7 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
     latestVersion: '',
     permissions: {
       writeDags: true,
-      runDags: true,
-    },
+      runDags: true},
     license: {
       valid: true,
       plan: 'community',
@@ -64,8 +58,7 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
       gracePeriod: false,
       community: true,
       source: 'test',
-      warningCode: '',
-    },
+      warningCode: ''},
     paths: {
       dagsDir: '',
       logDir: '',
@@ -77,10 +70,8 @@ function makeConfig(overrides: Partial<Config> = {}): Config {
       procDir: '',
       serviceRegistryDir: '',
       configFileUsed: '',
-      auditLogsDir: '',
-    },
-    ...overrides,
-  };
+      auditLogsDir: ''},
+    ...overrides};
 }
 
 function renderPage() {
@@ -91,12 +82,7 @@ function renderPage() {
           <AppBarContext.Provider
             value={{
               title: '',
-              setTitle: () => undefined,
-              remoteNodes: ['local', 'remote-a'],
-              setRemoteNodes: () => undefined,
-              selectedRemoteNode: 'remote-a',
-              selectRemoteNode: () => undefined,
-            }}
+              setTitle: () => undefined}}
           >
             <DashboardPage />
           </AppBarContext.Provider>
@@ -118,11 +104,7 @@ describe('DashboardPage', () => {
         data: {
           dags: [],
           pagination: {
-            totalPages: 1,
-          },
-        },
-      }),
-    } as never);
+            totalPages: 1}}})} as never);
     usePaginatedDAGRunsMock.mockReturnValue({
       dagRuns: [],
       headPage: undefined,
@@ -132,8 +114,7 @@ describe('DashboardPage', () => {
       loadMoreError: null,
       hasMore: false,
       refresh: vi.fn(),
-      loadMore: vi.fn(),
-    });
+      loadMore: vi.fn()});
   });
 
   afterEach(() => {
@@ -164,7 +145,6 @@ describe('DashboardPage', () => {
 
     expect(latestQuery).toEqual(
       expect.objectContaining({
-        remoteNode: 'remote-a',
         status: [
           Status.Success,
           Status.Failed,
@@ -174,8 +154,7 @@ describe('DashboardPage', () => {
           Status.PartialSuccess,
           Status.Waiting,
           Status.Rejected,
-        ],
-      })
+        ]})
     );
     expect(latestQuery.status).not.toContain(Status.Queued);
   });

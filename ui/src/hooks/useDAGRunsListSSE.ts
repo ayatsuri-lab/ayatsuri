@@ -21,11 +21,10 @@ interface DAGRunsListParams {
 
 export function useDAGRunsListSSE(
   params: DAGRunsListParams = {},
-  enabled: boolean = true,
-  remoteNode?: string
+  enabled: boolean = true
 ): SSEState<DAGRunsListSSEResponse> {
   const endpoint = buildSSEEndpoint('/events/dag-runs', params);
-  return useSSE<DAGRunsListSSEResponse>(endpoint, enabled, remoteNode);
+  return useSSE<DAGRunsListSSEResponse>(endpoint, enabled);
 }
 
 export type { DAGRunsListParams, DAGRunsListSSEResponse };

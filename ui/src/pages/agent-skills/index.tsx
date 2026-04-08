@@ -7,16 +7,14 @@ import {
   Plus,
   Search,
   Sparkles,
-  Trash2,
-} from 'lucide-react';
+  Trash2} from 'lucide-react';
 import { components } from '@/api/v1/schema';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { AppBarContext } from '@/contexts/AppBarContext';
@@ -45,8 +43,6 @@ export default function AgentSkillsPage(): React.ReactNode {
   const [perPage, setPerPage] = useState(DEFAULT_PER_PAGE);
 
   const [deletingSkill, setDeletingSkill] = useState<SkillResponse | null>(null);
-
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const debouncedQuery = useDebouncedValue(searchQuery, 300);
 
   useEffect(() => {
@@ -62,14 +58,9 @@ export default function AgentSkillsPage(): React.ReactNode {
     '/settings/agent/skills',
     {
       params: {
-        query: {
-          remoteNode,
-          page,
+        query: { page,
           perPage,
-          q: debouncedQuery || undefined,
-        },
-      },
-    },
+          q: debouncedQuery || undefined}}},
     { keepPreviousData: true }
   );
 
@@ -90,8 +81,7 @@ export default function AgentSkillsPage(): React.ReactNode {
           ...current,
           skills: current.skills.map((s) =>
             s.id === skill.id ? { ...s, enabled: willEnable } : s
-          ),
-        };
+          )};
       },
       { revalidate: false }
     );
@@ -104,9 +94,7 @@ export default function AgentSkillsPage(): React.ReactNode {
 
     try {
       const { error: apiError } = await client.PUT('/settings/agent/enabled-skills', {
-        params: { query: { remoteNode } },
-        body: { skillIds: newEnabled },
-      });
+        body: { skillIds: newEnabled }});
       if (apiError) {
         await mutate(); // Revert to server state
         throw new Error(apiError.message || 'Failed to update enabled skills');
@@ -120,8 +108,7 @@ export default function AgentSkillsPage(): React.ReactNode {
     if (!deletingSkill) return;
     try {
       const { error: apiError } = await client.DELETE('/settings/agent/skills/{skillId}', {
-        params: { path: { skillId: deletingSkill.id }, query: { remoteNode } },
-      });
+        params: { path: { skillId: deletingSkill.id } }});
       if (apiError) throw new Error(apiError.message || 'Failed to delete skill');
       setDeletingSkill(null);
       setSuccess(`Skill "${deletingSkill.name}" deleted`);

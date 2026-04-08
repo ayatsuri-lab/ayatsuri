@@ -4,13 +4,11 @@ import React, {
   useContext,
   useEffect,
   useRef,
-  useState,
-} from 'react';
+  useState} from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   PathsDocsGetParametersQueryOrder,
-  PathsDocsGetParametersQuerySort,
-} from '@/api/v1/schema';
+  PathsDocsGetParametersQuerySort} from '@/api/v1/schema';
 import SplitLayout from '@/components/SplitLayout';
 import { useSimpleToast } from '@/components/ui/simple-toast';
 import { AppBarContext } from '@/contexts/AppBarContext';
@@ -38,7 +36,6 @@ function titleFromPath(docPath: string): string {
 
 function DocsContent() {
   const appBarContext = useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const navigate = useNavigate();
   const location = useLocation();
   const client = useClient();
@@ -52,8 +49,7 @@ function DocsContent() {
     selectWorkspace,
     selectTemplate,
     createWorkspace,
-    deleteWorkspace,
-  } = useCockpitState();
+    deleteWorkspace} = useCockpitState();
 
   const { setContext } = usePageContext();
   const {
@@ -63,8 +59,7 @@ function DocsContent() {
     closeTab,
     updateTab,
     clearDraft,
-    markTabSaved,
-  } = useDocTabContext();
+    markTabSaved} = useDocTabContext();
 
   // Mobile view state
   const [mobileView, setMobileView] = useState<'tree' | 'editor'>('tree');
@@ -102,27 +97,23 @@ function DocsContent() {
   const sort = docSortField as PathsDocsGetParametersQuerySort;
   const order = docSortOrder as PathsDocsGetParametersQueryOrder;
 
-  const docTreeSSE = useDocTreeSSE({ sort, order, remoteNode });
+  const docTreeSSE = useDocTreeSSE({ sort, order });
 
   const {
     data: treeData,
     mutate,
     error: treeError,
-    isLoading: treeIsLoading,
-  } = useQuery(
+    isLoading: treeIsLoading} = useQuery(
     '/docs',
     {
       params: {
-        query: { remoteNode, perPage: 200, sort, order },
-      },
-    },
+        query: { perPage: 200, sort, order }}},
     {
       ...sseFallbackOptions(docTreeSSE),
       revalidateIfStale: false,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-      keepPreviousData: true,
-    }
+      keepPreviousData: true}
   );
   useSSECacheSync(docTreeSSE, mutate);
 
@@ -138,8 +129,7 @@ function DocsContent() {
       setContext({
         docPath: activeTab.docPath,
         docTitle: activeTab.title,
-        source: 'docs-page',
-      });
+        source: 'docs-page'});
     } else {
       setContext(null);
     }
@@ -241,9 +231,7 @@ function DocsContent() {
       setCreateError(null);
       try {
         const { error } = await client.POST('/docs', {
-          params: { query: { remoteNode } },
-          body: { id: path, content: '' },
-        });
+          body: { id: path, content: '' }});
         if (error) {
           setCreateError(error?.message || 'Failed to create document');
           return;
@@ -258,7 +246,7 @@ function DocsContent() {
         setCreateLoading(false);
       }
     },
-    [client, remoteNode, mutate, openDoc, showToast]
+    [client, mutate, openDoc, showToast]
   );
 
   // Rename handler (from modal)
@@ -268,9 +256,8 @@ function DocsContent() {
       setRenameError(null);
       try {
         const { error } = await client.POST('/docs/doc/rename', {
-          params: { query: { remoteNode, path: renameDocPath } },
-          body: { newPath },
-        });
+          params: { query: { path: renameDocPath } },
+          body: { newPath }});
         if (error) {
           setRenameError(error?.message || 'Failed to rename document');
           return;
@@ -286,8 +273,7 @@ function DocsContent() {
               newPath + tab.docPath.slice(renameDocPath.length);
             updateTab(tab.id, {
               docPath: updatedPath,
-              title: titleFromPath(updatedPath),
-            });
+              title: titleFromPath(updatedPath)});
           }
         }
         showToast('Document renamed');
@@ -298,7 +284,7 @@ function DocsContent() {
         setRenameLoading(false);
       }
     },
-    [client, remoteNode, renameDocPath, mutate, tabs, updateTab, showToast]
+    [client, renameDocPath, mutate, tabs, updateTab, showToast]
   );
 
   // Shared path-change handler for rename and move
@@ -306,9 +292,8 @@ function DocsContent() {
     async (oldPath: string, newPath: string, action: 'renamed' | 'moved') => {
       try {
         const { error } = await client.POST('/docs/doc/rename', {
-          params: { query: { remoteNode, path: oldPath } },
-          body: { newPath },
-        });
+          params: { query: { path: oldPath } },
+          body: { newPath }});
         if (error) {
           showToast(
             error?.message ||
@@ -327,8 +312,7 @@ function DocsContent() {
             const updatedPath = newPath + tab.docPath.slice(oldPath.length);
             updateTab(tab.id, {
               docPath: updatedPath,
-              title: titleFromPath(updatedPath),
-            });
+              title: titleFromPath(updatedPath)});
           }
         }
         showToast(`Document ${action}`);
@@ -339,7 +323,7 @@ function DocsContent() {
         mutate();
       }
     },
-    [client, remoteNode, mutate, tabs, updateTab, showToast]
+    [client, mutate, tabs, updateTab, showToast]
   );
 
   const handleInlineRename = useCallback(
@@ -367,8 +351,7 @@ function DocsContent() {
   const handleDelete = useCallback(async () => {
     try {
       const { error } = await client.DELETE('/docs/doc', {
-        params: { query: { remoteNode, path: deleteDocPath } },
-      });
+        params: { query: { path: deleteDocPath } }});
       if (error) {
         showToast('Failed to delete document');
         return;
@@ -393,7 +376,6 @@ function DocsContent() {
     }
   }, [
     client,
-    remoteNode,
     deleteDocPath,
     mutate,
     tabs,
@@ -407,9 +389,7 @@ function DocsContent() {
   const handleBatchDelete = useCallback(async () => {
     try {
       const { data, error } = await client.POST('/docs/delete-batch', {
-        params: { query: { remoteNode } },
-        body: { paths: batchDeletePaths },
-      });
+        body: { paths: batchDeletePaths }});
       if (error) {
         showToast('Failed to delete documents');
         return;
@@ -442,7 +422,6 @@ function DocsContent() {
   }, [
     batchDeletePaths,
     client,
-    remoteNode,
     mutate,
     tabs,
     closeTab,

@@ -16,7 +16,6 @@ import { useClient } from '../../../../hooks/api';
  * and redirects to the DAG specification page after creation
  */
 function CreateDAGButton() {
-  const appBarContext = React.useContext(AppBarContext);
   const client = useClient();
   const config = useConfig();
   const [error, setError] = React.useState<string | null>(null);
@@ -39,14 +38,9 @@ function CreateDAGButton() {
     try {
       const { error } = await client.POST('/dags', {
         params: {
-          query: {
-            remoteNode: appBarContext.selectedRemoteNode || 'local',
-          },
         },
         body: {
-          name,
-        },
-      });
+          name}});
 
       if (error) {
         setError(error.message || 'An error occurred');

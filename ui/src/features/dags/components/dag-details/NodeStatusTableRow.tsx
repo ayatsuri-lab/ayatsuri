@@ -11,8 +11,7 @@ import { TableCell } from '@/components/ui/table';
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+  TooltipTrigger} from '@/components/ui/tooltip';
 import { AppBarContext } from '@/contexts/AppBarContext';
 import { useClient } from '@/hooks/api';
 import { getExecutorCommand } from '@/lib/executor-utils';
@@ -24,8 +23,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from '@/ui/CustomDialog';
+  DialogTitle} from '@/ui/CustomDialog';
 import {
   AlertCircle,
   ChevronDown,
@@ -34,16 +32,14 @@ import {
   GitBranch,
   Play,
   RefreshCw,
-  X,
-} from 'lucide-react';
+  X} from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   components,
   NodeStatus,
   Status,
-  Stream,
-} from '../../../../api/v1/schema';
+  Stream} from '../../../../api/v1/schema';
 import StyledTableRow from '../../../../ui/StyledTableRow';
 import { NodeStatusChip } from '../common';
 import { InlineLogViewer } from '../common/InlineLogViewer';
@@ -130,13 +126,10 @@ function NodeStatusTableRow({
   node,
   onViewLog,
   dagRun,
-  view = 'desktop',
-}: Props) {
+  view = 'desktop'}: Props) {
   const { dagRunId, name: dagName } = dagRun;
   const navigate = useNavigate();
   const client = useClient();
-  const appBarContext = useContext(AppBarContext);
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const { showError } = useErrorModal();
   // State to store the current duration for running tasks
   const [currentDuration, setCurrentDuration] = useState<string>('-');
@@ -184,7 +177,6 @@ function NodeStatusTableRow({
 
   // Build URL for log viewing
   const searchParams = new URLSearchParams();
-  searchParams.set('remoteNode', remoteNode);
   if (node.step) {
     searchParams.set('step', node.step.name);
   }
@@ -306,11 +298,8 @@ function NodeStatusTableRow({
     try {
       await client.POST('/dag-runs/{name}/{dagRunId}/retry', {
         params: {
-          path: { name: dagName, dagRunId },
-          query: { remoteNode },
-        },
-        body: { dagRunId, stepName: node.step.name },
-      });
+          path: { name: dagName, dagRunId }},
+        body: { dagRunId, stepName: node.step.name }});
       setSuccess(true);
       setShowDialog(false);
     } catch (e) {
@@ -337,8 +326,7 @@ function NodeStatusTableRow({
       name: isSubDAGRun ? dagRun.rootDAGRunName : dagName,
       dagRunId: isSubDAGRun ? dagRun.rootDAGRunId : dagRunId || '',
       stepName: step.name,
-      ...(isSubDAGRun ? { subDAGRunId: dagRun.dagRunId } : {}),
-    };
+      ...(isSubDAGRun ? { subDAGRunId: dagRun.dagRunId } : {})};
 
     // Use the appropriate endpoint
     const endpoint = isSubDAGRun
@@ -348,14 +336,9 @@ function NodeStatusTableRow({
     const { error } = await client.PATCH(endpoint, {
       params: {
         path: pathParams,
-        query: {
-          remoteNode,
-        },
-      },
+        query: { }},
       body: {
-        status,
-      },
-    });
+        status}});
 
     if (error) {
       showError(

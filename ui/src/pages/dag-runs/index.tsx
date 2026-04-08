@@ -11,8 +11,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '../../components/ui/select';
+  SelectValue} from '../../components/ui/select';
 import { TagCombobox } from '../../components/ui/tag-combobox';
 import { ToggleButton, ToggleGroup } from '../../components/ui/toggle-group';
 import { AppBarContext } from '../../contexts/AppBarContext';
@@ -58,8 +57,7 @@ const STATUS_CONFIG: Record<Status, string> = {
   [Status.Queued]: 'queued',
   [Status.PartialSuccess]: 'partially_succeeded',
   [Status.Waiting]: 'waiting',
-  [Status.Rejected]: 'rejected',
-};
+  [Status.Rejected]: 'rejected'};
 
 function StatusSelectDisplay({ status }: { status: string }): React.ReactNode {
   if (status === 'all') {
@@ -129,7 +127,7 @@ function DAGRuns() {
   const config = useConfig();
   const { preferences, updatePreference } = useUserPreferences();
   const searchState = useSearchState();
-  const remoteKey = appBarContext.selectedRemoteNode || 'local';
+  const remoteKey = 'local';
 
   // Extract short datetime format from URL if present
   const parseDateFromUrl = React.useCallback(
@@ -204,8 +202,7 @@ function DAGRuns() {
       dateRangeMode: 'preset',
       datePreset: 'today',
       specificPeriod: 'date',
-      specificValue: dayjs().format('YYYY-MM-DD'),
-    }),
+      specificValue: dayjs().format('YYYY-MM-DD')}),
     [getDefaultFromDate]
   );
 
@@ -273,8 +270,7 @@ function DAGRuns() {
       dateRangeMode,
       datePreset,
       specificPeriod,
-      specificValue,
-    }),
+      specificValue}),
     [
       searchText,
       dagRunId,
@@ -301,8 +297,7 @@ function DAGRuns() {
     const stored = searchState.readState<DAGRunsFilters>('dagRuns', remoteKey);
     const base: DAGRunsFilters = {
       ...defaultFilters,
-      ...(stored ?? {}),
-    };
+      ...(stored ?? {})};
 
     const urlFilters: Partial<DAGRunsFilters> = {};
     let hasUrlFilters = false;
@@ -429,31 +424,22 @@ function DAGRuns() {
   // Fetch available tags for the filter dropdown
   const { data: tagsData } = useQuery(
     '/dags/tags',
-    {
-      params: {
-        query: {
-          remoteNode: appBarContext.selectedRemoteNode || 'local',
-        },
-      },
-    },
+    undefined,
     {
       revalidateOnFocus: false,
-      revalidateIfStale: false,
-    }
+      revalidateIfStale: false}
   );
   const availableTags = tagsData?.tags ?? [];
 
   const dagRunQuery = React.useMemo(
     () => ({
-      remoteNode: appBarContext.selectedRemoteNode || 'local',
       name: apiSearchText || undefined,
       dagRunId: apiDagRunId || undefined,
       status: apiStatus !== 'all' ? [parseInt(apiStatus)] : undefined,
       tags: apiTags.length > 0 ? apiTags.join(',') : undefined,
       fromDate: formatDateForApi(apiFromDate),
       toDate: formatDateForApi(apiToDate),
-      limit: 100,
-    }),
+      limit: 100}),
     [
       apiDagRunId,
       apiFromDate,
@@ -461,7 +447,6 @@ function DAGRuns() {
       apiStatus,
       apiTags,
       apiToDate,
-      appBarContext.selectedRemoteNode,
     ]
   );
   const {
@@ -470,10 +455,8 @@ function DAGRuns() {
     loadMoreError,
     hasMore,
     refresh: refreshDagRuns,
-    loadMore: handleLoadMore,
-  } = usePaginatedDAGRuns({
-    query: dagRunQuery,
-  });
+    loadMore: handleLoadMore} = usePaginatedDAGRuns({
+    query: dagRunQuery});
   React.useEffect(() => {
     if (!isLoadingMore) {
       autoLoadPendingRef.current = false;
@@ -497,8 +480,7 @@ function DAGRuns() {
     selectAllLoaded,
     selectedKeys,
     selectedRuns,
-    toggleSelection,
-  } = useBulkDAGRunSelection(dagRuns);
+    toggleSelection} = useBulkDAGRunSelection(dagRuns);
 
   const addSearchParam = (key: string, value: string | undefined) => {
     const locationQuery = new URLSearchParams(window.location.search);
@@ -582,16 +564,13 @@ function DAGRuns() {
       case 'yesterday':
         return {
           from: startOfDay.subtract(1, 'day').format('YYYY-MM-DDTHH:mm'),
-          to: startOfDay.format('YYYY-MM-DDTHH:mm'),
-        };
+          to: startOfDay.format('YYYY-MM-DDTHH:mm')};
       case 'last7days':
         return {
-          from: startOfDay.subtract(7, 'day').format('YYYY-MM-DDTHH:mm'),
-        };
+          from: startOfDay.subtract(7, 'day').format('YYYY-MM-DDTHH:mm')};
       case 'last30days':
         return {
-          from: startOfDay.subtract(30, 'day').format('YYYY-MM-DDTHH:mm'),
-        };
+          from: startOfDay.subtract(30, 'day').format('YYYY-MM-DDTHH:mm')};
       case 'thisWeek':
         return { from: startOfDay.startOf('week').format('YYYY-MM-DDTHH:mm') };
       case 'thisMonth':
@@ -623,22 +602,19 @@ function DAGRuns() {
         const date = dayjs(value);
         return {
           from: date.startOf('day').format('YYYY-MM-DDTHH:mm'),
-          to: date.endOf('day').format('YYYY-MM-DDTHH:mm'),
-        };
+          to: date.endOf('day').format('YYYY-MM-DDTHH:mm')};
       }
       case 'month': {
         const date = dayjs(value);
         return {
           from: date.startOf('month').format('YYYY-MM-DDTHH:mm'),
-          to: date.endOf('month').format('YYYY-MM-DDTHH:mm'),
-        };
+          to: date.endOf('month').format('YYYY-MM-DDTHH:mm')};
       }
       case 'year': {
         const date = dayjs(value);
         return {
           from: date.startOf('year').format('YYYY-MM-DDTHH:mm'),
-          to: date.endOf('year').format('YYYY-MM-DDTHH:mm'),
-        };
+          to: date.endOf('year').format('YYYY-MM-DDTHH:mm')};
       }
     }
   };

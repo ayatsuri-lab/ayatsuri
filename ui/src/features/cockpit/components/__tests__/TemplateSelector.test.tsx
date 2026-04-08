@@ -9,17 +9,11 @@ import { useQuery } from '@/hooks/api';
 import { TemplateSelector } from '../TemplateSelector';
 
 vi.mock('@/hooks/api', () => ({
-  useQuery: vi.fn(),
-}));
+  useQuery: vi.fn()}));
 
 const appBarValue = {
   title: 'Cockpit',
-  setTitle: vi.fn(),
-  remoteNodes: ['local'],
-  setRemoteNodes: vi.fn(),
-  selectedRemoteNode: 'local',
-  selectRemoteNode: vi.fn(),
-};
+  setTitle: vi.fn()};
 
 const mockDags = [
   {
@@ -29,10 +23,8 @@ const mockDags = [
       group: 'main',
       tags: ['batch', 'workspace=ops'],
       description: 'Example workflow',
-      params: [],
-    },
-    errors: [],
-  },
+      params: []},
+    errors: []},
 ];
 
 const queryCalls: Array<{
@@ -98,9 +90,7 @@ describe('TemplateSelector', () => {
     expect(latestQueryCall('/dags')?.init).toEqual(
       expect.objectContaining({
         params: expect.objectContaining({
-          query: expect.objectContaining({ remoteNode: 'local' }),
-        }),
-      })
+          query: expect.objectContaining({ })})})
     );
     expect(latestQueryCall('/dags/tags')?.init).toBeNull();
 
@@ -109,9 +99,7 @@ describe('TemplateSelector', () => {
     expect(latestQueryCall('/dags/tags')?.init).toEqual(
       expect.objectContaining({
         params: expect.objectContaining({
-          query: { remoteNode: 'local' },
-        }),
-      })
+          query: { }})})
     );
   });
 

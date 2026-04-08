@@ -21,10 +21,8 @@ function DAGRunDetailsPanel({
   name,
   dagRunId,
   onClose,
-  onNavigate,
-}: Props): React.ReactElement {
+  onNavigate}: Props): React.ReactElement {
   const navigate = useNavigate();
-  const appBarContext = React.useContext(AppBarContext);
 
   // Parse sub DAG-run params from URL
   const searchParams = new URLSearchParams(window.location.search);
@@ -32,34 +30,26 @@ function DAGRunDetailsPanel({
   const parentDAGRunId = searchParams.get('dagRunId');
   const parentName = searchParams.get('dagRunName') || name;
   const isSubDAGRun = Boolean(subDAGRunId && parentDAGRunId && parentName);
-
-  const remoteNode = appBarContext.selectedRemoteNode || 'local';
   const detailsTarget = isSubDAGRun
     ? {
-        remoteNode,
         name: name || '',
         dagRunId: dagRunId || 'latest',
         parentName: parentName as string,
         parentDAGRunId: parentDAGRunId as string,
-        subDAGRunId: subDAGRunId as string,
-      }
+        subDAGRunId: subDAGRunId as string}
     : name
       ? {
-          remoteNode,
           name,
-          dagRunId: dagRunId || 'latest',
-        }
+          dagRunId: dagRunId || 'latest'}
       : null;
 
   const {
     data: latestDetails,
     error,
-    refresh,
-  } = useBoundedDAGRunDetails({
+    refresh} = useBoundedDAGRunDetails({
     target: detailsTarget,
     enabled: detailsTarget !== null,
-    pollIntervalMs: detailsTarget ? 2000 : 0,
-  });
+    pollIntervalMs: detailsTarget ? 2000 : 0});
 
   const expectedDagRunId = isSubDAGRun
     ? (subDAGRunId as string)
@@ -147,8 +137,7 @@ function DAGRunDetailsPanel({
       value={{
         refresh: refreshFn,
         name: name || '',
-        dagRunId: dagRunId || '',
-      }}
+        dagRunId: dagRunId || ''}}
     >
       <div className="p-4 w-full flex flex-col h-full overflow-hidden">
         <div className="flex justify-between items-center mb-3 flex-shrink-0">

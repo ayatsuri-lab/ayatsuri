@@ -5,7 +5,6 @@ package frontend
 
 import (
 	"context"
-	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -59,14 +58,12 @@ import (
 	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filedoc"
 	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileeventstore"
 	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filememory"
-	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileremotenode"
 	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filesession"
 	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filetokensecret"
 	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileupgradecheck"
 	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileuser"
 	"github.com/ayatsuri-lab/ayatsuri/internal/persis/filewebhook"
 	"github.com/ayatsuri-lab/ayatsuri/internal/persis/fileworkspace"
-	"github.com/ayatsuri-lab/ayatsuri/internal/remotenode"
 	"github.com/ayatsuri-lab/ayatsuri/internal/runtime"
 	"github.com/ayatsuri-lab/ayatsuri/internal/service/audit"
 	authservice "github.com/ayatsuri-lab/ayatsuri/internal/service/auth"
@@ -119,7 +116,6 @@ type Server struct {
 	tunnelAPIOpts      []apiv1.APIOption
 	dagStore           exec.DAGStore
 	licenseManager     *license.Manager
-	remoteNodeResolver *remotenode.Resolver
 	upgradeStore       upgrade.CacheStore
 	agentAPICallback   func(*agent.API)
 }
@@ -176,11 +172,6 @@ func WithAPIOption(opt apiv1.APIOption) ServerOption {
 func NewServer(ctx context.Context, cfg *config.Config, dr exec.DAGStore, drs exec.DAGRunStore, qs exec.QueueStore, ps exec.ProcStore, drm runtime.Manager, cc coordinator.Client, sr exec.ServiceRegistry, mr *prometheus.Registry, collector *telemetry.Collector, rs *resource.Service, opts ...ServerOption) (*Server, error) {
 	if ctx == nil {
 		ctx = context.Background()
-	}
-
-	remoteNodes := make([]string, 0, len(cfg.Server.RemoteNodes))
-	for _, n := range cfg.Server.RemoteNodes {
-		remoteNodes = append(remoteNodes, n.Name)
 	}
 
 	var (
@@ -317,11 +308,10 @@ func NewServer(ctx context.Context, cfg *config.Config, dr exec.DAGStore, drs ex
 		}
 	}
 
-	// Initialize remote node store and resolver
+	// Initialize encryption for encrypted stores (e.g. OAuth tokens)
 	var (
-		remoteNodeResolver *remotenode.Resolver
-		encryptor          *crypto.Encryptor
-		agentOAuthManager  *agentoauth.Manager
+		encryptor         *crypto.Encryptor
+		agentOAuthManager *agentoauth.Manager
 	)
 	encKey, encErr := crypto.ResolveKey(cfg.Paths.DataDir)
 	if encErr != nil {
@@ -331,28 +321,7 @@ func NewServer(ctx context.Context, cfg *config.Config, dr exec.DAGStore, drs ex
 		encryptor, encErr = crypto.NewEncryptor(encKey)
 		if encErr != nil {
 			logger.Warn(ctx, "Failed to create encryptor for encrypted stores", tag.Error(encErr))
-		} else {
-			rnStore, rnErr := fileremotenode.New(cfg.Paths.RemoteNodesDir, encryptor)
-			if rnErr != nil {
-				logger.Warn(ctx, "Failed to create remote node store", tag.Error(rnErr))
-			} else {
-				remoteNodeResolver = remotenode.NewResolver(cfg.Server.RemoteNodes, rnStore)
-				apiOpts = append(apiOpts,
-					apiv1.WithRemoteNodeResolver(remoteNodeResolver),
-					apiv1.WithRemoteNodeStore(rnStore),
-				)
-			}
 		}
-	}
-	if remoteNodeResolver == nil {
-		// Fallback: resolver with config nodes only (no store)
-		remoteNodeResolver = remotenode.NewResolver(cfg.Server.RemoteNodes, nil)
-		apiOpts = append(apiOpts, apiv1.WithRemoteNodeResolver(remoteNodeResolver))
-	}
-
-	// Update template remote nodes list to include store-managed nodes
-	if names, err := remoteNodeResolver.ListNames(ctx); err == nil && len(names) > 0 {
-		remoteNodes = names
 	}
 
 	if encryptor != nil {
@@ -375,7 +344,7 @@ func NewServer(ctx context.Context, cfg *config.Config, dr exec.DAGStore, drs ex
 
 	var agentAPI *agent.API
 	if agentConfigStore != nil {
-		agentAPI, err = initAgentAPI(ctx, agentConfigStore, agentModelStore, agentSkillStore, agentSoulStore, agentOAuthManager, &cfg.Paths, referencesDir, cfg.Server.Session.MaxPerUser, dr, auditSvc, eventSvc, memoryStore, newRemoteNodeAdapter(remoteNodeResolver))
+		agentAPI, err = initAgentAPI(ctx, agentConfigStore, agentModelStore, agentSkillStore, agentSoulStore, agentOAuthManager, &cfg.Paths, referencesDir, cfg.Server.Session.MaxPerUser, dr, auditSvc, eventSvc, memoryStore)
 		if err != nil {
 			logger.Warn(ctx, "Failed to initialize agent API", tag.Error(err))
 		}
@@ -426,7 +395,6 @@ func NewServer(ctx context.Context, cfg *config.Config, dr exec.DAGStore, drs ex
 		eventService:       eventSvc,
 		metricsRegistry: mr,
 		dagStore:           dr,
-		remoteNodeResolver: remoteNodeResolver,
 		upgradeStore:       upgradeStore,
 		funcsConfig: funcsConfig{
 			NavbarColor:           cfg.UI.NavbarColor,
@@ -436,7 +404,6 @@ func NewServer(ctx context.Context, cfg *config.Config, dr exec.DAGStore, drs ex
 			TZ:                    cfg.Core.TZ,
 			TzOffsetInSec:         cfg.Core.TzOffsetInSec,
 			MaxDashboardPageLimit: cfg.UI.MaxDashboardPageLimit,
-			RemoteNodes:           remoteNodes,
 			Permissions:           cfg.Server.Permissions,
 			Paths:                 cfg.Paths,
 			AuthMode:              cfg.Server.Auth.Mode,
@@ -750,7 +717,7 @@ func autoEnableExampleSkills(ctx context.Context, configStore agent.ConfigStore)
 
 // initAgentAPI creates and returns an agent API.
 // The API uses the config store to check enabled status and resolve providers via the model store.
-func initAgentAPI(ctx context.Context, store *fileagentconfig.Store, modelStore agent.ModelStore, skillStore agent.SkillStore, soulStore agent.SoulStore, oauthManager *agentoauth.Manager, paths *config.PathsConfig, referencesDir string, sessionMaxPerUser int, dagStore exec.DAGStore, auditSvc *audit.Service, eventSvc *eventstore.Service, memoryStore agent.MemoryStore, remoteResolver agent.RemoteContextResolver) (*agent.API, error) {
+func initAgentAPI(ctx context.Context, store *fileagentconfig.Store, modelStore agent.ModelStore, skillStore agent.SkillStore, soulStore agent.SoulStore, oauthManager *agentoauth.Manager, paths *config.PathsConfig, referencesDir string, sessionMaxPerUser int, dagStore exec.DAGStore, auditSvc *audit.Service, eventSvc *eventstore.Service, memoryStore agent.MemoryStore) (*agent.API, error) {
 	sessStore, err := filesession.New(paths.SessionsDir, filesession.WithMaxPerUser(sessionMaxPerUser))
 	if err != nil {
 		logger.Warn(ctx, "Failed to create session store, persistence disabled", tag.Error(err))
@@ -775,7 +742,6 @@ func initAgentAPI(ctx context.Context, store *fileagentconfig.Store, modelStore 
 		EventService:          eventSvc,
 		MemoryStore:           memoryStore,
 		OAuthManager:          oauthManager,
-		RemoteContextResolver: remoteResolver,
 		Environment: agent.EnvironmentInfo{
 			DAGsDir:        paths.DAGsDir,
 			DocsDir:        paths.DocsDir,
@@ -1134,8 +1100,8 @@ func (srv *Server) setupSSERoute(ctx context.Context, r *chi.Mux, apiV1BasePath 
 		sse.StartDAGRunEventInvalidation(srv.sseMultiplexer.Context(), srv.eventService, srv.sseMultiplexer, slog.Default(), time.Second)
 	}
 
-	multiplexHandler := sse.NewMultiplexHandler(srv.sseMultiplexer, srv.remoteNodeResolver)
-	appHandler := sse.NewAppHandler(srv.appStream, srv.remoteNodeResolver)
+	multiplexHandler := sse.NewMultiplexHandler(srv.sseMultiplexer)
+	appHandler := sse.NewAppHandler(srv.appStream)
 
 	authOpts := srv.buildStreamAuthOptions("restricted")
 
@@ -1184,124 +1150,9 @@ func (srv *Server) setupAgentRoutes(ctx context.Context, r *chi.Mux, apiV1BasePa
 	// All other agent endpoints are served through the OpenAPI handler.
 	streamPath := path.Join(apiV1BasePath, "agent/sessions/{id}/stream")
 	r.With(srv.agentAPI.EnabledMiddleware(), authMiddleware).Get(
-		streamPath, srv.handleAgentStream(apiV1BasePath),
+		streamPath, srv.agentAPI.HandleStream,
 	)
 	logger.Info(ctx, "Agent SSE stream route configured")
-}
-
-// handleAgentStream returns a handler that checks for remoteNode and either
-// proxies the SSE stream to the remote node or delegates to the local handler.
-func (srv *Server) handleAgentStream(apiV1BasePath string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		remoteNodeName := r.URL.Query().Get("remoteNode")
-		if remoteNodeName == "" || remoteNodeName == "local" {
-			srv.agentAPI.HandleStream(w, r)
-			return
-		}
-		srv.proxyAgentStream(w, r, remoteNodeName, apiV1BasePath)
-	}
-}
-
-// proxyAgentStream proxies the agent SSE stream to a remote node.
-// It follows the same streaming pattern as sse/proxy.go:proxyToRemoteNode.
-func (srv *Server) proxyAgentStream(w http.ResponseWriter, r *http.Request, nodeName, apiV1BasePath string) {
-	if srv.remoteNodeResolver == nil {
-		http.Error(w, "remote node resolution not available", http.StatusServiceUnavailable)
-		return
-	}
-
-	node, err := srv.remoteNodeResolver.GetByName(r.Context(), nodeName)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("unknown remote node: %s", nodeName), http.StatusBadRequest)
-		return
-	}
-
-	// Build remote URL: strip apiBasePath prefix, append to node's APIBaseURL.
-	remoteURL := buildAgentStreamRemoteURL(node.APIBaseURL, r.URL.Path, apiV1BasePath)
-
-	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, remoteURL, nil)
-	if err != nil {
-		http.Error(w, "failed to create proxy request", http.StatusInternalServerError)
-		return
-	}
-	req.Header.Set("Accept", "text/event-stream")
-	node.ApplyAuth(req)
-
-	// Forward the token query param for auth on the remote node.
-	if token := r.URL.Query().Get("token"); token != "" {
-		q := req.URL.Query()
-		q.Set("token", token)
-		req.URL.RawQuery = q.Encode()
-	}
-
-	client := &http.Client{
-		// Timeout: 0 is safe for SSE because the request is created with
-		// r.Context() which is cancelled when the client disconnects.
-		Timeout: 0,
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: node.SkipTLSVerify, //nolint:gosec
-				MinVersion:         tls.VersionTLS12,
-			},
-			MaxIdleConns:       10,
-			IdleConnTimeout:    90 * time.Second,
-			DisableCompression: true,
-		},
-	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		if r.Context().Err() != nil {
-			return // Client disconnected
-		}
-		http.Error(w, "failed to connect to remote node", http.StatusBadGateway)
-		return
-	}
-	defer func() { _ = resp.Body.Close() }()
-
-	if resp.StatusCode != http.StatusOK {
-		http.Error(w, fmt.Sprintf("remote node returned status: %d", resp.StatusCode), resp.StatusCode)
-		return
-	}
-
-	flusher, ok := w.(http.Flusher)
-	if !ok {
-		http.Error(w, "streaming not supported", http.StatusInternalServerError)
-		return
-	}
-
-	// Set SSE headers and clear the write deadline to prevent the server's
-	// WriteTimeout (60s) from killing this long-lived SSE connection.
-	w.Header().Set("Content-Type", "text/event-stream")
-	w.Header().Set("Cache-Control", "no-cache")
-	w.Header().Set("Connection", "keep-alive")
-	w.Header().Set("X-Accel-Buffering", "no")
-	rc := http.NewResponseController(w)
-	_ = rc.SetWriteDeadline(time.Time{})
-
-	// Stream chunks from remote to client.
-	buf := make([]byte, 4096)
-	for {
-		n, readErr := resp.Body.Read(buf)
-		if n > 0 {
-			if _, writeErr := w.Write(buf[:n]); writeErr != nil {
-				return // defer resp.Body.Close() handles cleanup
-			}
-			flusher.Flush()
-		}
-		if readErr != nil {
-			return
-		}
-	}
-}
-
-// buildAgentStreamRemoteURL constructs the SSE stream URL for a remote node.
-func buildAgentStreamRemoteURL(baseURL, requestPath, apiV1BasePath string) string {
-	parts := strings.SplitN(requestPath, apiV1BasePath, 2)
-	if len(parts) < 2 {
-		return strings.TrimSuffix(baseURL, "/") + requestPath
-	}
-	return strings.TrimSuffix(baseURL, "/") + parts[1]
 }
 
 func (srv *Server) buildAgentAuthMiddleware(_ context.Context) func(http.Handler) http.Handler {

@@ -7,7 +7,6 @@ import fetchJson from '@/lib/fetchJson';
 export type DAGRunDetails = components['schemas']['DAGRunDetails'];
 
 export type DAGRunDetailsRequestTarget = {
-  remoteNode: string;
   name: string;
   dagRunId: string;
   parentName?: string;
@@ -29,20 +28,14 @@ export function matchesRequestedDAGRunDetails(
   return requestedDagRunId === 'latest' || details.dagRunId === requestedDagRunId;
 }
 
-function buildQueryString(remoteNode: string): string {
-  return new URLSearchParams({ remoteNode }).toString();
-}
-
 export function buildDAGRunDetailsPath(
   target: DAGRunDetailsRequestTarget
 ): string {
-  const query = buildQueryString(target.remoteNode);
-
   if (target.subDAGRunId && target.parentDAGRunId && target.parentName) {
-    return `/dag-runs/${encodeURIComponent(target.parentName)}/${encodeURIComponent(target.parentDAGRunId)}/sub-dag-runs/${encodeURIComponent(target.subDAGRunId)}?${query}`;
+    return `/dag-runs/${encodeURIComponent(target.parentName)}/${encodeURIComponent(target.parentDAGRunId)}/sub-dag-runs/${encodeURIComponent(target.subDAGRunId)}`;
   }
 
-  return `/dag-runs/${encodeURIComponent(target.name)}/${encodeURIComponent(target.dagRunId)}?${query}`;
+  return `/dag-runs/${encodeURIComponent(target.name)}/${encodeURIComponent(target.dagRunId)}`;
 }
 
 export async function fetchDAGRunDetails(

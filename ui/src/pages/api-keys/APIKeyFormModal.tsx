@@ -11,15 +11,13 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  SelectValue} from '@/components/ui/select';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
+  DialogFooter} from '@/components/ui/dialog';
 import { Copy, Check } from 'lucide-react';
 
 type APIKey = components['schemas']['APIKey'];
@@ -33,7 +31,6 @@ interface APIKeyFormModalProps {
 
 export function APIKeyFormModal({ open, apiKey, onClose, onSuccess }: APIKeyFormModalProps) {
   const config = useConfig();
-  const appBarContext = useContext(AppBarContext);
   const isEditing = !!apiKey;
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -67,23 +64,19 @@ export function APIKeyFormModal({ open, apiKey, onClose, onSuccess }: APIKeyForm
 
     try {
       const token = localStorage.getItem(TOKEN_KEY);
-      const remoteNode = appBarContext.selectedRemoteNode || 'local';
       const url = isEditing
-        ? `${config.apiURL}/api-keys/${apiKey.id}?remoteNode=${remoteNode}`
-        : `${config.apiURL}/api-keys?remoteNode=${remoteNode}`;
+        ? `${config.apiURL}/api-keys/${apiKey.id}`
+        : `${config.apiURL}/api-keys`;
 
       const response = await fetch(url, {
         method: isEditing ? 'PATCH' : 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`},
         body: JSON.stringify({
           name,
           description: description || undefined,
-          role,
-        }),
-      });
+          role})});
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
