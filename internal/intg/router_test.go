@@ -24,7 +24,6 @@ func TestRouterExecutor(t *testing.T) {
 		{
 			name: "ExactMatch",
 			dagYAML: `
-type: graph
 env:
   - INPUT: exact_value
 steps:
@@ -51,7 +50,6 @@ steps:
 		{
 			name: "RegexMatch",
 			dagYAML: `
-type: graph
 env:
   - INPUT: apple_pie
 steps:
@@ -78,7 +76,6 @@ steps:
 		{
 			name: "CatchAllRoute",
 			dagYAML: `
-type: graph
 env:
   - INPUT: unknown_value
 steps:
@@ -105,7 +102,6 @@ steps:
 		{
 			name: "MultipleTargetsPerRoute",
 			dagYAML: `
-type: graph
 env:
   - INPUT: trigger
 steps:
@@ -139,7 +135,6 @@ steps:
 		{
 			name: "MultipleMatchingRoutes",
 			dagYAML: `
-type: graph
 env:
   - INPUT: success_code
 steps:
@@ -173,7 +168,6 @@ steps:
 		{
 			name: "NoMatchingRoute",
 			dagYAML: `
-type: graph
 env:
   - INPUT: no_match
 steps:
@@ -201,7 +195,6 @@ steps:
 		{
 			name: "RouterWithEnvVarExpansion",
 			dagYAML: `
-type: graph
 env:
   - STATUS: production
 steps:
@@ -252,7 +245,6 @@ func TestRouterComplexScenarios(t *testing.T) {
 
 		th := test.Setup(t)
 		dag := th.DAG(t, `
-type: graph
 env:
   - CATEGORY: electronics
   - SUBCATEGORY: phone
@@ -308,7 +300,6 @@ steps:
 
 		th := test.Setup(t)
 		dag := th.DAG(t, `
-type: graph
 env:
   - MODE: premium
 steps:
@@ -371,7 +362,6 @@ steps:
 
 		th := test.Setup(t)
 		dag := th.DAG(t, `
-type: graph
 env:
   - TRIGGER: all
 steps:
@@ -440,7 +430,6 @@ steps:
 
 		th := test.Setup(t)
 		dag := th.DAG(t, `
-type: graph
 steps:
   - name: check_status
     command: echo "success"
@@ -492,7 +481,6 @@ func TestRouterStepStatus(t *testing.T) {
 
 		th := test.Setup(t)
 		dag := th.DAG(t, `
-type: graph
 env:
   - INPUT: route_a
 steps:
@@ -540,7 +528,6 @@ func TestRouterValidation(t *testing.T) {
 
 		// Write DAG file manually to test validation error
 		dagContent := `
-type: graph
 env:
   - MODE: full
 steps:

@@ -744,19 +744,10 @@ func TestDAG_InitializeDefaults(t *testing.T) {
 		dag := &core.DAG{}
 		core.InitializeDefaults(dag)
 
-		assert.Equal(t, core.TypeChain, dag.Type)
 		assert.Equal(t, 30, dag.HistRetentionDays)
 		assert.Equal(t, 5*time.Second, dag.MaxCleanUpTime)
 		assert.Equal(t, 1, dag.MaxActiveRuns)
 		assert.Equal(t, 1024*1024, dag.MaxOutputSize)
-	})
-
-	t.Run("pre-existing Type not overwritten", func(t *testing.T) {
-		t.Parallel()
-		dag := &core.DAG{Type: core.TypeGraph}
-		core.InitializeDefaults(dag)
-
-		assert.Equal(t, core.TypeGraph, dag.Type)
 	})
 
 	t.Run("pre-existing HistRetentionDays not overwritten", func(t *testing.T) {

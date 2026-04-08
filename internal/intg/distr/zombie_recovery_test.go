@@ -34,7 +34,6 @@ const (
 // is treated as a crash and the coordinator's zombie detector marks the run FAILED.
 func TestDistributedRun_WorkerCrash_MarkedFailed(t *testing.T) {
 	f := newTestFixture(t, `
-type: graph
 name: zombie-crash-test
 worker_selector:
   test: "true"
@@ -93,7 +92,6 @@ func TestDistributedRun_DelayedAfterAck_DoesNotExecuteAfterStaleCleanup(t *testi
 // coordinator-owned heartbeat refreshes keep the lease fresh.
 func TestDistributedRun_HeartbeatRefreshKeepsQuietRunAlive(t *testing.T) {
 	f := newTestFixture(t, `
-type: graph
 name: quiet-heartbeat-test
 worker_selector:
   test: "true"
@@ -131,7 +129,6 @@ steps:
 // distributed run with fresh heartbeats continues to block the next queued item.
 func TestDistributedRun_QueueConcurrency_ActiveRunCounted(t *testing.T) {
 	f := newTestFixture(t, `
-type: graph
 name: queue-concurrency-test
 queue: concurrency-q
 worker_selector:
@@ -227,7 +224,6 @@ steps:
 // consistent: run shows Succeeded, queue has no active entries.
 func TestDistributedRun_StatusAndQueueConsistency(t *testing.T) {
 	f := newTestFixture(t, `
-type: graph
 name: consistency-test
 queue: consistency-q
 worker_selector:
@@ -274,7 +270,6 @@ steps:
 // create a shared lease while active and remove it after completion.
 func TestDistributedRun_CoordinatorOwnsSharedLease(t *testing.T) {
 	f := newTestFixture(t, `
-type: graph
 name: lease-stamp-test
 worker_selector:
   test: "true"
@@ -324,7 +319,6 @@ func testDistributedRunAckedTaskWithoutInitialStatus(t *testing.T, mode workerMo
 	}
 
 	f := newTestFixture(t, `
-type: graph
 name: ack-orphan-test
 worker_selector:
   test: "true"
@@ -389,7 +383,6 @@ func testDistributedRunDelayedAfterAckDoesNotExecute(t *testing.T, mode workerMo
 
 	markerPath := filepath.Join(t.TempDir(), "executed.txt")
 	yaml := fmt.Sprintf(`
-type: graph
 name: delayed-after-ack-test
 worker_selector:
   test: "true"

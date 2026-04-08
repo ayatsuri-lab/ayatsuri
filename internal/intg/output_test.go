@@ -170,7 +170,6 @@ steps:
 		{
 			name: "LastOneWinsForDuplicateKeys",
 			dagYAML: `
-type: graph
 steps:
   - name: step1
     command: echo "VALUE=first"
@@ -295,7 +294,6 @@ func TestOutputsCollection_FailedDAG(t *testing.T) {
 
 	th := test.Setup(t)
 	dag := th.DAG(t, `
-type: graph
 steps:
   - name: step1
     command: echo "BEFORE_FAIL=collected"

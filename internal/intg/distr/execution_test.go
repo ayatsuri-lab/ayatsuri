@@ -18,7 +18,6 @@ import (
 func TestExecution_StatusPushing(t *testing.T) {
 	t.Run("statusUpdatesPersistedToCoordinatorStore", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 name: status-push-test
 worker_selector:
   test: "true"
@@ -109,7 +108,6 @@ steps:
 func TestExecution_StartCommand(t *testing.T) {
 	t.Run("directStartCommandExecution", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 name: direct-start-test
 worker_selector:
   test: "true"
@@ -135,7 +133,6 @@ steps:
 
 	t.Run("directStartCommandExecution_NoNameField", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 worker_selector:
   test: "true"
 steps:
@@ -162,7 +159,6 @@ steps:
 func TestExecution_TagsPropagation(t *testing.T) {
 	t.Run("tagsPreservedThroughCoordinator", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 name: tags-propagation-test
 worker_selector:
   test: "true"
@@ -185,7 +181,6 @@ steps:
 
 	t.Run("tagsPreservedThroughCoordinator_SharedFS", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 name: tags-sharedfs-test
 worker_selector:
   test: "true"
@@ -209,7 +204,6 @@ steps:
 func TestExecution_SharedFSMode(t *testing.T) {
 	t.Run("statusWrittenToSharedFilesystem", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 name: sharedfs-status-test
 worker_selector:
   test: "true"
@@ -259,7 +253,6 @@ steps:
 
 	t.Run("subprocessExecutesDAGCorrectly", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 name: sharedfs-subprocess-test
 worker_selector:
   env: test
@@ -293,7 +286,6 @@ steps:
 
 	t.Run("directStartWithSharedFS", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 name: sharedfs-direct-start-test
 worker_selector:
   test: "true"
@@ -317,7 +309,6 @@ steps:
 
 	t.Run("directStartWithSharedFS_NoNameField", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 worker_selector:
   test: "true"
 steps:
@@ -342,7 +333,6 @@ steps:
 func TestExecution_WorkDir(t *testing.T) {
 	t.Run("sharedNothingWorkDir", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 name: workdir-shared-nothing-test
 worker_selector:
   test: "true"
@@ -368,7 +358,6 @@ steps:
 
 	t.Run("sharedFSWorkDir", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 name: workdir-sharedfs-test
 worker_selector:
   test: "true"
@@ -421,7 +410,6 @@ steps:
 
 	t.Run("queuedStatusBeforeSchedulerStarts", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 name: scheduler-process-test
 worker_selector:
   env: prod

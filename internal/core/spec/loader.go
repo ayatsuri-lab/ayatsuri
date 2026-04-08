@@ -555,10 +555,6 @@ func processDAGDocument(
 		dest = new(core.DAG)
 	}
 
-	if shouldInheritType(doc, baseDef, spec) {
-		spec.Type = baseDef.Type
-	}
-
 	// Build the core.DAG from the current document
 	dag, err := spec.build(docCtx)
 	if err != nil {
@@ -609,16 +605,6 @@ func buildBaseDAG(ctx BuildContext, baseDef *dag) (*core.DAG, error) {
 	}
 
 	return baseDAG, nil
-}
-
-func shouldInheritType(doc map[string]any, baseDef, spec *dag) bool {
-	if baseDef == nil || spec == nil {
-		return false
-	}
-	if _, exists := doc["type"]; exists {
-		return false
-	}
-	return strings.TrimSpace(baseDef.Type) != ""
 }
 
 // validateUniqueNames ensures all DAGs in a multi-DAG file have unique names.

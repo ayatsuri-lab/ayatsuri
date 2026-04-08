@@ -501,69 +501,63 @@ func (a *API) readHistoryData(_ context.Context, dag *core.DAG, statusList []exe
 	var stepIndex map[string]int
 	if dag != nil {
 		stepIndex = make(map[string]int)
-		if dag.Type == core.TypeGraph {
-			if len(dag.BuildErrors) > 0 {
-				for i, step := range dag.Steps {
-					stepIndex[step.Name] = i
-				}
-			} else {
-				inDegree := make(map[string]int)
-				adj := make(map[string][]string)
+		if len(dag.BuildErrors) > 0 {
+			for i, step := range dag.Steps {
+				stepIndex[step.Name] = i
+			}
+		} else {
+			inDegree := make(map[string]int)
+			adj := make(map[string][]string)
 
-				for _, step := range dag.Steps {
-					inDegree[step.Name] = 0
+			for _, step := range dag.Steps {
+				inDegree[step.Name] = 0
+			}
+			for _, step := range dag.Steps {
+				for _, dep := range step.Depends {
+					adj[dep] = append(adj[dep], step.Name)
+					inDegree[step.Name]++
 				}
-				for _, step := range dag.Steps {
-					for _, dep := range step.Depends {
-						adj[dep] = append(adj[dep], step.Name)
-						inDegree[step.Name]++
-					}
+			}
+
+			var queue []string
+			for _, step := range dag.Steps {
+				if inDegree[step.Name] == 0 {
+					queue = append(queue, step.Name)
 				}
+			}
 
-				var queue []string
-				for _, step := range dag.Steps {
-					if inDegree[step.Name] == 0 {
-						queue = append(queue, step.Name)
-					}
-				}
+			origIdx := make(map[string]int)
+			for i, s := range dag.Steps {
+				origIdx[s.Name] = i
+			}
 
-				origIdx := make(map[string]int)
-				for i, s := range dag.Steps {
-					origIdx[s.Name] = i
-				}
+			var topoOrder []string
+			for len(queue) > 0 {
+				sort.Slice(queue, func(i, j int) bool {
+					return origIdx[queue[i]] < origIdx[queue[j]]
+				})
+				u := queue[0]
+				queue = queue[1:]
+				topoOrder = append(topoOrder, u)
 
-				var topoOrder []string
-				for len(queue) > 0 {
-					sort.Slice(queue, func(i, j int) bool {
-						return origIdx[queue[i]] < origIdx[queue[j]]
-					})
-					u := queue[0]
-					queue = queue[1:]
-					topoOrder = append(topoOrder, u)
-
-					for _, v := range adj[u] {
-						inDegree[v]--
-						if inDegree[v] == 0 {
-							queue = append(queue, v)
-						}
-					}
-				}
-
-				for i, name := range topoOrder {
-					stepIndex[name] = i
-				}
-
-				// Assign any unreached steps an index offset
-				offset := len(topoOrder)
-				for i, s := range dag.Steps {
-					if _, ok := stepIndex[s.Name]; !ok {
-						stepIndex[s.Name] = offset + i
+				for _, v := range adj[u] {
+					inDegree[v]--
+					if inDegree[v] == 0 {
+						queue = append(queue, v)
 					}
 				}
 			}
-		} else {
-			for i, step := range dag.Steps {
-				stepIndex[step.Name] = i
+
+			for i, name := range topoOrder {
+				stepIndex[name] = i
+			}
+
+			// Assign any unreached steps an index offset.
+			offset := len(topoOrder)
+			for i, s := range dag.Steps {
+				if _, ok := stepIndex[s.Name]; !ok {
+					stepIndex[s.Name] = offset + i
+				}
 			}
 		}
 	}

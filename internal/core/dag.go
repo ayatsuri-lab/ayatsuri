@@ -24,16 +24,6 @@ import (
 	"github.com/robfig/cron/v3"
 )
 
-// Execution type constants
-const (
-	// TypeGraph is the execution type using dependency-based parallel execution
-	TypeGraph = "graph"
-	// TypeChain executes steps sequentially in the order they are defined
-	TypeChain = "chain"
-	// TypeAgent is reserved for future agent-based execution
-	TypeAgent = "agent"
-)
-
 // LogOutputMode represents the mode for log output handling.
 // It determines how stdout and stderr are written to log files.
 type LogOutputMode string
@@ -84,8 +74,6 @@ type DAG struct {
 	Group string `json:"group,omitempty"`
 	// Name is the name of the DAG. The default is the filename without the extension.
 	Name string `json:"name,omitempty"`
-	// Type is the execution type (graph, chain, or agent). Default is graph.
-	Type string `json:"type,omitempty"`
 	// Shell is the default shell to use for all steps in this DAG.
 	// If not specified, the system default shell is used.
 	// Can be overridden at the step level.
@@ -205,7 +193,7 @@ type DAG struct {
 	YamlData []byte `json:"yamlData,omitempty"`
 	// BaseConfigData contains the raw base config YAML content.
 	// This is used to propagate base config through distributed execution
-	// and sub-DAG chains, so workers don't need local base config files.
+	// and sub-DAG executions, so workers don't need local base config files.
 	BaseConfigData []byte `json:"baseConfigData,omitempty"`
 	// Container contains the container definition for the DAG.
 	Container *Container `json:"container,omitempty"`
@@ -474,9 +462,6 @@ func (d *DAG) initializeDefaults() {
 		defaultMaxOutputSize     = 1024 * 1024 // 1MB
 	)
 
-	if d.Type == "" {
-		d.Type = TypeChain
-	}
 	if d.LogOutput == "" {
 		d.LogOutput = LogOutputSeparate
 	}
@@ -600,7 +585,6 @@ type BastionConfig struct {
 	// Password is the SSH password for the bastion.
 	Password string `json:"password,omitempty"`
 }
-
 
 // Schedule contains the cron expression and the parsed cron schedule.
 type Schedule struct {

@@ -8,7 +8,6 @@
 | `group` | string | — | Group for UI organization |
 | `description` | string | — | Description |
 | `tags` | map or array | — | Key-value tags (keys max 63 chars, values max 255 chars) |
-| `type` | string | `chain` | Execution type: `chain` (sequential), `graph` (parallel/dependency-based) |
 | `steps` | array or map | — | Step definitions |
 | `schedule` | string or array | — | Cron expression(s) |
 | `stop_schedule` | string | — | Cron to stop |
@@ -52,9 +51,9 @@
 
 ## Top-Level Notes
 
-- Omitting top-level `type:` means `chain`, not `graph`. In `graph` mode, steps without `depends:` may run in parallel.
+- Execution order is controlled entirely by step-level `depends:`. Steps without dependencies may run in parallel.
 - `catchup_window:` is opt-in. Missed scheduled runs are skipped unless you set it.
-- `max_active_steps:` caps graph-mode concurrency for a single DAG run.
+- `max_active_steps:` caps step concurrency for a single DAG run.
 - `params:` values are resolved as strings.
 - `handler_on` keys are exactly `init`, `success`, `failure`, `abort`, `exit`, and `wait`.
 - `container:` is polymorphic: a string targets an existing container, while an object creates a new one.
@@ -74,7 +73,7 @@
 | `output` | string or object | — | Capture stdout to variable. String: `MY_VAR`. Object: `{name, key, omit}` |
 | `stdout` | string | — | File to write stdout |
 | `stderr` | string | — | File to write stderr |
-| `depends` | string or array | — | Dependency step IDs. In `graph` mode only. |
+| `depends` | string or array | — | Dependency step IDs. |
 | `continue_on` | string or object | — | Continue on: `"skipped"`, `"failed"`, or `{skipped, failed, exit_code: [codes], mark_success}` |
 | `preconditions` | array | — | Step conditions: `{condition, expected, negate}` |
 | `retry_policy` | object | — | `{limit, interval_sec, exit_code: [codes], backoff, max_interval_sec}` |
@@ -97,7 +96,7 @@
 
 ## Step Notes
 
-- `depends:` is only valid in `graph` mode. In `chain` mode it is a validation error.
+- `depends:` controls execution order. Steps without dependencies may run in parallel.
 - `retry_policy:` requires both `limit` and `interval_sec`.
 - `continue_on:` is evaluated after retries are exhausted.
 - `preconditions:` compare exact strings. Use a command that exits cleanly and prints only the expected value.

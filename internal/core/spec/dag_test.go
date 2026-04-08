@@ -147,63 +147,6 @@ func TestBuildParamsJSON_JSONOverrideSkipsEval(t *testing.T) {
 	assert.Contains(t, result, "`echo pwned`")
 }
 
-func TestBuildType(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name     string
-		input    string
-		expected string
-		wantErr  bool
-	}{
-		{
-			name:     "EmptyDefaultsToChain",
-			input:    "",
-			expected: core.TypeChain,
-		},
-		{
-			name:     "WhitespaceDefaultsToChain",
-			input:    "  ",
-			expected: core.TypeChain,
-		},
-		{
-			name:     "GraphType",
-			input:    "graph",
-			expected: core.TypeGraph,
-		},
-		{
-			name:     "ChainType",
-			input:    "chain",
-			expected: core.TypeChain,
-		},
-		{
-			name:    "AgentTypeNotSupported",
-			input:   "agent",
-			wantErr: true,
-		},
-		{
-			name:    "InvalidType",
-			input:   "invalid",
-			wantErr: true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			d := &dag{Type: tt.input}
-			result, err := buildType(testBuildContext(), d)
-
-			if tt.wantErr {
-				assert.Error(t, err)
-				return
-			}
-
-			require.NoError(t, err)
-			assert.Equal(t, tt.expected, result)
-		})
-	}
-}
-
 func TestBuildName(t *testing.T) {
 	t.Parallel()
 
@@ -1925,7 +1868,7 @@ func TestBuildContainerFromSpec_HealthcheckInImageMode(t *testing.T) {
 	assert.Equal(t, core.WaitForHealthy, result.WaitFor)
 }
 
-func TestChainTypeDependsValidation(t *testing.T) {
+func TestDependsValidation(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -1935,33 +1878,28 @@ func TestChainTypeDependsValidation(t *testing.T) {
 		errContains string
 	}{
 		{
-			name: "ChainTypeWithExplicitDependsShouldError",
+			name: "ListFormWithExplicitDepends",
 			dag: &dag{
-				Type: "chain",
 				Steps: []any{
 					map[string]any{"name": "step1", "command": "echo 1"},
 					map[string]any{"name": "step2", "command": "echo 2", "depends": []string{"step1"}},
 				},
 			},
-			expectErr:   true,
-			errContains: "depends field is not allowed for DAGs with type 'chain'",
+			expectErr: false,
 		},
 		{
-			name: "ChainTypeWithEmptyDependsShouldError",
+			name: "ListFormWithEmptyDepends",
 			dag: &dag{
-				Type: "chain",
 				Steps: []any{
 					map[string]any{"name": "step1", "command": "echo 1"},
 					map[string]any{"name": "step2", "command": "echo 2", "depends": []string{}},
 				},
 			},
-			expectErr:   true,
-			errContains: "depends field is not allowed for DAGs with type 'chain'",
+			expectErr: false,
 		},
 		{
-			name: "ChainTypeWithoutDependsShouldWork",
+			name: "ListFormWithoutDepends",
 			dag: &dag{
-				Type: "chain",
 				Steps: []any{
 					map[string]any{"name": "step1", "command": "echo 1"},
 					map[string]any{"name": "step2", "command": "echo 2"},
@@ -1970,43 +1908,8 @@ func TestChainTypeDependsValidation(t *testing.T) {
 			expectErr: false,
 		},
 		{
-			name: "GraphTypeWithDependsShouldWork",
+			name: "NestedParallelWithDepends",
 			dag: &dag{
-				Type: "graph",
-				Steps: []any{
-					map[string]any{"name": "step1", "command": "echo 1"},
-					map[string]any{"name": "step2", "command": "echo 2", "depends": []string{"step1"}},
-				},
-			},
-			expectErr: false,
-		},
-		{
-			name: "GraphTypeWithEmptyDependsShouldWork",
-			dag: &dag{
-				Type: "graph",
-				Steps: []any{
-					map[string]any{"name": "step1", "command": "echo 1"},
-					map[string]any{"name": "step2", "command": "echo 2", "depends": []string{}},
-				},
-			},
-			expectErr: false,
-		},
-		{
-			name: "DefaultTypeWithDependsShouldError",
-			dag: &dag{
-				// Default type is chain, so depends should not be allowed
-				Steps: []any{
-					map[string]any{"name": "step1", "command": "echo 1"},
-					map[string]any{"name": "step2", "command": "echo 2", "depends": []string{"step1"}},
-				},
-			},
-			expectErr:   true,
-			errContains: "depends field is not allowed for DAGs with type 'chain'",
-		},
-		{
-			name: "ChainTypeNestedParallelWithDependsShouldError",
-			dag: &dag{
-				Type: "chain",
 				Steps: []any{
 					map[string]any{"name": "step1", "command": "echo 1"},
 					[]any{
@@ -2015,25 +1918,11 @@ func TestChainTypeDependsValidation(t *testing.T) {
 					},
 				},
 			},
-			expectErr:   true,
-			errContains: "depends field is not allowed for DAGs with type 'chain'",
+			expectErr: false,
 		},
 		{
-			name: "ChainTypeMapFormWithDependsShouldError",
+			name: "MapFormWithDepends",
 			dag: &dag{
-				Type: "chain",
-				Steps: map[string]any{
-					"step1": map[string]any{"command": "echo 1"},
-					"step2": map[string]any{"command": "echo 2", "depends": []string{"step1"}},
-				},
-			},
-			expectErr:   true,
-			errContains: "depends field is not allowed for DAGs with type 'chain'",
-		},
-		{
-			name: "GraphTypeMapFormWithDependsShouldWork",
-			dag: &dag{
-				Type: "graph",
 				Steps: map[string]any{
 					"step1": map[string]any{"command": "echo 1"},
 					"step2": map[string]any{"command": "echo 2", "depends": []string{"step1"}},
@@ -2131,7 +2020,7 @@ steps:
 	require.True(t, found, "FULL_PATH env var not found")
 }
 
-func TestRouterNotAllowedInChainType(t *testing.T) {
+func TestRouterBuildsWithoutDagType(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -2141,47 +2030,8 @@ func TestRouterNotAllowedInChainType(t *testing.T) {
 		errContains string
 	}{
 		{
-			name: "ChainTypeWithRouterShouldError",
+			name: "ListForm",
 			dag: &dag{
-				Type: "chain",
-				Steps: []any{
-					map[string]any{
-						"name":  "router",
-						"type":  "router",
-						"value": "${MODE}",
-						"routes": map[string]any{
-							"a": []string{"step_a"},
-						},
-					},
-					map[string]any{"name": "step_a", "command": "echo A"},
-				},
-			},
-			expectErr:   true,
-			errContains: "router steps require type 'graph'",
-		},
-		{
-			name: "DefaultTypeWithRouterShouldError",
-			dag: &dag{
-				// Default type is chain, so router should not be allowed
-				Steps: []any{
-					map[string]any{
-						"name":  "router",
-						"type":  "router",
-						"value": "${MODE}",
-						"routes": map[string]any{
-							"a": []string{"step_a"},
-						},
-					},
-					map[string]any{"name": "step_a", "command": "echo A"},
-				},
-			},
-			expectErr:   true,
-			errContains: "router steps require type 'graph'",
-		},
-		{
-			name: "GraphTypeWithRouterShouldWork",
-			dag: &dag{
-				Type: "graph",
 				Steps: []any{
 					map[string]any{
 						"name":  "router",
@@ -2197,9 +2047,25 @@ func TestRouterNotAllowedInChainType(t *testing.T) {
 			expectErr: false,
 		},
 		{
-			name: "ChainTypeNestedParallelWithRouterShouldError",
+			name: "DefaultForm",
 			dag: &dag{
-				Type: "chain",
+				Steps: []any{
+					map[string]any{
+						"name":  "router",
+						"type":  "router",
+						"value": "${MODE}",
+						"routes": map[string]any{
+							"a": []string{"step_a"},
+						},
+					},
+					map[string]any{"name": "step_a", "command": "echo A"},
+				},
+			},
+			expectErr: false,
+		},
+		{
+			name: "NestedParallelForm",
+			dag: &dag{
 				Steps: []any{
 					map[string]any{"name": "step1", "command": "echo 1"},
 					[]any{
@@ -2215,31 +2081,11 @@ func TestRouterNotAllowedInChainType(t *testing.T) {
 					},
 				},
 			},
-			expectErr:   true,
-			errContains: "router steps require type 'graph'",
+			expectErr: false,
 		},
 		{
-			name: "ChainTypeMapFormWithRouterShouldError",
+			name: "MapForm",
 			dag: &dag{
-				Type: "chain",
-				Steps: map[string]any{
-					"router": map[string]any{
-						"type":  "router",
-						"value": "${MODE}",
-						"routes": map[string]any{
-							"a": []string{"step_a"},
-						},
-					},
-					"step_a": map[string]any{"command": "echo A"},
-				},
-			},
-			expectErr:   true,
-			errContains: "router steps require type 'graph'",
-		},
-		{
-			name: "GraphTypeMapFormWithRouterShouldWork",
-			dag: &dag{
-				Type: "graph",
 				Steps: map[string]any{
 					"router": map[string]any{
 						"type":  "router",

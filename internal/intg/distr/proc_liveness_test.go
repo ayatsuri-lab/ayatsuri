@@ -18,7 +18,6 @@ const (
 
 func TestExecution_ProcHeartbeat_DirectStart(t *testing.T) {
 	f := newTestFixture(t, `
-type: graph
 name: worker-proc-heartbeat-start
 worker_selector:
   test: "true"
@@ -37,7 +36,6 @@ steps:
 
 func TestExecution_ProcHeartbeat_QueuedDispatch(t *testing.T) {
 	f := newTestFixture(t, `
-type: graph
 name: worker-proc-heartbeat-queued
 worker_selector:
   test: "true"

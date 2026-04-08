@@ -22,7 +22,6 @@ steps:
 # Run multiple tasks simultaneously
 
 description: Execute multiple tasks in parallel
-type: graph # Explicitly define dependency graph
 
 steps:
   - name: setup

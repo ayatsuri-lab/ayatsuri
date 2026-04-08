@@ -111,11 +111,9 @@ Use the appropriate executor type (http, s3, postgres) instead of shelling out.
 
 Omit the root `name:` field—Ayatsuri uses the filename as the DAG name by default.
 
-Always use `type: graph` with explicit `depends` on every step. This makes execution order clear and deterministic. Steps with no dependencies use `depends: []`. Never use `type: chain` or omit `type`—implicit sequential ordering hides the real dependency structure.
-
+Always use explicit `depends` on every step whose order matters. Steps with no dependencies can omit `depends` or use `depends: []`; Ayatsuri no longer supports a top-level DAG `type` field.
 Example:
 ```yaml
-type: graph
 steps:
   - id: fetch_data
     command: curl -o data.json https://api.example.com/data

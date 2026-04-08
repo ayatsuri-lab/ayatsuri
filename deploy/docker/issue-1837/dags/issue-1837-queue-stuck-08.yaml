@@ -1,5 +1,4 @@
 name: issue-1837-queue-stuck-08
-type: graph
 queue: issue-1837
 working_dir: ${DAG_RUN_WORK_DIR}
 schedule: "*/2 * * * *"

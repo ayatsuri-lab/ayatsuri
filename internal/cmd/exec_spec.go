@@ -31,7 +31,6 @@ type ExecOptions struct {
 
 type execSpec struct {
 	Name           string            `yaml:"name,omitempty"`
-	Type           string            `yaml:"type,omitempty"`
 	WorkingDir     string            `yaml:"working_dir,omitempty"`
 	Env            []string          `yaml:"env,omitempty"`
 	Dotenv         []string          `yaml:"dotenv,omitempty"`
@@ -63,7 +62,6 @@ func buildExecDAG(ctx *Context, opts ExecOptions) (*core.DAG, string, error) {
 
 	specDoc := execSpec{
 		Name:           name,
-		Type:           core.TypeChain,
 		WorkingDir:     opts.WorkingDir,
 		Env:            opts.Env,
 		Dotenv:         opts.DotenvFiles,

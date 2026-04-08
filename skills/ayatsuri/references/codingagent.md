@@ -57,7 +57,6 @@ Chain agents, passing output via `${step_id.stdout}` file references.
 
 ```yaml
 description: "Research pipeline: research, review, refine"
-type: graph
 
 params:
   - topic: ""

@@ -23,8 +23,7 @@ func TestRetryDAGAfterManualStatusUpdate(t *testing.T) {
 	th := test.SetupCommand(t)
 
 	// Create a simple 3-step DAG where all steps should succeed
-	th.CreateDAGFile(t, "test_retry.yaml", `type: graph
-steps:
+	th.CreateDAGFile(t, "test_retry.yaml", `steps:
   - name: step1
     command: echo "step 1"
     output: OUT1

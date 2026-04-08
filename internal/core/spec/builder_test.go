@@ -147,14 +147,13 @@ params:
 	}
 }
 
-func TestBuildChainType(t *testing.T) {
+func TestBuildSteps(t *testing.T) {
 	t.Parallel()
 
-	t.Run("Basic", func(t *testing.T) {
+	t.Run("DoesNotInjectImplicitSequentialDependencies", func(t *testing.T) {
 		t.Parallel()
 
 		data := []byte(`
-type: chain
 steps:
   - echo "First"
   - echo "Second"
@@ -164,20 +163,18 @@ steps:
 		dag, err := spec.LoadYAML(context.Background(), data)
 		require.NoError(t, err)
 		th := DAG{t: t, DAG: dag}
-		assert.Equal(t, core.TypeChain, th.Type)
 
 		assert.Len(t, th.Steps, 4)
 		assert.Empty(t, th.Steps[0].Depends)
-		assert.Equal(t, []string{"cmd_1"}, th.Steps[1].Depends)
-		assert.Equal(t, []string{"cmd_2"}, th.Steps[2].Depends)
-		assert.Equal(t, []string{"cmd_3"}, th.Steps[3].Depends)
+		assert.Empty(t, th.Steps[1].Depends)
+		assert.Empty(t, th.Steps[2].Depends)
+		assert.Empty(t, th.Steps[3].Depends)
 	})
 
-	t.Run("WithExplicitDependsShouldError", func(t *testing.T) {
+	t.Run("ExplicitDependsAreAllowed", func(t *testing.T) {
 		t.Parallel()
 
 		data := []byte(`
-type: chain
 steps:
   - name: setup
     command: ./setup.sh
@@ -193,16 +190,16 @@ steps:
   - name: cleanup
     command: rm -f fileA fileB
 `)
-		_, err := spec.LoadYAML(context.Background(), data)
-		require.Error(t, err)
-		assert.Contains(t, err.Error(), "depends field is not allowed for DAGs with type 'chain'")
+		dag, err := spec.LoadYAML(context.Background(), data)
+		require.NoError(t, err)
+		require.Len(t, dag.Steps, 5)
+		assert.Equal(t, []string{"download-a", "download-b"}, dag.Steps[3].Depends)
 	})
 
-	t.Run("WithEmptyDependenciesShouldError", func(t *testing.T) {
+	t.Run("ExplicitEmptyDependenciesAreAllowed", func(t *testing.T) {
 		t.Parallel()
 
 		data := []byte(`
-type: chain
 steps:
   - name: step1
     command: echo "First"
@@ -214,9 +211,11 @@ steps:
   - name: step4
     command: echo "Fourth"
 `)
-		_, err := spec.LoadYAML(context.Background(), data)
-		require.Error(t, err)
-		assert.Contains(t, err.Error(), "depends field is not allowed for DAGs with type 'chain'")
+		dag, err := spec.LoadYAML(context.Background(), data)
+		require.NoError(t, err)
+		require.Len(t, dag.Steps, 4)
+		assert.Empty(t, dag.Steps[2].Depends)
+		assert.True(t, dag.Steps[2].ExplicitlyNoDeps)
 	})
 }
 
@@ -1269,20 +1268,18 @@ steps:
 		assert.Equal(t, "cmd_2", dag.Steps[1].Name)
 		require.Len(t, dag.Steps[1].Commands, 1)
 		assert.Equal(t, "echo \"parallel 1\"", dag.Steps[1].Commands[0].CmdWithArgs)
-		assert.Equal(t, []string{"cmd_1"}, dag.Steps[1].Depends)
+		assert.Empty(t, dag.Steps[1].Depends)
 
 		assert.Equal(t, "cmd_3", dag.Steps[2].Name)
 		require.Len(t, dag.Steps[2].Commands, 1)
 		assert.Equal(t, "echo \"parallel 2\"", dag.Steps[2].Commands[0].CmdWithArgs)
-		assert.Equal(t, []string{"cmd_1"}, dag.Steps[2].Depends)
+		assert.Empty(t, dag.Steps[2].Depends)
 
-		// Last step (sequential, depends on both parallel steps)
+		// Last step also remains independent without explicit depends.
 		assert.Equal(t, "cmd_4", dag.Steps[3].Name)
 		require.Len(t, dag.Steps[3].Commands, 1)
 		assert.Equal(t, "echo \"step 3\"", dag.Steps[3].Commands[0].CmdWithArgs)
-
-		assert.Contains(t, dag.Steps[3].Depends, "cmd_2")
-		assert.Contains(t, dag.Steps[3].Depends, "cmd_3")
+		assert.Empty(t, dag.Steps[3].Depends)
 	})
 
 	t.Run("MixedParallelAndNormalSyntax", func(t *testing.T) {
@@ -1309,21 +1306,19 @@ steps:
 
 		// Parallel steps
 		assert.Equal(t, "cmd_2", dag.Steps[1].Name)
-		assert.Equal(t, []string{"setup"}, dag.Steps[1].Depends)
+		assert.Empty(t, dag.Steps[1].Depends)
 
 		assert.Equal(t, "test", dag.Steps[2].Name)
-		assert.Equal(t, []string{"setup"}, dag.Steps[2].Depends)
+		assert.Empty(t, dag.Steps[2].Depends)
 
 		// Cleanup step
 		assert.Equal(t, "cleanup", dag.Steps[3].Name)
-		assert.Contains(t, dag.Steps[3].Depends, "cmd_2")
-		assert.Contains(t, dag.Steps[3].Depends, "test")
+		assert.Empty(t, dag.Steps[3].Depends)
 	})
 
-	t.Run("ParallelStepsWithExplicitDependenciesShouldError", func(t *testing.T) {
+	t.Run("ParallelStepsWithExplicitDependencies", func(t *testing.T) {
 		t.Parallel()
 
-		// Default type is chain, so explicit depends is not allowed
 		data := []byte(`
 steps:
   - name: step1
@@ -1333,23 +1328,22 @@ steps:
   -
     - name: parallel1
       command: echo "p1"
-      depends: [step1]  # Not allowed in chain type
+      depends: [step1]
     - name: parallel2
       command: echo "p2"
   - name: final
     command: echo "done"
 `)
-		_, err := spec.LoadYAML(context.Background(), data)
-		require.Error(t, err)
-		assert.Contains(t, err.Error(), "depends field is not allowed for DAGs with type 'chain'")
+		dag, err := spec.LoadYAML(context.Background(), data)
+		require.NoError(t, err)
+		require.Len(t, dag.Steps, 5)
+		assert.Equal(t, []string{"step1"}, dag.Steps[2].Depends)
 	})
 
-	t.Run("ParallelStepsWithExplicitDependenciesGraphType", func(t *testing.T) {
+	t.Run("ParallelStepsWithExplicitDependenciesRemainValid", func(t *testing.T) {
 		t.Parallel()
 
-		// Graph type allows explicit depends
 		data := []byte(`
-type: graph
 steps:
   - name: step1
     command: echo "1"
@@ -1428,12 +1422,10 @@ steps:
 		assert.Equal(t, "cmd_2", dag.Steps[1].Name)
 
 		assert.Equal(t, "cmd_3", dag.Steps[2].Name)
-		assert.Contains(t, dag.Steps[2].Depends, "cmd_1")
-		assert.Contains(t, dag.Steps[2].Depends, "cmd_2")
+		assert.Empty(t, dag.Steps[2].Depends)
 
 		assert.Equal(t, "cmd_4", dag.Steps[3].Name)
-		assert.Contains(t, dag.Steps[3].Depends, "cmd_1")
-		assert.Contains(t, dag.Steps[3].Depends, "cmd_2")
+		assert.Empty(t, dag.Steps[3].Depends)
 	})
 }
 
@@ -1527,7 +1519,6 @@ steps:
 		t.Parallel()
 
 		data := []byte(`
-type: graph
 steps:
   - setup.sh
   - name: build
@@ -1569,7 +1560,6 @@ steps:
 		t.Parallel()
 
 		data := []byte(`
-type: graph
 steps:
   - git pull
   - command: npm install
@@ -1595,7 +1585,6 @@ steps:
 		t.Parallel()
 
 		data := []byte(`
-type: graph
 steps:
   - command: echo "v1.0.0"
     output: VERSION
@@ -1656,9 +1645,8 @@ steps:
 		assert.Equal(t, "cmd_1", th.Steps[0].Name)
 		assert.Equal(t, "cmd_2", th.Steps[1].Name)
 		assert.Equal(t, "cmd_3", th.Steps[2].Name)
-		// In chain mode, sequential dependencies are implicit
-		assert.Equal(t, []string{"cmd_1"}, th.Steps[1].Depends)
-		assert.Equal(t, []string{"cmd_2"}, th.Steps[2].Depends)
+		assert.Empty(t, th.Steps[1].Depends)
+		assert.Empty(t, th.Steps[2].Depends)
 	})
 
 	t.Run("IDPromotedToName", func(t *testing.T) {
@@ -1715,7 +1703,6 @@ steps:
 		t.Parallel()
 
 		data := []byte(`
-type: graph
 steps:
   - id: extract
     command: echo extract
@@ -1733,7 +1720,7 @@ steps:
 		assert.Equal(t, []string{"extract"}, th.Steps[1].Depends)
 	})
 
-	t.Run("ChainTypeWithPromotedIDs", func(t *testing.T) {
+	t.Run("PromotedIDsWithoutImplicitDependencies", func(t *testing.T) {
 		t.Parallel()
 
 		data := []byte(`
@@ -1753,8 +1740,8 @@ steps:
 		assert.Equal(t, "step_a", th.Steps[0].Name)
 		assert.Equal(t, "step_b", th.Steps[1].Name)
 		assert.Equal(t, "step_c", th.Steps[2].Name)
-		assert.Equal(t, []string{"step_a"}, th.Steps[1].Depends)
-		assert.Equal(t, []string{"step_b"}, th.Steps[2].Depends)
+		assert.Empty(t, th.Steps[1].Depends)
+		assert.Empty(t, th.Steps[2].Depends)
 	})
 
 	t.Run("PromotedIDDoesNotCollideWithAutoName", func(t *testing.T) {
@@ -1781,7 +1768,6 @@ steps:
 		t.Parallel()
 
 		data := []byte(`
-type: graph
 steps:
   - id: a
     command: echo a
@@ -1803,7 +1789,6 @@ steps:
 		t.Parallel()
 
 		data := []byte(`
-type: graph
 steps:
   - id: same_id
     command: echo a
@@ -1819,7 +1804,6 @@ steps:
 		t.Parallel()
 
 		data := []byte(`
-type: graph
 steps:
   - name: deploy
     command: echo a
@@ -1942,7 +1926,6 @@ func TestStepIDInDependencies(t *testing.T) {
 		t.Parallel()
 
 		data := []byte(`
-type: graph
 steps:
   - name: step1
     id: first
@@ -1962,7 +1945,6 @@ steps:
 		t.Parallel()
 
 		data := []byte(`
-type: graph
 steps:
   - name: step1
     id: first
@@ -1981,7 +1963,6 @@ steps:
 		t.Parallel()
 
 		data := []byte(`
-type: graph
 steps:
   - name: step1
     id: first
@@ -2005,7 +1986,6 @@ steps:
 		t.Parallel()
 
 		data := []byte(`
-type: graph
 steps:
   - name: step1
     id: first
@@ -2025,11 +2005,10 @@ steps:
 	})
 }
 
-func TestChainTypeWithStepIDs(t *testing.T) {
+func TestStepIDsWithoutImplicitDependencies(t *testing.T) {
 	t.Parallel()
 
 	data := []byte(`
-type: chain
 steps:
   - name: step1
     id: s1
@@ -2049,10 +2028,10 @@ steps:
 	assert.Equal(t, "s2", dag.Steps[1].ID)
 	assert.Equal(t, "", dag.Steps[2].ID)
 
-	// Verify chain dependencies were added
+	// No implicit dependencies are added.
 	assert.Empty(t, dag.Steps[0].Depends)
-	assert.Equal(t, []string{"step1"}, dag.Steps[1].Depends)
-	assert.Equal(t, []string{"step2"}, dag.Steps[2].Depends)
+	assert.Empty(t, dag.Steps[1].Depends)
+	assert.Empty(t, dag.Steps[2].Depends)
 }
 
 func TestResolveStepDependencies(t *testing.T) {
@@ -2066,7 +2045,6 @@ func TestResolveStepDependencies(t *testing.T) {
 		{
 			name: "SingleIDDependency",
 			yaml: `
-type: graph
 steps:
   - name: step-one
     id: s1
@@ -2082,7 +2060,6 @@ steps:
 		{
 			name: "MultipleIDDependencies",
 			yaml: `
-type: graph
 steps:
   - name: step-one
     id: s1
@@ -2103,7 +2080,6 @@ steps:
 		{
 			name: "MixedIDAndNameDependencies",
 			yaml: `
-type: graph
 steps:
   - name: step-one
     id: s1
@@ -2123,7 +2099,6 @@ steps:
 		{
 			name: "NoIDDependencies",
 			yaml: `
-type: graph
 steps:
   - name: step-one
     command: echo "1"
@@ -2138,7 +2113,6 @@ steps:
 		{
 			name: "IDSameAsName",
 			yaml: `
-type: graph
 steps:
   - name: step_one
     id: step_one
@@ -2181,7 +2155,6 @@ func TestResolveStepDependencies_Errors(t *testing.T) {
 		{
 			name: "DependencyOnNonExistentID",
 			yaml: `
-type: graph
 steps:
   - name: step-one
     command: echo "1"

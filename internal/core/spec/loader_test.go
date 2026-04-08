@@ -734,7 +734,7 @@ steps:
 		assert.False(t, dag.WorkingDirExplicit)
 	})
 
-	t.Run("WithoutBaseConfigStillDefaultsTypeToChain", func(t *testing.T) {
+	t.Run("WithoutBaseConfigDoesNotInjectSequentialDependencies", func(t *testing.T) {
 		t.Parallel()
 
 		dag, err := spec.LoadYAMLWithOpts(context.Background(), []byte(`
@@ -745,71 +745,59 @@ steps:
     command: echo two
 `), spec.BuildOpts{})
 		require.NoError(t, err)
-		assert.Equal(t, core.TypeChain, dag.Type)
-		require.Len(t, dag.Steps, 2)
-		assert.Equal(t, []string{"step1"}, dag.Steps[1].Depends)
-	})
-}
-
-func TestLoad_TypeInheritanceFromBaseConfig(t *testing.T) {
-	t.Parallel()
-
-	t.Run("InheritsGraphTypeWhenChildOmitsType", func(t *testing.T) {
-		t.Parallel()
-
-		base := createTempYAMLFile(t, "type: graph\n")
-		child := createTempYAMLFile(t, `
-steps:
-  - name: first
-    command: echo first
-  - name: second
-    command: echo second
-`)
-
-		dag, err := spec.Load(context.Background(), child, spec.WithBaseConfig(base))
-		require.NoError(t, err)
-		assert.Equal(t, core.TypeGraph, dag.Type)
 		require.Len(t, dag.Steps, 2)
 		assert.Empty(t, dag.Steps[1].Depends)
 	})
+}
 
-	t.Run("ExplicitChildTypeOverridesBaseType", func(t *testing.T) {
+func TestLoad_RejectsTypeField(t *testing.T) {
+	t.Parallel()
+
+	t.Run("MainDAG", func(t *testing.T) {
+		t.Parallel()
+
+		_, err := spec.LoadYAMLWithOpts(context.Background(), []byte(`
+type: graph
+steps:
+  - name: first
+    command: echo first
+`), spec.BuildOpts{})
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "has invalid keys: type")
+	})
+
+	t.Run("BaseConfig", func(t *testing.T) {
 		t.Parallel()
 
 		base := createTempYAMLFile(t, "type: graph\n")
 		child := createTempYAMLFile(t, `
-type: chain
 steps:
   - name: first
     command: echo first
-  - name: second
-    command: echo second
 `)
 
-		dag, err := spec.Load(context.Background(), child, spec.WithBaseConfig(base))
-		require.NoError(t, err)
-		assert.Equal(t, core.TypeChain, dag.Type)
-		require.Len(t, dag.Steps, 2)
-		assert.Equal(t, []string{"first"}, dag.Steps[1].Depends)
+		_, err := spec.Load(context.Background(), child, spec.WithBaseConfig(base))
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "has invalid keys: type")
 	})
 
-	t.Run("InheritsChainTypeBeforeBuildToInjectDependencies", func(t *testing.T) {
+	t.Run("SubDAGDocument", func(t *testing.T) {
 		t.Parallel()
 
-		base := createTempYAMLFile(t, "type: chain\n")
-		child := createTempYAMLFile(t, `
+		_, err := spec.LoadYAMLWithOpts(context.Background(), []byte(`
 steps:
-  - name: first
-    command: echo first
-  - name: second
-    command: echo second
-`)
+  - name: call-child
+    call: child-task
 
-		dag, err := spec.Load(context.Background(), child, spec.WithBaseConfig(base))
-		require.NoError(t, err)
-		assert.Equal(t, core.TypeChain, dag.Type)
-		require.Len(t, dag.Steps, 2)
-		assert.Equal(t, []string{"first"}, dag.Steps[1].Depends)
+---
+name: child-task
+type: graph
+steps:
+  - name: work
+    command: echo child
+`), spec.BuildOpts{Name: "parent-task"})
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "has invalid keys: type")
 	})
 }
 
@@ -858,17 +846,12 @@ steps:
 	assert.Equal(t, "child-task", childDAG.Name)
 	require.Len(t, childDAG.Steps, 1)
 	assert.Equal(t, "work", childDAG.Steps[0].Name)
-	assert.Equal(t, core.TypeChain, childDAG.Type)
 }
 
-func TestLoadYAMLWithOpts_TypeInheritanceInMultiDocumentYAML(t *testing.T) {
+func TestLoadYAMLWithOpts_MultiDocumentDAGsRemainIndependentWithoutType(t *testing.T) {
 	t.Parallel()
 
-	t.Run("InheritsBaseTypeForParentAndSubDAGWhenOmitted", func(t *testing.T) {
-		t.Parallel()
-
-		base := createTempYAMLFile(t, "type: graph\n")
-		dag, err := spec.LoadYAMLWithOpts(context.Background(), []byte(`
+	dag, err := spec.LoadYAMLWithOpts(context.Background(), []byte(`
 steps:
   - name: call-child
     call: child-task
@@ -882,48 +865,16 @@ steps:
     command: echo child
   - name: finish
     command: echo done
-`), spec.BuildOpts{Name: "parent-task", Base: base})
-		require.NoError(t, err)
+`), spec.BuildOpts{Name: "parent-task"})
+	require.NoError(t, err)
 
-		assert.Equal(t, core.TypeGraph, dag.Type)
-		require.Len(t, dag.Steps, 2)
-		assert.Empty(t, dag.Steps[1].Depends)
+	require.Len(t, dag.Steps, 2)
+	assert.Empty(t, dag.Steps[1].Depends)
 
-		childDAG, ok := dag.LocalDAGs["child-task"]
-		require.True(t, ok)
-		assert.Equal(t, core.TypeGraph, childDAG.Type)
-		require.Len(t, childDAG.Steps, 2)
-		assert.Empty(t, childDAG.Steps[1].Depends)
-	})
-
-	t.Run("ExplicitSubDAGTypeOverridesInheritedBaseType", func(t *testing.T) {
-		t.Parallel()
-
-		base := createTempYAMLFile(t, "type: graph\n")
-		dag, err := spec.LoadYAMLWithOpts(context.Background(), []byte(`
-steps:
-  - name: call-child
-    call: child-task
-
----
-name: child-task
-type: chain
-steps:
-  - name: work
-    command: echo child
-  - name: finish
-    command: echo done
-`), spec.BuildOpts{Name: "parent-task", Base: base})
-		require.NoError(t, err)
-
-		assert.Equal(t, core.TypeGraph, dag.Type)
-
-		childDAG, ok := dag.LocalDAGs["child-task"]
-		require.True(t, ok)
-		assert.Equal(t, core.TypeChain, childDAG.Type)
-		require.Len(t, childDAG.Steps, 2)
-		assert.Equal(t, []string{"work"}, childDAG.Steps[1].Depends)
-	})
+	childDAG, ok := dag.LocalDAGs["child-task"]
+	require.True(t, ok)
+	require.Len(t, childDAG.Steps, 2)
+	assert.Empty(t, childDAG.Steps[1].Depends)
 }
 
 // createTempYAMLFile creates a temporary YAML file with the given content
@@ -1202,8 +1153,7 @@ steps:
 	t.Run("ComplexMultiDAGWithParameters", func(t *testing.T) {
 		t.Parallel()
 
-		// Complex multi-DAG with parameters
-		// Using type: graph for sub-DAG that needs explicit dependencies
+		// Complex multi-DAG with parameters and explicit step dependencies.
 		multiDAGContent := `params:
   - ENVIRONMENT: dev
 schedule: "0 2 * * *"
@@ -1216,7 +1166,6 @@ steps:
 
 ---
 name: extract-module
-type: graph
 params:
   - SOURCE: default_source
   - TABLE: default_table

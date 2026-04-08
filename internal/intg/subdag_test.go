@@ -339,7 +339,6 @@ steps:
 		th := test.Setup(t)
 
 		testDAG := th.DAG(t, `
-type: graph
 steps:
   - name: setup
     command: echo "Setting up"

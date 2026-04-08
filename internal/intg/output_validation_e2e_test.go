@@ -412,7 +412,6 @@ steps:
 		t.Parallel()
 		th := test.Setup(t)
 		dag := th.DAG(t, `
-type: graph
 steps:
   - name: step1
     command: echo "first=1"
@@ -459,7 +458,6 @@ func TestOutputValidation_MixedSchemaAndNoSchema(t *testing.T) {
 	th := test.Setup(t)
 
 	dag := th.DAG(t, `
-type: graph
 steps:
   - name: no-schema-step
     command: echo "plain output"
@@ -497,7 +495,6 @@ func TestOutputValidation_FailureBlocksDependents(t *testing.T) {
 	th := test.Setup(t)
 
 	dag := th.DAG(t, `
-type: graph
 steps:
   - name: bad-output
     command: 'echo ''{"confidence":2.0}'''

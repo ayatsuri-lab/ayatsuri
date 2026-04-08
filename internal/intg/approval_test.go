@@ -16,7 +16,6 @@ func TestWaitStepApproval(t *testing.T) {
 		th := test.Setup(t)
 
 		testDAG := th.DAG(t, `
-type: graph
 steps:
   - name: wait-step
     command: "true"
@@ -47,7 +46,6 @@ steps:
 		th := test.Setup(t)
 
 		testDAG := th.DAG(t, `
-type: graph
 steps:
   - name: before-wait
     command: echo "before"
@@ -83,7 +81,6 @@ steps:
 		th := test.Setup(t)
 
 		testDAG := th.DAG(t, `
-type: graph
 steps:
   - name: branch-a-1
     command: echo "a1"
@@ -120,7 +117,6 @@ func TestApprovalField(t *testing.T) {
 		th := test.Setup(t)
 
 		testDAG := th.DAG(t, `
-type: graph
 steps:
   - name: review-step
     command: echo "ready for review"
@@ -151,7 +147,6 @@ steps:
 		th := test.Setup(t)
 
 		testDAG := th.DAG(t, `
-type: graph
 steps:
   - name: script-step
     script: |
@@ -179,7 +174,6 @@ steps:
 		th := test.Setup(t)
 
 		testDAG := th.DAG(t, `
-type: graph
 steps:
   - name: review-step
     command: echo "needs feedback"
@@ -210,7 +204,6 @@ steps:
 		th := test.Setup(t)
 
 		testDAG := th.DAG(t, `
-type: graph
 steps:
   - name: step-a
     command: echo "step a output"
@@ -240,7 +233,6 @@ steps:
 		th := test.Setup(t)
 
 		testDAG := th.DAG(t, `
-type: graph
 steps:
   - name: step-a
     command: echo "upstream"
@@ -274,14 +266,12 @@ steps:
 
 		// Create the sub-DAG first
 		subDAG := th.DAG(t, `
-type: graph
 steps:
   - name: sub-step
     command: echo "sub-dag output"
 `)
 
 		testDAG := th.DAG(t, `
-type: graph
 steps:
   - name: call-step
     call: "`+subDAG.Name+`"

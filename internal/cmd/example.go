@@ -23,8 +23,7 @@ var examples = []exampleEntry{
 		ID:          1,
 		Name:        "parallel-steps",
 		Description: "Run steps in parallel using depends",
-		Content: `type: graph
-defaults:
+		Content: `defaults:
   retry_policy:
     limit: 2
     interval_sec: 5
@@ -49,8 +48,7 @@ steps:
 		ID:          2,
 		Name:        "output-passing",
 		Description: "Capture step output and pass between steps",
-		Content: `type: graph
-steps:
+		Content: `steps:
   - name: get-version
     command: echo "2.5.0"
     output: VERSION
@@ -69,8 +67,7 @@ steps:
 		ID:          3,
 		Name:        "schedule-params-env",
 		Description: "Schedule a DAG with params and env vars",
-		Content: `type: graph
-schedule: "0 2 * * *"
+		Content: `schedule: "0 2 * * *"
 catchup_window: "12h"
 defaults:
   retry_policy:
@@ -97,8 +94,7 @@ steps:
 		ID:          4,
 		Name:        "defaults-and-retry",
 		Description: "Set step defaults with retry and continue_on",
-		Content: `type: graph
-defaults:
+		Content: `defaults:
   retry_policy:
     limit: 3
     interval_sec: 5
@@ -121,8 +117,7 @@ steps:
 		ID:          5,
 		Name:        "preconditions",
 		Description: "Guard steps with preconditions",
-		Content: `type: graph
-defaults:
+		Content: `defaults:
   retry_policy:
     limit: 2
     interval_sec: 5
@@ -146,8 +141,7 @@ steps:
 		ID:          6,
 		Name:        "lifecycle-hooks",
 		Description: "Use handler_on for init, success, failure, exit",
-		Content: `type: graph
-defaults:
+		Content: `defaults:
   retry_policy:
     limit: 2
     interval_sec: 5
@@ -172,8 +166,7 @@ steps:
 		ID:          7,
 		Name:        "template-rendering",
 		Description: "Render text using Go templates",
-		Content: `type: graph
-defaults:
+		Content: `defaults:
   retry_policy:
     limit: 2
     interval_sec: 5
@@ -196,8 +189,7 @@ steps:
 		ID:          8,
 		Name:        "docker-container",
 		Description: "Run steps inside a Docker container",
-		Content: `type: graph
-defaults:
+		Content: `defaults:
   retry_policy:
     limit: 2
     interval_sec: 5
@@ -223,8 +215,7 @@ steps:
 		ID:          9,
 		Name:        "sub-dag",
 		Description: "Call another DAG as a sub-workflow",
-		Content: `type: graph
-defaults:
+		Content: `defaults:
   retry_policy:
     limit: 2
     interval_sec: 5
@@ -245,7 +236,6 @@ name: etl-job
 params:
   - SOURCE: ""
   - TARGET: ""
-type: graph
 steps:
   - name: extract
     command: echo "extracting from ${SOURCE}"
@@ -258,8 +248,7 @@ steps:
 		ID:          10,
 		Name:        "conditional-routing",
 		Description: "Route execution based on step output",
-		Content: `type: graph
-defaults:
+		Content: `defaults:
   retry_policy:
     limit: 2
     interval_sec: 5
@@ -284,8 +273,7 @@ steps:
 		ID:          11,
 		Name:        "approval-gate",
 		Description: "Add human approval gates to a workflow",
-		Content: `type: graph
-steps:
+		Content: `steps:
   - name: build
     command: echo "build artifact v1.2.3"
     output: VERSION
@@ -305,8 +293,7 @@ steps:
 		ID:          12,
 		Name:        "agent-step",
 		Description: "Run an AI agent as a workflow step",
-		Content: `type: graph
-defaults:
+		Content: `defaults:
   retry_policy:
     limit: 2
     interval_sec: 5

@@ -99,7 +99,6 @@ func TestTemplateExecutor(t *testing.T) {
 
 		th := test.Setup(t)
 		dag := th.DAG(t, `
-type: graph
 steps:
   - id: producer
     command: 'echo -n "Alice"'

@@ -34,7 +34,6 @@ func TestPreconditionWithDAGEnvVarsNotMet(t *testing.T) {
 	t.Parallel()
 	th := test.Setup(t)
 	dag := th.DAG(t, `
-type: graph
 env:
   - DEV_PCENT: "50"
   - DEV_ALERT: "80"
@@ -76,7 +75,6 @@ func TestPreconditionWithStepOutput(t *testing.T) {
 	t.Parallel()
 	th := test.Setup(t)
 	dag := th.DAG(t, `
-type: graph
 steps:
   - name: produce
     command: echo "go"

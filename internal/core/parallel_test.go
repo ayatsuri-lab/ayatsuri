@@ -264,7 +264,6 @@ steps:
 		{
 			name: "ParallelWithOutputFromPreviousStep",
 			yaml: `
-type: graph
 steps:
   - name: get-items
     command: echo '["item1", "item2", "item3"]'

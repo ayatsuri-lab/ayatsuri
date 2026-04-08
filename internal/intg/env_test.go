@@ -95,6 +95,7 @@ steps:
   - name: write-to-workdir
     command: echo "hello" > "${DAG_RUN_WORK_DIR}/test.txt"
   - name: read-from-workdir
+    depends: [write-to-workdir]
     command: cat "${DAG_RUN_WORK_DIR}/test.txt"
     output: WORKDIR_OUTPUT
 `)
@@ -119,6 +120,7 @@ steps:
   - name: write-to-workdir
     command: echo "from-workdir" > "${DAG_RUN_WORK_DIR}/data.txt"
   - name: read-from-workdir
+    depends: [write-to-workdir]
     command: cat "${DAG_RUN_WORK_DIR}/data.txt"
     output: WORKDIR_OUTPUT
 `)
@@ -173,7 +175,6 @@ steps:
 	t.Run("StepOutputSubstrings", func(t *testing.T) {
 		th := test.Setup(t)
 		dag := th.DAG(t, `
-type: graph
 steps:
   - id: producer
     name: producer

@@ -16,10 +16,6 @@ const defaultBaseConfig = `# Base DAG Configuration
 
 # -- Active Defaults --
 
-# Execution model. "chain" (default) runs steps sequentially in definition order.
-# "graph" runs steps in parallel based on dependency resolution.
-# type: chain
-
 # Behavior when a new run is triggered while one is already active.
 # "skip" = discard the new run. "all" = queue all runs. "latest" = keep only the most recent.
 overlap_policy: skip
@@ -35,7 +31,7 @@ hist_retention_days: 30
 max_clean_up_time_sec: 5
 
 # Maximum number of steps that can run concurrently within a single DAG execution.
-# 0 = unlimited. Only applies when type is "graph".
+# 0 = unlimited.
 max_active_steps: 10
 
 # Maximum bytes of stdout/stderr output captured per step. Excess output is truncated.

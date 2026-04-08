@@ -233,7 +233,6 @@ func TestSchedulerRetryScanner(t *testing.T) {
 	t.Run("EligibleFailedRunRetries", func(t *testing.T) {
 		markerPath := filepath.Join(t.TempDir(), "failure.marker")
 		f := newFixture(t, fmt.Sprintf(`
-type: graph
 name: retry-dag
 queue: retry-queue
 retry_policy:
@@ -281,7 +280,6 @@ steps:
 	t.Run("MissingFinishedAtStillRetriesViaCreatedAt", func(t *testing.T) {
 		markerPath := filepath.Join(t.TempDir(), "failure.marker")
 		f := newFixture(t, fmt.Sprintf(`
-type: graph
 name: retry-dag
 queue: retry-queue
 retry_policy:
@@ -325,7 +323,6 @@ steps:
 	t.Run("NewerScheduledRunDoesNotSuppressRetry", func(t *testing.T) {
 		markerPath := filepath.Join(t.TempDir(), "failure.marker")
 		f := newFixture(t, fmt.Sprintf(`
-type: graph
 name: retry-dag
 queue: retry-queue
 retry_policy:

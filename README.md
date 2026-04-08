@@ -163,7 +163,6 @@ Visit http://localhost:8080
 ### Sequential execution
 
 ```yaml
-type: chain
 steps:
   - command: echo "Step 1"
   - command: echo "Step 2"
@@ -172,7 +171,6 @@ steps:
 ### Parallel execution with dependencies
 
 ```yaml
-type: graph
 steps:
   - id: extract
     command: ./extract.sh

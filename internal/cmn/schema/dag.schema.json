@@ -385,16 +385,6 @@
       ],
       "description": "Tags for categorizing and filtering DAGs. Supports multiple formats: string (\"tag1, tag2\" or \"env=prod team=platform\"), map ({ env: prod }), or array ([\"tag1\", { env: prod }])"
     },
-    "type": {
-      "type": "string",
-      "enum": [
-        "graph",
-        "chain",
-        "agent"
-      ],
-      "default": "chain",
-      "description": "Execution type for steps. 'chain' (default) executes steps sequentially in the order they are defined, with each step automatically depending on the previous one. 'graph' uses dependency-based execution where steps run based on their 'depends' field. 'agent' is reserved for future agent-based execution."
-    },
     "env": {
       "oneOf": [
         {
@@ -1816,7 +1806,7 @@
               "minLength": 1
             }
           },
-          "description": "Map of patterns to target step names for routing. Keys are patterns (exact match or 're:regex'), values are arrays of step names. Target steps automatically depend on the router (no explicit depends needed). Each step can only be targeted by one route. Only used when type is 'router'. Router steps require DAG type 'graph'."
+          "description": "Map of patterns to target step names for routing. Keys are patterns (exact match or 're:regex'), values are arrays of step names. Target steps automatically depend on the router (no explicit depends needed). Each step can only be targeted by one route. Only used when type is 'router'."
         }
       },
       "allOf": [

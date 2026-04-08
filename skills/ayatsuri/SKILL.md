@@ -9,7 +9,7 @@ Use this skill for Ayatsuri DAG YAML work. Keep the main skill lean and load onl
 ## Default Approach
 
 - Preserve existing DAG style when editing unless there is a clear reason to normalize it.
-- Prefer `type: graph` for new DAGs. It supports both sequential flow via `depends:` and parallel flow.
+- Prefer explicit `depends:` for any ordering. Ayatsuri DAGs always use dependency-based execution and no longer support a top-level `type:` field.
 - Prefer `id` on every step. Omit `name` unless the display label must differ from the step ID.
 - Prefer `ayatsuri enqueue` over `ayatsuri start` for agent-run workflows.
 - Prefer `ayatsuri schema ...` and `ayatsuri validate ...` over guessing field names or shapes.
@@ -23,12 +23,11 @@ Use this skill for Ayatsuri DAG YAML work. Keep the main skill lean and load onl
 - Do not assume `bash` for `script:` steps. If a script depends on a specific interpreter, add a shebang such as `#!/bin/sh` or `#!/usr/bin/env bash` only after checking that shell exists on the target host or container. Otherwise keep the script portable or set `shell:` explicitly.
 - `parallel:` requires `call:` to a sub-DAG.
 - Sub-DAGs do not inherit parent env vars; pass what you need via `params:`.
-- For arbitrary text inside shell steps, prefer `printenv VAR_NAME` or `type: template` over `${VAR}` interpolation.
+- For arbitrary text inside shell steps, prefer `printenv VAR_NAME` or executor `type: template` over `${VAR}` interpolation.
 
 ## Minimal Example
 
 ```yaml
-type: graph
 steps:
   - id: fetch
     command: echo '{"name":"Alice"}'

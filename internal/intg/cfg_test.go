@@ -22,9 +22,11 @@ func TestDAGExecution(t *testing.T) {
 		t.Parallel()
 
 		dag := th.DAG(t, `steps:
-  - command: echo 1
+  - id: produce
+    command: echo 1
     output: NO_NAME_STEP_OUT
   - command: echo ${NO_NAME_STEP_OUT}=1
+    depends: [produce]
     output: NO_NAME_STEP_OUT2
 `)
 		agent := dag.Agent()
@@ -36,8 +38,7 @@ func TestDAGExecution(t *testing.T) {
 	t.Run("Depends", func(t *testing.T) {
 		t.Parallel()
 
-		dag := th.DAG(t, `type: graph
-steps:
+		dag := th.DAG(t, `steps:
   - name: "1"
     command: echo 1
   - name: "2"
@@ -107,8 +108,7 @@ steps:
 
 	t.Run("StepTimeout", func(t *testing.T) {
 		t.Parallel()
-		dag := th.DAG(t, `type: graph
-steps:
+		dag := th.DAG(t, `steps:
   - name: slow
     command: sleep 2
     timeout_sec: 1
@@ -126,8 +126,7 @@ steps:
 	t.Run("NamedParams", func(t *testing.T) {
 		t.Parallel()
 
-		dag := th.DAG(t, `type: graph
-params:
+		dag := th.DAG(t, `params:
   NAME: "Ayatsuri"
   AGE: 30
 
@@ -229,9 +228,11 @@ steps:
 		t.Parallel()
 
 		dag := th.DAG(t, `steps:
-  - command: echo abc run def
+  - id: produce
+    command: echo abc run def
     output: OUT1
   - command: echo match
+    depends: [produce]
     output: OUT2
     preconditions:
       - condition: "$OUT1"
@@ -249,11 +250,13 @@ steps:
 		t.Parallel()
 
 		dag := th.DAG(t, `steps:
-  - command: |
+  - id: config
+    command: |
       echo '{"port": 8080, "host": "localhost"}'
     output: CONFIG
 
   - command: echo "Starting server at ${CONFIG.host}:${CONFIG.port}"
+    depends: [config]
     output: OUT1
 `)
 		agent := dag.Agent()
@@ -271,14 +274,18 @@ steps:
   - PROCESS_DATE: "`+"`"+`date '+%Y%m%d_%H%M%S'`+"`"+`"
 
 steps:
-  - command: echo foo
+  - id: write
+    command: echo foo
     stdout: "${DATA_DIR}_${PROCESS_DATE}"
-  - command: cat ${DATA_DIR}_${PROCESS_DATE}
+  - id: read
+    command: cat ${DATA_DIR}_${PROCESS_DATE}
+    depends: [write]
     output: OUT1
     preconditions:
       - condition: "${DATA_DIR}_${PROCESS_DATE}"
         expected: "re:[0-9]{8}_[0-9]{6}"
   - command: rm ${DATA_DIR}_${PROCESS_DATE}
+    depends: [read]
 `)
 		agent := dag.Agent()
 		agent.RunSuccess(t)
@@ -385,11 +392,13 @@ steps:
 		t.Parallel()
 
 		dag := th.DAG(t, `steps:
-  - command: |
+  - id: config
+    command: |
       echo '{"port": 8080, "host": "localhost"}'
     output: CONFIG
 
   - name: start_server
+    depends: [config]
     command: echo "Starting server at ${CONFIG.host}:${CONFIG.port}"
     output: OUT1
 `)
@@ -476,8 +485,7 @@ steps:
 	t.Run("Issue810", func(t *testing.T) {
 		t.Parallel()
 
-		dag := th.DAG(t, `type: graph
-params: bar
+		dag := th.DAG(t, `params: bar
 steps:
   - name: step1
     command: echo start
@@ -561,14 +569,16 @@ steps:
 }
 
 func TestCallSubDAG(t *testing.T) {
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 
 	// Use multi-document YAML to include both parent and sub DAG
 	dagContent := `steps:
-  - call: sub
+  - name: call-sub
+    call: sub
     params: "SUB_P1=foo"
     output: OUT1
   - command: echo "${OUT1.outputs.OUT}"
+    depends: [call-sub]
     output: OUT2
 ---
 name: sub
@@ -588,7 +598,7 @@ steps:
 }
 
 func TestNestedThreeLevelDAG(t *testing.T) {
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 
 	// Create the grandsub DAG as a separate file
 	th.CreateDAGFile(t, th.Config.Paths.DAGsDir, "nested_grand_child", []byte(`
@@ -601,20 +611,24 @@ steps:
 
 	// Create parent and sub DAGs using multi-document YAML
 	dagContent := `steps:
-  - call: nested_child
+  - name: call-nested-child
+    call: nested_child
     params: "PARAM=123"
     output: SUB_OUTPUT
   - command: echo ${SUB_OUTPUT.outputs.OUTPUT}
+    depends: [call-nested-child]
     output: OUT1
 ---
 name: nested_child
 params:
   PARAM: VALUE
 steps:
-  - call: nested_grand_child
+  - name: call-nested-grand-child
+    call: nested_grand_child
     params: "PARAM=${PARAM}"
     output: GRAND_SUB_OUTPUT
   - command: echo ${GRAND_SUB_OUTPUT.outputs.OUTPUT}
+    depends: [call-nested-grand-child]
     output: OUTPUT
 `
 	dag := th.DAG(t, dagContent)
@@ -632,8 +646,7 @@ func TestSkippedPreconditions(t *testing.T) {
 	// Setup the test helper with the integration DAGs directory.
 	th := test.Setup(t)
 	// Load the DAG from inline YAML.
-	dag := th.DAG(t, `type: graph  # Use graph mode to avoid implicit dependencies
-steps:
+	dag := th.DAG(t, `steps:
   - command: echo "executed"
     output: OUT_RUN
   - command: echo "should not execute"
@@ -663,8 +676,7 @@ func TestComplexDependencies(t *testing.T) {
 	// Setup the test helper with the integration DAGs directory.
 	th := test.Setup(t)
 	// Load the DAG from inline YAML.
-	dag := th.DAG(t, `type: graph
-steps:
+	dag := th.DAG(t, `steps:
   - name: start
     command: echo "start"
     output: START
@@ -779,8 +791,7 @@ func TestPreconditionNegate(t *testing.T) {
 		t.Parallel()
 
 		// When negate:true and condition matches expected, step should be skipped
-		dag := th.DAG(t, `type: graph
-env:
+		dag := th.DAG(t, `env:
   - STATUS: success
 steps:
   - command: echo "always runs"
@@ -804,8 +815,7 @@ steps:
 		t.Parallel()
 
 		// When negate:true and condition does NOT match expected, step should run
-		dag := th.DAG(t, `type: graph
-env:
+		dag := th.DAG(t, `env:
   - STATUS: failure
 steps:
   - command: echo "always runs"
@@ -829,8 +839,7 @@ steps:
 		t.Parallel()
 
 		// When negate:true with a command, step runs when command fails (non-zero exit)
-		dag := th.DAG(t, `type: graph
-steps:
+		dag := th.DAG(t, `steps:
   - command: echo "should run"
     output: OUT1
     preconditions:

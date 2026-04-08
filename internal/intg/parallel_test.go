@@ -144,7 +144,7 @@ steps:
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			th := test.Setup(t)
+			th := test.Setup(t, test.WithBuiltExecutable())
 			dag := th.DAG(t, tc.dag)
 			agent := dag.Agent()
 			err := agent.Run(agent.Context)
@@ -192,7 +192,7 @@ steps:
     output: TASK_OUTPUT
 `
 
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 	dag := th.DAG(t, dagContent)
 	agent := dag.Agent()
 	err := agent.Run(agent.Context)
@@ -240,8 +240,7 @@ steps:
 func TestParallelExecution_RetryBackoffDoesNotBlockScheduling(t *testing.T) {
 	th := test.Setup(t, test.WithBuiltExecutable())
 
-	dag := th.DAG(t, `type: graph
-steps:
+	dag := th.DAG(t, `steps:
   - name: process-items
     call: processor
     parallel:
@@ -317,8 +316,7 @@ steps:
 func TestParallelExecution_AbortStopsPendingLaunches(t *testing.T) {
 	th := test.Setup(t, test.WithBuiltExecutable())
 
-	dag := th.DAG(t, `type: graph
-steps:
+	dag := th.DAG(t, `steps:
   - name: process-items
     call: child-slow
     parallel:
@@ -389,8 +387,7 @@ func TestParallelExecution_AbortSuppressesPendingRetry(t *testing.T) {
 	counterFile := filepath.Join(t.TempDir(), "parallel-retry-counter.txt")
 
 	th := test.Setup(t, test.WithBuiltExecutable())
-	dag := th.DAG(t, fmt.Sprintf(`type: graph
-steps:
+	dag := th.DAG(t, fmt.Sprintf(`steps:
   - name: process-items
     call: child-flaky
     parallel:
@@ -482,7 +479,7 @@ steps:
     output: ECHO_OUTPUT
 `
 
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 	dag := th.DAG(t, dagContent)
 	agent := dag.Agent()
 	err := agent.Run(agent.Context)
@@ -532,7 +529,7 @@ steps:
       echo "Processing: $1"
 `
 
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 	dag := th.DAG(t, dagContent)
 	agent := dag.Agent()
 	err := agent.Run(agent.Context)
@@ -570,7 +567,7 @@ steps:
     output: RESULT
 `
 
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 	dag := th.DAG(t, dagContent)
 	agent := dag.Agent()
 	err := agent.Run(agent.Context)
@@ -603,7 +600,7 @@ func TestParallelExecution_OutputCaptureWithRetry(t *testing.T) {
 	const counterFile = "/tmp/test_retry_counter.txt"
 	t.Cleanup(func() { _ = os.Remove(counterFile) })
 
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 	dag := th.DAG(t, fmt.Sprintf(`steps:
   - call: child-retry-simple
     parallel:
@@ -674,7 +671,7 @@ steps:
   - exit 1
 `
 
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 	dag := th.DAG(t, dagContent)
 	agent := dag.Agent()
 	err := agent.Run(agent.Context)
@@ -708,7 +705,7 @@ steps:
   - exit 1
 `
 
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 	dag := th.DAG(t, dagContent)
 	agent := dag.Agent()
 	err := agent.Run(agent.Context)
@@ -758,7 +755,7 @@ steps:
     output: TASK_OUTPUT
 `
 
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 	dag := th.DAG(t, dagContent)
 	agent := dag.Agent()
 	err := agent.Run(agent.Context)
@@ -800,7 +797,7 @@ func TestParallelExecution_ExceedsMaxLimit(t *testing.T) {
 		items[i] = fmt.Sprintf("        - \"item%d\"", i)
 	}
 
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 	dag := th.DAG(t, fmt.Sprintf(`steps:
   - call: child-echo
     parallel:
@@ -825,7 +822,7 @@ steps:
 }
 
 func TestParallelExecution_ExactlyMaxLimit(t *testing.T) {
-	helper := test.Setup(t)
+	helper := test.Setup(t, test.WithBuiltExecutable())
 
 	items := make([]string, 1000)
 	for i := range items {
@@ -899,7 +896,7 @@ steps:
     output: SYNC_RESULT
 `
 
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 	dag := th.DAG(t, dagContent)
 	agent := dag.Agent()
 	err := agent.Run(agent.Context)
@@ -932,7 +929,7 @@ steps:
 }
 
 func TestParallelExecution_DynamicFileDiscovery(t *testing.T) {
-	helper := test.Setup(t)
+	helper := test.Setup(t, test.WithBuiltExecutable())
 
 	testDataDir := filepath.Join(helper.Config.Paths.DAGsDir, "test-data")
 	require.NoError(t, os.MkdirAll(testDataDir, 0755))
@@ -1063,7 +1060,7 @@ steps:
     output: DEPLOY_RESULT
 `
 
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 	dag := th.DAG(t, dagContent)
 	agent := dag.Agent()
 	err := agent.Run(agent.Context)
@@ -1096,11 +1093,13 @@ steps:
 // correctly handles a single JSON item from output (should dispatch 1 job)
 func TestIssue1274_ParallelJSONSingleItem(t *testing.T) {
 	const dagContent = `steps:
-  - command: |
+  - id: produce_json
+    command: |
       echo '{"file": "params.txt", "config": "env"}'
     output: jsonList
 
   - call: issue-1274-worker
+    depends: [produce_json]
     parallel:
       items: ${jsonList}
       max_concurrent: 1
@@ -1118,7 +1117,7 @@ steps:
     command: echo "Processing file=${aJson.file} config=${aJson.config}"
 `
 
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 	dag := th.DAG(t, dagContent)
 	agent := dag.Agent()
 	err := agent.Run(agent.Context)
@@ -1140,13 +1139,15 @@ steps:
 // correctly handles multiple JSON items from output (should dispatch N jobs)
 func TestIssue1274_ParallelJSONMultipleItems(t *testing.T) {
 	const dagContent = `steps:
-  - command: |
+  - id: produce_json
+    command: |
       echo '{"file": "file1.txt", "config": "prod"}'
       echo '{"file": "file2.txt", "config": "test"}'
       echo '{"file": "file3.txt", "config": "dev"}'
     output: jsonList
 
   - call: issue-1274-worker-multi
+    depends: [produce_json]
     parallel:
       items: ${jsonList}
       max_concurrent: 1
@@ -1164,7 +1165,7 @@ steps:
     command: echo "Processing file=${aJson.file} config=${aJson.config}"
 `
 
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 	dag := th.DAG(t, dagContent)
 	agent := dag.Agent()
 	err := agent.Run(agent.Context)
@@ -1196,11 +1197,13 @@ func TestIssue1658_ParallelCallExpandedParamsSplitting(t *testing.T) {
 		{
 			name: "positional_expands_to_multiple_params",
 			dag: `steps:
-  - command: |
+  - id: produce_items
+    command: |
       echo '[{"name": "test", "extra": "A=1 B=2"}]'
     output: ITEMS
 
   - call: child-params-split
+    depends: [produce_items]
     parallel:
       items: ${ITEMS}
     params: "NAME=${ITEM.name} ${ITEM.extra}"
@@ -1231,11 +1234,13 @@ steps:
 		{
 			name: "multiple_items_different_expansions",
 			dag: `steps:
-  - command: |
+  - id: produce_items
+    command: |
       echo '[{"name":"alpha","extra":"X=10 Y=20"}, {"name":"beta","extra":"X=30 Y=40"}]'
     output: ITEMS
 
   - call: child-multi-expand
+    depends: [produce_items]
     parallel:
       items: ${ITEMS}
     params: "NAME=${ITEM.name} ${ITEM.extra}"
@@ -1277,11 +1282,13 @@ steps:
 		{
 			name: "named_param_with_spaces_preserved",
 			dag: `steps:
-  - command: |
+  - id: produce_items
+    command: |
       echo '[{"label": "hello world", "id": "1"}]'
     output: ITEMS
 
   - call: child-named-spaces
+    depends: [produce_items]
     parallel:
       items: ${ITEMS}
     params: "LABEL=${ITEM.label} ID=${ITEM.id}"
@@ -1315,11 +1322,13 @@ steps:
 		{
 			name: "positional_single_value_no_split",
 			dag: `steps:
-  - command: |
+  - id: produce_items
+    command: |
       echo '[{"tag": "simple"}]'
     output: ITEMS
 
   - call: child-positional-single
+    depends: [produce_items]
     parallel:
       items: ${ITEMS}
     params: "${ITEM.tag}"
@@ -1349,7 +1358,7 @@ steps:
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			th := test.Setup(t)
+			th := test.Setup(t, test.WithBuiltExecutable())
 			dag := th.DAG(t, tc.dag)
 			agent := dag.Agent()
 			err := agent.Run(agent.Context)
@@ -1379,7 +1388,7 @@ steps:
 // resolved inside `call:` before each parallel sub-DAG is loaded.
 // See: https://github.com/ayatsuri-lab/ayatsuri/issues/1790
 func TestIssue1790_ParallelCallPathItemResolution(t *testing.T) {
-	th := test.Setup(t)
+	th := test.Setup(t, test.WithBuiltExecutable())
 
 	th.CreateDAGFile(t, th.Config.Paths.DAGsDir, "parallel-child_01.yaml", []byte(`
 name: parallel-child-01

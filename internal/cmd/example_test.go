@@ -37,7 +37,7 @@ func TestExampleCommand(t *testing.T) {
 	t.Run("ShowByID", func(t *testing.T) {
 		out, err := runExampleCmd("example", "1")
 		require.NoError(t, err)
-		assert.Contains(t, out, "type: graph")
+		assert.Contains(t, out, "steps:")
 	})
 
 	t.Run("InvalidID", func(t *testing.T) {
@@ -50,7 +50,7 @@ func TestExampleCommand(t *testing.T) {
 		for i := 1; i <= cmd.ExampleCount(); i++ {
 			out, err := runExampleCmd("example", fmt.Sprintf("%d", i))
 			require.NoError(t, err, "example %d failed", i)
-			assert.Contains(t, out, "type: graph", "example %d missing type: graph", i)
+			assert.Contains(t, out, "steps:", "example %d missing steps", i)
 		}
 	})
 }

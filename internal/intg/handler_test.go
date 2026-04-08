@@ -716,7 +716,6 @@ steps:
 
 		// DAG_WAITING_STEPS should contain comma-separated list of waiting step names
 		dag := th.DAG(t, `
-type: graph
 handler_on:
   wait:
     command: |
@@ -759,7 +758,6 @@ steps:
 		// Verify DAG_WAITING_STEPS format is correct (comma-separated list)
 		// This test has a step with a hyphenated name to verify proper formatting
 		dag := th.DAG(t, `
-type: graph
 handler_on:
   wait:
     command: |
@@ -829,7 +827,6 @@ steps:
 		stdoutPath := filepath.Join(tempDir, "wait_${DAG_WAITING_STEPS}.log")
 
 		dag := th.DAG(t, `
-type: graph
 handler_on:
   wait:
     stdout: "`+stdoutPath+`"

@@ -23,7 +23,6 @@ func TestStepIDPropertyAccess(t *testing.T) {
 		{
 			name: "BasicStdout/StderrFileAccess",
 			yaml: `
-type: graph
 steps:
   - id: gen
     command: |
@@ -51,7 +50,6 @@ steps:
 		{
 			name: "ExitCodeAccess",
 			yaml: `
-type: graph
 steps:
   - id: success
     command: exit 0
@@ -77,7 +75,6 @@ steps:
 		{
 			name: "UnknownStepIDRemainsUnchanged",
 			yaml: `
-type: graph
 steps:
   - id: first_step
     command: echo "Hello"
@@ -105,7 +102,6 @@ steps:
 		{
 			name: "RegularVariableTakesPrecedenceOverStepID",
 			yaml: `
-type: graph
 steps:
   - id: check
     command: echo '{"status":"from-step"}'
@@ -165,7 +161,6 @@ func TestStepIDComplexScenarios(t *testing.T) {
 		th := test.Setup(t)
 
 		yaml := `
-type: graph
 steps:
   - id: gen1
     command: echo "data from gen1"
@@ -245,7 +240,6 @@ steps:
 		th := test.Setup(t)
 
 		yaml := `
-type: graph
 steps:
   - id: setup_step
     command: echo '{"env":"test","timeout":30}'
@@ -290,7 +284,6 @@ func TestStepScopedOutputAccess(t *testing.T) {
 		{
 			name: "BasicOutputAccess",
 			yaml: `
-type: graph
 steps:
   - id: extract_title
     output: RESULT
@@ -316,7 +309,6 @@ steps:
 		{
 			name: "EmptyOutputResolvesToEmptyString",
 			yaml: `
-type: graph
 steps:
   - id: empty_step
     output: RESULT
@@ -337,7 +329,6 @@ steps:
 		{
 			name: "OutputVsStdout",
 			yaml: `
-type: graph
 steps:
   - id: producer
     output: CAPTURED
@@ -363,7 +354,6 @@ steps:
 		{
 			name: "OutputWithoutCapture",
 			yaml: `
-type: graph
 steps:
   - id: no_output
     script: |
@@ -383,7 +373,6 @@ steps:
 		{
 			name: "OutputPrecedenceOverJSONPath",
 			yaml: `
-type: graph
 steps:
   - id: check
     output: check
@@ -405,7 +394,6 @@ steps:
 		{
 			name: "OutputSlicing",
 			yaml: `
-type: graph
 steps:
   - id: producer
     output: DATA
@@ -456,7 +444,6 @@ func TestStepIDErrorCases(t *testing.T) {
 		th := test.Setup(t)
 
 		yaml := `
-type: graph
 steps:
   - id: gen
     command: echo "not json"

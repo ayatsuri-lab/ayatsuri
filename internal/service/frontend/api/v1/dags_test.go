@@ -524,7 +524,6 @@ steps:
 
 	t.Run("HistoryGridDataUsesExecutionOrder", func(t *testing.T) {
 		spec := `
-type: graph
 steps:
   - name: c_leaf
     command: echo c

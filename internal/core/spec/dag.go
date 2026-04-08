@@ -33,11 +33,6 @@ type dag struct {
 	Group string `yaml:"group,omitempty"`
 	// Description is the description of the DAG.
 	Description string `yaml:"description,omitempty"`
-	// Type is the execution type for steps (graph, chain, or agent).
-	// Default is "chain" which executes steps in the order they are defined.
-	// "graph" uses dependency-based parallel execution.
-	// "agent" is reserved for future agent-based execution.
-	Type string `yaml:"type,omitempty"`
 	// Shell is the default shell to use for all steps in this DAG.
 	// If not specified, the system default shell is used.
 	// Can be overridden at the step level.
@@ -341,7 +336,6 @@ var metadataTransformers = []transform{
 	{"name", newTransformer("Name", buildName)},
 	{"group", newTransformer("Group", buildGroup)},
 	{"description", newTransformer("Description", buildDescription)},
-	{"type", newTransformer("Type", buildType)},
 	{"tags", newTransformer("Tags", buildTags)},
 	// params must run BEFORE env so that env: values can reference ${param_name}
 	{"params", newTransformer("Params", buildParams)},
@@ -522,23 +516,6 @@ func (d *dag) build(ctx BuildContext) (*core.DAG, error) {
 	}
 
 	return result, nil
-}
-
-// Builder functions - each returns a value instead of modifying result
-
-func buildType(_ BuildContext, d *dag) (string, error) {
-	t := strings.TrimSpace(d.Type)
-	if t == "" {
-		return core.TypeChain, nil
-	}
-	switch t {
-	case core.TypeGraph, core.TypeChain:
-		return t, nil
-	case core.TypeAgent:
-		return "", core.NewValidationError("type", t, fmt.Errorf("type 'agent' is reserved and not yet supported"))
-	default:
-		return "", core.NewValidationError("type", t, fmt.Errorf("invalid type: %s (must be one of: graph, chain)", t))
-	}
 }
 
 // Builder functions - all return values instead of modifying result
@@ -1361,7 +1338,6 @@ func parseHealthcheck(h *healthcheck) (*core.Healthcheck, error) {
 	return hc, nil
 }
 
-
 func buildSSH(_ BuildContext, d *dag) (*core.SSHConfig, error) {
 	if d.SSH == nil {
 		return nil, nil
@@ -1670,7 +1646,6 @@ func buildSteps(ctx BuildContext, d *dag, result *core.DAG) ([]core.Step, error)
 		normalized := normalizeStepData(ctx, v)
 
 		var builtSteps []*core.Step
-		var prevSteps []*core.Step
 		for i, raw := range normalized {
 			switch v := raw.(type) {
 			case map[string]any:
@@ -1678,21 +1653,9 @@ func buildSteps(ctx BuildContext, d *dag, result *core.DAG) ([]core.Step, error)
 				if err != nil {
 					return nil, err
 				}
-
-				if err := validateNoDependsForChainType(result, st); err != nil {
-					return nil, err
-				}
-
-				if err := validateNoRouterForChainType(result, st); err != nil {
-					return nil, err
-				}
-
-				injectChainDependencies(result, prevSteps, st)
 				builtSteps = append(builtSteps, st)
-				prevSteps = []*core.Step{st}
 
 			case []any:
-				var tempSteps []*core.Step
 				var normalizedNested = normalizeStepData(ctx, v)
 				for _, nested := range normalizedNested {
 					switch vv := nested.(type) {
@@ -1701,24 +1664,12 @@ func buildSteps(ctx BuildContext, d *dag, result *core.DAG) ([]core.Step, error)
 						if err != nil {
 							return nil, err
 						}
-
-						if err := validateNoDependsForChainType(result, st); err != nil {
-							return nil, err
-						}
-
-						if err := validateNoRouterForChainType(result, st); err != nil {
-							return nil, err
-						}
-
-						injectChainDependencies(result, prevSteps, st)
 						builtSteps = append(builtSteps, st)
-						tempSteps = append(tempSteps, st)
 
 					default:
 						return nil, core.NewValidationError("steps", raw, ErrInvalidStepData)
 					}
 				}
-				prevSteps = tempSteps
 
 			default:
 				return nil, core.NewValidationError("steps", raw, ErrInvalidStepData)
@@ -1756,15 +1707,6 @@ func buildSteps(ctx BuildContext, d *dag, result *core.DAG) ([]core.Step, error)
 			if err != nil {
 				return nil, err
 			}
-
-			if err := validateNoDependsForChainType(result, builtStep); err != nil {
-				return nil, err
-			}
-
-			if err := validateNoRouterForChainType(result, builtStep); err != nil {
-				return nil, err
-			}
-
 			steps = append(steps, *builtStep)
 		}
 		// Sort steps by name for deterministic output when built from a map.
@@ -1808,31 +1750,6 @@ func buildMailConfigInternal(def mailConfig) (*core.MailConfig, error) {
 		Prefix:     strings.TrimSpace(def.Prefix),
 		AttachLogs: def.AttachLogs,
 	}, nil
-}
-
-// validateNoDependsForChainType ensures that steps in chain type DAGs do not have explicit depends.
-// Chain type DAGs should have fully automatic sequential execution with no manual dependency control.
-func validateNoDependsForChainType(dag *core.DAG, step *core.Step) error {
-	if dag.Type != core.TypeChain {
-		return nil
-	}
-	if len(step.Depends) > 0 || step.ExplicitlyNoDeps {
-		return core.NewValidationError("depends", step.Depends,
-			fmt.Errorf("step '%s': %w", step.Name, core.ErrDependsNotAllowedInChainType))
-	}
-	return nil
-}
-
-// validateNoRouterForChainType returns an error if a router step is used in chain mode
-func validateNoRouterForChainType(dag *core.DAG, step *core.Step) error {
-	if dag.Type != core.TypeChain {
-		return nil
-	}
-	if step.Router != nil {
-		return core.NewValidationError("type", step.Name,
-			fmt.Errorf("step '%s': router steps require type 'graph'; change DAG type from 'chain' to 'graph' to use router steps", step.Name))
-	}
-	return nil
 }
 
 // transformRouterSteps processes router-type steps and injects preconditions

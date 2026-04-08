@@ -208,7 +208,6 @@ steps:
 func TestCancellation_GracefulShutdown(t *testing.T) {
 	t.Run("gracefulShutdownOnSIGTERM", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 name: graceful-cancel-test
 worker_selector:
   test: "true"
@@ -316,7 +315,6 @@ steps:
 func TestRetry_WithWorkerSelector(t *testing.T) {
 	t.Run("retryDispatchesToCoordinator", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 name: retry-cmd-test
 worker_selector:
   test: "true"
@@ -357,7 +355,6 @@ steps:
 
 	t.Run("retryDispatchesToCoordinator_NoNameField", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 worker_selector:
   test: "true"
 steps:
@@ -399,7 +396,6 @@ steps:
 func TestRetry_PartialRetry(t *testing.T) {
 	t.Run("retryReusesSameRunID", func(t *testing.T) {
 		f := newTestFixture(t, `
-type: graph
 name: partial-retry-test
 worker_selector:
   test: "true"

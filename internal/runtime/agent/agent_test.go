@@ -301,8 +301,7 @@ func TestAgent_Retry(t *testing.T) {
 	t.Run("RetryDAG", func(t *testing.T) {
 		th := test.Setup(t)
 		// retry DAG that fails
-		dag := th.DAG(t, `type: graph
-steps:
+		dag := th.DAG(t, `steps:
   - name: "1"
     command: "true"
   - name: "2"
@@ -370,8 +369,7 @@ steps:
 
 	t.Run("StepRetry", func(t *testing.T) {
 		th := test.Setup(t)
-		dag := th.DAG(t, `type: graph
-steps:
+		dag := th.DAG(t, `steps:
   - name: "1"
     command: "true"
   - name: "2"
@@ -666,8 +664,7 @@ func TestAgent_OutputCollection(t *testing.T) {
 		},
 		{
 			name: "LastOneWins",
-			dag: `type: graph
-steps:
+			dag: `steps:
   - name: step1
     command: echo "first"
     output: RESULT
@@ -744,7 +741,6 @@ steps:
 	// to fire (and exhaust itself) BEFORE run-child starts. This replicates the
 	// production scenario where the bug manifests.
 	parent := th.DAG(t, `
-type: graph
 steps:
   - name: pre-step
     command: "sleep 0.3"

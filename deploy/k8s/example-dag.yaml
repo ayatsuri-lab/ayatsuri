@@ -5,7 +5,6 @@ name: test-distributed
 description: Test DAG for distributed worker execution
 
 # Required when using explicit dependencies with 'depends'
-type: graph
 
 # Queue this DAG to be executed by workers
 queue:
