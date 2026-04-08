@@ -16,14 +16,6 @@ func init() {
 	}
 }
 
-// GetSignalName returns the signal name for the given signal number
-func GetSignalName(sig syscall.Signal) string {
-	if name := signalName(sig); name != "" {
-		return name
-	}
-	return ""
-}
-
 // IsTerminationSignalOS checks if the given os.Signal is a termination signal
 func IsTerminationSignalOS(sis os.Signal) bool {
 	sig, ok := sis.(syscall.Signal)
@@ -49,15 +41,7 @@ func GetSignalNum(sig string, fallback ...syscall.Signal) int {
 	return int(syscall.SIGTERM)
 }
 
-func signalName(sig syscall.Signal) string {
-	if info, ok := signalMap[sig]; ok {
-		return info.name
-	}
-	return ""
-}
-
 type signalInfo struct {
 	name          string
 	isTermination bool
-	number        syscall.Signal
 }

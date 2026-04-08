@@ -124,15 +124,6 @@ func TrimYAMLFileExtension(filename string) string {
 	}
 }
 
-// IsFileWithExtension is a more generic function that checks if a file
-// has any of the provided extensions.
-func IsFileWithExtension(filename string, validExtensions []string) bool {
-	if filename == "" || len(validExtensions) == 0 {
-		return false
-	}
-	return slices.Contains(validExtensions, filepath.Ext(filename))
-}
-
 // EnsureYAMLExtension adds .yaml extension if not present
 // if it has .yml extension, replace it with .yaml
 func EnsureYAMLExtension(filename string) string {

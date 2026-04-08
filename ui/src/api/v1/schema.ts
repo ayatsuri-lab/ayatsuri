@@ -3430,7 +3430,7 @@ export interface components {
             timeoutSec?: number;
             /** @description Executor configuration for this step */
             executorConfig?: {
-                /** @description Type of executor (e.g., 'wait', 'http', 'docker', 'command') */
+                /** @description Type of executor (e.g., 'command', 'ssh', 'dag', 'template') */
                 type?: string;
                 /** @description Executor-specific configuration */
                 config?: {

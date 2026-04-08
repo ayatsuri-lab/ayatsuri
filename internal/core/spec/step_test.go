@@ -41,8 +41,8 @@ func TestMain(m *testing.M) {
 			SubDAG: true, WorkerSelector: true,
 		})
 	}
-	// chat: LLM executor
-	core.RegisterExecutorCapabilities("chat", core.ExecutorCapabilities{LLM: true})
+	// test-llm: LLM executor (test-only; the removed "chat" executor used to provide this)
+	core.RegisterExecutorCapabilities("test-llm", core.ExecutorCapabilities{LLM: true})
 
 	os.Exit(m.Run())
 }
@@ -1299,22 +1299,22 @@ func TestBuildStepExecutor(t *testing.T) {
 		},
 		{
 			name:     "TypeField",
-			step:     &step{Type: "http"},
+			step:     &step{Type: "ssh"},
 			ctx:      testStepBuildContext(),
-			expected: core.ExecutorConfig{Type: "http", Config: make(map[string]any)},
+			expected: core.ExecutorConfig{Type: "ssh", Config: make(map[string]any)},
 		},
 		{
 			name: "TypeAndConfig",
 			step: &step{
-				Type: "docker",
+				Type: "ssh",
 				Config: map[string]any{
-					"image": "alpine:latest",
+					"host": "server.example.com",
 				},
 			},
 			ctx: testStepBuildContext(),
 			expected: core.ExecutorConfig{
-				Type:   "docker",
-				Config: map[string]any{"image": "alpine:latest"},
+				Type:   "ssh",
+				Config: map[string]any{"host": "server.example.com"},
 			},
 		},
 		{
@@ -2800,10 +2800,10 @@ func TestBuildStepExecutorNewFormat(t *testing.T) {
 	}{
 		{
 			name: "NewFormat_TypeOnly",
-			step: &step{Type: "http"},
+			step: &step{Type: "ssh"},
 			ctx:  testStepBuildContext(),
 			expected: core.ExecutorConfig{
-				Type:   "http",
+				Type:   "ssh",
 				Config: make(map[string]any),
 			},
 		},
@@ -2843,14 +2843,14 @@ func TestBuildStepExecutorNewFormat(t *testing.T) {
 		{
 			name: "NewFormat_TakesPrecedenceOverContainerInference",
 			step: &step{
-				Type: "http",
+				Type: "ssh",
 			},
 			ctx: StepBuildContext{
 				BuildContext: testBuildContext(),
 				dag:          &core.DAG{Container: &core.Container{Image: "alpine"}},
 			},
 			expected: core.ExecutorConfig{
-				Type:   "http",
+				Type:   "ssh",
 				Config: make(map[string]any),
 			},
 		},
@@ -2964,7 +2964,7 @@ func TestValidateLLM(t *testing.T) {
 		{
 			name: "ValidChatStep",
 			step: &core.Step{
-				ExecutorConfig: core.ExecutorConfig{Type: "chat"},
+				ExecutorConfig: core.ExecutorConfig{Type: "test-llm"},
 				LLM:            &core.LLMConfig{Provider: "openai", Model: "gpt-4"},
 				Messages:       []core.LLMMessage{{Role: "user", Content: "hello"}},
 			},
@@ -2982,7 +2982,7 @@ func TestValidateLLM(t *testing.T) {
 		{
 			name: "MissingProvider",
 			step: &core.Step{
-				ExecutorConfig: core.ExecutorConfig{Type: "chat"},
+				ExecutorConfig: core.ExecutorConfig{Type: "test-llm"},
 				LLM:            &core.LLMConfig{Model: "gpt-4"},
 				Messages:       []core.LLMMessage{{Role: "user", Content: "hello"}},
 			},
@@ -2992,7 +2992,7 @@ func TestValidateLLM(t *testing.T) {
 		{
 			name: "MissingModel",
 			step: &core.Step{
-				ExecutorConfig: core.ExecutorConfig{Type: "chat"},
+				ExecutorConfig: core.ExecutorConfig{Type: "test-llm"},
 				LLM:            &core.LLMConfig{Provider: "openai"},
 				Messages:       []core.LLMMessage{{Role: "user", Content: "hello"}},
 			},
@@ -3002,7 +3002,7 @@ func TestValidateLLM(t *testing.T) {
 		{
 			name: "MissingMessages",
 			step: &core.Step{
-				ExecutorConfig: core.ExecutorConfig{Type: "chat"},
+				ExecutorConfig: core.ExecutorConfig{Type: "test-llm"},
 				LLM:            &core.LLMConfig{Provider: "openai", Model: "gpt-4"},
 			},
 			wantErr: true,
@@ -3040,7 +3040,7 @@ func TestValidateMessages(t *testing.T) {
 		{
 			name: "MessagesWithChatExecutor",
 			step: &core.Step{
-				ExecutorConfig: core.ExecutorConfig{Type: "chat"},
+				ExecutorConfig: core.ExecutorConfig{Type: "test-llm"},
 				Messages:       []core.LLMMessage{{Role: "user", Content: "hello"}},
 			},
 			wantErr: false,
@@ -3094,7 +3094,7 @@ func TestBuildStepLLM(t *testing.T) {
 		},
 		{
 			name: "InheritFromDAG",
-			step: &step{Type: "chat"},
+			step: &step{Type: "test-llm"},
 			dag: &core.DAG{
 				LLM: &core.LLMConfig{Provider: "openai", Model: "gpt-4"},
 			},
@@ -3103,7 +3103,7 @@ func TestBuildStepLLM(t *testing.T) {
 		{
 			name: "InvalidProvider",
 			step: &step{
-				Type: "chat",
+				Type: "test-llm",
 				LLM:  &llmConfig{Provider: "invalid", Model: model("test")},
 			},
 			wantErr: true,
@@ -3112,7 +3112,7 @@ func TestBuildStepLLM(t *testing.T) {
 		{
 			name: "MissingModel",
 			step: &step{
-				Type: "chat",
+				Type: "test-llm",
 				LLM:  &llmConfig{Provider: "openai"},
 			},
 			wantErr: true,
@@ -3121,7 +3121,7 @@ func TestBuildStepLLM(t *testing.T) {
 		{
 			name: "TemperatureTooLow",
 			step: &step{
-				Type: "chat",
+				Type: "test-llm",
 				LLM:  &llmConfig{Provider: "openai", Model: model("gpt-4"), Temperature: temp(-0.1)},
 			},
 			wantErr: true,
@@ -3130,7 +3130,7 @@ func TestBuildStepLLM(t *testing.T) {
 		{
 			name: "TemperatureTooHigh",
 			step: &step{
-				Type: "chat",
+				Type: "test-llm",
 				LLM:  &llmConfig{Provider: "openai", Model: model("gpt-4"), Temperature: temp(2.1)},
 			},
 			wantErr: true,
@@ -3139,7 +3139,7 @@ func TestBuildStepLLM(t *testing.T) {
 		{
 			name: "MaxTokensInvalid",
 			step: &step{
-				Type: "chat",
+				Type: "test-llm",
 				LLM:  &llmConfig{Provider: "openai", Model: model("gpt-4"), MaxTokens: tokens(0)},
 			},
 			wantErr: true,
@@ -3148,7 +3148,7 @@ func TestBuildStepLLM(t *testing.T) {
 		{
 			name: "TopPTooLow",
 			step: &step{
-				Type: "chat",
+				Type: "test-llm",
 				LLM:  &llmConfig{Provider: "openai", Model: model("gpt-4"), TopP: temp(-0.1)},
 			},
 			wantErr: true,
@@ -3157,7 +3157,7 @@ func TestBuildStepLLM(t *testing.T) {
 		{
 			name: "TopPTooHigh",
 			step: &step{
-				Type: "chat",
+				Type: "test-llm",
 				LLM:  &llmConfig{Provider: "openai", Model: model("gpt-4"), TopP: temp(1.1)},
 			},
 			wantErr: true,
@@ -3166,7 +3166,7 @@ func TestBuildStepLLM(t *testing.T) {
 		{
 			name: "ValidConfig",
 			step: &step{
-				Type: "chat",
+				Type: "test-llm",
 				LLM: &llmConfig{
 					Provider:    "openai",
 					Model:       model("gpt-4"),

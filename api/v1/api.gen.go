@@ -2616,7 +2616,7 @@ type Step struct {
 		// Config Executor-specific configuration
 		Config *map[string]interface{} `json:"config,omitempty"`
 
-		// Type Type of executor (e.g., 'wait', 'http', 'docker', 'command')
+		// Type Type of executor (e.g., 'command', 'ssh', 'dag', 'template')
 		Type *string `json:"type,omitempty"`
 	} `json:"executorConfig,omitempty"`
 

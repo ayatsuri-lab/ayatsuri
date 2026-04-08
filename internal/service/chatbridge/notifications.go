@@ -111,7 +111,7 @@ func NotificationClassForEvent(event NotificationEvent) (NotificationClass, bool
 			return NotificationClassUrgent, true
 		case eventstore.TypeDAGRunSucceeded:
 			return NotificationClassSuccessDigest, true
-		case eventstore.TypeLLMUsageRecorded:
+		case eventstore.TypeLLMUsageRecorded, eventstore.TypeAutomataNeedsInput, eventstore.TypeAutomataError, eventstore.TypeAutomataFinished:
 			return NotificationClassUnknown, false
 		default:
 			return NotificationClassForStatus(dagRun.Status)

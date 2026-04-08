@@ -79,7 +79,7 @@ func validateScheduleNode(node *yaml.Node, path string) error {
 	if isNullNode(node) {
 		return nil
 	}
-	switch node.Kind {
+	switch node.Kind { //nolint:exhaustive // only scalar and sequence are valid for schedule nodes
 	case yaml.ScalarNode:
 		return nil
 	case yaml.SequenceNode:

@@ -31,17 +31,11 @@ func TestSignalClassification(t *testing.T) {
 		if !IsTerminationSignal(sig) {
 			t.Errorf("IsTerminationSignal(%v) should be true", sig)
 		}
-		if GetSignalName(sig) == "" {
-			t.Errorf("GetSignalName(%v) should not be empty", sig)
-		}
 	}
 
 	for _, sig := range nonTerminationSignals {
 		if IsTerminationSignal(sig) {
 			t.Errorf("IsTerminationSignal(%v) should be false", sig)
-		}
-		if GetSignalName(sig) == "" {
-			t.Errorf("GetSignalName(%v) should not be empty", sig)
 		}
 	}
 }

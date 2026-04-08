@@ -84,11 +84,6 @@ func Fatalf(ctx context.Context, format string, v ...any) {
 	logWithContextPC(ctx, slog.LevelError, fmt.Sprintf(format, v...))
 }
 
-// Write writes a message with free form.
-func Write(ctx context.Context, msg string) {
-	FromContext(ctx).Write(msg)
-}
-
 // logWithContextPC logs with the correct program counter, skipping context.go
 func logWithContextPC(ctx context.Context, level slog.Level, msg string, tags ...slog.Attr) {
 	logger := FromContext(ctx)

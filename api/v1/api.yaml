@@ -8498,7 +8498,7 @@ components:
           properties:
             type:
               type: string
-              description: "Type of executor (e.g., 'wait', 'http', 'docker', 'command')"
+              description: "Type of executor (e.g., 'command', 'ssh', 'dag', 'template')"
             config:
               type: object
               description: "Executor-specific configuration"
