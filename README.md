@@ -111,7 +111,7 @@ curl -fsSL https://raw.githubusercontent.com/ayatsuri-lab/ayatsuri/main/scripts/
 **Homebrew:**
 
 ```bash
-brew install ayatsuri
+brew install ayatsuri-lab/ayatsuri/ayatsuri
 ```
 
 **Windows (PowerShell):**
@@ -129,14 +129,14 @@ docker run --rm -v ~/.ayatsuri:/var/lib/ayatsuri -p 8080:8080 ghcr.io/ayatsuri-l
 **Kubernetes (Helm):**
 
 ```bash
-helm repo add ayatsuri https://ayatsuricloud.github.io/ayatsuri
+helm repo add ayatsuri https://ayatsuri-lab.github.io/ayatsuri
 helm repo update
 helm install ayatsuri ayatsuri/ayatsuri --set persistence.storageClass=<your-rwx-storage-class>
 ```
 
 > Replace `<your-rwx-storage-class>` with a StorageClass that supports `ReadWriteMany`. See [charts/ayatsuri/README.md](./charts/ayatsuri/README.md) for chart configuration.
 
-The script installers run a guided wizard that can add Ayatsuri to your PATH, set it up as a background service, and create the initial admin account. Homebrew, npm, Docker, and Helm install without the wizard. See [Installation docs](https://docs.ayatsuri.sh/getting-started/installation) for all options.
+The script installers run a guided wizard that can add Ayatsuri to your PATH, set it up as a background service, and create the initial admin account. Homebrew, Docker, and Helm install without the wizard. See [Installation docs](https://docs.ayatsuri.sh/getting-started/installation) for all options.
 
 ### Create and run a workflow
 

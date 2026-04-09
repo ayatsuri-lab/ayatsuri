@@ -20,13 +20,13 @@ Ayatsuri uses a shared filesystem for state persistence. You must have a storage
 Official Helm repository URL:
 
 ```text
-https://ayatsuricloud.github.io/ayatsuri
+https://ayatsuri-lab.github.io/ayatsuri
 ```
 
 Add the repository and install the chart:
 
 ```bash
-helm repo add ayatsuri https://ayatsuricloud.github.io/ayatsuri
+helm repo add ayatsuri https://ayatsuri-lab.github.io/ayatsuri
 helm repo update
 helm install ayatsuri ayatsuri/ayatsuri --set persistence.storageClass=<your-rwx-storage-class>
 ```

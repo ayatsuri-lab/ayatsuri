@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	githubAPIURL = "https://api.github.com/repos/ayatsuricloud/ayatsuri/releases"
+	githubAPIURL = "https://api.github.com/repos/ayatsuri-lab/ayatsuri/releases"
 
 	defaultTimeout = 30 * time.Second
 )

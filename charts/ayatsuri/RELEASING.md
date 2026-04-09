@@ -39,7 +39,7 @@ The publish workflow in this repository assumes the `gh-pages` branch already ex
 4. Confirm the published repository works:
 
 ```bash
-helm repo add ayatsuri https://ayatsuricloud.github.io/ayatsuri
+helm repo add ayatsuri https://ayatsuri-lab.github.io/ayatsuri
 helm repo update
 helm search repo ayatsuri
 helm pull ayatsuri/ayatsuri --version <chart-version>

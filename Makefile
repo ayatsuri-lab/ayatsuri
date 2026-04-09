@@ -241,14 +241,14 @@ build-image-version:
 		exit 1; \
 	fi
 	@printf '%b\n' "${COLOR_GREEN}Building the docker image with the version $(VERSION)...${COLOR_RESET}"
-	@$(DOCKER_CMD) -t ghcr.io/ayatsuricloud/${APP_NAME}:$(VERSION) .
+	@$(DOCKER_CMD) -t ghcr.io/ayatsuri-lab/${APP_NAME}:$(VERSION) .
 
 # build-image-latest build the docker image with the latest tag and push to 
 # the registry.
 .PHONY: build-image-latest
 build-image-latest:
 	@printf '%b\n' "${COLOR_GREEN}Building the docker image...${COLOR_RESET}"
-	@$(DOCKER_CMD) -t ghcr.io/ayatsuricloud/${APP_NAME}:latest .
+	@$(DOCKER_CMD) -t ghcr.io/ayatsuri-lab/${APP_NAME}:latest .
 
 ${LOCAL_DIR}/merged:
 	@mkdir -p ${LOCAL_DIR}/merged
