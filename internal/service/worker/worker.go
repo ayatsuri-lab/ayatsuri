@@ -542,4 +542,3 @@ func (w *Worker) processCancellations(ctx context.Context, cancelledRuns []*coor
 		}
 	}
 }
-

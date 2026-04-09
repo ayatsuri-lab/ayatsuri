@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/coder/websocket"
 	"github.com/ayatsuri-lab/ayatsuri/internal/service/audit"
 	authservice "github.com/ayatsuri-lab/ayatsuri/internal/service/auth"
 	frontendauth "github.com/ayatsuri-lab/ayatsuri/internal/service/frontend/auth"
+	"github.com/coder/websocket"
 )
 
 // Handler handles WebSocket connections for the terminal.

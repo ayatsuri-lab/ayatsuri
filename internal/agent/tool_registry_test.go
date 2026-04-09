@@ -105,9 +105,9 @@ func TestRegisteredTools_FactoriesProduceValidTools(t *testing.T) {
 	t.Parallel()
 
 	cfg := ToolConfig{
-		DAGsDir:               "/tmp/test-dags",
-		SkillStore:            &testSkillStore{},
-		AutomataRuntime:       &testAutomataRuntime{},
+		DAGsDir:         "/tmp/test-dags",
+		SkillStore:      &testSkillStore{},
+		AutomataRuntime: &testAutomataRuntime{},
 	}
 	for _, reg := range RegisteredTools() {
 		t.Run(reg.Name, func(t *testing.T) {
@@ -127,9 +127,9 @@ func TestCreateTools_UsesRegistry(t *testing.T) {
 	t.Parallel()
 
 	tools := CreateTools(ToolConfig{
-		DAGsDir:               "/tmp/dags",
-		SkillStore:            &testSkillStore{},
-		AutomataRuntime:       &testAutomataRuntime{},
+		DAGsDir:         "/tmp/dags",
+		SkillStore:      &testSkillStore{},
+		AutomataRuntime: &testAutomataRuntime{},
 	})
 	regs := RegisteredTools()
 

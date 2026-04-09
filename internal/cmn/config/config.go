@@ -26,7 +26,7 @@ type Config struct {
 	Monitoring      MonitoringConfig
 	DefaultExecMode ExecutionMode
 	Cache           CacheMode
-	Tunnel TunnelConfig
+	Tunnel          TunnelConfig
 	Bots            BotsConfig
 	License         LicenseConfig
 	Notices         []string

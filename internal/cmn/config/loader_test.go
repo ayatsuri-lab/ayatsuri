@@ -1241,8 +1241,8 @@ secrets:
 
 	t.Run("OldEnvNamesIgnored", func(t *testing.T) {
 		cfg := loadWithEnv(t, "# empty", map[string]string{
-			"VAULT_ADDR":       "https://legacy.example.com",
-			"VAULT_TOKEN":      "legacy-token",
+			"VAULT_ADDR":           "https://legacy.example.com",
+			"VAULT_TOKEN":          "legacy-token",
 			"AYATSURI_VAULT_ADDR":  "https://legacy-ayatsuri.example.com",
 			"AYATSURI_VAULT_TOKEN": "legacy-ayatsuri-token",
 		})

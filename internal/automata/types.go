@@ -63,10 +63,10 @@ type ImproveMemoryConfig struct {
 }
 
 type AgentConfig struct {
-	Model         string              `json:"model,omitempty" yaml:"model,omitempty"`
-	Soul          string              `json:"soul,omitempty" yaml:"soul,omitempty"`
-	EnabledSkills []string            `json:"enabledSkills,omitempty" yaml:"enabledSkills,omitempty"`
-	SafeMode      bool                `json:"safeMode,omitempty" yaml:"safeMode,omitempty"`
+	Model         string               `json:"model,omitempty" yaml:"model,omitempty"`
+	Soul          string               `json:"soul,omitempty" yaml:"soul,omitempty"`
+	EnabledSkills []string             `json:"enabledSkills,omitempty" yaml:"enabledSkills,omitempty"`
+	SafeMode      bool                 `json:"safeMode,omitempty" yaml:"safeMode,omitempty"`
 	ImproveMemory *ImproveMemoryConfig `json:"improveMemory,omitempty" yaml:"improve_memory,omitempty"`
 }
 
@@ -210,12 +210,12 @@ type State struct {
 	PausedAt             time.Time            `json:"pausedAt"`
 	PausedBy             string               `json:"pausedBy,omitempty"`
 	PausedFromState      LifecycleState       `json:"pausedFromState,omitempty"`
-	FinishedAt             time.Time            `json:"finishedAt"`
-	ReflectingAt           time.Time            `json:"reflectingAt"`
-	ReflectingSessionID    string               `json:"reflectingSessionId,omitempty"`
-	ReflectingFinishedAt   time.Time            `json:"reflectingFinishedAt"`
-	LastSummary            string               `json:"lastSummary,omitempty"`
-	LastError              string               `json:"lastError,omitempty"`
+	FinishedAt           time.Time            `json:"finishedAt"`
+	ReflectingAt         time.Time            `json:"reflectingAt"`
+	ReflectingSessionID  string               `json:"reflectingSessionId,omitempty"`
+	ReflectingFinishedAt time.Time            `json:"reflectingFinishedAt"`
+	LastSummary          string               `json:"lastSummary,omitempty"`
+	LastError            string               `json:"lastError,omitempty"`
 }
 
 type AllowedDAGInfo struct {

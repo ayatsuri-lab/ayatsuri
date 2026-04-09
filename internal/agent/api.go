@@ -82,40 +82,40 @@ func userIdentityFromContext(ctx context.Context) UserIdentity {
 
 // API handles HTTP requests for the agent.
 type API struct {
-	sessions              sync.Map // id -> *SessionManager (active sessions)
-	creatingIDs           sync.Map // id -> struct{} (session IDs currently being created)
-	spillMu               sync.Mutex
-	store                 SessionStore
-	configStore           ConfigStore
-	modelStore            ModelStore
-	skillStore            SkillStore
-	providers             *ProviderCache
-	workingDir            string
-	logger                *slog.Logger
-	dagStore              DAGMetadataStore // For resolving DAG file paths
-	environment           EnvironmentInfo
-	hooks                 *Hooks
-	memoryStore           MemoryStore
-	soulStore             SoulStore
-	oauthManager          *agentoauth.Manager
-	eventService          *eventstore.Service
+	sessions     sync.Map // id -> *SessionManager (active sessions)
+	creatingIDs  sync.Map // id -> struct{} (session IDs currently being created)
+	spillMu      sync.Mutex
+	store        SessionStore
+	configStore  ConfigStore
+	modelStore   ModelStore
+	skillStore   SkillStore
+	providers    *ProviderCache
+	workingDir   string
+	logger       *slog.Logger
+	dagStore     DAGMetadataStore // For resolving DAG file paths
+	environment  EnvironmentInfo
+	hooks        *Hooks
+	memoryStore  MemoryStore
+	soulStore    SoulStore
+	oauthManager *agentoauth.Manager
+	eventService *eventstore.Service
 }
 
 // APIConfig contains configuration for the API.
 type APIConfig struct {
-	ConfigStore           ConfigStore
-	ModelStore            ModelStore
-	SkillStore            SkillStore
-	SoulStore             SoulStore
-	WorkingDir            string
-	Logger                *slog.Logger
-	SessionStore          SessionStore
-	DAGStore              DAGMetadataStore // For resolving DAG file paths
-	Environment           EnvironmentInfo
-	Hooks                 *Hooks
-	MemoryStore           MemoryStore
-	OAuthManager          *agentoauth.Manager
-	EventService          *eventstore.Service
+	ConfigStore  ConfigStore
+	ModelStore   ModelStore
+	SkillStore   SkillStore
+	SoulStore    SoulStore
+	WorkingDir   string
+	Logger       *slog.Logger
+	SessionStore SessionStore
+	DAGStore     DAGMetadataStore // For resolving DAG file paths
+	Environment  EnvironmentInfo
+	Hooks        *Hooks
+	MemoryStore  MemoryStore
+	OAuthManager *agentoauth.Manager
+	EventService *eventstore.Service
 }
 
 // SessionWithState is a session with its current state.
@@ -164,20 +164,20 @@ func NewAPI(cfg APIConfig) *API {
 	}
 
 	return &API{
-		configStore:           cfg.ConfigStore,
-		modelStore:            cfg.ModelStore,
-		skillStore:            cfg.SkillStore,
-		soulStore:             cfg.SoulStore,
-		providers:             NewProviderCache(),
-		workingDir:            cfg.WorkingDir,
-		logger:                logger,
-		store:                 cfg.SessionStore,
-		dagStore:              cfg.DAGStore,
-		environment:           cfg.Environment,
-		hooks:                 cfg.Hooks,
-		memoryStore:           cfg.MemoryStore,
-		oauthManager:          cfg.OAuthManager,
-		eventService:          cfg.EventService,
+		configStore:  cfg.ConfigStore,
+		modelStore:   cfg.ModelStore,
+		skillStore:   cfg.SkillStore,
+		soulStore:    cfg.SoulStore,
+		providers:    NewProviderCache(),
+		workingDir:   cfg.WorkingDir,
+		logger:       logger,
+		store:        cfg.SessionStore,
+		dagStore:     cfg.DAGStore,
+		environment:  cfg.Environment,
+		hooks:        cfg.Hooks,
+		memoryStore:  cfg.MemoryStore,
+		oauthManager: cfg.OAuthManager,
+		eventService: cfg.EventService,
 	}
 }
 
@@ -605,27 +605,27 @@ func (a *API) runtimeConfigForSession(ctx context.Context, mgr *SessionManager, 
 
 func (a *API) buildSessionManagerConfig(id string, user UserIdentity, cfg sessionRuntimeConfig) SessionManagerConfig {
 	return SessionManagerConfig{
-		ID:                    id,
-		User:                  user,
-		Model:                 cfg.modelID,
-		Logger:                a.logger,
-		WorkingDir:            a.workingDir,
-		Title:                 cfg.title,
-		OnMessage:             a.createMessageCallback(id),
-		Environment:           a.environment,
-		SafeMode:              cfg.safeMode,
-		Hooks:                 a.hooks,
-		InputCostPer1M:        cfg.inputCostPer1M,
-		OutputCostPer1M:       cfg.outputCostPer1M,
-		MemoryStore:           a.memoryStore,
-		SkillStore:            a.skillStore,
-		EnabledSkills:         cfg.enabledSkills,
-		DAGName:               cfg.dagName,
-		AutomataName:          cfg.automataName,
-		SessionStore:          a.store,
-		Soul:                  cfg.soul,
-		WebSearch:             cfg.webSearch,
-		ThinkingEffort:        cfg.thinkingEffort,
+		ID:              id,
+		User:            user,
+		Model:           cfg.modelID,
+		Logger:          a.logger,
+		WorkingDir:      a.workingDir,
+		Title:           cfg.title,
+		OnMessage:       a.createMessageCallback(id),
+		Environment:     a.environment,
+		SafeMode:        cfg.safeMode,
+		Hooks:           a.hooks,
+		InputCostPer1M:  cfg.inputCostPer1M,
+		OutputCostPer1M: cfg.outputCostPer1M,
+		MemoryStore:     a.memoryStore,
+		SkillStore:      a.skillStore,
+		EnabledSkills:   cfg.enabledSkills,
+		DAGName:         cfg.dagName,
+		AutomataName:    cfg.automataName,
+		SessionStore:    a.store,
+		Soul:            cfg.soul,
+		WebSearch:       cfg.webSearch,
+		ThinkingEffort:  cfg.thinkingEffort,
 	}
 }
 

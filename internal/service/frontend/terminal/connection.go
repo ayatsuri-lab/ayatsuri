@@ -16,10 +16,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/coder/websocket"
-	"github.com/creack/pty"
 	"github.com/ayatsuri-lab/ayatsuri/internal/auth"
 	"github.com/ayatsuri-lab/ayatsuri/internal/service/audit"
+	"github.com/coder/websocket"
+	"github.com/creack/pty"
 	"github.com/google/uuid"
 )
 

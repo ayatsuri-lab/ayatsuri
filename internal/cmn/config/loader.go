@@ -104,7 +104,7 @@ const (
 	SectionUI                                    // 32
 	SectionQueues                                // 64
 	SectionMonitoring                            // 128
-	SectionTunnel // 256
+	SectionTunnel                                // 256
 	SectionLicense                               // 1024
 	SectionProc                                  // 2048
 	SectionBots                                  // 4096
@@ -1686,7 +1686,6 @@ var envBindings = []envBinding{
 	// License
 	{key: "license.key", env: "LICENSE_KEY"},
 	{key: "license.cloud_url", env: "LICENSE_CLOUD_URL"},
-
 }
 
 func (l *ConfigLoader) bindEnvironmentVariables() {

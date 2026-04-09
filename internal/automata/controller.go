@@ -774,10 +774,10 @@ func (s *Service) startReflectionWithHint(ctx context.Context, def *Definition, 
 	user := s.systemUser(def.Name)
 
 	runtimeOpts := &agent.SessionRuntimeOptions{
-		Model:        model,
-		AllowedTools: []string{"think"},
+		Model:             model,
+		AllowedTools:      []string{"think"},
 		SystemPromptExtra: buildReflectionSystemPrompt(def.Name, currentMemory),
-		AutomataName: def.Name,
+		AutomataName:      def.Name,
 	}
 
 	sessionID, err := s.agentAPI.CreateEmptySessionWithRuntime(ctx, user, "", false, runtimeOpts)

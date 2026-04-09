@@ -241,4 +241,3 @@ steps:
 	assert.Contains(t, result.Env, "HOST_VALUE=from-transport-host")
 	assert.Contains(t, result.Env, "BACKTICK_VALUE=from-transport-backtick")
 }
-

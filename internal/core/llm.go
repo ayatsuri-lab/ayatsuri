@@ -223,4 +223,3 @@ type WebSearchUserLocation struct {
 	Country  string `json:"country,omitempty"`
 	Timezone string `json:"timezone,omitempty"`
 }
-

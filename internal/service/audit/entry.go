@@ -15,15 +15,15 @@ type Category string
 
 // Audit categories for different system components.
 const (
-	CategoryTerminal   Category = "terminal"
-	CategoryUser       Category = "user"
-	CategoryDAG        Category = "dag"
-	CategoryAPIKey     Category = "api_key"
-	CategoryWebhook    Category = "webhook"
-	CategoryAgent Category = "agent"
-	CategoryAutomata   Category = "automata"
-	CategorySystem     Category = "system"
-	CategoryWorkspace  Category = "workspace"
+	CategoryTerminal  Category = "terminal"
+	CategoryUser      Category = "user"
+	CategoryDAG       Category = "dag"
+	CategoryAPIKey    Category = "api_key"
+	CategoryWebhook   Category = "webhook"
+	CategoryAgent     Category = "agent"
+	CategoryAutomata  Category = "automata"
+	CategorySystem    Category = "system"
+	CategoryWorkspace Category = "workspace"
 )
 
 // Entry represents a single audit log entry.

@@ -191,10 +191,10 @@ type Agent struct {
 
 	// Evaluated configs - these are expanded at runtime and stored separately
 	// to avoid mutating the original DAG struct.
-	evaluatedSMTP          *core.SMTPConfig
-	evaluatedErrorMail     *core.MailConfig
-	evaluatedInfoMail      *core.MailConfig
-	evaluatedWaitMail      *core.MailConfig
+	evaluatedSMTP       *core.SMTPConfig
+	evaluatedErrorMail  *core.MailConfig
+	evaluatedInfoMail   *core.MailConfig
+	evaluatedWaitMail   *core.MailConfig
 	evaluatedWorkingDir string
 }
 
@@ -283,36 +283,36 @@ func New(
 	opts Options,
 ) *Agent {
 	a := &Agent{
-		rootDAGRun:                 opts.RootDAGRun,
-		parentDAGRun:               opts.ParentDAGRun,
-		dagRunID:                   dagRunID,
-		dag:                        dag,
-		dry:                        opts.Dry,
-		retryTarget:                opts.RetryTarget,
-		logDir:                     logDir,
-		logFile:                    logFile,
-		dagRunMgr:                  drm,
-		dagStore:                   ds,
-		dagRunStore:                opts.DAGRunStore,
-		registry:                   opts.ServiceRegistry,
-		extraEnvs:                  append([]string{}, opts.ExtraEnvs...),
-		stepRetry:                  opts.StepRetry,
-		peerConfig:                 opts.PeerConfig,
-		workerID:                   opts.WorkerID,
-		statusPusher:               opts.StatusPusher,
-		logWriterFactory:           opts.LogWriterFactory,
-		queuedRun:                  opts.QueuedRun,
-		attemptID:                  opts.AttemptID,
-		preparedAttempt:            opts.PreparedAttempt,
-		triggerType:                opts.TriggerType,
-		defaultExecMode:            opts.DefaultExecMode,
-		agentConfigStore:           opts.AgentConfigStore,
-		agentModelStore:            opts.AgentModelStore,
-		agentMemoryStore:           opts.AgentMemoryStore,
-		agentSkillStore:            opts.AgentSkillStore,
-		agentSoulStore:             opts.AgentSoulStore,
-		agentOAuthManager:          opts.AgentOAuthManager,
-		scheduleTime:               opts.ScheduleTime,
+		rootDAGRun:        opts.RootDAGRun,
+		parentDAGRun:      opts.ParentDAGRun,
+		dagRunID:          dagRunID,
+		dag:               dag,
+		dry:               opts.Dry,
+		retryTarget:       opts.RetryTarget,
+		logDir:            logDir,
+		logFile:           logFile,
+		dagRunMgr:         drm,
+		dagStore:          ds,
+		dagRunStore:       opts.DAGRunStore,
+		registry:          opts.ServiceRegistry,
+		extraEnvs:         append([]string{}, opts.ExtraEnvs...),
+		stepRetry:         opts.StepRetry,
+		peerConfig:        opts.PeerConfig,
+		workerID:          opts.WorkerID,
+		statusPusher:      opts.StatusPusher,
+		logWriterFactory:  opts.LogWriterFactory,
+		queuedRun:         opts.QueuedRun,
+		attemptID:         opts.AttemptID,
+		preparedAttempt:   opts.PreparedAttempt,
+		triggerType:       opts.TriggerType,
+		defaultExecMode:   opts.DefaultExecMode,
+		agentConfigStore:  opts.AgentConfigStore,
+		agentModelStore:   opts.AgentModelStore,
+		agentMemoryStore:  opts.AgentMemoryStore,
+		agentSkillStore:   opts.AgentSkillStore,
+		agentSoulStore:    opts.AgentSoulStore,
+		agentOAuthManager: opts.AgentOAuthManager,
+		scheduleTime:      opts.ScheduleTime,
 	}
 
 	// Initialize progress display if enabled

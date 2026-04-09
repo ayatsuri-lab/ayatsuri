@@ -808,7 +808,7 @@ func TestExtractArchive(t *testing.T) {
 	}
 
 	createTestTarGz(t, archivePath, map[string]string{
-		"ayatsuri":       "#!/bin/sh\necho test",
+		"ayatsuri":   "#!/bin/sh\necho test",
 		"readme.txt": "test readme",
 	})
 

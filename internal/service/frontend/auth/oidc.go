@@ -14,7 +14,6 @@ import (
 	"strings"
 	"time"
 
-	oidc "github.com/coreos/go-oidc"
 	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/backoff"
 	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
 	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/logger"
@@ -22,6 +21,7 @@ import (
 	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/stringutil"
 	authservice "github.com/ayatsuri-lab/ayatsuri/internal/service/auth"
 	"github.com/ayatsuri-lab/ayatsuri/internal/service/oidcprovision"
+	oidc "github.com/coreos/go-oidc"
 	"golang.org/x/oauth2"
 )
 

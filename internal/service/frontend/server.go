@@ -97,27 +97,27 @@ type shutdownActions struct {
 
 // Server represents the HTTP server for the frontend application.
 type Server struct {
-	apiV1              *apiv1.API
-	agentAPI           *agent.API
-	agentConfigStore   *fileagentconfig.Store
-	config             *config.Config
-	httpServer         *http.Server
-	funcsConfig        funcsConfig
-	builtinOIDCCfg     *auth.BuiltinOIDCConfig
-	authService        *authservice.Service
-	auditService       *audit.Service
-	auditStore         *fileaudit.Store
-	eventService       *eventstore.Service
-	listener net.Listener
-	appStream          *sse.AppStreamService
-	sseMultiplexer     *sse.Multiplexer
-	terminalManager    *terminal.Manager
-	metricsRegistry    *prometheus.Registry
-	tunnelAPIOpts      []apiv1.APIOption
-	dagStore           exec.DAGStore
-	licenseManager     *license.Manager
-	upgradeStore       upgrade.CacheStore
-	agentAPICallback   func(*agent.API)
+	apiV1            *apiv1.API
+	agentAPI         *agent.API
+	agentConfigStore *fileagentconfig.Store
+	config           *config.Config
+	httpServer       *http.Server
+	funcsConfig      funcsConfig
+	builtinOIDCCfg   *auth.BuiltinOIDCConfig
+	authService      *authservice.Service
+	auditService     *audit.Service
+	auditStore       *fileaudit.Store
+	eventService     *eventstore.Service
+	listener         net.Listener
+	appStream        *sse.AppStreamService
+	sseMultiplexer   *sse.Multiplexer
+	terminalManager  *terminal.Manager
+	metricsRegistry  *prometheus.Registry
+	tunnelAPIOpts    []apiv1.APIOption
+	dagStore         exec.DAGStore
+	licenseManager   *license.Manager
+	upgradeStore     upgrade.CacheStore
+	agentAPICallback func(*agent.API)
 }
 
 // ServerOption is a functional option for configuring the Server.
@@ -385,17 +385,17 @@ func NewServer(ctx context.Context, cfg *config.Config, dr exec.DAGStore, drs ex
 	// Note: SSO/OIDC gating is applied after opts are processed (see below)
 
 	srv := &Server{
-		config:             cfg,
-		agentAPI:           agentAPI,
-		agentConfigStore:   agentConfigStore,
-		builtinOIDCCfg:     builtinOIDCCfg,
-		authService:        authSvc,
-		auditService:       auditSvc,
-		auditStore:         auditStore,
-		eventService:       eventSvc,
-		metricsRegistry: mr,
-		dagStore:           dr,
-		upgradeStore:       upgradeStore,
+		config:           cfg,
+		agentAPI:         agentAPI,
+		agentConfigStore: agentConfigStore,
+		builtinOIDCCfg:   builtinOIDCCfg,
+		authService:      authSvc,
+		auditService:     auditSvc,
+		auditStore:       auditStore,
+		eventService:     eventSvc,
+		metricsRegistry:  mr,
+		dagStore:         dr,
+		upgradeStore:     upgradeStore,
 		funcsConfig: funcsConfig{
 			NavbarColor:           cfg.UI.NavbarColor,
 			NavbarTitle:           cfg.UI.NavbarTitle,
@@ -410,7 +410,7 @@ func NewServer(ctx context.Context, cfg *config.Config, dr exec.DAGStore, drs ex
 			OIDCEnabled:           oidcEnabled,
 			OIDCButtonLabel:       oidcButtonLabel,
 			TerminalEnabled:       cfg.Server.Terminal.Enabled && authSvc != nil,
-			WorkspaceStore: wsStore,
+			WorkspaceStore:        wsStore,
 			SetupRequiredChecker:  &setupChecker{authSvc: authSvc, fallback: setupRequired},
 			UpdateChecker:         updateInfoChecker,
 			AgentEnabledChecker:   agentConfigStore,
@@ -730,18 +730,18 @@ func initAgentAPI(ctx context.Context, store *fileagentconfig.Store, modelStore 
 	}
 
 	api := agent.NewAPI(agent.APIConfig{
-		ConfigStore:           store,
-		ModelStore:            modelStore,
-		SkillStore:            skillStore,
-		SoulStore:             soulStore,
-		WorkingDir:            paths.DAGsDir,
-		Logger:                slog.Default(),
-		SessionStore:          sessStore,
-		DAGStore:              dagStore,
-		Hooks:                 hooks,
-		EventService:          eventSvc,
-		MemoryStore:           memoryStore,
-		OAuthManager:          oauthManager,
+		ConfigStore:  store,
+		ModelStore:   modelStore,
+		SkillStore:   skillStore,
+		SoulStore:    soulStore,
+		WorkingDir:   paths.DAGsDir,
+		Logger:       slog.Default(),
+		SessionStore: sessStore,
+		DAGStore:     dagStore,
+		Hooks:        hooks,
+		EventService: eventSvc,
+		MemoryStore:  memoryStore,
+		OAuthManager: oauthManager,
 		Environment: agent.EnvironmentInfo{
 			DAGsDir:        paths.DAGsDir,
 			DocsDir:        paths.DocsDir,

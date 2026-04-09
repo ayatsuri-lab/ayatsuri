@@ -82,7 +82,7 @@ type Definition struct {
 	EventStore *EventStoreDef `mapstructure:"event_store"`
 	Session    *SessionDef    `mapstructure:"session"`
 	SSE        *SSEDef        `mapstructure:"sse"`
-	Tunnel *TunnelDef `mapstructure:"tunnel"`
+	Tunnel     *TunnelDef     `mapstructure:"tunnel"`
 	Bots       *BotsDef       `mapstructure:"bots"`
 	License    *LicenseDef    `mapstructure:"license"`
 }

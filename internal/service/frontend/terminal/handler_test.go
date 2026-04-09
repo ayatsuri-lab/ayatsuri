@@ -15,11 +15,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/coder/websocket"
 	api "github.com/ayatsuri-lab/ayatsuri/api/v1"
 	"github.com/ayatsuri-lab/ayatsuri/internal/cmn/config"
 	terminalpkg "github.com/ayatsuri-lab/ayatsuri/internal/service/frontend/terminal"
 	"github.com/ayatsuri-lab/ayatsuri/internal/test"
+	"github.com/coder/websocket"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

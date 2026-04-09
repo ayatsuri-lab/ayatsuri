@@ -63,8 +63,8 @@ type API struct {
 	authService         AuthService
 	auditService        *audit.Service
 	eventService        *eventstore.Service
-	tunnelService   *tunnel.Service
-	defaultExecMode config.ExecutionMode
+	tunnelService       *tunnel.Service
+	defaultExecMode     config.ExecutionMode
 	agentConfigStore    agent.ConfigStore
 	agentModelStore     agent.ModelStore
 	agentMemoryStore    agent.MemoryStore

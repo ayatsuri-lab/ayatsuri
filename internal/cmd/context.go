@@ -874,12 +874,12 @@ func (c *Context) dagStore(cfg dagStoreConfig) (exec.DAGStore, error) {
 
 // agentStoresResult holds the agent stores created by agentStores().
 type agentStoresResult struct {
-	ConfigStore     agent.ConfigStore
-	ModelStore      agent.ModelStore
-	MemoryStore     agent.MemoryStore
-	SkillStore      agent.SkillStore
-	SoulStore       agent.SoulStore
-	OAuthManager    *agentoauth.Manager
+	ConfigStore  agent.ConfigStore
+	ModelStore   agent.ModelStore
+	MemoryStore  agent.MemoryStore
+	SkillStore   agent.SkillStore
+	SoulStore    agent.SoulStore
+	OAuthManager *agentoauth.Manager
 }
 
 // agentStores creates the agent config, model, memory, and skill stores from the config paths.
