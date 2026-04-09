@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Bot, PauseCircle, PlayCircle, Waypoints } from 'lucide-react';
+import { Bot, BrainCircuit, PauseCircle, PlayCircle, Waypoints } from 'lucide-react';
 import {
   AutomataDisplayStatus,
   components,
@@ -18,11 +18,12 @@ import { AutomataDetailsModal } from './AutomataDetailsModal';
 type AutomataSummary = components['schemas']['AutomataSummary'];
 type DAGRunSummary = components['schemas']['DAGRunSummary'];
 
-type LifecycleState = 'running' | 'paused' | 'idle' | 'finished';
+type LifecycleState = 'running' | 'paused' | 'idle' | 'finished' | 'reflecting';
 
 const STATE_ORDER: LifecycleState[] = [
   'idle',
   'running',
+  'reflecting',
   'paused',
   'finished',
 ];
@@ -43,6 +44,10 @@ const STATE_META: Record<
     label: 'Idle',
     description: 'No active task assigned.',
     icon: <Waypoints size={16} />},
+  reflecting: {
+    label: 'Reflecting',
+    description: 'Reviewing conversation and updating memory.',
+    icon: <BrainCircuit size={16} />},
   finished: {
     label: 'Finished',
     description: 'Completed the current task.',
@@ -56,6 +61,8 @@ function getLifecycleClass(state: string): string {
       return 'bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-slate-100';
     case AutomataDisplayStatus.finished:
       return 'bg-emerald-100 text-emerald-900 dark:bg-emerald-900/40 dark:text-emerald-200';
+    case AutomataDisplayStatus.reflecting:
+      return 'bg-violet-100 text-violet-800 dark:bg-violet-900/40 dark:text-violet-200';
     default:
       return 'bg-muted text-muted-foreground';
   }
@@ -248,6 +255,7 @@ export function AutomataCockpit({
   const stateBuckets = React.useMemo(() => {
     const buckets: Record<LifecycleState, AutomataSummary[]> = {
       running: [],
+      reflecting: [],
       paused: [],
       idle: [],
       finished: []};

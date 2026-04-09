@@ -1159,6 +1159,22 @@ export function AutomataDetailSurface({
                 {controller.canResume ? 'Resume' : 'Pause'}
               </Button>
             ) : null}
+            {controller.canReflect ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => void controller.onReflect()}
+                disabled={controller.busyAction === 'reflect'}
+              >
+                Reflect
+              </Button>
+            ) : null}
+            {controller.isReflecting ? (
+              <span className="inline-flex items-center gap-1.5 text-xs text-violet-700 dark:text-violet-300">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-violet-500" />
+                Reflecting...
+              </span>
+            ) : null}
             {renderHeaderActions ? renderHeaderActions(controller) : null}
           </div>
         </div>

@@ -113,10 +113,22 @@ func validateAgentConfigNode(node *yaml.Node, path string) error {
 		return nil
 	}
 	return validateMappingNode(node, path, map[string]yamlFieldRule{
-		"model":         {},
-		"soul":          {},
-		"enabledSkills": {validate: validateStringListNode},
-		"safeMode":      {},
+		"model":          {},
+		"soul":           {},
+		"enabledSkills":  {validate: validateStringListNode},
+		"safeMode":       {},
+		"improve_memory": {validate: validateImproveMemoryNode},
+		"improveMemory":  {canonical: "improve_memory", validate: validateImproveMemoryNode},
+	})
+}
+
+func validateImproveMemoryNode(node *yaml.Node, path string) error {
+	if isNullNode(node) {
+		return nil
+	}
+	return validateMappingNode(node, path, map[string]yamlFieldRule{
+		"enabled": {},
+		"model":   {},
 	})
 }
 

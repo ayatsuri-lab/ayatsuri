@@ -395,6 +395,8 @@ function displayStatusClass(state?: AutomataDisplayState | string): string {
       return 'bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-slate-100';
     case AutomataDisplayStatus.finished:
       return 'bg-emerald-100 text-emerald-900 dark:bg-emerald-900/40 dark:text-emerald-200';
+    case AutomataDisplayStatus.reflecting:
+      return 'bg-violet-100 text-violet-800 dark:bg-violet-900/40 dark:text-violet-200';
     default:
       return 'bg-muted text-muted-foreground';
   }

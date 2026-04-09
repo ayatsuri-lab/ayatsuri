@@ -99,6 +99,9 @@ func (s *Service) reconcileDefinition(ctx context.Context, def *Definition) erro
 	if def.Disabled {
 		return nil
 	}
+	if state.State == StateReflecting {
+		return s.reconcileReflecting(ctx, def, state)
+	}
 	if state.State == StatePaused {
 		return s.reconcilePausedDefinition(ctx, def, state)
 	}
@@ -677,7 +680,6 @@ func (r *controllerRuntime) Finish(ctx context.Context, summary string) error {
 	if r.state.CurrentRunRef != nil {
 		return fmt.Errorf("cannot finish automata while a child DAG run is active")
 	}
-	r.state.State = StateFinished
 	r.state.WaitingReason = WaitingReasonNone
 	r.state.PendingPrompt = nil
 	r.state.PendingResponse = nil
@@ -688,10 +690,20 @@ func (r *controllerRuntime) Finish(ctx context.Context, summary string) error {
 	}
 	r.state.FinishedAt = r.service.clock()
 	r.state.LastSummary = summary
+
+	if shouldAutoReflect(r.def) {
+		r.state.State = StateReflecting
+		r.state.ReflectingAt = r.service.clock()
+	} else {
+		r.state.State = StateFinished
+	}
+
 	if err := r.service.saveState(ctx, r.def.Name, r.state); err != nil {
 		return err
 	}
-	r.service.eventEmitter().finished(ctx, r.def, r.state)
+	if r.state.State == StateFinished {
+		r.service.eventEmitter().finished(ctx, r.def, r.state)
+	}
 	return nil
 }
 
@@ -710,6 +722,197 @@ func summarizeRunStatus(status *exec.DAGRunStatus) string {
 		return status.Status.String()
 	}
 	return strings.Join(parts, "; ")
+}
+
+func shouldAutoReflect(def *Definition) bool {
+	return def != nil && def.Agent.ImproveMemory != nil && def.Agent.ImproveMemory.Enabled
+}
+
+func (s *Service) reconcileReflecting(ctx context.Context, def *Definition, state *State) error {
+	if state.ReflectingSessionID == "" {
+		return s.startReflection(ctx, def, state)
+	}
+	activity := s.inspectReflectingSession(ctx, def.Name, state)
+	if activity.Working {
+		return nil
+	}
+	return s.completeReflection(ctx, def, state)
+}
+
+func (s *Service) startReflection(ctx context.Context, def *Definition, state *State) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if s.agentAPI == nil {
+		return s.finishReflection(ctx, def, state)
+	}
+
+	var conversationLog string
+	if s.sessionStore != nil && state.SessionID != "" {
+		msgs, err := s.sessionStore.GetMessages(ctx, state.SessionID)
+		if err == nil {
+			conversationLog = buildConversationTranscript(msgs)
+		}
+	}
+	if conversationLog == "" {
+		return s.finishReflection(ctx, def, state)
+	}
+
+	currentMemory := ""
+	if s.memoryStore != nil {
+		mem, err := s.memoryStore.LoadAutomataMemory(ctx, def.Name)
+		if err == nil {
+			currentMemory = mem
+		}
+	}
+
+	model := reflectingModel(def)
+	user := s.systemUser(def.Name)
+
+	runtimeOpts := &agent.SessionRuntimeOptions{
+		Model:        model,
+		AllowedTools: []string{"think"},
+		SystemPromptExtra: buildReflectionSystemPrompt(def.Name, currentMemory),
+		AutomataName: def.Name,
+	}
+
+	sessionID, err := s.agentAPI.CreateEmptySessionWithRuntime(ctx, user, "", false, runtimeOpts)
+	if err != nil {
+		s.logger.Warn("automata reflection session create failed", "automata", def.Name, "error", err)
+		return s.finishReflection(ctx, def, state)
+	}
+
+	_, err = s.agentAPI.EnqueueChatMessageWithRuntime(ctx, sessionID, user, agent.ChatRequest{
+		Message: buildReflectionPrompt(conversationLog),
+		Model:   model,
+	}, runtimeOpts)
+	if err != nil {
+		s.logger.Warn("automata reflection enqueue failed", "automata", def.Name, "error", err)
+		return s.finishReflection(ctx, def, state)
+	}
+
+	state.ReflectingSessionID = sessionID
+	return s.saveState(ctx, def.Name, state)
+}
+
+func (s *Service) completeReflection(ctx context.Context, def *Definition, state *State) error {
+	if s.sessionStore != nil && state.ReflectingSessionID != "" {
+		msgs, err := s.sessionStore.GetMessages(ctx, state.ReflectingSessionID)
+		if err == nil {
+			updatedMemory := extractMemoryFromReflection(msgs)
+			if updatedMemory != "" && s.memoryStore != nil {
+				if err := s.memoryStore.SaveAutomataMemory(ctx, def.Name, updatedMemory); err != nil {
+					s.logger.Warn("automata memory save failed after reflection",
+						"automata", def.Name, "error", err)
+				}
+			}
+		}
+	}
+
+	if state.ReflectingSessionID != "" && s.sessionStore != nil {
+		_ = s.sessionStore.DeleteSession(ctx, state.ReflectingSessionID)
+	}
+
+	return s.finishReflection(ctx, def, state)
+}
+
+func (s *Service) finishReflection(ctx context.Context, def *Definition, state *State) error {
+	state.State = StateFinished
+	state.ReflectingSessionID = ""
+	state.ReflectingFinishedAt = s.clock()
+	if err := s.saveState(ctx, def.Name, state); err != nil {
+		return err
+	}
+	s.eventEmitter().finished(ctx, def, state)
+	return nil
+}
+
+func (s *Service) inspectReflectingSession(ctx context.Context, name string, state *State) sessionActivity {
+	if s.agentAPI == nil || state == nil || state.ReflectingSessionID == "" {
+		return sessionActivity{}
+	}
+	detail, err := s.agentAPI.GetSessionDetail(ctx, state.ReflectingSessionID, s.systemUser(name).UserID)
+	if err != nil {
+		return sessionActivity{}
+	}
+	if detail == nil || detail.SessionState == nil {
+		return sessionActivity{}
+	}
+	return sessionActivity{
+		Working: detail.SessionState.Working,
+	}
+}
+
+func reflectingModel(def *Definition) string {
+	if def.Agent.ImproveMemory != nil && def.Agent.ImproveMemory.Model != "" {
+		return def.Agent.ImproveMemory.Model
+	}
+	return def.Agent.Model
+}
+
+func buildReflectionSystemPrompt(automataName, currentMemory string) string {
+	var sb strings.Builder
+	fmt.Fprintf(&sb, "You are a memory reflection agent for Automata %q.\n", automataName)
+	sb.WriteString("Your task is to review the conversation log and update the automata's memory.\n")
+	sb.WriteString("The memory is a Markdown document that captures important context, decisions, patterns, and lessons learned.\n\n")
+	sb.WriteString("Rules:\n")
+	sb.WriteString("- Preserve existing useful memory entries.\n")
+	sb.WriteString("- Add new insights from the conversation.\n")
+	sb.WriteString("- Remove entries that are no longer relevant.\n")
+	sb.WriteString("- Keep the memory concise and actionable.\n")
+	sb.WriteString("- Focus on patterns, preferences, decisions, and context that will help future runs.\n\n")
+	sb.WriteString("Output your response as the complete updated memory content wrapped in <updated_memory> tags.\n")
+	sb.WriteString("If no changes are needed, output the current memory unchanged in the tags.\n\n")
+	if currentMemory != "" {
+		sb.WriteString("Current memory:\n")
+		sb.WriteString("```\n")
+		sb.WriteString(currentMemory)
+		sb.WriteString("\n```\n")
+	} else {
+		sb.WriteString("Current memory: (empty)\n")
+	}
+	return sb.String()
+}
+
+func buildReflectionPrompt(conversationLog string) string {
+	return "Review the following conversation log and update the automata memory.\n\n" +
+		"<conversation_log>\n" + conversationLog + "\n</conversation_log>\n\n" +
+		"Analyze the conversation for:\n" +
+		"- Key decisions and their rationale\n" +
+		"- Patterns or preferences discovered\n" +
+		"- Errors encountered and how they were resolved\n" +
+		"- Context that would be useful for future runs\n\n" +
+		"Output the complete updated memory wrapped in <updated_memory>...</updated_memory> tags."
+}
+
+func buildConversationTranscript(msgs []agent.Message) string {
+	if len(msgs) == 0 {
+		return ""
+	}
+	var sb strings.Builder
+	for _, msg := range msgs {
+		if msg.Content == "" {
+			continue
+		}
+		role := string(msg.Type)
+		fmt.Fprintf(&sb, "[%s]: %s\n\n", role, msg.Content)
+	}
+	return sb.String()
+}
+
+func extractMemoryFromReflection(msgs []agent.Message) string {
+	for i := len(msgs) - 1; i >= 0; i-- {
+		if msgs[i].Type != agent.MessageTypeAssistant {
+			continue
+		}
+		content := msgs[i].Content
+		start := strings.Index(content, "<updated_memory>")
+		end := strings.Index(content, "</updated_memory>")
+		if start >= 0 && end > start {
+			return strings.TrimSpace(content[start+len("<updated_memory>") : end])
+		}
+	}
+	return ""
 }
 
 func buildPendingTurnMessageText(messages []PendingTurnMessage) string {

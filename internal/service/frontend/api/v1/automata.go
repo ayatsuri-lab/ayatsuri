@@ -284,6 +284,24 @@ func (a *API) ResumeAutomata(ctx context.Context, request api.ResumeAutomataRequ
 	return api.ResumeAutomata204Response{}, nil
 }
 
+func (a *API) ReflectAutomata(ctx context.Context, request api.ReflectAutomataRequestObject) (api.ReflectAutomataResponseObject, error) {
+	if err := a.requireAutomataService(); err != nil {
+		return nil, err
+	}
+	if err := a.requireExecute(ctx); err != nil {
+		return nil, err
+	}
+	if err := a.requireReadyAutomataController(ctx); err != nil {
+		return nil, err
+	}
+	name := string(request.Name)
+	if err := a.automataService.RequestReflect(ctx, name); err != nil {
+		return nil, toAutomataAPIError(err)
+	}
+	a.logAudit(ctx, audit.CategoryAutomata, "reflect", map[string]any{"name": name})
+	return api.ReflectAutomata204Response{}, nil
+}
+
 func (a *API) CreateAutomataTask(ctx context.Context, request api.CreateAutomataTaskRequestObject) (api.CreateAutomataTaskResponseObject, error) {
 	if err := a.requireAutomataService(); err != nil {
 		return nil, err

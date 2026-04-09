@@ -19,11 +19,12 @@ import (
 type LifecycleState string
 
 const (
-	StateIdle     LifecycleState = "idle"
-	StateRunning  LifecycleState = "running"
-	StateWaiting  LifecycleState = "waiting"
-	StatePaused   LifecycleState = "paused"
-	StateFinished LifecycleState = "finished"
+	StateIdle       LifecycleState = "idle"
+	StateRunning    LifecycleState = "running"
+	StateWaiting    LifecycleState = "waiting"
+	StatePaused     LifecycleState = "paused"
+	StateFinished   LifecycleState = "finished"
+	StateReflecting LifecycleState = "reflecting"
 )
 
 type WaitingReason string
@@ -44,10 +45,11 @@ const (
 type DisplayStatus string
 
 const (
-	DisplayStatusIdle     DisplayStatus = "idle"
-	DisplayStatusRunning  DisplayStatus = "running"
-	DisplayStatusPaused   DisplayStatus = "paused"
-	DisplayStatusFinished DisplayStatus = "finished"
+	DisplayStatusIdle       DisplayStatus = "idle"
+	DisplayStatusRunning    DisplayStatus = "running"
+	DisplayStatusPaused     DisplayStatus = "paused"
+	DisplayStatusFinished   DisplayStatus = "finished"
+	DisplayStatusReflecting DisplayStatus = "reflecting"
 )
 
 type AllowedDAGs struct {
@@ -55,11 +57,17 @@ type AllowedDAGs struct {
 	Tags  []string `json:"tags,omitempty" yaml:"tags,omitempty"`
 }
 
+type ImproveMemoryConfig struct {
+	Enabled bool   `json:"enabled,omitempty" yaml:"enabled,omitempty"`
+	Model   string `json:"model,omitempty" yaml:"model,omitempty"`
+}
+
 type AgentConfig struct {
-	Model         string   `json:"model,omitempty" yaml:"model,omitempty"`
-	Soul          string   `json:"soul,omitempty" yaml:"soul,omitempty"`
-	EnabledSkills []string `json:"enabledSkills,omitempty" yaml:"enabledSkills,omitempty"`
-	SafeMode      bool     `json:"safeMode,omitempty" yaml:"safeMode,omitempty"`
+	Model         string              `json:"model,omitempty" yaml:"model,omitempty"`
+	Soul          string              `json:"soul,omitempty" yaml:"soul,omitempty"`
+	EnabledSkills []string            `json:"enabledSkills,omitempty" yaml:"enabledSkills,omitempty"`
+	SafeMode      bool                `json:"safeMode,omitempty" yaml:"safeMode,omitempty"`
+	ImproveMemory *ImproveMemoryConfig `json:"improveMemory,omitempty" yaml:"improve_memory,omitempty"`
 }
 
 type ScheduleList []core.Schedule
@@ -202,9 +210,12 @@ type State struct {
 	PausedAt             time.Time            `json:"pausedAt"`
 	PausedBy             string               `json:"pausedBy,omitempty"`
 	PausedFromState      LifecycleState       `json:"pausedFromState,omitempty"`
-	FinishedAt           time.Time            `json:"finishedAt"`
-	LastSummary          string               `json:"lastSummary,omitempty"`
-	LastError            string               `json:"lastError,omitempty"`
+	FinishedAt             time.Time            `json:"finishedAt"`
+	ReflectingAt           time.Time            `json:"reflectingAt"`
+	ReflectingSessionID    string               `json:"reflectingSessionId,omitempty"`
+	ReflectingFinishedAt   time.Time            `json:"reflectingFinishedAt"`
+	LastSummary            string               `json:"lastSummary,omitempty"`
+	LastError              string               `json:"lastError,omitempty"`
 }
 
 type AllowedDAGInfo struct {

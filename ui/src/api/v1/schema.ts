@@ -2158,6 +2158,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/automata/{name}/reflect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Trigger memory reflection
+         * @description Triggers a memory reflection session for a finished Automata. The Automata reviews its conversation log and updates its memory.
+         */
+        post: operations["reflectAutomata"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/automata/{name}/message": {
         parameters: {
             query?: never;
@@ -4449,12 +4469,18 @@ export interface components {
             updatedAt?: string;
             updatedBy?: string;
         };
+        /** @description Configuration for automatic memory improvement after completion */
+        AutomataImproveMemoryConfig: {
+            enabled?: boolean;
+            model?: string;
+        };
         /** @description Agent runtime configuration for an Automata definition */
         AutomataAgentConfig: {
             model?: string;
             soul?: string;
             enabledSkills?: string[];
             safeMode?: boolean;
+            improveMemory?: components["schemas"]["AutomataImproveMemoryConfig"];
         };
         /** @description Automata definition */
         AutomataDefinition: {
@@ -4555,6 +4581,10 @@ export interface components {
             pausedBy?: string;
             /** Format: date-time */
             finishedAt?: string;
+            /** Format: date-time */
+            reflectingAt?: string;
+            /** Format: date-time */
+            reflectingFinishedAt?: string;
             lastSummary?: string;
             lastError?: string;
         };
@@ -11665,6 +11695,72 @@ export interface operations {
             };
         };
     };
+    reflectAutomata: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The Automata name */
+                name: components["parameters"]["AutomataName"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reflection started */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Automata controller is not ready */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unexpected error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     messageAutomata: {
         parameters: {
             query?: never;
@@ -13494,7 +13590,8 @@ export enum AutomataLifecycleState {
     running = "running",
     waiting = "waiting",
     paused = "paused",
-    finished = "finished"
+    finished = "finished",
+    reflecting = "reflecting"
 }
 export enum AutomataKind {
     workflow = "workflow",
@@ -13504,7 +13601,8 @@ export enum AutomataDisplayStatus {
     idle = "idle",
     running = "running",
     paused = "paused",
-    finished = "finished"
+    finished = "finished",
+    reflecting = "reflecting"
 }
 export enum AutomataWaitingReason {
     human_input = "human_input",

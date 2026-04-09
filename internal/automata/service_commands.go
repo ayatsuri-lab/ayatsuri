@@ -336,6 +336,31 @@ func (s *Service) ReorderTasks(ctx context.Context, name string, req ReorderTask
 	return s.saveState(ctx, name, state)
 }
 
+func (s *Service) RequestReflect(ctx context.Context, name string) error {
+	def, err := s.GetDefinition(ctx, name)
+	if err != nil {
+		return err
+	}
+	state, err := s.ensureState(ctx, def)
+	if err != nil {
+		return err
+	}
+	if state.State == StateReflecting {
+		return errors.New("automata is already reflecting")
+	}
+	if state.State != StateFinished {
+		return errors.New("automata must be in finished state to reflect")
+	}
+	if state.SessionID == "" {
+		return errors.New("no session to reflect on")
+	}
+	state.State = StateReflecting
+	state.ReflectingAt = s.clock()
+	state.ReflectingSessionID = ""
+	state.ReflectingFinishedAt = time.Time{}
+	return s.saveState(ctx, name, state)
+}
+
 func (s *Service) SubmitOperatorMessage(ctx context.Context, name string, req OperatorMessageRequest) error {
 	def, err := s.GetDefinition(ctx, name)
 	if err != nil {

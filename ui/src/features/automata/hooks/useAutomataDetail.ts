@@ -71,7 +71,8 @@ export function useAutomataDetailController({
       refreshInterval: (data?: AutomataDetail) =>
         data?.state?.state === 'running' ||
         data?.state?.state === 'waiting' ||
-        data?.state?.state === 'paused'
+        data?.state?.state === 'paused' ||
+        data?.state?.state === 'reflecting'
           ? 2000
           : 15000,
     }
@@ -230,6 +231,11 @@ export function useAutomataDetailController({
     : runtimeControllerReady &&
       (lifecycleState === 'running' || lifecycleState === 'waiting');
   const canResume = runtimeControllerReady && lifecycleState === 'paused';
+  const canReflect =
+    runtimeControllerReady &&
+    lifecycleState === 'finished' &&
+    !!detail?.state?.sessionId;
+  const isReflecting = lifecycleState === 'reflecting';
   const scheduleConfigured = (detail?.definition?.schedule?.length || 0) > 0;
 
   const descriptionChanged =
@@ -520,6 +526,34 @@ export function useAutomataDetailController({
       setBusyAction(null);
     }
   }, [client, detail, name, refreshAfterAction]);
+
+  const onReflect = React.useCallback(async () => {
+    if (!name) return;
+    setActionError('');
+    setBusyAction('reflect');
+    try {
+      const { error: apiError } = await client.POST(
+        '/automata/{name}/reflect',
+        {
+          params: { path: { name } },
+        }
+      );
+      if (apiError) {
+        throw new Error(
+          apiError.message || 'Failed to start memory reflection'
+        );
+      }
+      await refreshAfterAction();
+    } catch (err) {
+      setActionError(
+        err instanceof Error
+          ? err.message
+          : 'Failed to start memory reflection'
+      );
+    } finally {
+      setBusyAction(null);
+    }
+  }, [client, name, refreshAfterAction]);
 
   const onRename = React.useCallback(async () => {
     if (!name || !detail || busyAction) return;
@@ -849,6 +883,8 @@ export function useAutomataDetailController({
     canSendOperatorMessage,
     canPause,
     canResume,
+    canReflect,
+    isReflecting,
     scheduleConfigured,
     metadataChanged,
     metadataValidationError,
@@ -862,6 +898,7 @@ export function useAutomataDetailController({
     onRespond,
     onSendOperatorMessage,
     onPauseResume,
+    onReflect,
     onRename,
     onDuplicate,
     onResetState,

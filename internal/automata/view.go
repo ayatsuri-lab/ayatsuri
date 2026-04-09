@@ -44,7 +44,7 @@ func isBusyState(state *State) bool {
 	if len(state.PendingTurnMessages) > 0 {
 		return true
 	}
-	return state.State == StateRunning
+	return state.State == StateRunning || state.State == StateReflecting
 }
 
 func DeriveView(def *Definition, state *State) ViewStatus {
@@ -76,6 +76,8 @@ func DeriveView(def *Definition, state *State) ViewStatus {
 		view.DisplayStatus = DisplayStatusFinished
 	case StatePaused:
 		view.DisplayStatus = DisplayStatusPaused
+	case StateReflecting:
+		view.DisplayStatus = DisplayStatusReflecting
 	case StateRunning, StateWaiting:
 		view.DisplayStatus = DisplayStatusRunning
 	default:

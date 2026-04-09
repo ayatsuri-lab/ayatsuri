@@ -185,6 +185,12 @@ func (s *Service) cleanupRuntime(ctx context.Context, name string, deleteSession
 			return err
 		}
 	}
+	if state.ReflectingSessionID != "" {
+		_ = s.cancelAutomataSession(ctx, name, state.ReflectingSessionID)
+		if deleteSession && s.sessionStore != nil {
+			_ = s.sessionStore.DeleteSession(ctx, state.ReflectingSessionID)
+		}
+	}
 	return nil
 }
 
@@ -276,6 +282,9 @@ func clearCurrentCycleState(state *State) {
 	state.PausedBy = ""
 	state.PausedFromState = ""
 	state.FinishedAt = time.Time{}
+	state.ReflectingAt = time.Time{}
+	state.ReflectingSessionID = ""
+	state.ReflectingFinishedAt = time.Time{}
 	state.LastSummary = ""
 	state.LastError = ""
 }
