@@ -119,10 +119,3 @@ jobs:
         run: |
           go test -v -race .\...
 
-      - name: Upload coverage
-        if: matrix.os == 'ubuntu-latest'
-        uses: codecov/codecov-action@v6
-        with:
-          files: ./coverage.out
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

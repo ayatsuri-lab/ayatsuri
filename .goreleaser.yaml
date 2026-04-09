@@ -75,25 +75,7 @@ brews:
   - skip_upload: auto
     repository:
       owner: ayatsuri-lab
-      name: homebrew-brew
-    directory: Formula
-    homepage: "https://github.com/ayatsuri-lab/ayatsuri"
-    description: "A compact, portable, and language-agnostic workflow engine"
-    license: "GNU General Public License v3.0"
-    custom_block: |
-      service do
-        run [opt_bin/"ayatsuri", "start-all"]
-        keep_alive true
-        error_log_path var/"log/ayatsuri.log"
-        log_path var/"log/ayatsuri.log"
-        working_dir var
-      end
-
-  # Deprecated brew tap:
-  - skip_upload: auto
-    repository:
-      owner: yohamta
-      name: homebrew-tap
+      name: homebrew-ayatsuri
     directory: Formula
     homepage: "https://github.com/ayatsuri-lab/ayatsuri"
     description: "A compact, portable, and language-agnostic workflow engine"
