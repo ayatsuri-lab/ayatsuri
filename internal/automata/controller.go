@@ -740,6 +740,10 @@ func (s *Service) reconcileReflecting(ctx context.Context, def *Definition, stat
 }
 
 func (s *Service) startReflection(ctx context.Context, def *Definition, state *State) error {
+	return s.startReflectionWithHint(ctx, def, state, "")
+}
+
+func (s *Service) startReflectionWithHint(ctx context.Context, def *Definition, state *State, hint string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -783,7 +787,7 @@ func (s *Service) startReflection(ctx context.Context, def *Definition, state *S
 	}
 
 	_, err = s.agentAPI.EnqueueChatMessageWithRuntime(ctx, sessionID, user, agent.ChatRequest{
-		Message: buildReflectionPrompt(conversationLog),
+		Message: buildReflectionPrompt(conversationLog, hint),
 		Model:   model,
 	}, runtimeOpts)
 	if err != nil {
@@ -874,15 +878,24 @@ func buildReflectionSystemPrompt(automataName, currentMemory string) string {
 	return sb.String()
 }
 
-func buildReflectionPrompt(conversationLog string) string {
-	return "Review the following conversation log and update the automata memory.\n\n" +
-		"<conversation_log>\n" + conversationLog + "\n</conversation_log>\n\n" +
-		"Analyze the conversation for:\n" +
-		"- Key decisions and their rationale\n" +
-		"- Patterns or preferences discovered\n" +
-		"- Errors encountered and how they were resolved\n" +
-		"- Context that would be useful for future runs\n\n" +
-		"Output the complete updated memory wrapped in <updated_memory>...</updated_memory> tags."
+func buildReflectionPrompt(conversationLog, hint string) string {
+	var sb strings.Builder
+	sb.WriteString("Review the following conversation log and update the automata memory.\n\n")
+	if hint != "" {
+		sb.WriteString("The operator asked you to focus on:\n")
+		sb.WriteString(hint)
+		sb.WriteString("\n\n")
+	}
+	sb.WriteString("<conversation_log>\n")
+	sb.WriteString(conversationLog)
+	sb.WriteString("\n</conversation_log>\n\n")
+	sb.WriteString("Analyze the conversation for:\n")
+	sb.WriteString("- Key decisions and their rationale\n")
+	sb.WriteString("- Patterns or preferences discovered\n")
+	sb.WriteString("- Errors encountered and how they were resolved\n")
+	sb.WriteString("- Context that would be useful for future runs\n\n")
+	sb.WriteString("Output the complete updated memory wrapped in <updated_memory>...</updated_memory> tags.")
+	return sb.String()
 }
 
 func buildConversationTranscript(msgs []agent.Message) string {

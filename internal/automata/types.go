@@ -278,6 +278,14 @@ type StartRequest struct {
 	Instruction string `json:"instruction,omitempty"`
 }
 
+type ReflectRequest struct {
+	Hint string `json:"hint,omitempty"`
+}
+
+type ReflectResponse struct {
+	SessionID string `json:"sessionId"`
+}
+
 type RenameRequest struct {
 	NewName     string `json:"newName"`
 	RequestedBy string `json:"requestedBy,omitempty"`

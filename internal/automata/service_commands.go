@@ -336,29 +336,37 @@ func (s *Service) ReorderTasks(ctx context.Context, name string, req ReorderTask
 	return s.saveState(ctx, name, state)
 }
 
-func (s *Service) RequestReflect(ctx context.Context, name string) error {
+func (s *Service) RequestReflect(ctx context.Context, name string, req ReflectRequest) (*ReflectResponse, error) {
 	def, err := s.GetDefinition(ctx, name)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	state, err := s.ensureState(ctx, def)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if state.State == StateReflecting {
-		return errors.New("automata is already reflecting")
+		return nil, errors.New("automata is already reflecting")
 	}
 	if state.State != StateFinished {
-		return errors.New("automata must be in finished state to reflect")
+		return nil, errors.New("automata must be in finished state to reflect")
 	}
 	if state.SessionID == "" {
-		return errors.New("no session to reflect on")
+		return nil, errors.New("no session to reflect on")
 	}
 	state.State = StateReflecting
 	state.ReflectingAt = s.clock()
 	state.ReflectingSessionID = ""
 	state.ReflectingFinishedAt = time.Time{}
-	return s.saveState(ctx, name, state)
+	if err := s.saveState(ctx, name, state); err != nil {
+		return nil, err
+	}
+
+	if err := s.startReflectionWithHint(ctx, def, state, strings.TrimSpace(req.Hint)); err != nil {
+		return nil, err
+	}
+
+	return &ReflectResponse{SessionID: state.ReflectingSessionID}, nil
 }
 
 func (s *Service) SubmitOperatorMessage(ctx context.Context, name string, req OperatorMessageRequest) error {

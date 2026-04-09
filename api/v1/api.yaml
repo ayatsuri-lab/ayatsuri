@@ -5512,9 +5512,19 @@ paths:
         - "automata"
       parameters:
         - $ref: "#/components/parameters/AutomataName"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AutomataReflectRequest"
       responses:
-        "204":
+        "200":
           description: "Reflection started"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutomataReflectResponse"
         "400":
           description: "Invalid request"
           content:
@@ -10683,6 +10693,24 @@ components:
         model:
           type: string
 
+    AutomataReflectRequest:
+      type: object
+      description: "Request to start a memory reflection session"
+      properties:
+        hint:
+          type: string
+          description: "Optional hint for the reflection agent about what to focus on"
+
+    AutomataReflectResponse:
+      type: object
+      description: "Response from starting a memory reflection session"
+      required:
+        - sessionId
+      properties:
+        sessionId:
+          type: string
+          description: "The agent session ID for the reflection"
+
     AutomataAgentConfig:
       type: object
       description: "Agent runtime configuration for an Automata definition"
@@ -10922,6 +10950,8 @@ components:
         reflectingAt:
           type: string
           format: date-time
+        reflectingSessionId:
+          type: string
         reflectingFinishedAt:
           type: string
           format: date-time

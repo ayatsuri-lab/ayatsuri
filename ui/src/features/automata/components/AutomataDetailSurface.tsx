@@ -28,6 +28,7 @@ import {
   type AutomataTask,
   type AutomataTaskTemplate,
 } from '@/features/automata/detail-utils';
+import { useAgentChatContext } from '@/features/agent/context/AgentChatContext';
 import { cn } from '@/lib/utils';
 import ConfirmModal from '@/ui/ConfirmModal';
 import LoadingIndicator from '@/ui/LoadingIndicator';
@@ -1086,6 +1087,9 @@ export function AutomataDetailSurface({
   const [selectedRun, setSelectedRun] =
     React.useState<AutomataRunSummary | null>(null);
   const [selectedDAG, setSelectedDAG] = React.useState<string | null>(null);
+  const [reflectDialogOpen, setReflectDialogOpen] = React.useState(false);
+  const [reflectHint, setReflectHint] = React.useState('');
+  const agentChat = useAgentChatContext();
 
   if (controller.isLoading && !controller.detail) {
     return <LoadingIndicator />;
@@ -1163,17 +1167,30 @@ export function AutomataDetailSurface({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => void controller.onReflect()}
+                onClick={() => {
+                  setReflectHint('');
+                  setReflectDialogOpen(true);
+                }}
                 disabled={controller.busyAction === 'reflect'}
               >
                 Reflect
               </Button>
             ) : null}
             {controller.isReflecting ? (
-              <span className="inline-flex items-center gap-1.5 text-xs text-violet-700 dark:text-violet-300">
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 rounded px-2 py-1 text-xs text-violet-700 hover:bg-violet-50 dark:text-violet-300 dark:hover:bg-violet-900/30"
+                onClick={() => {
+                  const sid = controller.detail?.state?.reflectingSessionId;
+                  if (sid) {
+                    agentChat.setSessionId(sid);
+                    agentChat.openChat();
+                  }
+                }}
+              >
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-violet-500" />
                 Reflecting...
-              </span>
+              </button>
             ) : null}
             {renderHeaderActions ? renderHeaderActions(controller) : null}
           </div>
@@ -1277,6 +1294,40 @@ export function AutomataDetailSurface({
           <p className="text-sm text-muted-foreground">
             {controller.confirmation.message}
           </p>
+        </ConfirmModal>
+      ) : null}
+
+      {reflectDialogOpen ? (
+        <ConfirmModal
+          title="Reflect on Memory"
+          buttonText={
+            controller.busyAction === 'reflect'
+              ? 'Starting...'
+              : 'Start Reflection'
+          }
+          visible={reflectDialogOpen}
+          dismissModal={() => setReflectDialogOpen(false)}
+          onSubmit={async () => {
+            const sessionId = await controller.onReflect(reflectHint);
+            setReflectDialogOpen(false);
+            if (sessionId) {
+              agentChat.setSessionId(sessionId);
+              agentChat.openChat();
+            }
+          }}
+        >
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              The automata will review its conversation and update its memory.
+              Optionally describe what it should focus on.
+            </p>
+            <Textarea
+              value={reflectHint}
+              onChange={(e) => setReflectHint(e.target.value)}
+              placeholder="e.g. Remember the error handling pattern we settled on..."
+              rows={3}
+            />
+          </div>
         </ConfirmModal>
       ) : null}
     </>

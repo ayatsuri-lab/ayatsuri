@@ -295,11 +295,16 @@ func (a *API) ReflectAutomata(ctx context.Context, request api.ReflectAutomataRe
 		return nil, err
 	}
 	name := string(request.Name)
-	if err := a.automataService.RequestReflect(ctx, name); err != nil {
+	var req automata.ReflectRequest
+	if request.Body != nil && request.Body.Hint != nil {
+		req.Hint = *request.Body.Hint
+	}
+	resp, err := a.automataService.RequestReflect(ctx, name, req)
+	if err != nil {
 		return nil, toAutomataAPIError(err)
 	}
 	a.logAudit(ctx, audit.CategoryAutomata, "reflect", map[string]any{"name": name})
-	return api.ReflectAutomata204Response{}, nil
+	return api.ReflectAutomata200JSONResponse{SessionId: resp.SessionID}, nil
 }
 
 func (a *API) CreateAutomataTask(ctx context.Context, request api.CreateAutomataTaskRequestObject) (api.CreateAutomataTaskResponseObject, error) {

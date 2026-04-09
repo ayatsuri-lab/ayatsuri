@@ -527,33 +527,39 @@ export function useAutomataDetailController({
     }
   }, [client, detail, name, refreshAfterAction]);
 
-  const onReflect = React.useCallback(async () => {
-    if (!name) return;
-    setActionError('');
-    setBusyAction('reflect');
-    try {
-      const { error: apiError } = await client.POST(
-        '/automata/{name}/reflect',
-        {
-          params: { path: { name } },
-        }
-      );
-      if (apiError) {
-        throw new Error(
-          apiError.message || 'Failed to start memory reflection'
+  const onReflect = React.useCallback(
+    async (hint?: string): Promise<string | null> => {
+      if (!name) return null;
+      setActionError('');
+      setBusyAction('reflect');
+      try {
+        const { data, error: apiError } = await client.POST(
+          '/automata/{name}/reflect',
+          {
+            params: { path: { name } },
+            body: { hint: hint || undefined },
+          }
         );
+        if (apiError) {
+          throw new Error(
+            apiError.message || 'Failed to start memory reflection'
+          );
+        }
+        await refreshAfterAction();
+        return data?.sessionId ?? null;
+      } catch (err) {
+        setActionError(
+          err instanceof Error
+            ? err.message
+            : 'Failed to start memory reflection'
+        );
+        return null;
+      } finally {
+        setBusyAction(null);
       }
-      await refreshAfterAction();
-    } catch (err) {
-      setActionError(
-        err instanceof Error
-          ? err.message
-          : 'Failed to start memory reflection'
-      );
-    } finally {
-      setBusyAction(null);
-    }
-  }, [client, name, refreshAfterAction]);
+    },
+    [client, name, refreshAfterAction]
+  );
 
   const onRename = React.useCallback(async () => {
     if (!name || !detail || busyAction) return;

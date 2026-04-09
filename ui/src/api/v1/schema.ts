@@ -4474,6 +4474,16 @@ export interface components {
             enabled?: boolean;
             model?: string;
         };
+        /** @description Request to start a memory reflection session */
+        AutomataReflectRequest: {
+            /** @description Optional hint for the reflection agent about what to focus on */
+            hint?: string;
+        };
+        /** @description Response from starting a memory reflection session */
+        AutomataReflectResponse: {
+            /** @description The agent session ID for the reflection */
+            sessionId: string;
+        };
         /** @description Agent runtime configuration for an Automata definition */
         AutomataAgentConfig: {
             model?: string;
@@ -4583,6 +4593,7 @@ export interface components {
             finishedAt?: string;
             /** Format: date-time */
             reflectingAt?: string;
+            reflectingSessionId?: string;
             /** Format: date-time */
             reflectingFinishedAt?: string;
             lastSummary?: string;
@@ -11705,14 +11716,20 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AutomataReflectRequest"];
+            };
+        };
         responses: {
             /** @description Reflection started */
-            204: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["AutomataReflectResponse"];
+                };
             };
             /** @description Invalid request */
             400: {
